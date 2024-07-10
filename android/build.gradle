@@ -14,11 +14,6 @@ buildscript {
   }
 }
 
-def reactNativeArchitectures() {
-  def value = rootProject.getProperties().get("reactNativeArchitectures")
-  return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
-}
-
 def isNewArchitectureEnabled() {
   return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
 }
@@ -53,7 +48,7 @@ android {
 
     sourceSets {
       main {
-        manifest.srcFile "src/main/AndroidManifestNew.xml"
+        manifest.srcFile "src/main/AndroidManifest.xml"
       }
     }
   }
@@ -63,7 +58,10 @@ android {
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
+  }
 
+  buildFeatures {
+    dataBinding = true
   }
 
   buildTypes {
@@ -95,5 +93,17 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation 'androidx.compose.material:material:1.4.3'
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+  implementation 'com.google.code.gson:gson:2.10.1'
+
+
+  implementation 'com.ticketmaster.tickets:tickets:3.5.1'
+  implementation 'com.ticketmaster.tickets:secure-entry:1.2.10'
+  implementation "com.ticketmaster.retail:purchase:2.0.1"
+  implementation "com.ticketmaster.retail:prepurchase:2.0.0"
+  implementation "com.ticketmaster.retail:discoveryapi:2.0.0"
+  implementation 'com.ticketmaster.accounts:authentication:3.5.2'
+  implementation "com.ticketmaster.retail:foundation:2.0.0"
 }
 

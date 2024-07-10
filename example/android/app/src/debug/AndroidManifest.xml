@@ -5,5 +5,8 @@
     <application
         android:usesCleartextTraffic="true"
         tools:targetApi="28"
+        tools:replace="android:allowBackup,android:theme"
+        android:theme="@style/TMTicketsAppTheme"
+        android:allowBackup="true"
         tools:ignore="GoogleAppIndexingWarning"/>
 </manifest>

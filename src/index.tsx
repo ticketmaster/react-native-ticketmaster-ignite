@@ -1,22 +1,17 @@
-import { NativeModules, Platform } from 'react-native';
+import { AccountsSDK } from './AccountsSdk';
+import { TicketsSdk } from './TicketsSdk';
+import { TicketsSdkEmbeddedIos } from './TicketsSdkEmbeddedIos';
+import { TicketsSdkEmbeddedAndroid } from './TicketsSdkEmbeddedAndroid';
+import { RetailSDK } from './RetailSdk';
+import { IgniteProvider } from './IgniteProvider';
+import { useIgnite } from './useIgnite';
 
-const LINKING_ERROR =
-  `The package 'react-native-ticketmaster-ignite' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
-
-const TicketmasterIgnite = NativeModules.TicketmasterIgnite
-  ? NativeModules.TicketmasterIgnite
-  : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
-
-export function multiply(a: number, b: number): Promise<number> {
-  return TicketmasterIgnite.multiply(a, b);
-}
+export {
+  AccountsSDK,
+  TicketsSdk, // Tickets SDK modal is only available for iOS
+  TicketsSdkEmbeddedIos,
+  TicketsSdkEmbeddedAndroid,
+  RetailSDK,
+  IgniteProvider,
+  useIgnite,
+};

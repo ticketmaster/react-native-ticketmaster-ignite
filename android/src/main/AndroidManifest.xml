@@ -1,3 +1,37 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.ticketmasterignite">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application android:theme="@style/AppTheme" tools:replace="android:theme">
+      <activity
+        android:name="com.ticketmaster.authenticationsdk.internal.modernaccounts.presentation.ModernAccountsLoginScreen"
+        android:exported="true"
+        android:launchMode="singleInstance"
+        android:screenOrientation="portrait"
+        tools:replace="android:launchMode">
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="@string/app_tm_modern_accounts_scheme" />
+        </intent-filter>
+      </activity>
+      <activity
+        android:name="com.ticketmasterignite.retail.PurchaseActivity"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+        android:exported="true"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize">
+      </activity>
+      <activity
+        android:name="com.ticketmasterignite.retail.PrePurchaseActivity"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+        android:exported="true"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize">
+      </activity>
+    </application>
 </manifest>
+

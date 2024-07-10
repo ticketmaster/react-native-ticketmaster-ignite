@@ -3,15 +3,14 @@ package com.ticketmasterignite
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.uimanager.ViewManager
+import com.ticketmasterignite.tickets.TicketsViewManager
 
+public class TicketmasterIgnitePackage : ReactPackage {
+    override fun createViewManagers(
+        reactContext: ReactApplicationContext
+    ) = listOf(TicketsViewManager(reactContext))
 
-class TicketmasterIgnitePackage : ReactPackage {
-  override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-    return listOf(TicketmasterIgniteModule(reactContext))
-  }
-
-  override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-    return emptyList()
-  }
+   override fun createNativeModules(
+        reactContext: ReactApplicationContext
+    ): MutableList<NativeModule> = listOf(AccountsSDKModule(reactContext), RetailSDKModule(reactContext), ConfigModule(reactContext)).toMutableList()
 }
