@@ -194,6 +194,7 @@ const Home = () => {
         </View>
       )}
       <SectionList
+        // @ts-ignore
         sections={DATA}
         stickySectionHeadersEnabled={false}
         keyExtractor={(item, index) => item.title + index}

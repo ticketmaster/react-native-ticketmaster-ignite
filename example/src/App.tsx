@@ -19,8 +19,8 @@ const App = () => {
       <NavigationContainer theme={navTheme}>
         <IgniteProvider
           options={{
-            apiKey: Config.API_KEY,
-            clientName: Config.CLIENT_NAME,
+            apiKey: Config.API_KEY || '',
+            clientName: Config.CLIENT_NAME || '',
           }}
         >
           <Root />

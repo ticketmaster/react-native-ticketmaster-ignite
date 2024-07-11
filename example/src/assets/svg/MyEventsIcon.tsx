@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Svg, {SvgProps, Path} from 'react-native-svg';
+import Svg, { SvgProps, Path } from 'react-native-svg';
 
 const MyEventsIcon = (props: SvgProps) => (
   <Svg width={24} height={24} fill="none" {...props}>
