@@ -12,8 +12,11 @@ public class TicketsSdkViewController: UIViewController {
     let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
                                                           region: .US)
     
-    let branding = TMAuthentication.Branding(backgroundColor: .init(hexString: "#026cdf"),
-                                             theme: .light)
+    let primaryColor = Config.shared.get(for: "primaryColor")
+    let defaultBrandColor = UIColor(hexString: "026cdf") // TM blue
+    let backgroundColor = UIColor(hexString: primaryColor) ?? defaultBrandColor
+
+    let branding = TMAuthentication.Branding(backgroundColor: backgroundColor, theme: .light)
     
     let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings,
                                                                          branding: branding)

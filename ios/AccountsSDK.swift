@@ -8,8 +8,7 @@ class AccountsSDK: RCTEventEmitter, TMAuthenticationDelegate  {
   @objc public func configureAccountsSDK(_ resolve: @escaping (String) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     
     TMAuthentication.shared.delegate = self
-    
-    
+
     // build a combination of Settings and Branding
     let apiKey = Config.shared.get(for: "apiKey") 
     let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,

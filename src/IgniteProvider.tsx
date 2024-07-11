@@ -6,6 +6,7 @@ interface IgniteProviderProps {
   options: {
     apiKey: string;
     clientName: string;
+    primaryColor: string;
   };
 }
 
@@ -50,7 +51,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   options,
 }) => {
   const { Config, AccountsSDK } = NativeModules;
-  const { apiKey, clientName } = options;
+  const { apiKey, clientName, primaryColor } = options;
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -61,6 +62,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
   Config.setConfig('apiKey', apiKey);
   Config.setConfig('clientName', clientName);
+  Config.setConfig('primaryColor', primaryColor);
 
   const setAccountDetails = async () => {
     try {
