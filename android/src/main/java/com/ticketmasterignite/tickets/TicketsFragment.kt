@@ -73,7 +73,7 @@ class TicketsFragment() : Fragment() {
         coroutineScope.launch(Dispatchers.Main) {
             val authentication = TMAuthentication.Builder()
                 .apiKey(Config.get("apiKey"))
-                .clientName(Config.get("clientName")) // Team name to be displayed
+                .clientName(Config.get("clientName")) 
                 .colors(createAuthColors(android.graphics.Color.parseColor("#000000")))
                 .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
                 .region(TMXDeploymentRegion.US) // Region that the SDK will use. Default is US
