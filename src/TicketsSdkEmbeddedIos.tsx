@@ -1,5 +1,10 @@
-import { requireNativeComponent } from 'react-native';
+import { requireNativeComponent, ViewProps } from 'react-native';
 
-export const TicketsSdkEmbeddedIos = requireNativeComponent(
-  'RNTTicketsSdkEmbeddedView'
-);
+interface RNTTicketsSdkEmbeddedViewProps extends ViewProps {
+  style: Record<string, any>;
+}
+
+export const TicketsSdkEmbeddedIos =
+  requireNativeComponent<RNTTicketsSdkEmbeddedViewProps>(
+    'RNTTicketsSdkEmbeddedView'
+  );

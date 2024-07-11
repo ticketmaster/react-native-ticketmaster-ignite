@@ -95,6 +95,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       }
     };
     configureAccountsSDK();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -104,6 +105,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       };
       setAuth();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
   const login = async (

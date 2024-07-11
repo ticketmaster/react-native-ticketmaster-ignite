@@ -1,11 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
+// @ts-ignore
 import MyEvents from '../screens/MyEvents';
 import HomeIcon from '../assets/svg/HomeIcon';
 import MyEventsIcon from '../assets/svg/MyEventsIcon';
-import PrePurchase from '../screens/PrePurchase';
-import Purchase from '../screens/Purchase';
 
 const Tab = createBottomTabNavigator();
 

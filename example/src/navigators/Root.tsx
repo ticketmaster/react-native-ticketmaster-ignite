@@ -1,5 +1,5 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabs from './BottomTabs';
 
 const Stack = createNativeStackNavigator();
@@ -11,7 +11,8 @@ const Root = () => {
         headerShown: false,
         gestureEnabled: false,
         navigationBarColor: 'transparent',
-      }}>
+      }}
+    >
       <Stack.Screen
         name="BottomTabs"
         options={{

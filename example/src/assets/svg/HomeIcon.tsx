@@ -1,5 +1,5 @@
-import * as React from 'react'
-import Svg, {SvgProps, Path} from 'react-native-svg'
+import * as React from 'react';
+import Svg, { SvgProps, Path } from 'react-native-svg';
 
 const HomeIcon = (props: SvgProps) => (
   <Svg width={25} height={24} fill="none" {...props}>
@@ -10,5 +10,5 @@ const HomeIcon = (props: SvgProps) => (
       clipRule="evenodd"
     />
   </Svg>
-)
-export default HomeIcon
+);
+export default HomeIcon;
