@@ -7,24 +7,29 @@ In order to use it, setup a developer account with Ticketmaster [here](https://d
 ## Installation
 
 ```bash
-$ npm install --save react-native-ticketmaster-ignite
+npm install --save react-native-ticketmaster-ignite
 ```
+
 ##### --- or ---
+
 ```bash
-$ yarn add react-native-ticketmaster-ignite
+yarn add react-native-ticketmaster-ignite
 ```
 
 ## Setting up ios
+
 Edit the `Podfile` and set the platform to `15.0`
 
 ```
-platform :ios, '15.0' 
+platform :ios, '15.0'
 ```
+
 - `cd` into the `ios` directory and run `pod install`
 
 ## Setting up Android
 
 #### TM scheme
+
 In your project go to `android/app/src/main/res/values/strings.xml` and add this snippet:
 
 ```xml
@@ -34,16 +39,18 @@ In your project go to `android/app/src/main/res/values/strings.xml` and add this
 Replace `samplescheme` with your scheme - you can find it in your Ticketmaster app settings.
 
 #### allowBackup in AndroidManifest
+
 Open the `AndroidManifest.xml` file and:
-  - make sure that the `manifest` contains `xmlns:tools="http://schemas.android.com/tools"` 
-  - add `tools:replace="android:allowBackup` to the `application` 
+
+- make sure that the `manifest` contains `xmlns:tools="http://schemas.android.com/tools"`
+- add `tools:replace="android:allowBackup` to the `application`
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" <---add this line 
+          xmlns:tools="http://schemas.android.com/tools" <---add this line
           package="com.yourpackage">
 
-    <application tools:replace="android:allowBackup"> <---add this line 
+    <application tools:replace="android:allowBackup"> <---add this line
       <activity>
       ...
       </activity>
@@ -51,7 +58,8 @@ Open the `AndroidManifest.xml` file and:
 </manifest>
 ```
 
-#### Set dataBinding to true 
+#### Set dataBinding to true
+
 In `android/app/build.gradle` add:
 
 ```groovy
@@ -65,10 +73,12 @@ android {
 ```
 
 #### Set the minSdkVersion
+
 In `android/build.gradle` set the `minSdkVersion` to `26`.
 
-#### add `jcenter()` to build.gradle 
-Open `android/build.gradle` and add `jcenter()` to `repositories` in `allprojects` if it's not there yet: 
+#### add `jcenter()` to build.gradle
+
+Open `android/build.gradle` and add `jcenter()` to `repositories` in `allprojects` if it's not there yet:
 
 ```groovy
 buildscript {
@@ -84,14 +94,14 @@ buildscript {
     }
 
     allprojects {   // <----- add this
-        repositories {   // <----- 
-            jcenter()   // <----- 
-        }   // <----- 
-    }   // <----- 
+        repositories {   // <-----
+            jcenter()   // <-----
+        }   // <-----
+    }   // <-----
 }
 ```
 
-We are aware of the end-of-life of jcenter, however one of our library's native dependencies is still relying on a tool hosted on `jcenter` . Until it changes, it must be listed in `build.gradle`. 
+We are aware of the end-of-life of jcenter, however one of our library's native dependencies is still relying on a tool hosted on `jcenter` . Until it changes, it must be listed in `build.gradle`.
 
 ## Usage
 
@@ -136,7 +146,7 @@ Exposes the following functions:
 - `login`
 - `logout`
 - `refreshToken`
-- `getMemberInfo` 
+- `getMemberInfo`
 - `getToken`
 - `isLoggedIn`
 
@@ -311,7 +321,7 @@ const onShowPrePurchaseAttraction = async () => {
 
 You will need an API key for this app to run, you can get one here [Developer Account](https://developer-acct.ticketmaster.com/user/login).
 
-For the Retail SDK (PrePurchase and Purchase) views, you will need ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below. 
+For the Retail SDK (PrePurchase and Purchase) views, you will need ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below.
 
 Replace "someApiKey" with the API key from your Ticketmaster Developer Account. Replace "clientName" with your client name.
 
