@@ -13,8 +13,7 @@ public class TicketsSdkEmbeddedViewController: UIViewController {
                                                           region: .US)
     
     let primaryColor = Config.shared.get(for: "primaryColor")
-    let defaultBrandColor = UIColor(hexString: "026cdf") // TM blue
-    let backgroundColor = UIColor(hexString: primaryColor) ?? defaultBrandColor
+    let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor 
 
     let branding = TMAuthentication.Branding(backgroundColor: backgroundColor, theme: .light)
     

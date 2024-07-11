@@ -5,6 +5,7 @@ import Home from '../screens/Home';
 import MyEvents from '../screens/MyEvents';
 import HomeIcon from '../assets/svg/HomeIcon';
 import MyEventsIcon from '../assets/svg/MyEventsIcon';
+import Config from 'react-native-config';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,7 +16,7 @@ const BottomTabs = () => {
         headerTitleAlign: 'center',
         headerShown: true,
         headerStyle: {
-          backgroundColor: '#026cdf',
+          backgroundColor: Config.PRIMARY_COLOR,
         },
         headerTintColor: 'white',
         tabBarStyle: {
@@ -31,7 +32,7 @@ const BottomTabs = () => {
           position: 'absolute',
           bottom: 0,
         },
-        tabBarActiveTintColor: '#026cdf',
+        tabBarActiveTintColor: Config.PRIMARY_COLOR,
       }}
     >
       <Tab.Screen
@@ -40,7 +41,7 @@ const BottomTabs = () => {
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({ focused }) => (
-            <HomeIcon fill={focused ? '#026cdf' : 'grey'} />
+            <HomeIcon fill={focused ? Config.PRIMARY_COLOR : 'grey'} />
           ),
         }}
       />
@@ -51,7 +52,7 @@ const BottomTabs = () => {
           tabBarLabel: 'Tickets SDK (Embedded)',
           unmountOnBlur: true,
           tabBarIcon: ({ focused }) => (
-            <MyEventsIcon fill={focused ? '#026cdf' : 'grey'} />
+            <MyEventsIcon fill={focused ? Config.PRIMARY_COLOR : 'grey'} />
           ),
         }}
       />
