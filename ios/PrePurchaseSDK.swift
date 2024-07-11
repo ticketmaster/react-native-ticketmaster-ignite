@@ -51,8 +51,7 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate {
                                                           region: .US)
 
     let defaultBrandColor = UIColor(hexString: "026cdf") // TM blue
-    let branding = TMAuthentication.Branding(displayName: "My Team",
-                                             backgroundColor: UIColor(named: "brandColor") ?? defaultBrandColor,
+    let branding = TMAuthentication.Branding(backgroundColor: UIColor(named: "brandColor") ?? defaultBrandColor,
                                              theme: .light)
     
     let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings,

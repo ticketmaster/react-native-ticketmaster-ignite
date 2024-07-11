@@ -15,8 +15,7 @@ class AccountsSDK: RCTEventEmitter, TMAuthenticationDelegate  {
     let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
                                                           region: .US)
     
-    let branding = TMAuthentication.Branding(displayName: "My Team",
-                                             backgroundColor: .red,
+    let branding = TMAuthentication.Branding(backgroundColor: .red,
                                              theme: .light)
     
     let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings,

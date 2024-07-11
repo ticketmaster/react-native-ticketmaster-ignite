@@ -12,8 +12,7 @@ public class TicketsSdkViewController: UIViewController {
     let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
                                                           region: .US)
     
-    let branding = TMAuthentication.Branding(displayName: "My Team",
-                                             backgroundColor: .init(hexString: "#026cdf"),
+    let branding = TMAuthentication.Branding(backgroundColor: .init(hexString: "#026cdf"),
                                              theme: .light)
     
     let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings,
