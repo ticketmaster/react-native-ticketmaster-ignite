@@ -51,8 +51,7 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate {
                                                           region: .US)
 
     let primaryColor = Config.shared.get(for: "primaryColor")
-    let defaultBrandColor = UIColor(hexString: "026cdf") // TM blue
-    let backgroundColor = UIColor(hexString: primaryColor) ?? defaultBrandColor
+    let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
 
     let branding = TMAuthentication.Branding(backgroundColor: backgroundColor, theme: .light)
     
@@ -63,8 +62,9 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate {
       print("PrePurchase api key set result: \(isPrePurchaseApiSet)")
       TMDiscoveryAPI.shared.configure(apiKey: apiKey, completion: { isDiscoveryApiSet in
         print("Discovery api key set result: \(isDiscoveryApiSet)")
+
         TMPrePurchase.shared.brandColor = backgroundColor!
-        
+
         print("Authentication SDK Configuring...")
         TMAuthentication.shared.configure(brandedServiceSettings: brandedServiceSettings) {
           backendsConfigured in
