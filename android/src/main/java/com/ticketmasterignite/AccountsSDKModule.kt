@@ -108,7 +108,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         TicketsSDKClient
           .Builder()
           .authenticationSDKClient(authentication)
-          .colors(createTicketsColors(android.graphics.Color.parseColor("#231F20")))
+          .colors(createTicketsColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
           .build(currentFragmentActivity)
           .apply {
             TicketsSDKSingleton.setTicketsSdkClient(this)

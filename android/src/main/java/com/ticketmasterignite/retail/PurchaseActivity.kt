@@ -1,6 +1,7 @@
 package com.ticketmasterignite.retail
 
 import android.os.Bundle
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.ticketmasterignite.R
@@ -19,10 +20,7 @@ class PurchaseActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             val tmPurchase = TMPurchase(
                     apiKey = Config.get("apiKey"),
-                    brandColor = ContextCompat.getColor(
-                            this,
-                            com.ticketmaster.prepurchase.R.color.black
-                    )
+                    brandColor = Color.parseColor(Config.get("primaryColor"))
             )
 
             val tmPurchaseWebsiteConfiguration = TMPurchaseWebsiteConfiguration(

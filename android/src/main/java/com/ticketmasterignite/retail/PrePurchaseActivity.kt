@@ -1,6 +1,7 @@
 package com.ticketmasterignite.retail
 
 import android.os.Bundle
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -22,10 +23,7 @@ class PrePurchaseActivity : AppCompatActivity() {
 
         val tmPrePurchase = TMPrePurchase(
                 discoveryAPIKey = Config.get("apiKey"),
-                brandColor = ContextCompat.getColor(
-                        this@PrePurchaseActivity,
-                        com.ticketmaster.prepurchase.R.color.black
-                )
+                brandColor = Color.parseColor(Config.get("primaryColor"))
         )
         val venueId = intent.getStringExtra("venueId")
         val attractionId = intent.getStringExtra("attractionId")
