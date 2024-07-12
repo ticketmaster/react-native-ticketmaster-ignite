@@ -21,7 +21,7 @@ const App = () => {
           options={{
             apiKey: Config.API_KEY || '',
             clientName: Config.CLIENT_NAME || '',
-            primaryColor: Config.PRIMARY_COLOR || ''
+            primaryColor: Config.PRIMARY_COLOR || '',
           }}
         >
           <Root />
