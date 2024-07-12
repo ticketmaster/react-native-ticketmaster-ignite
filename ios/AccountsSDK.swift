@@ -8,16 +8,15 @@ class AccountsSDK: RCTEventEmitter, TMAuthenticationDelegate  {
   @objc public func configureAccountsSDK(_ resolve: @escaping (String) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     
     TMAuthentication.shared.delegate = self
-    
-    
+
     // build a combination of Settings and Branding
     let apiKey = Config.shared.get(for: "apiKey") 
     let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
                                                           region: .US)
     
-    let branding = TMAuthentication.Branding(displayName: "My Team",
-                                             backgroundColor: .red,
-                                             theme: .light)
+    let primaryColor = Config.shared.get(for: "primaryColor")
+    let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor 
+    let branding = TMAuthentication.Branding(backgroundColor: backgroundColor, theme: .light)
     
     let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings,
                                                                          branding: branding)

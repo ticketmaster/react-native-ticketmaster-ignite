@@ -9,14 +9,13 @@ class PurchaseSDK: NSObject {
     let apiKey = Config.shared.get(for: "apiKey")
     let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
                                                           region: .US)
+
+    let primaryColor = Config.shared.get(for: "primaryColor")
+    let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor 
     
-    let defaultBrandColor = UIColor(hexString: "026cdf") // TM blue
-    let branding = TMAuthentication.Branding(displayName: "My Team",
-                                              backgroundColor: UIColor(named: "brandColor") ?? defaultBrandColor,
-                                              theme: .light)
+    let branding = TMAuthentication.Branding(backgroundColor: backgroundColor, theme: .light)
     
-    let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings,
-                                                                         branding: branding)
+    let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings, branding: branding)
     
     TMPurchase.shared.configure(apiKey: apiKey, completion: {
       isPurchaseApiSet in
@@ -26,7 +25,7 @@ class PurchaseSDK: NSObject {
         print("Discovery api key set result: \(isDiscoveryApiSet)")
         TMAuthentication.shared.configure(brandedServiceSettings: brandedServiceSettings) { backendsConfigured in
           
-          TMPurchase.shared.brandColor = UIColor(named: "brandColor") ?? defaultBrandColor!
+          TMPurchase.shared.brandColor = backgroundColor!
           
           TMTickets.shared.configure {
             

@@ -73,8 +73,8 @@ class TicketsFragment() : Fragment() {
         coroutineScope.launch(Dispatchers.Main) {
             val authentication = TMAuthentication.Builder()
                 .apiKey(Config.get("apiKey"))
-                .clientName(Config.get("clientName")) // Team name to be displayed
-                .colors(createAuthColors(android.graphics.Color.parseColor("#000000")))
+                .clientName(Config.get("clientName")) 
+                .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
                 .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
                 .region(TMXDeploymentRegion.US) // Region that the SDK will use. Default is US
                 .build(this@TicketsFragment.requireActivity())
@@ -84,7 +84,7 @@ class TicketsFragment() : Fragment() {
                 .Builder()
                 .authenticationSDKClient(authentication) //Authentication object
                 //Optional value to define the colors for the Tickets page
-                .colors(createTicketsColors(android.graphics.Color.parseColor("#000000")))
+                .colors(createTicketsColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
                 //Function that generates a TicketsSDKClient object
                 .build(this@TicketsFragment.requireActivity())
                 .apply {

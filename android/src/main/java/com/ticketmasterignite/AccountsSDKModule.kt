@@ -61,7 +61,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       val currentFragmentActivity = currentActivity as FragmentActivity
       val authentication = TMAuthentication.Builder()
         .apiKey(Config.get("apiKey"))
-        .clientName(Config.get("clientName")) // Team name to be displayed
+        .clientName(Config.get("clientName")) 
         .colors(TMAuthentication.ColorTheme())
         .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
         .region(TMXDeploymentRegion.US) // Region that the SDK will use. Default is US
@@ -108,7 +108,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         TicketsSDKClient
           .Builder()
           .authenticationSDKClient(authentication)
-          .colors(createTicketsColors(android.graphics.Color.parseColor("#231F20")))
+          .colors(createTicketsColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
           .build(currentFragmentActivity)
           .apply {
             TicketsSDKSingleton.setTicketsSdkClient(this)
