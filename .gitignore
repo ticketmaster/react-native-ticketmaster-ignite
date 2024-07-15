@@ -28,6 +28,8 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
+IDEWorkspaceChecks.plist
+contents.xcworkspacedata
 
 # Android/IJ
 #

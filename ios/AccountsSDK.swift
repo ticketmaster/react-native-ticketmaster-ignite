@@ -10,13 +10,13 @@ class AccountsSDK: RCTEventEmitter, TMAuthenticationDelegate  {
     TMAuthentication.shared.delegate = self
 
     // build a combination of Settings and Branding
-    let apiKey = Config.shared.get(for: "apiKey") 
+    let apiKey = Config.shared.get(for: "apiKey")
     let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
                                                           region: .US)
     
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor 
-    let branding = TMAuthentication.Branding(backgroundColor: backgroundColor, theme: .light)
+    let branding = TMAuthentication.Branding(displayName: Config.shared.get(for: "clientName"), backgroundColor: backgroundColor, theme: .light)
     
     let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings,
                                                                          branding: branding)
