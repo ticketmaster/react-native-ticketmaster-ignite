@@ -132,6 +132,7 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
   options={{
     apiKey: API_KEY,
     clientName: CLIENT_NAME,
+    primaryColor: PRIMARY_COLOR
   }}
 >
     <App />
@@ -324,11 +325,13 @@ You will need an API key for this app to run, you can get one here [Developer Ac
 For the Retail SDK (PrePurchase and Purchase) views, you will need ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below.
 
 Replace "someApiKey" with the API key from your Ticketmaster Developer Account.
-Replace "clientName" with your company name, for example "My Company Name". You can set this in the options prop of `<IgniteProvider>`.
+Replace "clientName" with your company name, for example "My Company Name". You can set this in the `options` prop of `<IgniteProvider>`.
+Replace "#026cdf" with the main color theme of your app.
 
 ```bash
 API_KEY=someApiKey
 CLIENT_NAME=clientName
+PRIMARY_COLOR=#026cdf
 DEMO_EVENT_ID=1100607693B119D8
 DEMO_ATTRACTION_ID=2873404
 DEMO_VENUE_ID=KovZpZAEdntA
