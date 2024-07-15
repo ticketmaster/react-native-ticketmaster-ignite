@@ -323,7 +323,8 @@ You will need an API key for this app to run, you can get one here [Developer Ac
 
 For the Retail SDK (PrePurchase and Purchase) views, you will need ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below.
 
-Replace "someApiKey" with the API key from your Ticketmaster Developer Account. Replace "clientName" with your client name.
+Replace "someApiKey" with the API key from your Ticketmaster Developer Account.
+Replace "clientName" with your company name, for example "My Company Name". You can set this in the options prop of `<IgniteProvider>`.
 
 ```bash
 API_KEY=someApiKey

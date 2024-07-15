@@ -61,7 +61,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       val currentFragmentActivity = currentActivity as FragmentActivity
       val authentication = TMAuthentication.Builder()
         .apiKey(Config.get("apiKey"))
-        .clientName(Config.get("clientName")) 
+        .clientName(Config.get("clientName")) // Team name to be displayed
         .colors(TMAuthentication.ColorTheme())
         .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
         .region(TMXDeploymentRegion.US) // Region that the SDK will use. Default is US

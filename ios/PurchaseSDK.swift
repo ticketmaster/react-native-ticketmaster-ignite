@@ -13,7 +13,7 @@ class PurchaseSDK: NSObject {
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor 
     
-    let branding = TMAuthentication.Branding(backgroundColor: backgroundColor, theme: .light)
+    let branding = TMAuthentication.Branding(displayName: Config.shared.get(for: "clientName"), backgroundColor: backgroundColor, theme: .light)
     
     let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings, branding: branding)
     
