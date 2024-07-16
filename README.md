@@ -247,7 +247,7 @@ import { TicketsSdk } from 'react-native-ticketmaster-ignite';
 </View>
 ```
 
-#### TicketsSdkEmbedded (modal for ios)
+#### TicketsSdkEmbedded
 
 Example:
 
