@@ -47,10 +47,10 @@ Open the `AndroidManifest.xml` file and:
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" <---add this line
+          xmlns:tools="http://schemas.android.com/tools" 
           package="com.yourpackage">
 
-    <application tools:replace="android:allowBackup"> <---add this line
+    <application tools:replace="android:allowBackup">
       <activity>
       ...
       </activity>
@@ -234,7 +234,7 @@ type LogoutParams = {
 };
 ```
 
-#### TicketsSdk (modal for ios)
+#### TicketsSdk (modal for ios only)
 
 Example:
 
@@ -247,16 +247,29 @@ import { TicketsSdk } from 'react-native-ticketmaster-ignite';
 </View>
 ```
 
-#### TicketsSdkEmbedded
+#### TicketsSdkEmbeddedIos (embedded tickets for ios)
 
 Example:
 
 ```typescript
 
-import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
+import { TicketsSdkEmbeddedIos } from 'react-native-ticketmaster-ignite';
 
 <View>
-  <TicketsSdkEmbedded />
+  <TicketsSdkEmbeddedIos />
+</View>
+```
+
+#### TicketsSdkEmbeddedAndroid (embedded tickets for android)
+
+Example:
+
+```typescript
+
+import { TicketsSdkEmbeddedAndroid } from 'react-native-ticketmaster-ignite';
+
+<View>
+  <TicketsSdkEmbeddedAndroid />
 </View>
 ```
 
