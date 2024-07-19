@@ -234,6 +234,8 @@ type LogoutParams = {
 };
 ```
 
+You can see the results of `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` in the console when running the example app.
+
 #### TicketsSdk (modal for ios only)
 
 Example:

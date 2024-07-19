@@ -26,7 +26,6 @@ const Home = () => {
     refreshToken,
     getMemberInfo,
     getIsLoggedIn,
-    isLoggedIn,
     isLoggingIn,
   } = useIgnite();
 
@@ -68,7 +67,7 @@ const Home = () => {
           onPress: () => onLogout(),
         },
         {
-          title: `IsLoggedIn - useIgnite hook value: ${isLoggedIn}`,
+          title: 'IsLoggedIn',
           platforms: ['ios', 'android'],
           onPress: () => onGetIsLoggedIn(),
         },
