@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {
   RetailSDK,
-  TicketsSdk,
+  TicketsSdkModal,
   useIgnite,
 } from 'react-native-ticketmaster-ignite';
 import Config from 'react-native-config';
@@ -30,28 +30,6 @@ const Home = () => {
   } = useIgnite();
 
   const DATA = [
-    {
-      header: 'Retail SDK',
-      data: [
-        {
-          title: 'Show Retail PrePurchase Venue',
-          platforms: ['android', 'ios'],
-          onPress: () => onShowPrePurchaseVenue(),
-          first: true,
-        },
-        {
-          title: 'Show Retail PrePurchase Attraction',
-          platforms: ['android', 'ios'],
-          onPress: () => onShowPrePurchaseAttraction(),
-        },
-        {
-          title: 'Show Retail Purchase',
-          platforms: ['android', 'ios'],
-          onPress: () => onShowPurchase(),
-          last: true,
-        },
-      ],
-    },
     {
       header: 'Accounts SDK',
       data: [
@@ -90,6 +68,28 @@ const Home = () => {
       ],
     },
     {
+      header: 'Retail SDK',
+      data: [
+        {
+          title: 'Show Retail PrePurchase Venue',
+          platforms: ['android', 'ios'],
+          onPress: () => onShowPrePurchaseVenue(),
+          first: true,
+        },
+        {
+          title: 'Show Retail PrePurchase Attraction',
+          platforms: ['android', 'ios'],
+          onPress: () => onShowPrePurchaseAttraction(),
+        },
+        {
+          title: 'Show Retail Purchase',
+          platforms: ['android', 'ios'],
+          onPress: () => onShowPurchase(),
+          last: true,
+        },
+      ],
+    },
+    {
       header: 'Tickets SDK',
       data: [
         {
@@ -102,13 +102,6 @@ const Home = () => {
       ],
     },
   ];
-
-  const onShowTicketsSDK = () => {
-    setShowTicketsSdk(true);
-    setTimeout(() => {
-      setShowTicketsSdk(false);
-    }, 500);
-  };
 
   const onShowPurchase = async () => {
     try {
@@ -185,6 +178,10 @@ const Home = () => {
     }
   };
 
+  const onShowTicketsSDK = () => {
+    setShowTicketsSdk(true);
+  };
+
   return (
     <>
       {!!isLoggingIn && (
@@ -234,12 +231,10 @@ const Home = () => {
         )}
         contentContainerStyle={styles.listPadding}
       />
-
-      {showTicketsSdk && (
-        <View>
-          <TicketsSdk />
-        </View>
-      )}
+      <TicketsSdkModal
+        showTicketsModal={showTicketsSdk}
+        setShowTicketsModal={setShowTicketsSdk}
+      />
     </>
   );
 };

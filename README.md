@@ -242,11 +242,17 @@ Example:
 
 ```typescript
 
-import { TicketsSdk } from 'react-native-ticketmaster-ignite';
+import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
 
-<View>
-  <TicketsSdk />
-</View>
+const [showTicketsSdk, setShowTicketsSdk] = useState(false);
+
+return (
+  <TicketsSdkModal
+     showTicketsModal={showTicketsSdk}
+     setShowTicketsModal={setShowTicketsSdk}
+   />
+);
+
 ```
 
 #### TicketsSdkEmbeddedIos (embedded tickets for ios)
@@ -257,9 +263,7 @@ Example:
 
 import { TicketsSdkEmbeddedIos } from 'react-native-ticketmaster-ignite';
 
-<View>
-  <TicketsSdkEmbeddedIos />
-</View>
+return <TicketsSdkEmbeddedIos style={{ flex: 1 }} />;
 ```
 
 #### TicketsSdkEmbeddedAndroid (embedded tickets for android)
@@ -270,9 +274,7 @@ Example:
 
 import { TicketsSdkEmbeddedAndroid } from 'react-native-ticketmaster-ignite';
 
-<View>
-  <TicketsSdkEmbeddedAndroid />
-</View>
+return  <TicketsSdkEmbeddedAndroid />;
 ```
 
 #### RetailSDK
