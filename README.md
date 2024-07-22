@@ -289,7 +289,7 @@ import { TicketsSdkEmbeddedIos } from 'react-native-ticketmaster-ignite';
 return <TicketsSdkEmbeddedIos style={{ flex: 1 }} />;
 ```
 
-React Navigation note:  Initially, the altered RN Bottom Tabs View frame height is not available to Native code on iOS, if you notice the embedded SDK view is not fitting inside your RN view with Bottom Tabs on the first render, try adding a 500ms delay to the SDK view.
+React Navigation note:  Initially, the altered RN Bottom Tabs View frame height is not available to Native code on iOS, if you notice the embedded SDK view is not fitting inside your RN view with Bottom Tabs on the first render, try adding a 500ms delay to the SDK view:
 
 ```typescript
 
