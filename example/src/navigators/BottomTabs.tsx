@@ -6,6 +6,7 @@ import MyEvents from '../screens/MyEvents';
 import HomeIcon from '../assets/svg/HomeIcon';
 import MyEventsIcon from '../assets/svg/MyEventsIcon';
 import Config from 'react-native-config';
+import SecureEntryView from '../screens/SecureEntryView.android';
 
 const Tab = createBottomTabNavigator();
 
@@ -50,6 +51,17 @@ const BottomTabs = () => {
         component={MyEvents}
         options={{
           tabBarLabel: 'Tickets SDK (Embedded)',
+          unmountOnBlur: true,
+          tabBarIcon: ({ focused }) => (
+            <MyEventsIcon fill={focused ? Config.PRIMARY_COLOR : 'grey'} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Secure Entry"
+        component={SecureEntryView}
+        options={{
+          tabBarLabel: 'Secure Entry',
           unmountOnBlur: true,
           tabBarIcon: ({ focused }) => (
             <MyEventsIcon fill={focused ? Config.PRIMARY_COLOR : 'grey'} />
