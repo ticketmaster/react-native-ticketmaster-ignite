@@ -1,0 +1,10 @@
+<!-- res/layout/fragment_my_custom_view.xml -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <com.ticketmaster.presence.SecureEntryView
+    android:id="@+id/secure_entry_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+</FrameLayout>

@@ -298,6 +298,21 @@ import { TicketsSdkEmbeddedAndroid } from 'react-native-ticketmaster-ignite';
 return  <TicketsSdkEmbeddedAndroid />;
 ```
 
+#### SecureEntryView (android only)
+
+Example:
+
+```typescript
+
+import { SecureEntryAndroid } from 'react-native-ticketmaster-ignite';
+
+<View>
+  <SecureEntryAndroid token="token_here" />
+</View>
+```
+
+
+
 #### RetailSDK
 
 Module responsible for the purchase and prepurchase flows in the Retail SDK.
