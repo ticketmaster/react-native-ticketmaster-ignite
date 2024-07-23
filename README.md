@@ -241,7 +241,7 @@ You can see the results of `getToken()`, `getMemberInfo()` and `getIsLoggedIn()`
 Example:
 
 ```typescript
-import { Pressable } from 'react-native';
+import { Pressable, Text } from 'react-native';
 import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
 
 const [showTicketsSdk, setShowTicketsSdk] = useState(false);
@@ -254,20 +254,8 @@ return (
   <>
     <Pressable
       onPress={() => onShowTicketsSDK()}
-      style={({ pressed }) => [
-        {
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: '#ffffff',
-          padding: 12,
-          marginHorizontal: 12,
-        },
-        {
-          backgroundColor: pressed ? '#00000008' : 'white',
-        },
-      ]}
     >
-      <Text style={styles.title}>Show Tickets SDK Modal</Text>
+      <Text>Show Tickets SDK Modal</Text>
     </Pressable>
     <TicketsSdkModal
       showTicketsModal={showTicketsSdk}
