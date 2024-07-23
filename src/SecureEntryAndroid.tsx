@@ -2,7 +2,12 @@ import { requireNativeComponent, useWindowDimensions } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 import { PixelRatio, UIManager, findNodeHandle } from 'react-native';
 
-interface SecureEntryProps {
+interface SecureEntryNativeProps {
+  token: string;
+  style: {};
+}
+
+interface SecureEntryViewProps {
   token: string;
 }
 
@@ -14,11 +19,11 @@ const createFragment = (viewId: number | null) =>
     [viewId]
   );
 
-const SecureEntryViewManager = requireNativeComponent<SecureEntryProps>(
+const SecureEntryViewManager = requireNativeComponent<SecureEntryNativeProps>(
   'SecureEntryViewManager'
 );
 
-export const SecureEntryAndroid: React.FC<SecureEntryProps> = (props) => {
+export const SecureEntryAndroid: React.FC<SecureEntryViewProps> = (props) => {
   const ref = useRef(null);
   const height = useWindowDimensions().height;
   const width = useWindowDimensions().width;
@@ -31,7 +36,7 @@ export const SecureEntryAndroid: React.FC<SecureEntryProps> = (props) => {
 
   return (
     <SecureEntryViewManager
-      token={{ token }}
+      token={token}
       style={{
         // converts dpi to px, provide desired height
         height: PixelRatio.getPixelSizeForLayoutSize(height),
