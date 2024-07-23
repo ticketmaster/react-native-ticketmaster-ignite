@@ -241,12 +241,29 @@ You can see the results of `getToken()`, `getMemberInfo()` and `getIsLoggedIn()`
 Example:
 
 ```typescript
+import { Pressable, Text } from 'react-native';
+import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
 
-import { TicketsSdk } from 'react-native-ticketmaster-ignite';
+const [showTicketsSdk, setShowTicketsSdk] = useState(false);
 
-<View>
-  <TicketsSdk />
-</View>
+const onShowTicketsSDK = () => {
+  setShowTicketsSdk(true);
+};
+
+return (
+  <>
+    <Pressable
+      onPress={() => onShowTicketsSDK()}
+    >
+      <Text>Show Tickets SDK Modal</Text>
+    </Pressable>
+    <TicketsSdkModal
+      showTicketsModal={showTicketsSdk}
+      setShowTicketsModal={setShowTicketsSdk}
+    />
+  </>
+);
+
 ```
 
 #### TicketsSdkEmbeddedIos (embedded tickets for ios)
@@ -257,10 +274,18 @@ Example:
 
 import { TicketsSdkEmbeddedIos } from 'react-native-ticketmaster-ignite';
 
-<View>
-  <TicketsSdkEmbeddedIos />
-</View>
+return <TicketsSdkEmbeddedIos style={{ flex: 1 }} />;
 ```
+
+React Navigation note:  Initially, the altered RN Bottom Tabs View frame height is not available to Native code on iOS, if you notice the embedded SDK view is not fitting inside your RN view with Bottom Tabs on the first render, try adding a 500ms delay to the SDK view:
+
+```typescript
+
+import { TicketsSdkEmbeddedIos } from 'react-native-ticketmaster-ignite';
+
+return <TicketsSdkEmbeddedIos style={{ flex: 1 }} renderTimeDelay={500}/>;
+```
+
 
 #### TicketsSdkEmbeddedAndroid (embedded tickets for android)
 
@@ -270,9 +295,7 @@ Example:
 
 import { TicketsSdkEmbeddedAndroid } from 'react-native-ticketmaster-ignite';
 
-<View>
-  <TicketsSdkEmbeddedAndroid />
-</View>
+return  <TicketsSdkEmbeddedAndroid />;
 ```
 
 #### RetailSDK
