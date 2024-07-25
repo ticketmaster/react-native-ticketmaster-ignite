@@ -129,6 +129,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ login }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       await login();
                     }}
@@ -169,6 +170,7 @@ describe('IgniteProvider', () => {
                 <IgniteContext.Consumer>
                   {({ login }) => (
                     <button
+                      // @ts-ignore
                       onPress={async () => {
                         await login();
                       }}
@@ -210,6 +212,7 @@ describe('IgniteProvider', () => {
                 <IgniteContext.Consumer>
                   {({ login }) => (
                     <button
+                      // @ts-ignore
                       onPress={async () => {
                         await login({ skipUpdate: false });
                       }}
@@ -251,6 +254,7 @@ describe('IgniteProvider', () => {
                 <IgniteContext.Consumer>
                   {({ login }) => (
                     <button
+                      // @ts-ignore
                       onPress={async () => {
                         await login({ skipUpdate: true });
                       }}
@@ -291,6 +295,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ login }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       await login();
                     }}
@@ -331,6 +336,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ login }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       await login();
                     }}
@@ -372,6 +378,7 @@ describe('IgniteProvider', () => {
                 <IgniteContext.Consumer>
                   {({ login }) => (
                     <button
+                      // @ts-ignore
                       onPress={async () => {
                         await login();
                       }}
@@ -414,6 +421,7 @@ describe('IgniteProvider', () => {
                 <IgniteContext.Consumer>
                   {({ login }) => (
                     <button
+                      // @ts-ignore
                       onPress={async () => {
                         await login({ skipUpdate: false });
                       }}
@@ -456,6 +464,7 @@ describe('IgniteProvider', () => {
                 <IgniteContext.Consumer>
                   {({ login }) => (
                     <button
+                      // @ts-ignore
                       onPress={async () => {
                         await login({ skipUpdate: true });
                       }}
@@ -499,6 +508,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ login }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       await login();
                     }}
@@ -541,6 +551,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ logout }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       await logout();
                     }}
@@ -577,6 +588,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ logout }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       await logout();
                     }}
@@ -615,6 +627,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ logout }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       await logout({ skipUpdate: false });
                     }}
@@ -653,6 +666,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ logout }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       await logout({ skipUpdate: true });
                     }}
@@ -697,6 +711,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ getIsLoggedIn }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       isLoggedInStatus = await getIsLoggedIn();
                     }}
@@ -732,6 +747,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ getIsLoggedIn }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       isLoggedInStatus = await getIsLoggedIn();
                     }}
@@ -771,6 +787,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ getIsLoggedIn }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       isLoggedInStatus = await getIsLoggedIn();
                     }}
@@ -804,6 +821,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ getIsLoggedIn }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       isLoggedInStatus = await getIsLoggedIn();
                     }}
@@ -847,6 +865,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ getToken }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       accessToken = await getToken();
                     }}
@@ -886,6 +905,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ refreshToken }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       accessToken = await refreshToken();
                     }}
@@ -925,6 +945,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ getMemberInfo }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       memberInfo = await getMemberInfo();
                     }}
@@ -964,6 +985,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ getMemberInfo }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       memberInfo = await getMemberInfo();
                     }}
@@ -1004,6 +1026,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ refreshToken }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       token = await refreshToken();
                     }}
@@ -1040,6 +1063,7 @@ describe('IgniteProvider', () => {
               <IgniteContext.Consumer>
                 {({ refreshToken }) => (
                   <button
+                    // @ts-ignore
                     onPress={async () => {
                       token = await refreshToken();
                     }}

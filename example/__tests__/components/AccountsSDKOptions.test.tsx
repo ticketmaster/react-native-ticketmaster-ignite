@@ -14,6 +14,7 @@ describe('AccountsSDKOptions', () => {
   beforeAll(() => {
     jest.clearAllMocks();
 
+    // @ts-ignore
     useIgnite.mockReturnValue({
       login: loginMock,
       logout: logoutMock,

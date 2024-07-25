@@ -15,6 +15,7 @@ describe('Home', () => {
   beforeAll(() => {
     jest.clearAllMocks();
 
+    // @ts-ignore
     useIgnite.mockReturnValue({
       login: loginMock,
       logout: logoutMock,
@@ -28,6 +29,7 @@ describe('Home', () => {
   describe('Accounts SDK', () => {
     describe('uses isLogging status to show spinner', () => {
       it('shows the ActivityIndicator when isLogging in is true', async () => {
+        // @ts-ignore
         useIgnite.mockReturnValue({
           isLoggingIn: true,
         });
@@ -42,6 +44,7 @@ describe('Home', () => {
       });
 
       it('does not show the ActivityIndicator when isLogging in is false', async () => {
+        // @ts-ignore
         useIgnite.mockReturnValue({
           isLoggingIn: false,
         });
