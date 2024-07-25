@@ -48,13 +48,13 @@ const RetailSDKOptions = () => {
       title: 'Show Retail Purchase',
       platforms: ['ios', 'android'],
       onPress: () => onShowPurchase(),
-     },
+    },
   ];
 
   return (
     <View>
       <SectionHeader title="Retail SDK" />
-      {DATA.map(item => {
+      {DATA.map((item) => {
         return (
           item.platforms.includes(Platform.OS) && (
             <SDKButton item={item} key={item.title} />

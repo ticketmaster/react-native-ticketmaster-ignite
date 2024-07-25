@@ -1,22 +1,12 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  ScrollView,
-} from 'react-native';
-import {
-  useIgnite,
-} from 'react-native-ticketmaster-ignite';
+import { StyleSheet, View, ActivityIndicator, ScrollView } from 'react-native';
+import { useIgnite } from 'react-native-ticketmaster-ignite';
 import AccountsSDKOptions from '../components/AccountsSDKOptions';
 import RetailSDKOptions from '../components/RetailSDKOptions';
 import TicketsSDKOptions from '../components/TicketsSDKOptions';
 
 const Home = () => {
-
-  const {
-    isLoggingIn,
-  } = useIgnite();
+  const { isLoggingIn } = useIgnite();
 
   return (
     <ScrollView>

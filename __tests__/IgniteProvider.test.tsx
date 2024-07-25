@@ -20,7 +20,7 @@ describe('IgniteProvider', () => {
 
   const component = (
     <IgniteProvider options={options}>
-      <View></View>
+      <View />
     </IgniteProvider>
   );
 
@@ -352,7 +352,7 @@ describe('IgniteProvider', () => {
 
         describe('when Accounts.SDK returns a code for success (-1)', () => {
           it('and skipUpdate is not passed - refreshes the state', async () => {
-            const fakeLogin = jest.fn(callback => callback(-1));
+            const fakeLogin = jest.fn((callback) => callback(-1));
             const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
             const fakeGetMemberInfo = jest.fn(() =>
               Promise.resolve('{"name":"Some Name"}')
@@ -394,7 +394,7 @@ describe('IgniteProvider', () => {
           });
 
           it('and skipUpdate is false - refreshes the state', async () => {
-            const fakeLogin = jest.fn(callback => callback(-1));
+            const fakeLogin = jest.fn((callback) => callback(-1));
             const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
             const fakeGetMemberInfo = jest.fn(() =>
               Promise.resolve('{"name":"Some Name"}')
@@ -436,7 +436,7 @@ describe('IgniteProvider', () => {
           });
 
           it('and skipUpdate is true - does not refresh the state', async () => {
-            const fakeLogin = jest.fn(callback => callback(-1));
+            const fakeLogin = jest.fn((callback) => callback(-1));
             const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
             const fakeGetMemberInfo = jest.fn(() =>
               Promise.resolve('{"name":"Some Name"}')
@@ -479,7 +479,7 @@ describe('IgniteProvider', () => {
         });
 
         it('when resultCode is not -1, does not refresh the state', async () => {
-          const fakeLogin = jest.fn(callback => callback(0));
+          const fakeLogin = jest.fn((callback) => callback(0));
           const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
           const fakeGetMemberInfo = jest.fn(() =>
             Promise.resolve('{"name":"Some Name"}')
