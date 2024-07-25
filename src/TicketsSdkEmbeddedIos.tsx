@@ -27,5 +27,11 @@ export const TicketsSdkEmbeddedIos = ({
     setTimeout(() => setInitialFocus(false), renderTimeDelay || 0);
   }, [renderTimeDelay]);
 
-  return <>{!initialFocus && <TicketsSdk testID="TicketsSdk" style={style || { flex: 1 }} />}</>;
+  return (
+    <>
+      {!initialFocus && (
+        <TicketsSdk testID="TicketsSdk" style={style || { flex: 1 }} />
+      )}
+    </>
+  );
 };

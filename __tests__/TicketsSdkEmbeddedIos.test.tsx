@@ -1,7 +1,7 @@
 import React from 'react';
 import { TicketsSdkEmbeddedIos } from '../src/TicketsSdkEmbeddedIos';
 import { render, waitFor } from '@testing-library/react-native';
-import { Platform } from 'react-native'
+import { Platform } from 'react-native';
 
 jest.mock('react-native', () => {
   const RN = jest.requireActual('react-native');
@@ -34,7 +34,9 @@ describe('TicketsSdkEmbeddedIos', () => {
   });
 
   it('renders the TicketsSdk component immediately if no delay is specified', async () => {
-    const { getByTestId } = render(<TicketsSdkEmbeddedIos style={{ flex: 1 }} />);
+    const { getByTestId } = render(
+      <TicketsSdkEmbeddedIos style={{ flex: 1 }} />
+    );
 
     await waitFor(() => {
       expect(getByTestId('TicketsSdk')).toBeTruthy();
