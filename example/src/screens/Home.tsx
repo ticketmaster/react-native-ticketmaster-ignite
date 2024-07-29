@@ -113,6 +113,20 @@ const Home = () => {
 
   const onShowPrePurchaseVenue = async () => {
     try {
+      const onEDPSelectionStarted = () => {
+        console.log('do stuff here');
+      };
+      const onMenuItemSelected = () => {
+        console.log('do stuff here');
+      };
+      const openURLNotSupported = () => {
+        console.log('do stuff here');
+      };
+      await RetailSDK.setupUserAnalytics(
+        onEDPSelectionStarted,
+        onMenuItemSelected,
+        openURLNotSupported
+      );
       await RetailSDK.presentPrePurchaseVenue(Config.DEMO_VENUE_ID);
     } catch (e) {
       console.log('error when showing PrePurchase venue', (e as Error).message);
