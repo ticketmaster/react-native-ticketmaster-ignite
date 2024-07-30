@@ -22,7 +22,7 @@ export const TicketsSdkModal = ({
   return (
     <>
       {showTicketsModal && (
-        <View>
+        <View testID="ticketsSDKWrapper">
           <TicketsSdk />
         </View>
       )}
