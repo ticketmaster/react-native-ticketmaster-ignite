@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { NativeModules, Platform } from 'react-native';
+import { RetailSDK } from './RetailSdk';
 
 interface IgniteProviderProps {
   children: React.ReactNode;
@@ -98,6 +99,22 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     };
     configureAccountsSDK();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const subscription1 = RetailSDK.addListener('eventName1', (event: any) => {
+      console.log(event);
+    });
+    const subscription2 = RetailSDK.addListener('eventName2', (event: any) => {
+      console.log(event);
+    });
+    const subscription3 = RetailSDK.addListener('eventName3', (event: any) => {
+      console.log(event);
+    });
+
+    subscription1.remove();
+    subscription2.remove();
+    subscription3.remove();
   }, []);
 
   useEffect(() => {

@@ -13,5 +13,12 @@ public class TicketmasterIgnitePackage : ReactPackage {
 
    override fun createNativeModules(
         reactContext: ReactApplicationContext
-    ): MutableList<NativeModule> = listOf(AccountsSDKModule(reactContext), RetailSDKModule(reactContext), ConfigModule(reactContext)).toMutableList()
+    ): MutableList<NativeModule> {
+     GlobalEventEmitter.initialize(reactContext)
+     return listOf(
+       AccountsSDKModule(reactContext),
+       RetailSDKModule(reactContext),
+       ConfigModule(reactContext),
+     ).toMutableList()
+   }
 }

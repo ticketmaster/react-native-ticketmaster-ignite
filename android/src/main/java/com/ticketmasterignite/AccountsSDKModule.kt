@@ -1,5 +1,6 @@
 package com.ticketmasterignite
 
+import Config
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.material.darkColors
@@ -14,8 +15,6 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.google.gson.Gson
-import com.ticketmasterignite.retail.PrePurchaseActivity
-import com.ticketmasterignite.retail.PurchaseActivity
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
 import com.ticketmaster.authenticationsdk.TMXDeploymentEnvironment
