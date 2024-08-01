@@ -130,42 +130,23 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, []);
 
   useEffect(() => {
-    if (Platform.OS === 'ios') {
-      const igniteEventEmitter = new NativeEventEmitter(
-        NativeModules.EventEmitter
-      );
-      igniteEventEmitter.addListener('igniteAnalytics', async (result) => {
-        // console.log('igniteAnalytics event received', result);
-        if (result.accountsSDKLoggedIn && analytics)
-          analytics(result.accountsSDKLoggedIn);
-        if (result.accountsSDKLoggedIn && !isLoggingIn && autoUpdate)
-          await setAccountDetails();
-      });
+    const igniteEventEmitter = new NativeEventEmitter(
+      NativeModules.EventEmitter
+    );
+    igniteEventEmitter.addListener('igniteAnalytics', async (result) => {
+      console.log('igniteAnalytics event received', result);
+      if (result.accountsSDKLoggedIn && analytics)
+        analytics(result.accountsSDKLoggedIn);
+      if (result.accountsSDKLoggedIn && !isLoggingIn && autoUpdate)
+        await setAccountDetails();
+    });
 
-      // Removes the listener once unmounted
-      return () => {
-        // console.log('ios listener unmount called');
-        igniteEventEmitter.removeAllListeners('igniteAnalytics');
-      };
-    } else {
-      return;
-      // const igniteEventEmitter = new NativeEventEmitter(
-      //   NativeModules.EventEmitter
-      // );
-      // const igniteEventEmitterSubscription = igniteEventEmitter.addListener(
-      //   'igniteAnalytics',
-      //   (event) => {
-      //     console.log('igniteAnalytics event received', event);
-      //   }
-      // );
-      // // Removes the listener once unmounted
-      // return () => {
-      //   console.log('Android listener unmount called');
-      //   igniteEventEmitterSubscription.remove();
-      // };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Removes the listener once unmounted
+    return () => {
+      // console.log('ios listener unmount called');
+      igniteEventEmitter.removeAllListeners('igniteAnalytics');
+    };
+  }, [analytics, autoUpdate, isLoggingIn, setAccountDetails]);
 
   const login = async (
     { onLogin, skipUpdate }: LoginParams = {
