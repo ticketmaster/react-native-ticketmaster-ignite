@@ -74,23 +74,22 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
             // different Pages return different types of metadata
             switch metadata {
             case .events(let events):
-                print(" - events: \(events.count)")
+                return
             case .event(let event):
-                print(" - event: \(event.info.identifier)")
+                return
             case .eventTickets(let event, let tickets):
                 sendEvent("igniteAnalytics", body: ["Tickets SDK Modal - userDidView - eventTickets:": "\(event) \(tickets)"])
-                print(" - event: \(event.info.identifier) tickets: \(tickets.count)")
             case .eventTicket(event: let event, let ticket):
                 let ticketSummary = "\(ticket.sectionName ?? "_") \(ticket.rowName ?? "_") \(ticket.seatName ?? "_")"
-                print(" - event: \(event.info.identifier) ticket: \(ticketSummary)")
+                return
             case .module(let event, let identifier):
-                print(" - module: \(identifier) event: \(event.info.identifier)")
+                return
             case .moduleButton(let event, let module, let button):
-                print(" - module: \(module.identifier) button: \(button.title)(\(button.callbackValue) event: \(event.info.identifier)")
+                return
             case .empty:
-                print(" - empty")
+                return
             @unknown default:
-                print(" - empty")
+                return
             }
         }
     

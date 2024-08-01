@@ -112,8 +112,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
   useEffect(() => {
     if (Platform.OS === 'ios') {
-      console.log(NativeModules);
-
       const igniteEventEmitter = new NativeEventEmitter(
         NativeModules.EventEmitter
       );
@@ -127,26 +125,21 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         igniteEventEmitter.removeAllListeners('loginStarted');
       };
     } else {
-      return;
-      // const eventListener = new NativeEventEmitter(NativeModules.AccountsSDK);
-      // const loggedInEventListener = eventListener.addListener(
-      //   'loggedIn',
-      //   (event) => {
-      //     console.log('loginStarted event received', event.loggedIn);
-      //   }
-      // );
-      // // const loggedOutEventListener = eventListener.addListener(
-      // //   'loggedOut',
-      // //   (event) => {
-      // //     console.log(event.loggedOut);
-      // //   }
-      // // );
-      // // Removes the listener once unmounted
-      // return () => {
-      //   console.log('Android listener unmount called');
-      //   loggedInEventListener.remove();
-      //   // loggedOutEventListener.remove();
-      // };
+      const igniteEventEmitter = new NativeEventEmitter(
+        NativeModules.EventEmitter
+      );
+      const igniteEventEmitterSubscription = igniteEventEmitter.addListener(
+        'igniteAnalytics',
+        (event) => {
+          console.log('igniteAnalytics event received', event);
+        }
+      );
+
+      // Removes the listener once unmounted
+      return () => {
+        console.log('Android listener unmount called');
+        igniteEventEmitterSubscription.remove();
+      };
     }
   }, []);
 
