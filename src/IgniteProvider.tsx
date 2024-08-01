@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
 
 interface IgniteProviderProps {
   children: React.ReactNode;
@@ -109,6 +109,46 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      console.log(NativeModules);
+
+      const igniteEventEmitter = new NativeEventEmitter(
+        NativeModules.EventEmitter
+      );
+      igniteEventEmitter.addListener('igniteAnalytics', (result) => {
+        console.log('igniteAnalytics event received', result);
+      });
+
+      // Removes the listener once unmounted
+      return () => {
+        console.log('ios listener unmount called');
+        igniteEventEmitter.removeAllListeners('loginStarted');
+      };
+    } else {
+      return;
+      // const eventListener = new NativeEventEmitter(NativeModules.AccountsSDK);
+      // const loggedInEventListener = eventListener.addListener(
+      //   'loggedIn',
+      //   (event) => {
+      //     console.log('loginStarted event received', event.loggedIn);
+      //   }
+      // );
+      // // const loggedOutEventListener = eventListener.addListener(
+      // //   'loggedOut',
+      // //   (event) => {
+      // //     console.log(event.loggedOut);
+      // //   }
+      // // );
+      // // Removes the listener once unmounted
+      // return () => {
+      //   console.log('Android listener unmount called');
+      //   loggedInEventListener.remove();
+      //   // loggedOutEventListener.remove();
+      // };
+    }
+  }, []);
 
   const login = async (
     { onLogin, skipUpdate }: LoginParams = {
