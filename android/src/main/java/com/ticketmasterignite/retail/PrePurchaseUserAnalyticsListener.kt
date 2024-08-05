@@ -8,17 +8,17 @@ import com.ticketmasterignite.GlobalEventEmitter
 
 class PrePurchaseUserAnalyticsListener: TMPrePurchaseUserAnalyticsListener {
   override fun onEDPSelectionStarted(event: DiscoveryEvent) {
-    GlobalEventEmitter.sendEvent("eventName1", "params")
+    GlobalEventEmitter.sendEvent("onEDPSelectionStarted", mapOf("event" to event))
   }
 
   override fun onMenuItemSelected(
     event: DiscoveryAbstractEntity,
     menuItemSelected: TMPrePurchaseMenuItem
   ) {
-    GlobalEventEmitter.sendEvent("eventName2", "params")
+    GlobalEventEmitter.sendEvent("onMenuItemSelected", mapOf("event" to event, "menuItemSelected" to menuItemSelected))
   }
 
   override fun openURLNotSupported(url: String) {
-    GlobalEventEmitter.sendEvent("eventName3", "params")
+    GlobalEventEmitter.sendEvent("openURLNotSupported", url)
   }
 }

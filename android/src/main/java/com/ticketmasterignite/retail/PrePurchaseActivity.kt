@@ -13,11 +13,26 @@ import com.ticketmaster.discoveryapi.models.DiscoveryAttraction
 import com.ticketmaster.prepurchase.TMPrePurchase
 import com.ticketmaster.prepurchase.TMPrePurchaseFragmentFactory
 import com.ticketmaster.prepurchase.TMPrePurchaseWebsiteConfiguration
+import com.ticketmaster.prepurchase.listener.TMPrePurchaseCountrySelectorListener
+import com.ticketmaster.prepurchase.listener.TMPrePurchaseFavoritesListener
+import com.ticketmaster.prepurchase.listener.TMPrePurchaseSharingListener
+import com.ticketmaster.prepurchase.listener.TMPrePurchaseUserAnalyticsListener
+import com.ticketmaster.prepurchase.listener.TMPrePurchaseWebAnalyticsListener
 
 class PrePurchaseActivity : AppCompatActivity() {
     private lateinit var fragment: Fragment
+    private val userAnalyticsListener: TMPrePurchaseUserAnalyticsListener =
+      PrePurchaseUserAnalyticsListener()
+    private val countryPickerListener: TMPrePurchaseCountrySelectorListener =
+      PrePurchaseCountryPickerListener()
+    private val favoritesListener: TMPrePurchaseFavoritesListener =
+      PrePurchaseFavoritesListener()
+    private val sharingListener: TMPrePurchaseSharingListener =
+      PrePurchaseSharingListener()
+    private val webAnalyticsListener: TMPrePurchaseWebAnalyticsListener =
+      PrePurchaseWebAnalyticsListener()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+  override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.venue_layout)
 
@@ -33,7 +48,7 @@ class PrePurchaseActivity : AppCompatActivity() {
         } else {
             DiscoveryAttraction(hostID = attractionId)
         }
-        
+
         val tmPrePurchaseWebsiteConfiguration = TMPrePurchaseWebsiteConfiguration(
                 discoveryVenue,
                 TMMarketDomain.US,
@@ -49,7 +64,12 @@ class PrePurchaseActivity : AppCompatActivity() {
                         apiKey = tmPrePurchase.discoveryAPIKey.orEmpty(),
                 ) {
                     finish()
-                }
+                },
+          tmPrePurchaseUserAnalyticsListener = userAnalyticsListener,
+          tmPrePurchaseWebAnalyticsListener = webAnalyticsListener,
+          tmPrePurchaseFavoritesListener = favoritesListener,
+          tmPrePurchaseCountryPickerListener = countryPickerListener,
+          tmPrePurchaseShareListener = sharingListener,
         ).apply {
             supportFragmentManager.fragmentFactory = this
         }
