@@ -1,7 +1,6 @@
 #import "React/RCTBridgeModule.h"
-#import "React/RCTEventEmitter.h"
 
-@interface RCT_EXTERN_MODULE(AccountsSDK, RCTEventEmitter)
+@interface RCT_EXTERN_MODULE(AccountsSDK, NSObject)
 
 - (dispatch_queue_t)methodQueue
 {
