@@ -87,7 +87,7 @@ public class TicketsSdkEmbeddedViewController: UIViewController, TMTicketsAnalyt
             case .event(let event):
                 print(" - event: \(event.info.identifier)")
             case .eventTickets(let event, let tickets):
-                sendEvent("igniteAnalytics", body: ["Tickets SDK Embedded - userDidView - eventTickets:": "\(event) \(tickets)"])
+                sendEvent("igniteAnalytics", body: ["ticketsSdkEmbeddedUserDidViewEventTickets:": "\(event) \(tickets)"])
                 return
             case .eventTicket(event: let event, let ticket):
                 let ticketSummary = "\(ticket.sectionName ?? "_") \(ticket.rowName ?? "_") \(ticket.seatName ?? "_")"
@@ -114,7 +114,7 @@ public class TicketsSdkEmbeddedViewController: UIViewController, TMTicketsAnalyt
             case .events(let events):
                 return
             case .event(let event):
-                sendEvent("igniteAnalytics", body: ["Tickets SDK Embedded - userDidPerform - event:": "\(event)"])
+                sendEvent("igniteAnalytics", body: ["ticketsSdkEmbeddedUserDidPerformEvent:": "\(event)"])
                 return
             case .eventTickets(let event, let tickets):
                 return

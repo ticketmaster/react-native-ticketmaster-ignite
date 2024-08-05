@@ -78,7 +78,7 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
             case .event(let event):
                 return
             case .eventTickets(let event, let tickets):
-                sendEvent("igniteAnalytics", body: ["Tickets SDK Modal - userDidView - eventTickets:": "\(event) \(tickets)"])
+                sendEvent("igniteAnalytics", body: ["ticketsSDKModalUserDidViewEventTickets:": "\(event) \(tickets)"])
             case .eventTicket(event: let event, let ticket):
                 let ticketSummary = "\(ticket.sectionName ?? "_") \(ticket.rowName ?? "_") \(ticket.seatName ?? "_")"
                 return
@@ -104,7 +104,7 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
             case .events(let events):
                 return
             case .event(let event):
-                sendEvent("igniteAnalytics", body: ["Tickets SDK Modal - userDidPerform - event:": "\(event)"])
+                sendEvent("igniteAnalytics", body: ["ticketsSDKModalUserDidPerformEvent:": "\(event)"])
                 return
             case .eventTickets(let event, let tickets):
                 return

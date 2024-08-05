@@ -94,11 +94,11 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate {
     }
     
 //    func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, didShare pageTitle: String, and pageURL: URL, to activityType: UIActivity.ActivityType) {
-//        sendEvent("igniteAnalytics", body: ["PrePurchaseSdk - didShare": "\(pageTitle)"])
+//        sendEvent("igniteAnalytics", body: ["prePurchaseSdkDidShare": "\(pageTitle)"])
 //    }
 //    
     func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, didFirePageView pageView: TicketmasterFoundation.UALPageView) {
-        sendEvent("igniteAnalytics", body: ["PrePurchaseSdk - didFirePageView": "\(pageView)"])
+        sendEvent("igniteAnalytics", body: ["prePurchaseSdkDidFirePageView": "\(pageView)"])
     }
     
     func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, navigateToEventDetailsPageWithIdentifier eventIdentifier: String) {

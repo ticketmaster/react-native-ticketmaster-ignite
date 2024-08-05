@@ -82,7 +82,7 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
     }
     
     func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, webPageDidReportUALPageView pageView: TicketmasterFoundation.UALPageView) {
-        sendEvent("igniteAnalytics", body: ["webPageDidReportUALPageView:": "\(pageView)"])
+        sendEvent("igniteAnalytics", body: ["purchaseSdkWebPageDidReportUALPageView:": "\(pageView)"])
     }
     
     func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, webPageDidReportUALCommerceEvent commerceEvent: TicketmasterFoundation.UALCommerceEvent) {
@@ -90,7 +90,7 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
     }
     
     func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didBeginTicketSelectionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent) {
-        sendEvent("igniteAnalytics", body: ["didBeginTicketSelectionFor:": "\(event)"])
+        sendEvent("igniteAnalytics", body: ["purchaseSdkDidBeginTicketSelectionFor:": "\(event)"])
     }
     
     func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didEndTicketSelectionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, because reason: TicketmasterPurchase.TMEndTicketSelectionReason) {
@@ -118,7 +118,7 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
     }
     
     func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didViewSubPageFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, subPage: TicketmasterPurchase.TMPurchaseSubPage) {
-        sendEvent("igniteAnalytics", body: ["didViewSubPageFor:": "\(event)"])
+        sendEvent("igniteAnalytics", body: ["purchaseSdkDidViewSubPageFor:": "\(event)"])
     }
     
     func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didMakeDecisionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, component: TicketmasterPurchase.TMPurchaseComponent, decision: TicketmasterPurchase.TMPurchaseDecision) {
