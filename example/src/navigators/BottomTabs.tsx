@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 // @ts-ignore
@@ -57,17 +58,19 @@ const BottomTabs = () => {
           ),
         }}
       />
-      <Tab.Screen
-        name="Secure Entry"
-        component={SecureEntryView}
-        options={{
-          tabBarLabel: 'Secure Entry',
-          unmountOnBlur: true,
-          tabBarIcon: ({ focused }) => (
-            <MyEventsIcon fill={focused ? Config.PRIMARY_COLOR : 'grey'} />
-          ),
-        }}
-      />
+      {Platform.OS === 'android' && (
+        <Tab.Screen
+          name="Secure Entry"
+          component={SecureEntryView}
+          options={{
+            tabBarLabel: 'Secure Entry',
+            unmountOnBlur: true,
+            tabBarIcon: ({ focused }) => (
+              <MyEventsIcon fill={focused ? Config.PRIMARY_COLOR : 'grey'} />
+            ),
+          }}
+        />
+      )}
     </Tab.Navigator>
   );
 };
