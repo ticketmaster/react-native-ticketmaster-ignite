@@ -1,10 +1,10 @@
 import React from 'react';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 import { View, Platform } from 'react-native';
-import SDKButton from './SDKButton';
+import SdkButton from './SdkButton';
 import SectionHeader from './SectionHeader';
 
-const AccountsSDKOptions = () => {
+const AccountsSdkOptions = () => {
   const {
     login,
     logout,
@@ -67,6 +67,7 @@ const AccountsSDKOptions = () => {
       title: 'Login',
       platforms: ['ios', 'android'],
       onPress: () => onLogin(),
+      first: true,
     },
     {
       title: 'Logout',
@@ -79,9 +80,9 @@ const AccountsSDKOptions = () => {
       onPress: () => onGetIsLoggedIn(),
     },
     {
-      title: 'Refresh Token',
+      title: 'Get Token',
       platforms: ['ios', 'android'],
-      onPress: () => onRefreshToken(),
+      onPress: () => onGetToken(),
     },
     {
       title: 'Get Member',
@@ -89,9 +90,10 @@ const AccountsSDKOptions = () => {
       onPress: () => onGetMemberInfo(),
     },
     {
-      title: 'Get Token',
+      title: 'Refresh Token',
       platforms: ['ios', 'android'],
-      onPress: () => onGetToken(),
+      onPress: () => onRefreshToken(),
+      last: true,
     },
   ];
 
@@ -101,7 +103,7 @@ const AccountsSDKOptions = () => {
       {DATA.map((item) => {
         return (
           item.platforms.includes(Platform.OS) && (
-            <SDKButton item={item} key={item.title} />
+            <SdkButton item={item} key={item.title} />
           )
         );
       })}
@@ -109,4 +111,4 @@ const AccountsSDKOptions = () => {
   );
 };
 
-export default AccountsSDKOptions;
+export default AccountsSdkOptions;

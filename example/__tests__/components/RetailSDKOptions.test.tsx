@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import RetailSDKOptions from '../../src/components/RetailSDKOptions';
+import RetailSdkOptions from '../../src/components/RetailSdkOptions';
 import { RetailSDK } from 'react-native-ticketmaster-ignite';
 
 describe('RetailSDKOptions', () => {
   it('calls presentPrePurchaseVenue with venue ID when Show Retail PrePurchase Venue is clicked', () => {
     const fakePresentPrePurchaseVenue = RetailSDK.presentPrePurchaseVenue;
-    const { getByText } = render(<RetailSDKOptions />);
+    const { getByText } = render(<RetailSdkOptions />);
 
     fireEvent(getByText('Show Retail PrePurchase Venue'), 'press');
 
@@ -16,7 +16,7 @@ describe('RetailSDKOptions', () => {
   it('calls presentPrePurchaseAttraction with attraction ID when Show Retail PrePurchase Attraction is clicked', () => {
     const fakePresentPrePurchaseAttraction =
       RetailSDK.presentPrePurchaseAttraction;
-    const { getByText } = render(<RetailSDKOptions />);
+    const { getByText } = render(<RetailSdkOptions />);
 
     fireEvent(getByText('Show Retail PrePurchase Attraction'), 'press');
 
@@ -27,7 +27,7 @@ describe('RetailSDKOptions', () => {
 
   it('calls presentPurchase with event ID when Show Retail Purchase is clicked', () => {
     const fakePresentPurchase = RetailSDK.presentPurchase;
-    const { getByText } = render(<RetailSDKOptions />);
+    const { getByText } = render(<RetailSdkOptions />);
 
     fireEvent(getByText('Show Retail Purchase'), 'press');
 

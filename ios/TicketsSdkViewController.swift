@@ -78,7 +78,8 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
             case .event(let event):
                 return
             case .eventTickets(let event, let tickets):
-                sendEvent("igniteAnalytics", body: ["ticketsSDKModalUserDidViewEventTickets:": "\(event) \(tickets)"])
+//                sendEvent("igniteAnalytics", body: ["ticketsSDKModalUserDidViewEventTickets:": "\(event) \(tickets)"])
+                return
             case .eventTicket(event: let event, let ticket):
                 let ticketSummary = "\(ticket.sectionName ?? "_") \(ticket.rowName ?? "_") \(ticket.seatName ?? "_")"
                 return
@@ -104,7 +105,8 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
             case .events(let events):
                 return
             case .event(let event):
-                sendEvent("igniteAnalytics", body: ["ticketsSDKModalUserDidPerformEvent:": "\(event)"])
+//                sendEvent("igniteAnalytics", body: ["ticketsSDKModalUserDidPerformEvent:": "\(event)"])
+                return
                 return
             case .eventTickets(let event, let tickets):
                 return

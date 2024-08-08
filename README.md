@@ -47,7 +47,7 @@ Open the `AndroidManifest.xml` file and:
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" 
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.yourpackage">
 
     <application tools:replace="android:allowBackup">
@@ -109,7 +109,7 @@ We are aware of the end-of-life of jcenter, however one of our library's native 
 
 - `IgniteProvider`
 - `AccountsSDK`
-- `TicketsSdk` (Tickets SDK modal, available for iOS only)
+- `TicketsSdkModal` (iOS only)
 - `TicketsSdkEmbedded`
 - `RetailSDK`
 - `useIgnite`
@@ -122,6 +122,7 @@ Props accepted are:
 
 - `apiKey`
 - `clientName`
+- `primaryColor`
 
 In order to use it, wrap your application with the `IgniteProvider` and pass the API key and client name as a prop:
 
@@ -134,6 +135,23 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
     clientName: CLIENT_NAME,
     primaryColor: PRIMARY_COLOR
   }}
+>
+    <App />
+</IgniteProvider>
+```
+
+`autoUpdate` is a prop that can be set to false to prevent `IgniteProvider` from rerendering your app on app launch. (⚠️ warning: if set to `false`, `authState`'s `isLoggedIn`, `memberInfo` and `isConfigured` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually after app restarts. The default value is `true`. See more on `authState` later on.)
+
+```typescript
+import { IgniteProvider } from 'react-native-ticketmaster-ignite';
+
+<IgniteProvider
+  options={{
+    apiKey: API_KEY,
+    clientName: CLIENT_NAME,
+    primaryColor: PRIMARY_COLOR
+  }}
+  autoUpdate={false}
 >
     <App />
 </IgniteProvider>
@@ -155,7 +173,7 @@ Exposes the following functions:
 
 To handle authentication in a React Native app you can either use the Accounts SDK module mentioned above directly or you can use the `useIgnite` hook.
 
-The `useIgnite` hook implements all of the native Accounts SDK methods for easy out of the box use in a React Native apps. It also provides `isLoggedIn`, `isLoggingIn`, `memberInfo` and `isConfigured` properties that update themselves during and after authenticaion.
+The `useIgnite` hook implements all of the native Accounts SDK methods for easy out of the box use in a React Native apps. It also provides `isLoggedIn` and an `authState` object that with properties`isLoggingIn`, `memberInfo` and `isConfigured`, these properties update themselves during and after authenticaion.
 
 Once the user authenticates `isLoggedIn` will remain true after app restarts
 
@@ -164,7 +182,7 @@ Once the user authenticates `isLoggedIn` will remain true after app restarts
 Example:
 
 ```tsx
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Text } from 'react-native';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 
 const {
@@ -175,9 +193,8 @@ const {
   getMemberInfo,
   getIsLoggedIn,
   isConfigured,
-  isLoggedIn,
   isLoggingIn,
-  memberInfo,
+  authState: { isLoggedIn },
 } = useIgnite();
 
 try {
@@ -193,6 +210,8 @@ try {
     </View>
   );
 }
+
+{isLoggedIn && <Text>You are logged in<Text/>}
 ```
 
 The `login()` method from the `useIgnite` hook accepts an object with properties `onLogin` and `skipUpdate`:
@@ -236,7 +255,7 @@ type LogoutParams = {
 
 You can see the results of `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` in the console when running the example app.
 
-#### TicketsSdk (modal for ios only)
+#### TicketsSdkModal (iOS only)
 
 Example:
 
@@ -266,9 +285,9 @@ return (
 
 ```
 
-#### TicketsSdkEmbeddedIos (embedded tickets for ios)
+#### TicketsSdkEmbedded
 
-Example:
+iOS example:
 
 ```typescript
 
@@ -277,28 +296,25 @@ import { TicketsSdkEmbeddedIos } from 'react-native-ticketmaster-ignite';
 return <TicketsSdkEmbeddedIos style={{ flex: 1 }} />;
 ```
 
-React Navigation note:  Initially, the altered RN Bottom Tabs View frame height is not available to Native code on iOS, if you notice the embedded SDK view is not fitting inside your RN view with Bottom Tabs on the first render, try adding a 500ms delay to the SDK view:
+React Navigation note: Initially, the altered RN Bottom Tabs View frame height is not available to Native code on iOS, if you notice the embedded SDK view is not fitting inside your RN view with Bottom Tabs on the first render, try adding a 500ms delay to the SDK view:
 
 ```typescript
 
 import { TicketsSdkEmbeddedIos } from 'react-native-ticketmaster-ignite';
 
-return <TicketsSdkEmbeddedIos style={{ flex: 1 }} renderTimeDelay={500}/>;
+return <TicketsSdkEmbeddedIos style={{ height: '100%' }} renderTimeDelay={500}/>;
 ```
 
-
-#### TicketsSdkEmbeddedAndroid (embedded tickets for android)
-
-Example:
+Android example:
 
 ```typescript
 
-import { TicketsSdkEmbeddedAndroid } from 'react-native-ticketmaster-ignite';
+import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 
 return  <TicketsSdkEmbeddedAndroid />;
 ```
 
-#### SecureEntryView (android only)
+#### SecureEntryView (Android only)
 
 Example:
 
@@ -310,8 +326,6 @@ import { SecureEntryAndroid } from 'react-native-ticketmaster-ignite';
   <SecureEntryAndroid token="token_here" />
 </View>
 ```
-
-
 
 #### RetailSDK
 

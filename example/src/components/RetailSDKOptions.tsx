@@ -2,10 +2,10 @@ import React from 'react';
 import { RetailSDK } from 'react-native-ticketmaster-ignite';
 import { View, Platform } from 'react-native';
 import Config from 'react-native-config';
-import SDKButton from './SDKButton';
+import SdkButton from './SdkButton';
 import SectionHeader from './SectionHeader';
 
-const RetailSDKOptions = () => {
+const RetailSdkOptions = () => {
   const onShowPurchase = async () => {
     try {
       await RetailSDK.presentPurchase(Config.DEMO_EVENT_ID);
@@ -38,6 +38,7 @@ const RetailSDKOptions = () => {
       title: 'Show Retail PrePurchase Venue',
       platforms: ['ios', 'android'],
       onPress: () => onShowPrePurchaseVenue(),
+      first: true,
     },
     {
       title: 'Show Retail PrePurchase Attraction',
@@ -48,6 +49,7 @@ const RetailSDKOptions = () => {
       title: 'Show Retail Purchase',
       platforms: ['ios', 'android'],
       onPress: () => onShowPurchase(),
+      last: true,
     },
   ];
 
@@ -57,7 +59,7 @@ const RetailSDKOptions = () => {
       {DATA.map((item) => {
         return (
           item.platforms.includes(Platform.OS) && (
-            <SDKButton item={item} key={item.title} />
+            <SdkButton item={item} key={item.title} />
           )
         );
       })}
@@ -65,4 +67,4 @@ const RetailSDKOptions = () => {
   );
 };
 
-export default RetailSDKOptions;
+export default RetailSdkOptions;

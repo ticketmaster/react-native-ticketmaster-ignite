@@ -30,7 +30,6 @@ describe('IgniteProvider', () => {
       Promise.resolve('configured')
     );
     const fakeIsLoggedIn = jest.fn(() => Promise.resolve());
-    const fakeGetMemberInfo = jest.fn(() => Promise.resolve());
 
     beforeAll(() => {
       jest.clearAllMocks();
@@ -43,7 +42,6 @@ describe('IgniteProvider', () => {
       NativeModules.AccountsSDK = {
         configureAccountsSDK: fakeConfigureAccountsSDK,
         isLoggedIn: fakeIsLoggedIn,
-        getMemberInfo: fakeGetMemberInfo,
       };
     });
 
@@ -98,12 +96,6 @@ describe('IgniteProvider', () => {
       render(component);
 
       expect(fakeIsLoggedIn).toHaveBeenCalled();
-    });
-
-    it('calls getMemberInfo on render', () => {
-      render(component);
-
-      expect(fakeGetMemberInfo).toHaveBeenCalled();
     });
   });
 
