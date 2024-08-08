@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, ActivityIndicator, ScrollView } from 'react-native';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
-import AccountsSDKOptions from '../components/AccountsSDKOptions';
+import AccountsSdkOptions from '../components/AccountsSDKOptions';
 import RetailSDKOptions from '../components/RetailSDKOptions';
 import TicketsSDKOptions from '../components/TicketsSDKOptions';
 
@@ -15,7 +15,7 @@ const Home = () => {
           <ActivityIndicator color={'blue'} size={'small'} />
         </View>
       )}
-      <AccountsSDKOptions />
+      <AccountsSdkOptions />
       <RetailSDKOptions />
       <TicketsSDKOptions />
     </ScrollView>

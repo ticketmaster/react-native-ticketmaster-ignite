@@ -38,6 +38,7 @@ const RetailSDKOptions = () => {
       title: 'Show Retail PrePurchase Venue',
       platforms: ['ios', 'android'],
       onPress: () => onShowPrePurchaseVenue(),
+      first: true,
     },
     {
       title: 'Show Retail PrePurchase Attraction',
@@ -48,6 +49,7 @@ const RetailSDKOptions = () => {
       title: 'Show Retail Purchase',
       platforms: ['ios', 'android'],
       onPress: () => onShowPurchase(),
+      last: true,
     },
   ];
 

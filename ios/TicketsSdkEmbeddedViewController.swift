@@ -40,15 +40,14 @@ public class TicketsSdkEmbeddedViewController: UIViewController, TMTicketsAnalyt
                 print(" - Tickets SDK Configured")
                 
                 self.ticketsView = TMTicketsView.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: self.view.frame.height))
-                self.ticketsView.frame.size.height *= 0.9
                 self.view.addSubview(self.ticketsView)
                 TMTickets.shared.start(ticketsView: self.ticketsView)
                 
                 
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 120) {
-                    TMTickets.shared.analyticsDelegate = self
-                }
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 120) {
+//                    TMTickets.shared.analyticsDelegate = self
+//                }
                 
                 
             } failure: { error in
