@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, View, ActivityIndicator, ScrollView } from 'react-native';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
-import AccountsSdkOptions from '../components/AccountsSdkOptions';
-import RetailSdkOptions from '../components/RetailSdkOptions';
-import TicketsSdkOptions from '../components/TicketsSdkOptions';
+import AccountsSdkOptions from '../components/AccountsSDKOptions';
+import RetailSDKOptions from '../components/RetailSDKOptions';
+import TicketsSDKOptions from '../components/TicketsSDKOptions';
 
 const Home = () => {
   const { isLoggingIn } = useIgnite();
@@ -16,8 +16,8 @@ const Home = () => {
         </View>
       )}
       <AccountsSdkOptions />
-      <RetailSdkOptions />
-      <TicketsSdkOptions />
+      <RetailSDKOptions />
+      <TicketsSDKOptions />
     </ScrollView>
   );
 };

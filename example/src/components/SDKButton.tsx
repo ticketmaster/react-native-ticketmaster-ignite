@@ -9,7 +9,7 @@ export type SdkItemProps = {
   last?: boolean;
 };
 
-const SdkButton = ({ item }: { item: SdkItemProps }) => {
+const SDKButton = ({ item }: { item: SdkItemProps }) => {
   return (
     <>
       <Pressable
@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SdkButton;
+export default SDKButton;

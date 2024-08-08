@@ -2,10 +2,10 @@ import React from 'react';
 import { RetailSDK } from 'react-native-ticketmaster-ignite';
 import { View, Platform } from 'react-native';
 import Config from 'react-native-config';
-import SdkButton from './SdkButton';
+import SDKButton from './SDKButton';
 import SectionHeader from './SectionHeader';
 
-const RetailSdkOptions = () => {
+const RetailSDKOptions = () => {
   const onShowPurchase = async () => {
     try {
       await RetailSDK.presentPurchase(Config.DEMO_EVENT_ID);
@@ -59,7 +59,7 @@ const RetailSdkOptions = () => {
       {DATA.map((item) => {
         return (
           item.platforms.includes(Platform.OS) && (
-            <SdkButton item={item} key={item.title} />
+            <SDKButton item={item} key={item.title} />
           )
         );
       })}
@@ -67,4 +67,4 @@ const RetailSdkOptions = () => {
   );
 };
 
-export default RetailSdkOptions;
+export default RetailSDKOptions;

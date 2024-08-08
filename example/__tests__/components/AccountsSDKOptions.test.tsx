@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import AccountsSdkOptions from '../../src/components/AccountsSdkOptions';
+import AccountsSDKOptions from '../../src/components/AccountsSDKOptions';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 
 describe('AccountsSDKOptions', () => {
@@ -28,7 +28,7 @@ describe('AccountsSDKOptions', () => {
   describe('AccountsSDKOptions', () => {
     describe('when button is clicked, calls the library function', () => {
       it('calls login func for Login button', () => {
-        const { getByText } = render(<AccountsSdkOptions />);
+        const { getByText } = render(<AccountsSDKOptions />);
 
         fireEvent(getByText('Login'), 'press');
 
@@ -36,7 +36,7 @@ describe('AccountsSDKOptions', () => {
       });
 
       it('calls logout func for Logout button', () => {
-        const { getByText } = render(<AccountsSdkOptions />);
+        const { getByText } = render(<AccountsSDKOptions />);
 
         fireEvent(getByText('Logout'), 'press');
 
@@ -44,7 +44,7 @@ describe('AccountsSDKOptions', () => {
       });
 
       it('calls getToken func for Get Token button', () => {
-        const { getByText } = render(<AccountsSdkOptions />);
+        const { getByText } = render(<AccountsSDKOptions />);
 
         fireEvent(getByText('Get Token'), 'press');
 
@@ -52,7 +52,7 @@ describe('AccountsSDKOptions', () => {
       });
 
       it('calls refreshToken func for Refresh Token button', () => {
-        const { getByText } = render(<AccountsSdkOptions />);
+        const { getByText } = render(<AccountsSDKOptions />);
 
         fireEvent(getByText('Refresh Token'), 'press');
 
@@ -60,7 +60,7 @@ describe('AccountsSDKOptions', () => {
       });
 
       it('calls getMemberInfo func for Get Member button', () => {
-        const { getByText } = render(<AccountsSdkOptions />);
+        const { getByText } = render(<AccountsSDKOptions />);
 
         fireEvent(getByText('Get Member'), 'press');
 
@@ -68,7 +68,7 @@ describe('AccountsSDKOptions', () => {
       });
 
       it('calls getIsLoggedIn for isLoggedIn button', () => {
-        const { getByText } = render(<AccountsSdkOptions />);
+        const { getByText } = render(<AccountsSDKOptions />);
 
         fireEvent(getByText('IsLoggedIn'), 'press');
 
