@@ -23,7 +23,7 @@ const TicketsSDKOptions = () => {
 
   return (
     <View>
-      <SectionHeader title="Tickets SDK" />
+      {Platform.OS === 'ios' && <SectionHeader title="Tickets SDK" />}
       {DATA.map((item) => {
         return (
           item.platforms.includes(Platform.OS) && (

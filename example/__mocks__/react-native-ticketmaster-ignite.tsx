@@ -6,6 +6,7 @@ export const useIgnite = jest.fn(() => ({
   login: jest.fn(),
   getToken: jest.fn(),
   getIsLoggedIn: jest.fn(),
+  authState: jest.fn(),
   isLoggingIn: false,
 }));
 

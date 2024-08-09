@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
 
 interface IgniteProviderProps {
@@ -72,7 +72,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   Config.setConfig('clientName', clientName);
   Config.setConfig('primaryColor', primaryColor);
 
-  const setAccountDetails = async () => {
+  const setAccountDetails = useCallback(async () => {
     let _isLoggedIn = false;
     try {
       const isLoggedInResult = await AccountsSDK.isLoggedIn();
@@ -106,7 +106,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const configureAccountsSDK = async () => {
@@ -211,7 +212,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     }
   };
 
-  const getIsLoggedIn = async (): Promise<boolean> => {
+  const getIsLoggedIn = useCallback(async (): Promise<boolean> => {
     try {
       const result = await AccountsSDK.isLoggedIn();
       console.log(
@@ -227,9 +228,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const getToken = async (): Promise<string | null> => {
+  const getToken = useCallback(async (): Promise<string | null> => {
     let accessToken;
     try {
       if (Platform.OS === 'ios') {
@@ -249,9 +251,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const getMemberInfo = async () => {
+  const getMemberInfo = useCallback(async () => {
     let result;
     try {
       result = await AccountsSDK.getMemberInfo();
@@ -268,9 +271,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const refreshToken = async (): Promise<string | null> => {
+  const refreshToken = useCallback(async (): Promise<string | null> => {
     try {
       const result = await AccountsSDK.refreshToken();
       console.log('Accounts SDK refresh token:', result);
@@ -283,7 +287,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <IgniteContext.Provider
