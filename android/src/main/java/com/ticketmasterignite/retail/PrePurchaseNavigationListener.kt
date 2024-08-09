@@ -5,8 +5,8 @@ import android.content.Intent
 import com.ticketmaster.discoveryapi.enums.TMMarketDomain
 import com.ticketmaster.discoveryapi.models.DiscoveryAbstractEntity
 import com.ticketmaster.discoveryapi.models.DiscoveryEvent
-import com.ticketmaster.prepurchase.data.CoordinatesWithMarketDomain
 import com.ticketmaster.prepurchase.data.Location
+import com.ticketmaster.prepurchase.internal.UpdateLocationInfo
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseNavigationListener
 
 class PrePurchaseNavigationListener(
@@ -28,18 +28,29 @@ class PrePurchaseNavigationListener(
         )
     }
 
-    override fun onPrePurchaseClosed() {
-        closeScreen.invoke()
+  override fun updateCurrentLocation(updateLocationInfo: (UpdateLocationInfo) -> Unit) {
+  }
+
+  override fun onPrePurchaseClosed() {
+    closeScreen.invoke()
     }
 
-    override fun onDidRequestCurrentLocation(
-            globalMarketDomain: TMMarketDomain?,
-            completion: (CoordinatesWithMarketDomain?) -> Unit
-    ) {
-    }
 
-    override fun onDidUpdateCurrentLocation(
+  override fun onDidRequestCurrentLocation(
+    globalMarketDomain: TMMarketDomain?,
+    completion: (Location?) -> Unit
+  ) {
+  }
+
+  override fun onDidRequestNativeLocationSelector() {
+  }
+
+  override fun onDidUpdateCurrentLocation(
             globalMarketDomain: TMMarketDomain?,
             location: Location
-    ) {}
+    ) {
+  }
+
+  override fun onPrePurchaseBackPressed() {
+  }
 }
