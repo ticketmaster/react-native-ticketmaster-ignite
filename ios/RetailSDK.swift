@@ -16,6 +16,9 @@ class RetailSDK: NSObject {
   }
 
   @objc public func presentPurchase(_ eventId: String) {
-    PurchaseSDK.loadSDKView(eventId)
+      let viewController = PurchaseSDK()
+      viewController.setEventId(eventId)
+      viewController.modalPresentationStyle = .custom
+      UIApplication.shared.windows.filter {$0.isKeyWindow}.first?.rootViewController?.present(viewController, animated: true)
   }
 }

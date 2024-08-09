@@ -1,7 +1,6 @@
 import { AccountsSDK } from './AccountsSdk';
 import { TicketsSdkModal } from './TicketsSdkModal';
-import { TicketsSdkEmbeddedIos } from './TicketsSdkEmbeddedIos';
-import { TicketsSdkEmbeddedAndroid } from './TicketsSdkEmbeddedAndroid';
+import { TicketsSdkEmbedded } from './TicketsSdkEmbedded';
 import { SecureEntryAndroid } from './SecureEntryAndroid';
 import { RetailSDK } from './RetailSdk';
 import { IgniteProvider } from './IgniteProvider';
@@ -9,11 +8,10 @@ import { useIgnite } from './useIgnite';
 
 export {
   AccountsSDK,
+  IgniteProvider,
   TicketsSdkModal, // Tickets SDK modal is only available for iOS
-  TicketsSdkEmbeddedIos,
-  TicketsSdkEmbeddedAndroid,
+  TicketsSdkEmbedded,
   SecureEntryAndroid,
   RetailSDK,
-  IgniteProvider,
   useIgnite,
 };

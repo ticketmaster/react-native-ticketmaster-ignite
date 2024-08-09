@@ -1,8 +1,9 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
 
 interface IgniteProviderProps {
   children: React.ReactNode;
+  autoUpdate?: boolean;
   options: {
     apiKey: string;
     clientName: string;
@@ -20,6 +21,12 @@ type LogoutParams = {
   skipUpdate?: boolean;
 };
 
+type AuthStateParams = {
+  isConfigured: boolean;
+  isLoggedIn: boolean;
+  memberInfo: Record<string, any> | null;
+};
+
 type IgniteContextType = {
   login: (LoginParams?: LoginParams) => Promise<void>;
   logout: (LogoutParams?: LogoutParams) => Promise<void>;
@@ -27,10 +34,8 @@ type IgniteContextType = {
   getToken: () => Promise<string | null>;
   getMemberInfo: () => Promise<Record<string, any> | null>;
   refreshToken: () => Promise<string | null>;
-  isLoggedIn: boolean;
+  authState: AuthStateParams;
   isLoggingIn: boolean;
-  memberInfo: Record<string, any> | null;
-  isConfigured: boolean;
 };
 
 export const IgniteContext = createContext<IgniteContextType>({
@@ -40,46 +45,64 @@ export const IgniteContext = createContext<IgniteContextType>({
   getToken: async () => null,
   getMemberInfo: async () => null,
   refreshToken: async () => null,
-  isLoggedIn: false,
+  authState: {
+    isConfigured: false,
+    isLoggedIn: false,
+    memberInfo: null,
+  },
   isLoggingIn: false,
-  memberInfo: null,
-  isConfigured: false,
 });
 
 export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   children,
   options,
+  autoUpdate = true,
 }) => {
   const { Config, AccountsSDK } = NativeModules;
   const { apiKey, clientName, primaryColor } = options;
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [isConfigured, setIsConfigured] = useState<boolean>(false);
-  const [memberInfo, setMemberInfo] = useState<Record<string, any> | null>(
-    null
-  );
+  const [authState, setAuthState] = useState<AuthStateParams>({
+    isConfigured: false,
+    isLoggedIn: false,
+    memberInfo: null,
+  });
 
   Config.setConfig('apiKey', apiKey);
   Config.setConfig('clientName', clientName);
   Config.setConfig('primaryColor', primaryColor);
 
   const setAccountDetails = async () => {
+    let _isLoggedIn = false;
     try {
       const isLoggedInResult = await AccountsSDK.isLoggedIn();
-      const memberInfoResult = await AccountsSDK.getMemberInfo();
-      Platform.OS === 'ios'
-        ? setIsLoggedIn(isLoggedInResult.result)
-        : setIsLoggedIn(isLoggedInResult);
+      const isLoggedInParsed =
+        Platform.OS === 'ios' ? isLoggedInResult.result : isLoggedInResult;
+      _isLoggedIn = isLoggedInParsed;
 
-      const memberInfoParsed =
-        Platform.OS === 'ios' ? memberInfoResult : JSON.parse(memberInfoResult);
-      setMemberInfo(memberInfoParsed);
+      const memberInfoResult = await AccountsSDK.getMemberInfo();
+
+      setAuthState({
+        isConfigured: true,
+        isLoggedIn: !!isLoggedInParsed,
+        memberInfo:
+          Platform.OS === 'ios'
+            ? memberInfoResult
+            : JSON.parse(memberInfoResult),
+      });
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
-        setIsLoggedIn(false);
-        setMemberInfo(null);
+        setAuthState({
+          isConfigured: true,
+          isLoggedIn: false,
+          memberInfo: null,
+        });
       } else {
+        setAuthState({
+          isConfigured: true,
+          isLoggedIn: !!_isLoggedIn,
+          memberInfo: null,
+        });
         throw e;
       }
     }
@@ -90,8 +113,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       try {
         const result = await AccountsSDK.configureAccountsSDK();
         console.log('Accounts SDK configuration set: ', result);
-        await setAccountDetails();
-        setIsConfigured(true);
+        autoUpdate && (await setAccountDetails());
       } catch (e) {
         console.log('Accounts SDK configuration error:', (e as Error).message);
       }
@@ -101,14 +123,41 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated !== null) {
-      const setAuth = async () => {
-        await setAccountDetails();
+    if (Platform.OS === 'ios') {
+      const igniteEventEmitter = new NativeEventEmitter(
+        NativeModules.EventEmitter
+      );
+      igniteEventEmitter.addListener('igniteAnalytics', async (result) => {
+        // console.log('igniteAnalytics event received', result);
+        if (result.accountsSDKLoggedIn && !isLoggingIn && autoUpdate) {
+          await setAccountDetails();
+        }
+      });
+
+      // Removes the listener once unmounted
+      return () => {
+        console.log('ios listener unmount called');
+        igniteEventEmitter.removeAllListeners('loginStarted');
       };
-      setAuth();
+    } else {
+      return;
+      // const igniteEventEmitter = new NativeEventEmitter(
+      //   NativeModules.EventEmitter
+      // );
+      // const igniteEventEmitterSubscription = igniteEventEmitter.addListener(
+      //   'igniteAnalytics',
+      //   (event) => {
+      //     console.log('igniteAnalytics event received', event);
+      //   }
+      // );
+      // // Removes the listener once unmounted
+      // return () => {
+      //   console.log('Android listener unmount called');
+      //   igniteEventEmitterSubscription.remove();
+      // };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated]);
+  }, []);
 
   const login = async (
     { onLogin, skipUpdate }: LoginParams = {
@@ -123,7 +172,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           const result = await AccountsSDK.login();
           if (result.accessToken) {
             console.log('Accounts SDK login successful');
-            !skipUpdate && setIsAuthenticated(true);
+            !skipUpdate && (await setAccountDetails());
             onLogin && onLogin();
             resolve();
           }
@@ -133,10 +182,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         !skipUpdate && setIsLoggingIn(false);
       } else if (Platform.OS === 'android') {
         !skipUpdate && setIsLoggingIn(true);
-        AccountsSDK.login((resultCode: any) => {
-          console.log('Accounts SDK Login successful');
+        AccountsSDK.login(async (resultCode: any) => {
           if (resultCode === -1) {
-            !skipUpdate && setIsAuthenticated(true);
+            console.log('Accounts SDK Login successful');
+            !skipUpdate && (await setAccountDetails());
             onLogin && onLogin();
             resolve();
           }
@@ -156,7 +205,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       await AccountsSDK.logout();
       console.log('Accounts SDK logout successful');
       onLogout && onLogout();
-      !skipUpdate && setIsAuthenticated(false);
+      !skipUpdate && (await setAccountDetails());
     } catch (e) {
       throw e;
     }
@@ -245,10 +294,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         getToken,
         getMemberInfo,
         refreshToken,
-        isLoggedIn,
+        authState,
         isLoggingIn,
-        memberInfo,
-        isConfigured,
       }}
     >
       {children}

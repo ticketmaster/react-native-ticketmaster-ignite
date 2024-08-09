@@ -16,6 +16,8 @@ const TicketsSDKOptions = () => {
       title: 'Tickets SDK (Modal)',
       platforms: ['ios'],
       onPress: () => onShowTicketsSDK(),
+      first: true,
+      last: true,
     },
   ];
 
