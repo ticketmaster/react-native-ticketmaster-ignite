@@ -116,7 +116,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         console.log('Accounts SDK configuration set: ', result);
         autoUpdate && (await setAccountDetails());
       } catch (e) {
-        console.log('Accounts SDK configuration error:', (e as Error).message);
+        console.log('Accounts SDK error:', (e as Error).message);
       }
     };
     configureAccountsSDK();
