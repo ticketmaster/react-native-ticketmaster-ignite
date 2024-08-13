@@ -4,6 +4,7 @@ import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
 interface IgniteProviderProps {
   children: React.ReactNode;
   autoUpdate?: boolean;
+  analytics?: (data: AnalyticsData) => Promise<void>;
   options: {
     apiKey: string;
     clientName: string;
@@ -25,6 +26,10 @@ type AuthStateParams = {
   isConfigured: boolean;
   isLoggedIn: boolean;
   memberInfo: Record<string, any> | null;
+};
+
+type AnalyticsData = {
+  data: Record<string, any>;
 };
 
 type IgniteContextType = {
@@ -57,9 +62,14 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   children,
   options,
   autoUpdate = true,
+  analytics,
 }) => {
   const { Config, AccountsSDK } = NativeModules;
   const { apiKey, clientName, primaryColor } = options;
+
+  Config.setConfig('apiKey', apiKey);
+  Config.setConfig('clientName', clientName);
+  Config.setConfig('primaryColor', primaryColor);
 
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
@@ -67,10 +77,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     isLoggedIn: false,
     memberInfo: null,
   });
-
-  Config.setConfig('apiKey', apiKey);
-  Config.setConfig('clientName', clientName);
-  Config.setConfig('primaryColor', primaryColor);
 
   const setAccountDetails = useCallback(async () => {
     let _isLoggedIn = false;
@@ -130,15 +136,16 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       );
       igniteEventEmitter.addListener('igniteAnalytics', async (result) => {
         // console.log('igniteAnalytics event received', result);
-        if (result.accountsSDKLoggedIn && !isLoggingIn && autoUpdate) {
+        if (result.accountsSDKLoggedIn && analytics)
+          analytics(result.accountsSDKLoggedIn);
+        if (result.accountsSDKLoggedIn && !isLoggingIn && autoUpdate)
           await setAccountDetails();
-        }
       });
 
       // Removes the listener once unmounted
       return () => {
-        console.log('ios listener unmount called');
-        igniteEventEmitter.removeAllListeners('loginStarted');
+        // console.log('ios listener unmount called');
+        igniteEventEmitter.removeAllListeners('igniteAnalytics');
       };
     } else {
       return;
