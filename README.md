@@ -173,7 +173,7 @@ Exposes the following functions:
 
 To handle authentication in a React Native app you can either use the Accounts SDK module mentioned above directly or you can use the `useIgnite` hook.
 
-The `useIgnite` hook implements all of the native Accounts SDK methods for easy out of the box use in a React Native apps. It also provides `isLoggedIn` and an `authState` object that with properties`isLoggingIn`, `memberInfo` and `isConfigured`, these properties update themselves during and after authenticaion.
+The `useIgnite` hook implements all of the native Accounts SDK methods for easy out of the box use in a React Native apps. It also provides `isLoggingIn` and an `authState` object that with properties `isLoggedIn`, `memberInfo` and `isConfigured`, these properties update themselves during and after authenticaion.
 
 Once the user authenticates `isLoggedIn` will remain true after app restarts
 
@@ -291,18 +291,18 @@ iOS example:
 
 ```typescript
 
-import { TicketsSdkEmbeddedIos } from 'react-native-ticketmaster-ignite';
+import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 
-return <TicketsSdkEmbeddedIos style={{ flex: 1 }} />;
+return <TicketsSdkEmbedded style={{ flex: 1 }} />;
 ```
 
 React Navigation note: Initially, the altered RN Bottom Tabs View frame height is not available to Native code on iOS, if you notice the embedded SDK view is not fitting inside your RN view with Bottom Tabs on the first render, try adding a 500ms delay to the SDK view:
 
 ```typescript
 
-import { TicketsSdkEmbeddedIos } from 'react-native-ticketmaster-ignite';
+import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 
-return <TicketsSdkEmbeddedIos style={{ height: '100%' }} renderTimeDelay={500}/>;
+return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
 ```
 
 Android example:
