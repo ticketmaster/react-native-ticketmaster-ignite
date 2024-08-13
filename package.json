@@ -1,6 +1,6 @@
 {
   "name": "react-native-ticketmaster-ignite",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "React Native wrapper for the Ticketmaster Ignite SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
