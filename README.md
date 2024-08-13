@@ -116,7 +116,7 @@ We are aware of the end-of-life of jcenter, however one of our library's native 
 
 #### IgniteProvider
 
-This is the only module that must be implemented for the library to work correctly. The purpose of `TicketmasterProvider` is to pass the config `options` to the native code.
+This is the only module that must be implemented for the library to work correctly. The purpose of `IgniteProvider` is to pass the config `options` to the native code.
 
 Props accepted are:
 
@@ -383,6 +383,29 @@ const onShowPrePurchaseAttraction = async () => {
     console.log((e as Error).message);
   }
 };
+```
+
+## Analytics
+
+You can send a callback method to `IgniteProvider` to receive Ignite SDK analytics in your app which you can then send off to your chosen analytics service.
+
+```typescript
+import { IgniteProvider } from 'react-native-ticketmaster-ignite';
+
+const igniteAnalytics = async (data: any) => {
+  console.log('Received Ignite analytics', data);
+};
+
+<IgniteProvider
+  options={{
+    apiKey: API_KEY,
+    clientName: CLIENT_NAME,
+    primaryColor: PRIMARY_COLOR
+  }}
+  analytics={igniteAnalytics}
+>
+    <App />
+</IgniteProvider>
 ```
 
 ## Environment variables
