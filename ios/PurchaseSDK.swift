@@ -28,45 +28,19 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
         super.viewDidLoad()
         
         let apiKey = Config.shared.get(for: "apiKey")
-        let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
-                                                              region: .US)
-        
         let primaryColor = Config.shared.get(for: "primaryColor")
         let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
-        
-        let branding = TMAuthentication.Branding(displayName: Config.shared.get(for: "clientName"), backgroundColor: backgroundColor, theme: .light)
-        
-        let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings, branding: branding)
-        
-        TMPurchase.shared.configure(apiKey: apiKey, completion: {
-            isPurchaseApiSet in
+
+        TMPurchase.shared.brandColor = backgroundColor!
+        TMPurchase.shared.configure(apiKey: apiKey, completion: { isPurchaseApiSet in
             print("Purchase api key set result: \(isPurchaseApiSet)")
-            
-            TMDiscoveryAPI.shared.configure(apiKey: apiKey, completion: { isDiscoveryApiSet in
-                print("Discovery api key set result: \(isDiscoveryApiSet)")
-                TMAuthentication.shared.configure(brandedServiceSettings: brandedServiceSettings) { backendsConfigured in
-                    
-                    TMPurchase.shared.brandColor = backgroundColor!
-                    
-                    TMTickets.shared.configure {
-                        
-                        let edpNav = TMPurchaseNavigationController.eventDetailsNavigationController(eventIdentifier: self.eventId, marketDomain: .US)
-                        edpNav.modalPresentationStyle = .fullScreen
-                        edpNav.userAnalyticsDelegate =  self
-                        edpNav.webAnalyticsDelegate =  self
-                        self.present(edpNav, animated: false)
-                        
-                    } failure: { error in
-                        // something went wrong, probably TMAuthentication was not configured correctly
-                        print(" - Tickets SDK Configuration Error: \(error.localizedDescription)")
-                    }
-                } failure: { error in
-                    // something went wrong, probably the wrong apiKey+region combination
-                    print(" - Authentication SDK Configuration Error: \(error.localizedDescription)")
-                }
-            })
+
+            let edpNav = TMPurchaseNavigationController.eventDetailsNavigationController(eventIdentifier: self.eventId, marketDomain: .US)
+            edpNav.modalPresentationStyle = .fullScreen
+            edpNav.userAnalyticsDelegate =  self
+            edpNav.webAnalyticsDelegate =  self
+            self.present(edpNav, animated: false)
         })
-        
     }
     
     func sendEvent(_ name: String, body: [String : Any]) {
