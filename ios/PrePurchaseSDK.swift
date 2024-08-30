@@ -1,5 +1,3 @@
-import TicketmasterAuthentication
-import TicketmasterTickets
 import TicketmasterDiscoveryAPI
 import TicketmasterPrePurchase
 import TicketmasterPurchase

@@ -1,4 +1,3 @@
-import TicketmasterAuthentication
 import TicketmasterTickets
 
 public class TicketsSdkEmbeddedViewController: UIViewController, TMTicketsAnalyticsDelegate {
