@@ -287,8 +287,6 @@ return (
 
 #### TicketsSdkEmbedded
 
-iOS example:
-
 ```typescript
 
 import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
@@ -304,14 +302,14 @@ import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 
 return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
 ```
-
-Android example:
+⚠️  Please note that `style` and `renderTimeDelay` are props only used on ios.
+The Android implementation is always as simple as this:
 
 ```typescript
 
 import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 
-return  <TicketsSdkEmbeddedAndroid />;
+return <TicketsSdkEmbedded />;
 ```
 
 #### SecureEntryView (Android only)
