@@ -1,5 +1,3 @@
-import TicketmasterAuthentication
-import TicketmasterTickets
 import TicketmasterDiscoveryAPI
 import TicketmasterPrePurchase
 import TicketmasterPurchase
@@ -34,57 +32,25 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate {
         super.viewDidLoad()
         
         let apiKey = Config.shared.get(for: "apiKey")
-        let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
-                                                              region: .US)
-        
         let primaryColor = Config.shared.get(for: "primaryColor")
         let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
-        
-        let branding = TMAuthentication.Branding(displayName: Config.shared.get(for: "clientName"), backgroundColor: backgroundColor, theme: .light)
-        
-        let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings,
-                                                                             branding: branding)
-        
+
+        TMPrePurchase.shared.brandColor = backgroundColor!
         TMPrePurchase.shared.configure(apiKey: apiKey, completion: { isPrePurchaseApiSet in
             print("PrePurchase api key set result: \(isPrePurchaseApiSet)")
-            TMDiscoveryAPI.shared.configure(apiKey: apiKey, completion: { isDiscoveryApiSet in
-                print("Discovery api key set result: \(isDiscoveryApiSet)")
-                
-                TMPrePurchase.shared.brandColor = backgroundColor!
-                
-                print("Authentication SDK Configuring...")
-                TMAuthentication.shared.configure(brandedServiceSettings: brandedServiceSettings) {
-                    backendsConfigured in
-                    
-                    print(" - Authentication SDK Configured: \(backendsConfigured.count)")
-                    
-                    // TMTickets inherits it's configuration and branding from TMAuthentication
-                    print("Tickets SDK Configuring...")
-                    TMTickets.shared.configure {
-                        
-                        // Tickets is configured, now we are ready to present TMTicketsViewController or TMTicketsView
-                        print(" - Tickets SDK Configured")
-                        var viewController: TMPrePurchaseViewController
-                        if (self.venueId != "") {
-                            print("Set viewController to Venue")
-                            viewController = TMPrePurchaseViewController.venueDetailsViewController(venueIdentifier: self.venueId, enclosingEnvironment: .modalPresentation)
-                        } else {
-                            print("Set viewController to Attraction")
-                            viewController = TMPrePurchaseViewController.attractionDetailsViewController(attractionIdentifier: self.attractionId, enclosingEnvironment: .modalPresentation)
-                        }
-                        viewController.modalPresentationStyle = .fullScreen
-                        viewController.navigationDelegate = self
-                        self.present(viewController, animated: false)
-                        
-                    } failure: { error in
-                        // something went wrong, probably TMAuthentication was not configured correctly
-                        print(" - Tickets SDK Configuration Error: \(error.localizedDescription)")
-                    }
-                } failure: { error in
-                    // something went wrong, probably the wrong apiKey+region combination
-                    print(" - Authentication SDK Configuration Error: \(error.localizedDescription)")
-                }
-            })
+            var viewController: TMPrePurchaseViewController
+
+            if (self.venueId != "") {
+                print("Set viewController to Venue")
+                viewController = TMPrePurchaseViewController.venueDetailsViewController(venueIdentifier: self.venueId, enclosingEnvironment: .modalPresentation)
+            } else {
+                print("Set viewController to Attraction")
+                viewController = TMPrePurchaseViewController.attractionDetailsViewController(attractionIdentifier: self.attractionId, enclosingEnvironment: .modalPresentation)
+            }
+
+            viewController.modalPresentationStyle = .fullScreen
+            viewController.navigationDelegate = self
+            self.present(viewController, animated: false)
         })
     }
     
