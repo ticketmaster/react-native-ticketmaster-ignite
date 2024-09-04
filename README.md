@@ -287,8 +287,6 @@ return (
 
 #### TicketsSdkEmbedded
 
-iOS example:
-
 ```typescript
 
 import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
@@ -303,15 +301,6 @@ React Navigation note: Initially, the altered RN Bottom Tabs View frame height i
 import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 
 return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
-```
-
-Android example:
-
-```typescript
-
-import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
-
-return  <TicketsSdkEmbeddedAndroid />;
 ```
 
 #### SecureEntryView (Android only)
