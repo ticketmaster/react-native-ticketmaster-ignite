@@ -181,13 +181,14 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           if (result.accessToken) {
             console.log('Accounts SDK login successful');
             !skipUpdate && (await setAccountDetails());
+            !skipUpdate && setIsLoggingIn(false);
             onLogin && onLogin();
             resolve();
           }
         } catch (e) {
+          !skipUpdate && setIsLoggingIn(false);
           reject(e);
         }
-        !skipUpdate && setIsLoggingIn(false);
       } else if (Platform.OS === 'android') {
         !skipUpdate && setIsLoggingIn(true);
         AccountsSDK.login(async (resultCode: any) => {
@@ -199,6 +200,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           }
           !skipUpdate && setIsLoggingIn(false);
         });
+        setTimeout(() => {
+          if (isLoggingIn && !skipUpdate) setIsLoggingIn(false);
+        }, 8000);
       }
     });
   };
