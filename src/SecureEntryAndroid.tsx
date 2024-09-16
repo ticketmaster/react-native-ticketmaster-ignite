@@ -1,5 +1,5 @@
-import { requireNativeComponent, useWindowDimensions } from 'react-native';
 import React, { useEffect, useRef } from 'react';
+import { requireNativeComponent, useWindowDimensions } from 'react-native';
 import { PixelRatio, UIManager, findNodeHandle } from 'react-native';
 
 interface SecureEntryNativeProps {

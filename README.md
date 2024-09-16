@@ -302,8 +302,10 @@ import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 
 return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
 ```
-⚠️  Please note that `style` and `renderTimeDelay` are props only used on ios.
-The Android implementation is always as simple as this:
+
+⚠️  Please note that `style` and `renderTimeDelay` props only affect iOS.
+
+The Android implementation can be as simple as the below:
 
 ```typescript
 
@@ -321,7 +323,7 @@ Example:
 import { SecureEntryAndroid } from 'react-native-ticketmaster-ignite';
 
 <View>
-  <SecureEntryAndroid token="token_here" />
+  <SecureEntryAndroid token="SECURE_ENTRY_TOKEN" />
 </View>
 ```
 
@@ -392,6 +394,7 @@ For the Retail SDK (PrePurchase and Purchase) views, you will need ID's which yo
 Replace "someApiKey" with the API key from your Ticketmaster Developer Account.
 Replace "clientName" with your company name, for example "My Company Name". You can set this in the `options` prop of `<IgniteProvider>`.
 Replace "#026cdf" with the main color theme of your app.
+Replace secureEntryToken with a token for a secure entry barcode.
 
 ```bash
 API_KEY=someApiKey
@@ -400,4 +403,5 @@ PRIMARY_COLOR=#026cdf
 DEMO_EVENT_ID=1100607693B119D8
 DEMO_ATTRACTION_ID=2873404
 DEMO_VENUE_ID=KovZpZAEdntA
+SECURE_ENTRY_TOKEN=secureEntryToken
 ```
