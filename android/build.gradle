@@ -97,9 +97,8 @@ dependencies {
   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
   implementation 'com.google.code.gson:gson:2.10.1'
 
-
-  implementation 'com.ticketmaster.accounts:authentication:3.5.2'
-  implementation 'com.ticketmaster.tickets:tickets:3.5.1'
+  implementation 'com.ticketmaster.accounts:authentication:3.8.0'
+  implementation 'com.ticketmaster.tickets:tickets:3.8.0'
   implementation 'com.ticketmaster.tickets:secure-entry:1.2.10'
   implementation "com.ticketmaster.retail:purchase:Taka-Checkout-Also-SNAPSHOT"
   implementation 'com.ticketmaster.retail:prepurchase:3.1.0'
