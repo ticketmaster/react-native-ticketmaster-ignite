@@ -76,33 +76,6 @@ android {
 
 In `android/build.gradle` set the `minSdkVersion` to `26`.
 
-#### add `jcenter()` to build.gradle
-
-Open `android/build.gradle` and add `jcenter()` to `repositories` in `allprojects` if it's not there yet:
-
-```groovy
-buildscript {
-    ext {
-      ...
-    }
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-      ...
-    }
-
-    allprojects {   // <----- add this
-        repositories {   // <-----
-            jcenter()   // <-----
-        }   // <-----
-    }   // <-----
-}
-```
-
-We are aware of the end-of-life of jcenter, however one of our library's native dependencies is still relying on a tool hosted on `jcenter` . Until it changes, it must be listed in `build.gradle`.
-
 ## Usage
 
 `react-native-ticketmaster-ignite` exports the following modules:
@@ -116,7 +89,7 @@ We are aware of the end-of-life of jcenter, however one of our library's native 
 
 #### IgniteProvider
 
-This is the only module that must be implemented for the library to work correctly. The purpose of `TicketmasterProvider` is to pass the config `options` to the native code.
+This is the only module that must be implemented for the library to work correctly. The purpose of `IgniteProvider` is to pass the config `options` to the native code.
 
 Props accepted are:
 
@@ -192,9 +165,8 @@ const {
   refreshToken,
   getMemberInfo,
   getIsLoggedIn,
-  isConfigured,
   isLoggingIn,
-  authState: { isLoggedIn },
+  authState: { isLoggedIn, memberInfo, isConfigured },
 } = useIgnite();
 
 try {
@@ -316,6 +288,8 @@ return <TicketsSdkEmbedded />;
 
 #### SecureEntryView (Android only)
 
+Replace `SECURE_ENTRY_TOKEN` with a token for a secure entry barcode.
+
 Example:
 
 ```typescript
@@ -394,7 +368,6 @@ For the Retail SDK (PrePurchase and Purchase) views, you will need ID's which yo
 Replace "someApiKey" with the API key from your Ticketmaster Developer Account.
 Replace "clientName" with your company name, for example "My Company Name". You can set this in the `options` prop of `<IgniteProvider>`.
 Replace "#026cdf" with the main color theme of your app.
-Replace secureEntryToken with a token for a secure entry barcode.
 
 ```bash
 API_KEY=someApiKey
@@ -403,5 +376,4 @@ PRIMARY_COLOR=#026cdf
 DEMO_EVENT_ID=1100607693B119D8
 DEMO_ATTRACTION_ID=2873404
 DEMO_VENUE_ID=KovZpZAEdntA
-SECURE_ENTRY_TOKEN=secureEntryToken
 ```
