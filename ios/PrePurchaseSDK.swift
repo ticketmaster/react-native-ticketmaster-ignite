@@ -27,7 +27,6 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate {
     }
   }
   
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -55,7 +54,6 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate {
       self.present(viewController, animated: false)
     })
   }
-  
   
   func sendEvent(_ name: String, body: [String : Any]) {
     EventEmitter.emitter.sendEvent(withName: name, body: body)

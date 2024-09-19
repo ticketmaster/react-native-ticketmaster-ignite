@@ -21,7 +21,6 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
     }
   }
   
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     
