@@ -100,9 +100,9 @@ dependencies {
   implementation 'com.ticketmaster.accounts:authentication:3.8.0'
   implementation 'com.ticketmaster.tickets:tickets:3.8.0'
   implementation 'com.ticketmaster.tickets:secure-entry:1.2.10'
-  implementation "com.ticketmaster.retail:purchase:Taka-Checkout-Also-SNAPSHOT"
-  implementation 'com.ticketmaster.retail:prepurchase:3.1.0'
-  implementation 'com.ticketmaster.retail:discoveryapi:3.1.0'
-  implementation 'com.ticketmaster.retail:foundation:3.1.0'
+  implementation 'com.ticketmaster.retail:purchase:3.2.0'
+  implementation 'com.ticketmaster.retail:prepurchase:3.2.0'
+  implementation 'com.ticketmaster.retail:discoveryapi:3.2.0'
+  implementation 'com.ticketmaster.retail:foundation:3.2.0'
 }
 
