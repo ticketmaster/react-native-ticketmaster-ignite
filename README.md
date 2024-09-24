@@ -9,7 +9,7 @@
 ![tm-developer-logo](https://github.com/user-attachments/assets/c5835fc2-f1b8-413c-af9d-4449cdf1d24b)
 
 # react-native-ticketmaster-ignite
-[![current react-native-ticketmaster-ignite package version](https://img.shields.io/npm/v/react-native-ticketmaster-ignite)](https://www.npmjs.com/package/react-native-ticketmaster-ignite) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ticketmaster/react-native-ticketmaster-ignite/ci.yml?branch=main) [![released under the MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![current react-native-ticketmaster-ignite package version](https://img.shields.io/npm/v/react-native-ticketmaster-ignite)](https://www.npmjs.com/package/react-native-ticketmaster-ignite) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ticketmaster/react-native-ticketmaster-ignite/ci.yml?branch=main) [![released under the MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![PR's welcome!](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
 This library serves as a wrapper for the 3 Ticketmaster Ignite SDK's: [Accounts](https://ignite.ticketmaster.com/docs/accounts-sdk-overview), [Retail](https://ignite.ticketmaster.com/docs/retail-sdk-overview) and [Tickets](https://ignite.ticketmaster.com/docs/tickets-sdk-overview).
 
