@@ -185,6 +185,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
             resolve();
           }
         } catch (e) {
+          !skipUpdate && setIsLoggingIn(false);
           reject(e);
         }
         !skipUpdate && setIsLoggingIn(false);
@@ -199,6 +200,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           }
           !skipUpdate && setIsLoggingIn(false);
         });
+        setTimeout(() => {
+          if (isLoggingIn && !skipUpdate) setIsLoggingIn(false);
+        }, 8000);
       }
     });
   };

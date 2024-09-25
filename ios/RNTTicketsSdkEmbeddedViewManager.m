@@ -1,6 +1,11 @@
 #import <React/RCTViewManager.h>
-// Needed to use Swift files in Objective-C files
-#import <react_native_ticketmaster_ignite-Swift.h>
+
+#if __has_include(<react_native_ticketmaster_ignite/react_native_ticketmaster_ignite-Swift.h>)
+// For cocoapods framework, the generated swift header will be inside react_native_ticketmaster module
+#import <react_native_ticketmaster_ignite/react_native_ticketmaster_ignite-Swift.h>
+#else
+#import "react_native_ticketmaster_ignite-Swift.h"
+#endif
 
 @interface RNTTicketsSdkEmbeddedViewManager : RCTViewManager
 @end
