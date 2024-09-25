@@ -55,7 +55,6 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
   }
   
   func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, webPageDidReportUALPageView pageView: TicketmasterFoundation.UALPageView) {
-    //        sendEvent("igniteAnalytics", body: ["purchaseSdkWebPageDidReportUALPageView:": "\(pageView)"])
     return
   }
   
@@ -64,41 +63,42 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
   }
   
   func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didBeginTicketSelectionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent) {
-    //        sendEvent("igniteAnalytics", body: ["purchaseSdkDidBeginTicketSelectionFor:": "\(event)"])
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidBeginTicketSelectionFor:": ["name": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")"]])
     return
   }
   
   func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didEndTicketSelectionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, because reason: TicketmasterPurchase.TMEndTicketSelectionReason) {
-    return
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidEndTicketSelectionFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")", "reason": "\(reason)"]])
+    
   }
   
   func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didBeginCheckoutFor event: TicketmasterDiscoveryAPI.DiscoveryEvent) {
-    return
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidBeginCheckoutFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")"]])
   }
   
   func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didEndCheckoutFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, because reason: TicketmasterPurchase.TMEndCheckoutReason) {
-    return
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidEndCheckoutFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")", "reason": "\(reason)"]])
   }
   
   func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didMakePurchaseFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, order: TicketmasterPurchase.TMPurchaseOrder) {
-    return
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidMakePurchaseFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")", "orderId": "\(order.identifier ?? "")", "orderName": "\(order.eventName ?? "")"]])
   }
   
   func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didPressNavBarButtonFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, button: TicketmasterPurchase.TMPurchaseNavBarButton) {
-    return
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidPressNavBarButtonFor:": ["event": "\(event.name)", "button": "\(button)"]])
   }
   
   func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didShare event: TicketmasterDiscoveryAPI.DiscoveryEvent, activityType: UIActivity.ActivityType) {
-    return
+    sendEvent("igniteAnalytics",body: ["purchaseSdkDidShare:": ["event": "\(event.name)", "activityType": "\(activityType)"]])
   }
   
   func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didViewSubPageFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, subPage: TicketmasterPurchase.TMPurchaseSubPage) {
-    //        sendEvent("igniteAnalytics", body: ["purchaseSdkDidViewSubPageFor:": "\(event)"])
-    return
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidViewSubPageFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")", "subpage": "\(subPage)"]])
+    
   }
   
   func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didMakeDecisionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, component: TicketmasterPurchase.TMPurchaseComponent, decision: TicketmasterPurchase.TMPurchaseDecision) {
-    return
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidMakeDecisionFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")", "decision": "\(decision)"]])
   }
 }
 

@@ -135,9 +135,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         NativeModules.EventEmitter
       );
       igniteEventEmitter.addListener('igniteAnalytics', async (result) => {
-        // console.log('igniteAnalytics event received', result);
-        if (result.accountsSDKLoggedIn && analytics)
-          analytics(result.accountsSDKLoggedIn);
+        if (result && analytics) analytics(result);
         if (result.accountsSDKLoggedIn && !isLoggingIn && autoUpdate)
           await setAccountDetails();
       });

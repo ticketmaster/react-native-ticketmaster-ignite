@@ -4,7 +4,8 @@ import TicketmasterPurchase
 import TicketmasterFoundation
 
 @objc(PrePurchaseSDK)
-class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate {
+class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate, TMPrePurchaseAnalyticsDelegate {
+  
   var venueId: String = ""
   var attractionId: String = ""
   
@@ -51,6 +52,7 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate {
       
       viewController.modalPresentationStyle = .fullScreen
       viewController.navigationDelegate = self
+      viewController.analyticsDelegate = self
       self.present(viewController, animated: false)
     })
   }
@@ -59,12 +61,12 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate {
     EventEmitter.emitter.sendEvent(withName: name, body: body)
   }
   
-  //    func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, didShare pageTitle: String, and pageURL: URL, to activityType: UIActivity.ActivityType) {
-  //        sendEvent("igniteAnalytics", body: ["prePurchaseSdkDidShare": "\(pageTitle)"])
-  //    }
-  //
+      func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, didShare pageTitle: String, and pageURL: URL, to activityType: UIActivity.ActivityType) {
+          return
+      }
+  
   func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, didFirePageView pageView: TicketmasterFoundation.UALPageView) {
-    //        sendEvent("igniteAnalytics", body: ["prePurchaseSdkDidFirePageView": "\(pageView)"])
+            sendEvent("igniteAnalytics", body: ["prePurchaseSdkDidFirePageView": "\(pageView)"])
     return
   }
   
