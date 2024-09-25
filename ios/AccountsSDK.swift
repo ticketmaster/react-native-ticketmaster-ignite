@@ -141,34 +141,35 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
         print("Backend TicketmasterAuthentication \(state.rawValue)")
         switch state{
         case .serviceConfigurationStarted:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkServiceConfigurationStarted": "accountsSdkServiceConfigurationStarted"])
         case .serviceConfigured:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkServiceConfigured": "accountsSdkServiceConfigured"])
         case .serviceConfigurationCompleted:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkServiceConfiguredCompleted": "accountsSdkServiceConfiguredCompleted"])
         case .loginStarted:
-            sendEvent("igniteAnalytics", body: ["accountsSDKLoginStarted": "loginStarted event sent"])
-            return
+            sendEvent("igniteAnalytics", body: ["accountsSdkLoginStarted": "accountsSdkLoginStarted"])
         case .loginPresented:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkLoginPresented": "accountsSdkLoginPresented"])
         case .loggedIn:
-            sendEvent("igniteAnalytics", body: ["accountsSDKLoggedIn": "loggedIn event sent"])
+            sendEvent("igniteAnalytics", body: ["accountsSdkLoggedIn": "accountsSdkLoggedIn"])
         case .loginAborted:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkLoginAborted": "accountsSdkLoginAborted"])
         case .loginFailed:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkLoginFailed": "accountsSdkLoginFailed"])
         case .loginLinkAccountPresented:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkLoginAccountPresented": "accountsSdkLoginAccountPresented"])
         case .loginCompleted:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkLoginAccountCompleted": "accountsSdkLoginAccountCompleted"])
         case .tokenRefreshed:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkTokenRefreshed": "accountsSdkTokenRefreshed"])
         case .logoutStarted:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkLogoutStarted": "accountsSdkLogoutStarted"])
         case .loggedOut:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkLoggedOut": "accountsSdkLoggedOut"])
         case .logoutCompleted:
-            return
+          sendEvent("igniteAnalytics", body: ["accountsSdkLogoutCompleted": "accountsSdkLogoutCompleted"])
+        case .loginExchanging:
+          sendEvent("igniteAnalytics", body: ["accountsSdkLoginExchanging": "accountsSdkLoginExchanging"])
         @unknown default:
             return
         }
