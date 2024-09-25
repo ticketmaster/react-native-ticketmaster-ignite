@@ -46,7 +46,7 @@ More information about the flow of these state change analytics can be found her
 | event |  Event name |
 | date |  Start date |
 | timeZone |  Time zone of the event |
-| reason |  The reason the analytic being triggered |
+| reason |  The reason the analytic was triggered |
 | orderId |  The order identifier |
 | orderId |  The name of the order |
 | subPage |  The subpage that has been viewed |
