@@ -37,7 +37,7 @@ More information about the flow of these state change analytics can be found her
 | purchaseSdkDidPressNavBarButtonFor | event<br/> button | The user pressed a button on the navigation header bar |
 | purchaseSdkDidShare | event<br/> activityType  | The user shared a link to this event |
 | purchaseSdkDidViewSubPageFor | event<br/> subPage | The user navigated to a sub-page with the EDP or Cart |
-| purchaseSdkDidMakeDecisionFor | event<br/>  date<br/>  timeZone<br/> decision | The user navigated to a sub-page with the EDP or Cart |
+| purchaseSdkDidMakeDecisionFor | event<br/>  date<br/>  timeZone<br/> decision | The user has interacted with an UI component, resulting in a decision |
 
 ### Retail SDK Value Descriptions
 
