@@ -27,7 +27,7 @@ More information about the flow of these state change analytics can be found her
 
 ### Purchase SDK
 
-| Name | Description | Values |
+| Name | Values | Description |
 | ----- | ---- | -----   |
 | purchaseSdkDidBeginTicketSelectionFor | event<br/> date<br/> timeZone | The ticket selection portion of the purchase process begun |
 | purchaseSdkDidEndTicketSelectionFor | event<br/> date<br/> timeZone<br/> reason | The ticket selection portion of the purchase process ended | 
