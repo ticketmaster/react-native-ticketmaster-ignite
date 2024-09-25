@@ -3,7 +3,7 @@
 ## Accounts SDK (iOS only)
 
 | Name | Value |
-| ----- | ---- | -----   |
+| ----- | ---- |
 | accountsSdkServiceConfigurationStarted | accountsSdkServiceConfigurationStarted |
 | accountsSdkServiceConfigured | accountsSdkServiceConfigured |
 | accountsSdkServiceConfiguredCompleted | accountsSdkServiceConfiguredCompleted |
