@@ -20,7 +20,7 @@
 | accountsSdkLogoutCompleted | accountsSdkLogoutCompleted |
 | accountsSdkLoginExchanging | accountsSdkLoginExchanging |
 
-More information about the flow of these state change analytics can be found here (https://ignite.ticketmaster.com/v1/docs/analytics-ios)
+More information about the flow of these state change analytics can be found here https://ignite.ticketmaster.com/v1/docs/analytics-ios
 
 
 ## Retail SDK (iOS only)
