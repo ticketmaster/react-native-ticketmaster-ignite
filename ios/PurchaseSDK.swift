@@ -1,132 +1,105 @@
-import TicketmasterAuthentication
-import TicketmasterTickets
 import TicketmasterPurchase
 import TicketmasterDiscoveryAPI
 import TicketmasterFoundation
 
 @objc(PurchaseSDK)
 class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchaseWebAnalyticsDelegate {
-    var eventId: String = ""
-    
-    var firstRender: Bool = true
-    
-    func setEventId(_ eventId: String) {
-        self.eventId = eventId
+  var eventId: String = ""
+  
+  var firstRender: Bool = true
+  
+  func setEventId(_ eventId: String) {
+    self.eventId = eventId
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    if (firstRender) {
+      firstRender = false
+    } else {
+      self.dismiss(animated: true)
     }
+  }
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if (firstRender) {
-            firstRender = false
-        } else {
-            self.dismiss(animated: true)
-        }
-    }
+    let apiKey = Config.shared.get(for: "apiKey")
+    let primaryColor = Config.shared.get(for: "primaryColor")
+    let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
     
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        let apiKey = Config.shared.get(for: "apiKey")
-        let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
-                                                              region: .US)
-        
-        let primaryColor = Config.shared.get(for: "primaryColor")
-        let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
-        
-        let branding = TMAuthentication.Branding(displayName: Config.shared.get(for: "clientName"), backgroundColor: backgroundColor, theme: .light)
-        
-        let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings, branding: branding)
-        
-        TMPurchase.shared.configure(apiKey: apiKey, completion: {
-            isPurchaseApiSet in
-            print("Purchase api key set result: \(isPurchaseApiSet)")
-            
-            TMDiscoveryAPI.shared.configure(apiKey: apiKey, completion: { isDiscoveryApiSet in
-                print("Discovery api key set result: \(isDiscoveryApiSet)")
-                TMAuthentication.shared.configure(brandedServiceSettings: brandedServiceSettings) { backendsConfigured in
-                    
-                    TMPurchase.shared.brandColor = backgroundColor!
-                    
-                    TMTickets.shared.configure {
-                        
-                        let edpNav = TMPurchaseNavigationController.eventDetailsNavigationController(eventIdentifier: self.eventId, marketDomain: .US)
-                        edpNav.modalPresentationStyle = .fullScreen
-                        edpNav.userAnalyticsDelegate =  self
-                        edpNav.webAnalyticsDelegate =  self
-                        self.present(edpNav, animated: false)
-                        
-                    } failure: { error in
-                        // something went wrong, probably TMAuthentication was not configured correctly
-                        print(" - Tickets SDK Configuration Error: \(error.localizedDescription)")
-                    }
-                } failure: { error in
-                    // something went wrong, probably the wrong apiKey+region combination
-                    print(" - Authentication SDK Configuration Error: \(error.localizedDescription)")
-                }
-            })
-        })
-        
-    }
+    TMPurchase.shared.configure(apiKey: apiKey, completion: { isPurchaseApiSet in
+      print("Purchase api key set result: \(isPurchaseApiSet)")
+      
+      TMPurchase.shared.brandColor = backgroundColor!
+      
+      let edpNav = TMPurchaseNavigationController.eventDetailsNavigationController(eventIdentifier: self.eventId, marketDomain: .US)
+      edpNav.modalPresentationStyle = .fullScreen
+      edpNav.userAnalyticsDelegate =  self
+      edpNav.webAnalyticsDelegate =  self
+      self.present(edpNav, animated: false)
+    })
+  }
+  
+  func sendEvent(_ name: String, body: [String : Any]) {
+    EventEmitter.emitter.sendEvent(withName: name, body: body)
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, pageLoadDidErrorFor url: URL, error: NSError) {
+    return
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, webPageDidErrorFor url: URL, errorString: String) {
+    return
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, webPageDidReportUALPageView pageView: TicketmasterFoundation.UALPageView) {
+    return
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, webPageDidReportUALCommerceEvent commerceEvent: TicketmasterFoundation.UALCommerceEvent) {
+    return
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didBeginTicketSelectionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent) {
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidBeginTicketSelectionFor:": ["name": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")"]])
+    return
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didEndTicketSelectionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, because reason: TicketmasterPurchase.TMEndTicketSelectionReason) {
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidEndTicketSelectionFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")", "reason": "\(reason)"]])
     
-    func sendEvent(_ name: String, body: [String : Any]) {
-        EventEmitter.emitter.sendEvent(withName: name, body: body)
-    }
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didBeginCheckoutFor event: TicketmasterDiscoveryAPI.DiscoveryEvent) {
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidBeginCheckoutFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")"]])
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didEndCheckoutFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, because reason: TicketmasterPurchase.TMEndCheckoutReason) {
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidEndCheckoutFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")", "reason": "\(reason)"]])
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didMakePurchaseFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, order: TicketmasterPurchase.TMPurchaseOrder) {
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidMakePurchaseFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")", "orderId": "\(order.identifier ?? "")", "orderName": "\(order.eventName ?? "")"]])
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didPressNavBarButtonFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, button: TicketmasterPurchase.TMPurchaseNavBarButton) {
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidPressNavBarButtonFor:": ["event": "\(event.name)", "button": "\(button)"]])
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didShare event: TicketmasterDiscoveryAPI.DiscoveryEvent, activityType: UIActivity.ActivityType) {
+    sendEvent("igniteAnalytics",body: ["purchaseSdkDidShare:": ["event": "\(event.name)", "activityType": "\(activityType)"]])
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didViewSubPageFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, subPage: TicketmasterPurchase.TMPurchaseSubPage) {
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidViewSubPageFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")", "subpage": "\(subPage)"]])
     
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, pageLoadDidErrorFor url: URL, error: NSError) {
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, webPageDidErrorFor url: URL, errorString: String) {
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, webPageDidReportUALPageView pageView: TicketmasterFoundation.UALPageView) {
-//        sendEvent("igniteAnalytics", body: ["purchaseSdkWebPageDidReportUALPageView:": "\(pageView)"])
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, webPageDidReportUALCommerceEvent commerceEvent: TicketmasterFoundation.UALCommerceEvent) {
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didBeginTicketSelectionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent) {
-//        sendEvent("igniteAnalytics", body: ["purchaseSdkDidBeginTicketSelectionFor:": "\(event)"])
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didEndTicketSelectionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, because reason: TicketmasterPurchase.TMEndTicketSelectionReason) {
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didBeginCheckoutFor event: TicketmasterDiscoveryAPI.DiscoveryEvent) {
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didEndCheckoutFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, because reason: TicketmasterPurchase.TMEndCheckoutReason) {
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didMakePurchaseFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, order: TicketmasterPurchase.TMPurchaseOrder) {
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didPressNavBarButtonFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, button: TicketmasterPurchase.TMPurchaseNavBarButton) {
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didShare event: TicketmasterDiscoveryAPI.DiscoveryEvent, activityType: UIActivity.ActivityType) {
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didViewSubPageFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, subPage: TicketmasterPurchase.TMPurchaseSubPage) {
-//        sendEvent("igniteAnalytics", body: ["purchaseSdkDidViewSubPageFor:": "\(event)"])
-        return
-    }
-    
-    func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didMakeDecisionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, component: TicketmasterPurchase.TMPurchaseComponent, decision: TicketmasterPurchase.TMPurchaseDecision) {
-        return
-    }
+  }
+  
+  func purchaseNavigationController(_ purchaseNavigationController: TicketmasterPurchase.TMPurchaseNavigationController, didMakeDecisionFor event: TicketmasterDiscoveryAPI.DiscoveryEvent, component: TicketmasterPurchase.TMPurchaseComponent, decision: TicketmasterPurchase.TMPurchaseDecision) {
+    sendEvent("igniteAnalytics", body: ["purchaseSdkDidMakeDecisionFor:": ["event": "\(event.name)", "date": "\(event.startDates[0])", "timeZone": "\(event.timeZone?.identifier ?? "")", "decision": "\(decision)"]])
+  }
 }
 
 

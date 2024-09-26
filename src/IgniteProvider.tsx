@@ -130,23 +130,59 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, []);
 
   useEffect(() => {
-    const igniteEventEmitter = new NativeEventEmitter(
-      NativeModules.EventEmitter
-    );
-    igniteEventEmitter.addListener('igniteAnalytics', async (result) => {
-      console.log('igniteAnalytics event received', result);
-      if (result.accountsSDKLoggedIn && analytics)
-        analytics(result.accountsSDKLoggedIn);
-      if (result.accountsSDKLoggedIn && !isLoggingIn && autoUpdate)
-        await setAccountDetails();
-    });
+    if (Platform.OS === 'ios') {
+      const igniteEventEmitter = new NativeEventEmitter(
+        NativeModules.EventEmitter
+      );
+      igniteEventEmitter.addListener('igniteAnalytics', async (result) => {
+        if (result && analytics) analytics(result);
+        if (result.accountsSDKLoggedIn && !isLoggingIn && autoUpdate)
+          await setAccountDetails();
+      });
 
-    // Removes the listener once unmounted
-    return () => {
-      // console.log('ios listener unmount called');
-      igniteEventEmitter.removeAllListeners('igniteAnalytics');
-    };
-  }, [analytics, autoUpdate, isLoggingIn, setAccountDetails]);
+      // Removes the listener once unmounted
+      return () => {
+        // console.log('ios listener unmount called');
+        igniteEventEmitter.removeAllListeners('igniteAnalytics');
+      };
+    } else {
+      return;
+      // const igniteEventEmitter = new NativeEventEmitter(
+      //   NativeModules.EventEmitter
+      // );
+      // const igniteEventEmitterSubscription = igniteEventEmitter.addListener(
+      //   'igniteAnalytics',
+      //   (event) => {
+      //     console.log('igniteAnalytics event received', event);
+      //   }
+      // );
+      // // Removes the listener once unmounted
+      // return () => {
+      //   console.log('Android listener unmount called');
+      //   igniteEventEmitterSubscription.remove();
+      // };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // useEffect(() => {
+  //   const igniteEventEmitter = new NativeEventEmitter(
+  //     NativeModules.EventEmitter
+  //   );
+  //   igniteEventEmitter.addListener('igniteAnalytics', async (result) => {
+  //     console.log('igniteAnalytics event received', result);
+  //     if (result.accountsSDKLoggedIn && analytics)
+  //       analytics(result.accountsSDKLoggedIn);
+  //     if (result.accountsSDKLoggedIn && !isLoggingIn && autoUpdate)
+  //       await setAccountDetails();
+  //   });
+
+  //   // Removes the listener once unmounted
+  //   return () => {
+  //     // console.log('ios listener unmount called');
+  //     igniteEventEmitter.removeAllListeners('igniteAnalytics');
+  //   };
+  // }, [analytics, autoUpdate, isLoggingIn, setAccountDetails]);
 
   const login = async (
     { onLogin, skipUpdate }: LoginParams = {
@@ -166,6 +202,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
             resolve();
           }
         } catch (e) {
+          !skipUpdate && setIsLoggingIn(false);
           reject(e);
         }
         !skipUpdate && setIsLoggingIn(false);
@@ -180,6 +217,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           }
           !skipUpdate && setIsLoggingIn(false);
         });
+        setTimeout(() => {
+          if (isLoggingIn && !skipUpdate) setIsLoggingIn(false);
+        }, 8000);
       }
     });
   };

@@ -65,8 +65,8 @@ class SecureEntryViewFragmentManager (
   }
 
   @ReactProp(name = "token")
-  fun setToken(view: View, token: ReadableMap) {
-    token.getString("token")?.let { secureEntryToken = it }
+  fun setToken(view: View, token: String) {
+    secureEntryToken = token
   }
 
 
