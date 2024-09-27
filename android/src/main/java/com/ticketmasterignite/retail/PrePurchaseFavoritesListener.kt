@@ -5,7 +5,8 @@ import com.ticketmaster.discoveryapi.models.MemberInfo
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseFavoritesListener
 import com.ticketmasterignite.GlobalEventEmitter
 
-class PrePurchaseFavoritesListener: TMPrePurchaseFavoritesListener {
+class PrePurchaseFavoritesListener : TMPrePurchaseFavoritesListener {
+  // TODO("Commented out lines are not yet implemented")
   override fun isAbstractEntityInFavorites(event: DiscoveryAbstractEntity): Boolean {
     TODO("Not yet implemented")
 //    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkIsEventInFavorites")

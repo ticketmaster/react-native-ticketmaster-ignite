@@ -7,6 +7,7 @@ import com.ticketmasterignite.GlobalEventEmitter
 import java.net.URL
 
 class PrePurchaseWebAnalyticsListener : TMPrePurchaseWebAnalyticsListener {
+  // TODO("Commented out lines are not yet implemented")
   override fun errorOnPageLoad(url: URL, error: Exception) {
 //    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkPageLoadDidErrorFor")
   }

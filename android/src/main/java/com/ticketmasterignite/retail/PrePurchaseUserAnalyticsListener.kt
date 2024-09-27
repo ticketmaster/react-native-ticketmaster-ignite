@@ -7,6 +7,7 @@ import com.ticketmaster.prepurchase.listener.TMPrePurchaseUserAnalyticsListener
 import com.ticketmasterignite.GlobalEventEmitter
 
 class PrePurchaseUserAnalyticsListener : TMPrePurchaseUserAnalyticsListener {
+  // TODO("Commented out lines are not yet implemented")
   override fun onEDPSelectionStarted(event: DiscoveryEvent) {
 //    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkDidBeginTicketSelectionFor")
   }

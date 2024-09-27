@@ -5,7 +5,8 @@ import com.ticketmaster.discoveryapi.models.MemberInfo
 import com.ticketmaster.purchase.listener.TMPurchaseFavoritesListener
 import com.ticketmasterignite.GlobalEventEmitter
 
-class PurchaseFavoritesListener: TMPurchaseFavoritesListener {
+class PurchaseFavoritesListener : TMPurchaseFavoritesListener {
+  // TODO("Commented out lines are not yet implemented")
   override fun isEventInFavorites(event: DiscoveryEvent, tmMemberInfo: MemberInfo?): Boolean {
 //    GlobalEventEmitter.sendEvent("igniteAnalytics", "purchaseSdkIsEventInFavorites")
     return true
