@@ -8,12 +8,14 @@ import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.FragmentActivity
 import com.facebook.react.bridge.ActivityEventListener
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.BaseActivityEventListener
 import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.WritableMap
 import com.google.gson.Gson
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
@@ -27,6 +29,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import com.ticketmasterignite.GlobalEventEmitter
 
 class AccountsSDKModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
@@ -46,6 +49,22 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           mResultCallback!!.invoke(resultCode)
           mResultCallback = null
         }
+        if (resultCode == Activity.RESULT_CANCELED) {
+          val params: WritableMap = Arguments.createMap().apply {
+            putString("accountsSdkLoginAborted", "accountsSdkLoginAborted")
+          }
+          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+        }
+        if (resultCode == Activity.RESULT_OK) {
+          val params: WritableMap = Arguments.createMap().apply {
+            putString("accountsSdkLoggedIn", "accountsSdkLoggedIn")
+          }
+          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+          val loginCompletedParams: WritableMap = Arguments.createMap().apply {
+            putString("accountsSdkLoginAccountCompleted", "accountsSdkLoginAccountCompleted")
+          }
+          GlobalEventEmitter.sendEvent("igniteAnalytics", loginCompletedParams)
+        }
       }
     }
 
@@ -56,6 +75,10 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun login(resultCallback: Callback) {
     runBlocking() {
+      val loginStartedParams: WritableMap = Arguments.createMap().apply {
+        putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
+      }
+      GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
       mResultCallback = resultCallback
       val currentFragmentActivity = currentActivity as FragmentActivity
       val authentication = TMAuthentication.Builder()
@@ -94,6 +117,13 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun configureAccountsSDK(promise: Promise) {
     runBlocking(Dispatchers.Main) {
+      val configurationStartedParams: WritableMap = Arguments.createMap().apply {
+        putString(
+          "accountsSdkServiceConfigurationStarted",
+          "accountsSdkServiceConfigurationStarted"
+        )
+      }
+      GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
       try {
         val currentFragmentActivity = currentActivity as FragmentActivity
         val authentication = TMAuthentication.Builder()
@@ -104,6 +134,11 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           .region(TMXDeploymentRegion.US)
           .build(currentFragmentActivity)
 
+        val serviceConfiguredParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkServiceConfigured", "accountsSdkServiceConfigured")
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", serviceConfiguredParams)
+
         TicketsSDKClient
           .Builder()
           .authenticationSDKClient(authentication)
@@ -111,6 +146,13 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           .build(currentFragmentActivity)
           .apply {
             TicketsSDKSingleton.setTicketsSdkClient(this)
+            val configuredCompletedParams: WritableMap = Arguments.createMap().apply {
+              putString(
+                "accountsSdkServiceConfiguredCompleted",
+                "accountsSdkServiceConfiguredCompleted"
+              )
+            }
+            GlobalEventEmitter.sendEvent("igniteAnalytics", configuredCompletedParams)
             promise.resolve(true)
           }
       } catch (e: Exception) {
@@ -122,6 +164,10 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun logout(promise: Promise) {
     runBlocking {
+      val logoutStartedParams: WritableMap = Arguments.createMap().apply {
+        putString("accountsSdkLogoutStarted", "accountsSdkLogoutStarted")
+      }
+      GlobalEventEmitter.sendEvent("igniteAnalytics", logoutStartedParams)
       withContext(context = Dispatchers.IO) {
         try {
           val currentFragmentActivity = currentActivity as FragmentActivity
@@ -133,6 +179,14 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
             .region(TMXDeploymentRegion.US)
             .build(currentFragmentActivity)
           authentication.logout(currentFragmentActivity)
+          val loggedOutParams: WritableMap = Arguments.createMap().apply {
+            putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
+          }
+          GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
+          val logoutCompletedParams: WritableMap = Arguments.createMap().apply {
+            putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
+          }
+          GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
           promise.resolve(true)
         } catch (e: Exception) {
           promise.reject("Accounts SDK Logout Error: ", e)
@@ -178,11 +232,17 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           hostAccessToken,
           mfxAccessToken
         )
+        val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
+        }
         if (!resHostAccessToken.isNullOrEmpty()) {
+          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
           promise.resolve(resHostAccessToken)
         } else if (!resArchticsAccessToken.isNullOrEmpty()) {
+          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
           promise.resolve(resArchticsAccessToken)
         } else if (!resMfxAccessToken.isNullOrEmpty()) {
+          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
           promise.resolve(resMfxAccessToken)
         } else {
           promise.resolve(null)

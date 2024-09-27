@@ -6,32 +6,32 @@ import com.ticketmaster.prepurchase.listener.TMPrePurchaseWebAnalyticsListener
 import com.ticketmasterignite.GlobalEventEmitter
 import java.net.URL
 
-class PrePurchaseWebAnalyticsListener: TMPrePurchaseWebAnalyticsListener {
+class PrePurchaseWebAnalyticsListener : TMPrePurchaseWebAnalyticsListener {
   override fun errorOnPageLoad(url: URL, error: Exception) {
-    GlobalEventEmitter.sendEvent("errorOnPageLoad", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkPageLoadDidErrorFor")
   }
 
   override fun errorOnWebpage(url: URL, error: Exception) {
-    GlobalEventEmitter.sendEvent("errorOnWebpage", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkWebPageDidErrorFor")
   }
 
   override fun onLoadingPage(url: URL) {
-    GlobalEventEmitter.sendEvent("onLoadingPage", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkWebPageDidReportLoadingPage")
   }
 
   override fun onPageLoadComplete(url: URL, duration: Long) {
-    GlobalEventEmitter.sendEvent("onPageLoadComplete", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkWebPageDidReportPageLoadComplete")
   }
 
   override fun onPageLoadProgressBarTimeout(url: URL, duration: Long) {
-    GlobalEventEmitter.sendEvent("onPageLoadProgressBarTimeout", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkWebPageDidReportProgressBarTimeout")
   }
 
   override fun onWebpageReportedUALPageView(pageView: UALPageView) {
-    GlobalEventEmitter.sendEvent("onWebpageReportedUALPageView", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkWebPageDidReportUALPageView")
   }
 
   override fun onWebpageReportedUALUserAction(action: UALUserAction) {
-    GlobalEventEmitter.sendEvent("onWebpageReportedUALUserAction", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkWebPageDidReportUALUserAction")
   }
 }

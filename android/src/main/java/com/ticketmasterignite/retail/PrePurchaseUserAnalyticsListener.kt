@@ -6,19 +6,19 @@ import com.ticketmaster.prepurchase.action.TMPrePurchaseMenuItem
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseUserAnalyticsListener
 import com.ticketmasterignite.GlobalEventEmitter
 
-class PrePurchaseUserAnalyticsListener: TMPrePurchaseUserAnalyticsListener {
+class PrePurchaseUserAnalyticsListener : TMPrePurchaseUserAnalyticsListener {
   override fun onEDPSelectionStarted(event: DiscoveryEvent) {
-    GlobalEventEmitter.sendEvent("onEDPSelectionStarted", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkDidBeginTicketSelectionFor")
   }
 
   override fun onMenuItemSelected(
     event: DiscoveryAbstractEntity,
     menuItemSelected: TMPrePurchaseMenuItem
   ) {
-    GlobalEventEmitter.sendEvent("onMenuItemSelected", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkDidPressNavBarButtonFor")
   }
 
   override fun openURLNotSupported(url: String) {
-    GlobalEventEmitter.sendEvent("openURLNotSupported", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkDidEndCheckoutFor")
   }
 }

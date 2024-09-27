@@ -7,7 +7,7 @@ import com.ticketmasterignite.GlobalEventEmitter
 
 class PurchaseFavoritesListener: TMPurchaseFavoritesListener {
   override fun isEventInFavorites(event: DiscoveryEvent, tmMemberInfo: MemberInfo?): Boolean {
-    GlobalEventEmitter.sendEvent("isEventInFavorites", "isEventInFavorites")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "purchaseSdkIsEventInFavorites")
     return true
   }
 
@@ -16,7 +16,7 @@ class PurchaseFavoritesListener: TMPurchaseFavoritesListener {
     tmMemberInfo: MemberInfo?,
     completion: (Boolean) -> Unit
   ) {
-    GlobalEventEmitter.sendEvent("onEventAddedInFavorites", "onEventAddedInFavorites")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "purchaseSdkOnEventAddedInFavorites")
   }
 
   override fun onEventRemovedFromFavorites(
@@ -24,6 +24,6 @@ class PurchaseFavoritesListener: TMPurchaseFavoritesListener {
     tmMemberInfo: MemberInfo?,
     completion: (Boolean) -> Unit
   ) {
-    GlobalEventEmitter.sendEvent("onEventRemovedFromFavorites", "onEventRemovedFromFavorites")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "purchaseSdkOnEventRemovedFromFavorites")
   }
 }

@@ -9,22 +9,22 @@ import java.net.URL
 
 class PurchaseWebAnalyticsListener: TMPurchaseWebAnalyticsListener {
   override fun errorOnPageLoad(url: URL, error: Exception) {
-    GlobalEventEmitter.sendEvent("errorOnPageLoad", "errorOnPageLoad")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "purchaseSdkPageLoadDidErrorFor")
   }
 
   override fun errorOnWebpage(url: URL, error: Exception) {
-    GlobalEventEmitter.sendEvent("errorOnWebpage", "errorOnWebPag")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "purchaseSdkWebPageDidErrorFor")
   }
 
   override fun onWebpageReportedUALCommerceEvent(commerceEvent: UALCommerceEvent) {
-    GlobalEventEmitter.sendEvent("onWebpageReportedUALCommerceEvent", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "purchaseSdkWebPageDidReportUALCommerceEvent")
   }
 
   override fun onWebpageReportedUALPageView(pageView: UALPageView) {
-    GlobalEventEmitter.sendEvent("onWebpageReportedUALPageView", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "purchaseSdkWebPageDidReportUALPageView")
   }
 
   override fun onWebpageReportedUALUserAction(action: UALUserAction) {
-    GlobalEventEmitter.sendEvent("onWebpageReportedUALUserAction", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "purchaseSdkWebPageDidReportUALUserAction")
   }
 }

@@ -8,19 +8,20 @@ import com.ticketmasterignite.GlobalEventEmitter
 class PrePurchaseFavoritesListener: TMPrePurchaseFavoritesListener {
   override fun isAbstractEntityInFavorites(event: DiscoveryAbstractEntity): Boolean {
     TODO("Not yet implemented")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkIsEventInFavorites")
   }
 
   override fun onAbstractEntityAddedInFavorites(
     event: DiscoveryAbstractEntity,
     didAdd: (Boolean) -> Unit
   ) {
-    GlobalEventEmitter.sendEvent("onAbstractEntityAddedInFavorites", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkOnEventAddedInFavorites")
   }
 
   override fun onAbstractEntityRemovedFromFavorites(
     event: DiscoveryAbstractEntity,
     didRemove: (Boolean) -> Unit
   ) {
-    GlobalEventEmitter.sendEvent("onAbstractEntityAddedInFavorites", "")
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkOnEventRemovedFromFavorites")
   }
 }

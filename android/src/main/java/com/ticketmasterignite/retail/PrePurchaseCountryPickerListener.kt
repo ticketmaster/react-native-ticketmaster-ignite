@@ -4,25 +4,25 @@ import com.ticketmaster.discoveryapi.enums.TMMarketDomain
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseCountrySelectorListener
 import com.ticketmasterignite.GlobalEventEmitter
 
-class PrePurchaseCountryPickerListener: TMPrePurchaseCountrySelectorListener {
+class PrePurchaseCountryPickerListener : TMPrePurchaseCountrySelectorListener {
   override fun onCountryPickerClosed() {
-    GlobalEventEmitter.sendEvent("onCountryPickerClosed", {})
+//    GlobalEventEmitter.sendEvent("igniteAnalytics onCountryPickerClosed", "prePurchaseSdkOnCountryPickerClosed")
   }
 
   override fun onCountryPickerDialogDismissed() {
-    GlobalEventEmitter.sendEvent("onCountryPickerDialogDismissed", {})
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkOnCountryPickerDialogDismissed")
   }
 
   override fun onCountryPickerOpened() {
-    GlobalEventEmitter.sendEvent("onCountryPickerOpened", {})
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkOnCountryPickerOpened")
   }
 
   override fun onMarketChange(globalMarketDomain: TMMarketDomain) {
-    GlobalEventEmitter.sendEvent("onMarketChange", {})
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkOnMarketChange")
   }
 
   override fun updateCountryMarket(market: (TMMarketDomain) -> Unit) {
-    GlobalEventEmitter.sendEvent("updateCountryMarket", {})
+//    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkUpdateCountryMarket")
   }
 }
 

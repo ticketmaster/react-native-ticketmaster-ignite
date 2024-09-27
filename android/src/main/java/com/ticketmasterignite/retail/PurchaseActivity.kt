@@ -25,6 +25,7 @@ class PurchaseActivity : AppCompatActivity() {
     PurchaseSharingListener()
   private val favoritesListener: TMPurchaseFavoritesListener =
     PurchaseFavoritesListener()
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.venue_layout)
@@ -65,9 +66,10 @@ class PurchaseActivity : AppCompatActivity() {
         tmAuthenticationParams
       )
 
-      val purchaseEDPFragment = factory.instantiatePurchase(ClassLoader.getSystemClassLoader()).apply {
-        arguments = bundle
-      }
+      val purchaseEDPFragment =
+        factory.instantiatePurchase(ClassLoader.getSystemClassLoader()).apply {
+          arguments = bundle
+        }
       supportFragmentManager.beginTransaction()
         .add(R.id.venue_container, purchaseEDPFragment)
         .commit()
