@@ -374,7 +374,7 @@ const onShowPrePurchaseAttraction = async () => {
 
 You can send a callback method to `IgniteProvider` to receive Ignite SDK analytics in your app which you can then send off to your chosen analytics service.
 
-To see the full list of available analytics in this library see: [Analytics](./analytics.md)
+To see the full list of available analytics in this library see: [Analytics](./docs/analytics.md)
 
 ```typescript
 import { IgniteProvider } from 'react-native-ticketmaster-ignite';
