@@ -11,50 +11,68 @@ import com.ticketmaster.foundation.entity.TMAuthenticationParams
 import com.ticketmaster.purchase.TMPurchase
 import com.ticketmaster.purchase.TMPurchaseFragmentFactory
 import com.ticketmaster.purchase.TMPurchaseWebsiteConfiguration
+import com.ticketmaster.purchase.listener.TMPurchaseFavoritesListener
+import com.ticketmaster.purchase.listener.TMPurchaseSharingListener
+import com.ticketmaster.purchase.listener.TMPurchaseUserAnalyticsListener
+import com.ticketmaster.purchase.listener.TMPurchaseWebAnalyticsListener
 
 class PurchaseActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.venue_layout)
+  private val userAnalyticsListener: TMPurchaseUserAnalyticsListener =
+    PurchaseUserAnalyticsListener()
+  private val webAnalyticsListener: TMPurchaseWebAnalyticsListener =
+    PurchaseWebAnalyticsListener()
+  private val sharingListener: TMPurchaseSharingListener =
+    PurchaseSharingListener()
+  private val favoritesListener: TMPurchaseFavoritesListener =
+    PurchaseFavoritesListener()
 
-        if (savedInstanceState == null) {
-            val tmPurchase = TMPurchase(
-                    apiKey = Config.get("apiKey"),
-                    brandColor = Color.parseColor(Config.get("primaryColor"))
-            )
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.venue_layout)
 
-            val tmPurchaseWebsiteConfiguration = TMPurchaseWebsiteConfiguration(
-                    intent.getStringExtra("eventId").orEmpty(),
-                    TMMarketDomain.US,
-                    showInfoToolbarButton = true,
-                    showShareToolbarButton = true
-            )
+    if (savedInstanceState == null) {
+      val tmPurchase = TMPurchase(
+        apiKey = Config.get("apiKey"),
+        brandColor = Color.parseColor(Config.get("primaryColor"))
+      )
 
-            val factory = TMPurchaseFragmentFactory(
-                    tmPurchaseNavigationListener = PurchaseNavigationListener {
-                        finish()
-                    }
-            ).apply {
-                supportFragmentManager.fragmentFactory = this
-            }
+      val tmPurchaseWebsiteConfiguration = TMPurchaseWebsiteConfiguration(
+        intent.getStringExtra("eventId").orEmpty(),
+        TMMarketDomain.US,
+        showInfoToolbarButton = true,
+        showShareToolbarButton = true
+      )
 
-            val tmAuthenticationParams = TMAuthenticationParams(
-                    apiKey = Config.get("apiKey"),
-                    clientName = Config.get("clientName"),
-                    region = TMXDeploymentRegion.US
-            )
+      val factory = TMPurchaseFragmentFactory(
+        tmPurchaseNavigationListener = PurchaseNavigationListener {
+          finish()
+        },
+        tmPurchaseFavoritesListener = favoritesListener,
+        tmPurchaseShareListener = sharingListener,
+        tmPurchaseUserAnalyticsListener = userAnalyticsListener,
+        tmPurchaseWebAnalyticsListener = webAnalyticsListener
+      ).apply {
+        supportFragmentManager.fragmentFactory = this
+      }
 
-            val bundle = tmPurchase.getPurchaseBundle(
-                    tmPurchaseWebsiteConfiguration,
-                    tmAuthenticationParams
-            )
+      val tmAuthenticationParams = TMAuthenticationParams(
+        apiKey = Config.get("apiKey"),
+        clientName = Config.get("clientName"),
+        region = TMXDeploymentRegion.US
+      )
 
-            val purchaseEDPFragment = factory.instantiatePurchase(ClassLoader.getSystemClassLoader()).apply {
-                arguments = bundle
-            }
-            supportFragmentManager.beginTransaction()
-                    .add(R.id.venue_container, purchaseEDPFragment)
-                    .commit()
+      val bundle = tmPurchase.getPurchaseBundle(
+        tmPurchaseWebsiteConfiguration,
+        tmAuthenticationParams
+      )
+
+      val purchaseEDPFragment =
+        factory.instantiatePurchase(ClassLoader.getSystemClassLoader()).apply {
+          arguments = bundle
         }
+      supportFragmentManager.beginTransaction()
+        .add(R.id.venue_container, purchaseEDPFragment)
+        .commit()
     }
+  }
 }

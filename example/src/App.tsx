@@ -14,10 +14,15 @@ const App = () => {
     },
   };
 
+  // const igniteAnalytics = async (data: any) => {
+  //   console.log('Received Ignite analytics', data);
+  // };
+
   return (
     <SafeAreaProvider>
       <NavigationContainer theme={navTheme}>
         <IgniteProvider
+          // analytics={igniteAnalytics}
           options={{
             apiKey: Config.API_KEY || '',
             clientName: Config.CLIENT_NAME || '',
