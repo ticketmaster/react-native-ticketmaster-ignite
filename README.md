@@ -379,7 +379,7 @@ To see the full list of available analytics in this library see: [Analytics](./d
 ```typescript
 import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 
-const igniteAnalytics = async (data: any) => {
+const igniteAnalytics = (data: any) => {
   console.log('Received Ignite analytics', data);
 };
 
