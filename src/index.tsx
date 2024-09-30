@@ -15,3 +15,5 @@ export {
   RetailSDK,
   useIgnite,
 };
+
+export { IgniteAnalytics, IgniteAnalyticName } from './types';
