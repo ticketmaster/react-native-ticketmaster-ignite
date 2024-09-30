@@ -377,11 +377,18 @@ You can send a callback method to `IgniteProvider` to receive Ignite SDK analyti
 To see the full list of available analytics in this library see: [Analytics](./docs/analytics.md)
 
 ```typescript
-import { IgniteProvider } from 'react-native-ticketmaster-ignite';
+import { IgniteProvider, IgniteAnalytics, IgniteAnalyticName } from 'react-native-ticketmaster-ignite';
 
-const igniteAnalytics = (data: any) => {
-  console.log('Received Ignite analytics', data);
-};
+const igniteAnalytics = async (data: IgniteAnalytics) => {
+    const key = Object.keys(data)[0];
+    switch (key) {
+      case IgniteAnalyticName.PURCHASE_SDK_DID_BEGIN_TICKET_SELECTION_FOR:
+        console.log(
+          'EDP started for',
+          data.purchaseSdkDidBeginTicketSelectionFor.eventName
+        );
+    }
+  };
 
 <IgniteProvider
   options={{

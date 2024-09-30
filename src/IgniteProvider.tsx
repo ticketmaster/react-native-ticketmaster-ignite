@@ -1,10 +1,11 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
+import { IgniteAnalytics } from 'react-native-ticketmaster-ignite';
 
 interface IgniteProviderProps {
   children: React.ReactNode;
   autoUpdate?: boolean;
-  analytics?: (data: AnalyticsData) => Promise<void>;
+  analytics?: (data: IgniteAnalytics) => void | Promise<void>;
   options: {
     apiKey: string;
     clientName: string;
@@ -26,10 +27,6 @@ type AuthStateParams = {
   isConfigured: boolean;
   isLoggedIn: boolean;
   memberInfo: Record<string, any> | null;
-};
-
-type AnalyticsData = {
-  data: Record<string, any>;
 };
 
 type IgniteContextType = {
@@ -133,11 +130,14 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     const igniteEventEmitter = new NativeEventEmitter(
       NativeModules.EventEmitter
     );
-    igniteEventEmitter.addListener('igniteAnalytics', async (result) => {
-      if (result && analytics) analytics(result);
-      if (result.purchaseSdkDidBeginCheckoutFor && autoUpdate)
-        await setAccountDetails();
-    });
+    igniteEventEmitter.addListener(
+      'igniteAnalytics',
+      async (result: IgniteAnalytics) => {
+        if (result && analytics) analytics(result);
+        if (result.purchaseSdkDidBeginCheckoutFor && autoUpdate)
+          await setAccountDetails();
+      }
+    );
 
     // Removes the listener once unmounted
     return () => {
