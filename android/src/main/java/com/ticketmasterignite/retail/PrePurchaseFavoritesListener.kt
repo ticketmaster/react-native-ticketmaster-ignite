@@ -8,8 +8,8 @@ import com.ticketmasterignite.GlobalEventEmitter
 class PrePurchaseFavoritesListener : TMPrePurchaseFavoritesListener {
   // TODO("Commented out lines are not yet implemented")
   override fun isAbstractEntityInFavorites(event: DiscoveryAbstractEntity): Boolean {
-    TODO("Not yet implemented")
 //    GlobalEventEmitter.sendEvent("igniteAnalytics", "prePurchaseSdkIsEventInFavorites")
+    return false
   }
 
   override fun onAbstractEntityAddedInFavorites(
