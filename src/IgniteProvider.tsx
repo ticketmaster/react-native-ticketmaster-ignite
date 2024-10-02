@@ -134,7 +134,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       'igniteAnalytics',
       async (result: IgniteAnalytics) => {
         if (result && analytics) analytics(result);
-        if (result.accountsSdkLoggedIn && autoUpdate) await setAccountDetails();
+        if (result.purchaseSdkDidEndCheckoutFor && autoUpdate)
+          await setAccountDetails();
       }
     );
 
