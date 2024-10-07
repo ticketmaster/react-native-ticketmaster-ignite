@@ -15,6 +15,7 @@ import com.ticketmaster.purchase.listener.TMPurchaseFavoritesListener
 import com.ticketmaster.purchase.listener.TMPurchaseSharingListener
 import com.ticketmaster.purchase.listener.TMPurchaseUserAnalyticsListener
 import com.ticketmaster.purchase.listener.TMPurchaseWebAnalyticsListener
+import Region
 
 class PurchaseActivity : AppCompatActivity() {
   private val userAnalyticsListener: TMPurchaseUserAnalyticsListener =
@@ -58,7 +59,7 @@ class PurchaseActivity : AppCompatActivity() {
       val tmAuthenticationParams = TMAuthenticationParams(
         apiKey = Config.get("apiKey"),
         clientName = Config.get("clientName"),
-        region = TMXDeploymentRegion.US
+        region = Region.getRegion()
       )
 
       val bundle = tmPurchase.getPurchaseBundle(

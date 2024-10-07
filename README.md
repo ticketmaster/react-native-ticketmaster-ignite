@@ -124,6 +124,8 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 </IgniteProvider>
 ```
 
+The options prop also accepts a `region` property `US` or `UK`. The default value is `US` and should be used unless you have specifically been told to set your region to `UK`.
+
 `autoUpdate` is a prop that can be set to false to prevent `IgniteProvider` from rerendering your app on app launch. (⚠️ warning: if set to `false`, `authState`'s `isLoggedIn`, `memberInfo` and `isConfigured` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually after app restarts. The default value is `true`. See more on `authState` later on.)
 
 ```typescript
