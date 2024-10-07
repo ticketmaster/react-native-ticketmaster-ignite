@@ -1,6 +1,5 @@
 package com.ticketmasterignite
 
-import Config
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.material.darkColors
@@ -20,7 +19,6 @@ import com.google.gson.Gson
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
 import com.ticketmaster.authenticationsdk.TMXDeploymentEnvironment
-import com.ticketmaster.authenticationsdk.TMXDeploymentRegion
 import com.ticketmaster.tickets.ticketssdk.TicketsColors
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKClient
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
@@ -29,7 +27,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import com.ticketmasterignite.GlobalEventEmitter
+import Config
+import Region
 
 class AccountsSDKModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
@@ -86,7 +85,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         .clientName(Config.get("clientName")) // Team name to be displayed
         .colors(TMAuthentication.ColorTheme())
         .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
-        .region(TMXDeploymentRegion.US) // Region that the SDK will use. Default is US
+        .region(Region.getRegion()) // Region that the SDK will use. Default is US
         .build(currentFragmentActivity)
       val intent = authentication.getLoginIntent(currentFragmentActivity)
       currentActivity?.startActivityForResult(intent, CODE)
@@ -117,6 +116,8 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun configureAccountsSDK(promise: Promise) {
     runBlocking(Dispatchers.Main) {
+      val region = Config.get("region")
+
       val configurationStartedParams: WritableMap = Arguments.createMap().apply {
         putString(
           "accountsSdkServiceConfigurationStarted",
@@ -131,7 +132,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           .clientName(Config.get("clientName"))
           .colors(TMAuthentication.ColorTheme())
           .environment(TMXDeploymentEnvironment.Production)
-          .region(TMXDeploymentRegion.US)
+          .region(Region.getRegion())
           .build(currentFragmentActivity)
 
         val serviceConfiguredParams: WritableMap = Arguments.createMap().apply {
@@ -176,7 +177,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
             .clientName(Config.get("clientName"))
             .colors(TMAuthentication.ColorTheme())
             .environment(TMXDeploymentEnvironment.Production)
-            .region(TMXDeploymentRegion.US)
+            .region(Region.getRegion())
             .build(currentFragmentActivity)
           authentication.logout(currentFragmentActivity)
           val loggedOutParams: WritableMap = Arguments.createMap().apply {
@@ -202,13 +203,15 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         val archticsAccessToken = async { it.getToken(AuthSource.ARCHTICS) }
         val hostAccessToken = async { it.getToken(AuthSource.HOST) }
         val mfxAccessToken = async { it.getToken(AuthSource.MFX) }
-        val (resArchticsAccessToken, resHostAccessToken, resMfxAccessToken) = awaitAll(
+        val sportXRAccessToken = async { it.getToken(AuthSource.SPORTXR) }
+        val (resArchticsAccessToken, resHostAccessToken, resMfxAccessToken, resSportXRAccessToken) = awaitAll(
           archticsAccessToken,
           hostAccessToken,
-          mfxAccessToken
+          mfxAccessToken,
+          sportXRAccessToken
         )
 
-        if (resArchticsAccessToken.isNullOrEmpty() && resHostAccessToken.isNullOrEmpty() && resMfxAccessToken.isNullOrEmpty()) {
+        if (resArchticsAccessToken.isNullOrEmpty() && resHostAccessToken.isNullOrEmpty() && resMfxAccessToken.isNullOrEmpty() && resSportXRAccessToken.isNullOrEmpty()) {
           promise.resolve(null)
         } else {
           val memberInfoJson = Gson().toJson(it.fetchUserDetails().getOrNull())
@@ -227,10 +230,12 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         val hostAccessToken = async { it.getToken(AuthSource.HOST) }
         val archticsAccessToken = async { it.getToken(AuthSource.ARCHTICS) }
         val mfxAccessToken = async { it.getToken(AuthSource.MFX) }
-        val (resArchticsAccessToken, resHostAccessToken, resMfxAccessToken) = awaitAll(
+        val sportXRAccessToken = async { it.getToken(AuthSource.SPORTXR) }
+        val (resArchticsAccessToken, resHostAccessToken, resMfxAccessToken, resSportXRAccessToken) = awaitAll(
           archticsAccessToken,
           hostAccessToken,
-          mfxAccessToken
+          mfxAccessToken,
+          sportXRAccessToken
         )
         val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
           putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
@@ -244,7 +249,10 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         } else if (!resMfxAccessToken.isNullOrEmpty()) {
           GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
           promise.resolve(resMfxAccessToken)
-        } else {
+        } else if (!resSportXRAccessToken.isNullOrEmpty()) {
+          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
+          promise.resolve(resSportXRAccessToken)
+        }else {
           promise.resolve(null)
         }
       } catch (e: Exception) {

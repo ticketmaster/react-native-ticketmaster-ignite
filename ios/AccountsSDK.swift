@@ -11,8 +11,9 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     
     // build a combination of Settings and Branding
     let apiKey = Config.shared.get(for: "apiKey")
+    let region = Config.shared.get(for: "region")
     let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
-                                                          region: .US)
+                                                          region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US )
     
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
@@ -113,11 +114,6 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   
   @objc public func isLoggedIn(_ resolve: @escaping ([String: Bool]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     TMAuthentication.shared.memberInfo { memberInfo in
-      guard let id = memberInfo.globalID else {
-        resolve(["result": false])
-        return
-      }
-      
       let hasToken = TMAuthentication.shared.hasToken()
       resolve(["result": hasToken])
       

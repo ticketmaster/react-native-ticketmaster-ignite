@@ -1,5 +1,6 @@
 package com.ticketmasterignite.tickets
 
+import Region
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,12 +12,10 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.Fragment
-import com.ticketmasterignite.BuildConfig
 import com.ticketmasterignite.R
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
 import com.ticketmaster.authenticationsdk.TMXDeploymentEnvironment
-import com.ticketmaster.authenticationsdk.TMXDeploymentRegion
 import com.ticketmaster.tickets.ticketssdk.TicketsColors
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKClient
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
@@ -76,7 +75,7 @@ class TicketsFragment() : Fragment() {
                 .clientName(Config.get("clientName")) // Team name to be displayed
                 .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
                 .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
-                .region(TMXDeploymentRegion.US) // Region that the SDK will use. Default is US
+                .region(Region.getRegion()) // Region that the SDK will use. Default is US
                 .build(this@TicketsFragment.requireActivity())
             val tokenMap = validateAuthToken(authentication)
 
