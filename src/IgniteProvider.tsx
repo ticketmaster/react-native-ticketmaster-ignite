@@ -10,7 +10,7 @@ interface IgniteProviderProps {
     apiKey: string;
     clientName: string;
     primaryColor: string;
-    region?: string;
+    region?: Region;
   };
 }
 
@@ -40,6 +40,8 @@ type IgniteContextType = {
   authState: AuthStateParams;
   isLoggingIn: boolean;
 };
+
+type Region = 'US' | 'UK';
 
 export const IgniteContext = createContext<IgniteContextType>({
   login: async () => {},
