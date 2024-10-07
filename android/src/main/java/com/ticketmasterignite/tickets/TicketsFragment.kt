@@ -1,6 +1,5 @@
 package com.ticketmasterignite.tickets
 
-import Region
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +21,7 @@ import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import Region
 
 class TicketsFragment() : Fragment() {
     private lateinit var customView: TicketsView
