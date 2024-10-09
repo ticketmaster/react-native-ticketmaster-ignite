@@ -1,3 +1,4 @@
+import TicketmasterAuthentication
 import TicketmasterDiscoveryAPI
 import TicketmasterPrePurchase
 import TicketmasterPurchase
@@ -32,10 +33,11 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate, TMPrePu
     super.viewDidLoad()
     
     let apiKey = Config.shared.get(for: "apiKey")
+    let region = Config.shared.get(for: "region")
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
     
-    TMPrePurchase.shared.configure(apiKey: apiKey, completion: { isPrePurchaseApiSet in
+    TMPrePurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: { isPrePurchaseApiSet in
       print("PrePurchase api key set result: \(isPrePurchaseApiSet)")
       
       TMPrePurchase.shared.brandColor = backgroundColor!
@@ -73,11 +75,12 @@ class PrePurchaseSDK: UIViewController, TMPrePurchaseNavigationDelegate, TMPrePu
   func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, navigateToEventDetailsPageWithIdentifier eventIdentifier: String) {
     let configuration = TMPurchaseWebsiteConfiguration(eventID: eventIdentifier)
     let apiKey = Config.shared.get(for: "apiKey")
+    let region = Config.shared.get(for: "region")
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
-    TMPurchase.shared.configure(apiKey: apiKey, completion: {isPurchaseApiSet in
+    TMPurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: {isPurchaseApiSet in
       TMPurchase.shared.brandColor = backgroundColor!
-      TMDiscoveryAPI.shared.configure(apiKey: apiKey, completion: { isDiscoveryApiSet in
+      TMDiscoveryAPI.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: { isDiscoveryApiSet in
         if (isDiscoveryApiSet && isPurchaseApiSet) {
           let purchaseNavController = TMPurchaseNavigationController(configuration: configuration)
           viewController.present(purchaseNavController, animated: true, completion: nil)

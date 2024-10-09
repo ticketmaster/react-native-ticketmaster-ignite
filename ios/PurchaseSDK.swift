@@ -1,3 +1,4 @@
+import TicketmasterAuthentication
 import TicketmasterPurchase
 import TicketmasterDiscoveryAPI
 import TicketmasterFoundation
@@ -25,11 +26,12 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
     super.viewDidLoad()
     
     let apiKey = Config.shared.get(for: "apiKey")
+    let region = Config.shared.get(for: "region")
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
     
     
-    TMPurchase.shared.configure(apiKey: apiKey, completion: { isPurchaseApiSet in
+    TMPurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: { isPurchaseApiSet in
       print("Purchase api key set result: \(isPurchaseApiSet)")
       
       TMPurchase.shared.brandColor = backgroundColor!
