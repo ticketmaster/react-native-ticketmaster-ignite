@@ -240,21 +240,21 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
           putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
         }
+        val combinedTokens: WritableMap = Arguments.createMap()
         if (!resHostAccessToken.isNullOrEmpty()) {
-          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
-          promise.resolve(resHostAccessToken)
-        } else if (!resArchticsAccessToken.isNullOrEmpty()) {
-          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
-          promise.resolve(resArchticsAccessToken)
-        } else if (!resMfxAccessToken.isNullOrEmpty()) {
-          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
-          promise.resolve(resMfxAccessToken)
-        } else if (!resSportXRAccessToken.isNullOrEmpty()) {
-          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
-          promise.resolve(resSportXRAccessToken)
-        }else {
-          promise.resolve(null)
+          combinedTokens.putString("hostAccessToken", resHostAccessToken)
         }
+        if (!resArchticsAccessToken.isNullOrEmpty()) {
+          combinedTokens.putString("archticsAccessToken", resArchticsAccessToken)
+        }
+        if (!resMfxAccessToken.isNullOrEmpty()) {
+          combinedTokens.putString("mfxAccessToken", resMfxAccessToken)
+        }
+        if (!resSportXRAccessToken.isNullOrEmpty()) {
+          combinedTokens.putString("sportXRAccessToken", resSportXRAccessToken)
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
+        promise.resolve(combinedTokens)
       } catch (e: Exception) {
         promise.reject("Accounts SDK refreshToken Error: ", e)
       }
