@@ -199,6 +199,18 @@ try {
 {isLoggedIn && <Text>You are logged in<Text/>}
 ```
 
+`getToken` and `refreshToken` return different data types per platform. iOS returns a `string` and Android returns an object. See Android object type below: 
+
+```typescript
+type AuthSource = {
+  hostAccessToken?: string;
+  archticsAccessToken?: string;
+  mfxAccessToken?: string;
+  sportXRAccessToken?: string;
+};
+```
+
+
 The `login()` method from the `useIgnite` hook accepts an object with properties `onLogin` and `skipUpdate`:
 
 - `onLogin` - a callback that fires after successful authentication
