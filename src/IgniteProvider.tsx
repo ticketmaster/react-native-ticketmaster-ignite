@@ -34,14 +34,21 @@ type IgniteContextType = {
   login: (LoginParams?: LoginParams) => Promise<void>;
   logout: (LogoutParams?: LogoutParams) => Promise<void>;
   getIsLoggedIn: () => Promise<boolean>;
-  getToken: () => Promise<string | null>;
+  getToken: () => Promise<string | AuthSource | null>;
   getMemberInfo: () => Promise<Record<string, any> | null>;
-  refreshToken: () => Promise<string | null>;
+  refreshToken: () => Promise<string | AuthSource | null>;
   authState: AuthStateParams;
   isLoggingIn: boolean;
 };
 
 type Region = 'US' | 'UK';
+
+type AuthSource = {
+  hostAccessToken?: string;
+  archticsAccessToken?: string;
+  mfxAccessToken?: string;
+  sportXRAccessToken?: string;
+};
 
 export const IgniteContext = createContext<IgniteContextType>({
   login: async () => {},
@@ -225,7 +232,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getToken = useCallback(async (): Promise<string | null> => {
+  const getToken = useCallback(async (): Promise<
+    string | AuthSource | null
+  > => {
     let accessToken;
     try {
       if (Platform.OS === 'ios') {
@@ -268,7 +277,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const refreshToken = useCallback(async (): Promise<string | null> => {
+  const refreshToken = useCallback(async (): Promise<
+    string | AuthSource | null
+  > => {
     try {
       const result = await AccountsSDK.refreshToken();
       console.log('Accounts SDK refresh token:', result);
