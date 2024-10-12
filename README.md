@@ -27,7 +27,7 @@ npm install --save react-native-ticketmaster-ignite
 yarn add react-native-ticketmaster-ignite
 ```
 
-## Setting up ios
+## Setting up iOS
 
 Edit the `Podfile` and set the platform to `15.0`
 
