@@ -21,7 +21,6 @@ import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import Region
 
 class TicketsFragment() : Fragment() {
     private lateinit var customView: TicketsView
@@ -76,6 +75,7 @@ class TicketsFragment() : Fragment() {
                 .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
                 .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
                 .region(Region.getRegion()) // Region that the SDK will use. Default is US
+                .forceNewSession(true)
                 .build(this@TicketsFragment.requireActivity())
             val tokenMap = validateAuthToken(authentication)
 

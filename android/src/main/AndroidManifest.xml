@@ -16,6 +16,10 @@
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
           <data android:scheme="@string/app_tm_modern_accounts_scheme" />
+          <data android:scheme="@string/app_tm_modern_accounts_scheme_2" />
+          <data android:scheme="@string/app_tm_modern_accounts_scheme_3" />
+          <data android:scheme="@string/app_tm_modern_accounts_scheme_4" />
+          <data android:scheme="@string/app_tm_modern_accounts_scheme_5" />
         </intent-filter>
       </activity>
       <activity

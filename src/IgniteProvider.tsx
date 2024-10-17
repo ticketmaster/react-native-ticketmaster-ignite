@@ -30,6 +30,16 @@ type AuthStateParams = {
   memberInfo: Record<string, any> | null;
 };
 
+type RefreshConfigParams = {
+  apiKey: string;
+  clientName?: string;
+  primaryColor?: string;
+  skipAutoLogin?: boolean;
+  skipUpdate?: boolean;
+  onSuccess?: () => void;
+  onLoginSuccess?: () => void;
+};
+
 type IgniteContextType = {
   login: (LoginParams?: LoginParams) => Promise<void>;
   logout: (LogoutParams?: LogoutParams) => Promise<void>;
@@ -37,6 +47,9 @@ type IgniteContextType = {
   getToken: () => Promise<string | AuthSource | null>;
   getMemberInfo: () => Promise<Record<string, any> | null>;
   refreshToken: () => Promise<string | AuthSource | null>;
+  refreshConfiguration: (
+    RefreshConfigParams: RefreshConfigParams
+  ) => Promise<void>;
   authState: AuthStateParams;
   isLoggingIn: boolean;
 };
@@ -57,6 +70,7 @@ export const IgniteContext = createContext<IgniteContextType>({
   getToken: async () => null,
   getMemberInfo: async () => null,
   refreshToken: async () => null,
+  refreshConfiguration: async () => {},
   authState: {
     isConfigured: false,
     isLoggedIn: false,
@@ -73,12 +87,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 }) => {
   const { Config, AccountsSDK } = NativeModules;
   const { apiKey, clientName, primaryColor, region } = options;
-
-  Config.setConfig('apiKey', apiKey);
-  Config.setConfig('clientName', clientName);
-  Config.setConfig('primaryColor', primaryColor);
-  Config.setConfig('region', region || 'US');
-
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
     isConfigured: false,
@@ -120,20 +128,33 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [AccountsSDK]);
+
+  const configureAccountsSDK = useCallback(async () => {
+    try {
+      const result = await AccountsSDK.configureAccountsSDK();
+      console.log(result);
+      autoUpdate && (await setAccountDetails());
+    } catch (e) {
+      throw e;
+    }
+  }, [AccountsSDK, autoUpdate, setAccountDetails]);
 
   useEffect(() => {
-    const configureAccountsSDK = async () => {
+    Config.setConfig('apiKey', apiKey);
+    Config.setConfig('clientName', clientName);
+    Config.setConfig('primaryColor', primaryColor);
+    Config.setConfig('region', region || 'US');
+
+    const onConfigureAccountsSdk = async () => {
       try {
-        const result = await AccountsSDK.configureAccountsSDK();
-        console.log('Accounts SDK configuration set: ', result);
-        autoUpdate && (await setAccountDetails());
+        await configureAccountsSDK();
       } catch (e) {
         console.log('Accounts SDK error:', (e as Error).message);
       }
     };
-    configureAccountsSDK();
+    onConfigureAccountsSdk();
+    // Only run initial configuration once in an apps lifecycle
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -154,64 +175,65 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     return () => {
       igniteEventEmitter.removeAllListeners('igniteAnalytics');
     };
+    // Only create native listener once in an apps lifecycle
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const login = async (
-    { onLogin, skipUpdate }: LoginParams = {
-      onLogin: () => {},
-      skipUpdate: false,
-    }
-  ): Promise<void> => {
-    return new Promise<void>(async (resolve, reject) => {
-      if (Platform.OS === 'ios') {
-        !skipUpdate && setIsLoggingIn(true);
-        try {
-          const result = await AccountsSDK.login();
-          if (result.accessToken) {
-            console.log('Accounts SDK login successful');
-            !skipUpdate && (await setAccountDetails());
-            onLogin && onLogin();
-            resolve();
+  const login = useCallback(
+    // eslint-disable-next-line prettier/prettier
+    async ({ onLogin, skipUpdate }: LoginParams = { skipUpdate: false }): Promise<void> => {
+      return new Promise<void>(async (resolve, reject) => {
+        if (Platform.OS === 'ios') {
+          !skipUpdate && setIsLoggingIn(true);
+          try {
+            const result = await AccountsSDK.login();
+            if (result.accessToken) {
+              console.log('Accounts SDK login successful');
+              !skipUpdate && (await setAccountDetails());
+              onLogin && onLogin();
+              resolve();
+            }
+          } catch (e) {
+            !skipUpdate && setIsLoggingIn(false);
+            reject(e);
           }
-        } catch (e) {
           !skipUpdate && setIsLoggingIn(false);
-          reject(e);
+        } else if (Platform.OS === 'android') {
+          !skipUpdate && setIsLoggingIn(true);
+          AccountsSDK.login(async (resultCode: any) => {
+            if (resultCode === -1) {
+              console.log('Accounts SDK Login successful');
+              !skipUpdate && (await setAccountDetails());
+              onLogin && onLogin();
+              resolve();
+            }
+            !skipUpdate && setIsLoggingIn(false);
+          });
+          setTimeout(() => {
+            if (isLoggingIn && !skipUpdate) setIsLoggingIn(false);
+          }, 8000);
         }
-        !skipUpdate && setIsLoggingIn(false);
-      } else if (Platform.OS === 'android') {
-        !skipUpdate && setIsLoggingIn(true);
-        AccountsSDK.login(async (resultCode: any) => {
-          if (resultCode === -1) {
-            console.log('Accounts SDK Login successful');
-            !skipUpdate && (await setAccountDetails());
-            onLogin && onLogin();
-            resolve();
-          }
-          !skipUpdate && setIsLoggingIn(false);
-        });
-        setTimeout(() => {
-          if (isLoggingIn && !skipUpdate) setIsLoggingIn(false);
-        }, 8000);
-      }
-    });
-  };
+      });
+    },
+    // isLoggingIn will update frequently, login() should not trigger/change on those updates
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [AccountsSDK, setAccountDetails]
+  );
 
-  const logout = async (
-    { onLogout, skipUpdate }: LogoutParams = {
-      onLogout: () => {},
-      skipUpdate: false,
-    }
-  ): Promise<void> => {
-    try {
-      await AccountsSDK.logout();
-      console.log('Accounts SDK logout successful');
-      onLogout && onLogout();
-      !skipUpdate && (await setAccountDetails());
-    } catch (e) {
-      throw e;
-    }
-  };
+  const logout = useCallback(
+    // eslint-disable-next-line prettier/prettier
+    async ({ onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }): Promise<void> => {
+      try {
+        await AccountsSDK.logout();
+        console.log('Accounts SDK logout successful');
+        !skipUpdate && (await setAccountDetails());
+        onLogout && onLogout();
+      } catch (e) {
+        throw e;
+      }
+    },
+    [AccountsSDK, setAccountDetails]
+  );
 
   const getIsLoggedIn = useCallback(async (): Promise<boolean> => {
     try {
@@ -229,8 +251,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [AccountsSDK]);
 
   const getToken = useCallback(async (): Promise<
     string | AuthSource | null
@@ -254,8 +275,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [AccountsSDK]);
 
   const getMemberInfo = useCallback(async () => {
     let result;
@@ -274,8 +294,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [AccountsSDK]);
 
   const refreshToken = useCallback(async (): Promise<
     string | AuthSource | null
@@ -292,8 +311,25 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [AccountsSDK]);
+
+  const refreshConfiguration = useCallback(
+    // eslint-disable-next-line prettier/prettier, @typescript-eslint/no-shadow
+    async ({ apiKey, clientName, primaryColor, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess  }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {},   }) => {
+      try {
+        Config.setConfig('apiKey', apiKey);
+        clientName && Config.setConfig('clientName', clientName);
+        primaryColor && Config.setConfig('primaryColor', primaryColor);
+        await configureAccountsSDK();
+        !skipAutoLogin &&
+          (await login({ onLogin: onLoginSuccess, skipUpdate }));
+        onSuccess && onSuccess();
+      } catch (e) {
+        throw e;
+      }
+    },
+    [Config, configureAccountsSDK, login]
+  );
 
   return (
     <IgniteContext.Provider
@@ -304,6 +340,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         getToken,
         getMemberInfo,
         refreshToken,
+        refreshConfiguration,
         authState,
         isLoggingIn,
       }}

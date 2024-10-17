@@ -3,7 +3,6 @@ package com.ticketmasterignite.retail
 import android.os.Bundle
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.ticketmasterignite.R
 import com.ticketmaster.discoveryapi.enums.TMMarketDomain
