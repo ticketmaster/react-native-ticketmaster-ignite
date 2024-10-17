@@ -61,7 +61,7 @@ If you have multiple schemes you can add them using the following format:
 <string name="app_tm_modern_accounts_scheme_5">samplescheme5</string>
 ```
 
-You set up to 5 teams
+You can set up to 5 teams
 
 #### allowBackup in AndroidManifest
 
