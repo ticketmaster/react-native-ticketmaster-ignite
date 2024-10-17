@@ -309,7 +309,7 @@ The `refreshConfiguration()` method from the `useIgnite` accepts the below list 
 - `clientName` - Company name 
 - `primaryColor` - Company brand color
 - `onSuccess` - a callback that fires after successful Accounts SDK configuration
-- `onLoginSucess` - a callback that fires after the user successfully logins
+- `onLoginSuccess` - a callback that fires after the user successfully logins
 - `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they login after switching to a new API key configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app.
 - `skipUpdate` - Set value to `true` to prevent a rerender after successful authentication (⚠️ warning: if set to `true`, `isLoggedIn`, `isLoggingIn` and `memberInfo` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually. It's recommended you implement AccountsSDK directly and not use this hook if you want complete control of React Native screen and state updates. The default value is `false`.)
 
@@ -323,7 +323,7 @@ type RefreshConfigParams = {
   skipAutoLogin?: boolean;
   skipUpdate?: boolean;
   onSuccess?: () => void;
-  onLoginSucess?: () => void;
+  onLoginSuccess?: () => void;
 };
 ```
 

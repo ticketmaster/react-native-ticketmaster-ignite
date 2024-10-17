@@ -37,7 +37,7 @@ type RefreshConfigParams = {
   skipAutoLogin?: boolean;
   skipUpdate?: boolean;
   onSuccess?: () => void;
-  onLoginSucess?: () => void;
+  onLoginSuccess?: () => void;
 };
 
 type IgniteContextType = {
@@ -315,13 +315,13 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
   const refreshConfiguration = useCallback(
     // eslint-disable-next-line prettier/prettier, @typescript-eslint/no-shadow
-    async ({ apiKey, clientName, primaryColor, skipAutoLogin, skipUpdate, onSuccess, onLoginSucess  }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSucess: () => {},   }) => {
+    async ({ apiKey, clientName, primaryColor, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess  }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {},   }) => {
       try {
         Config.setConfig('apiKey', apiKey);
         clientName && Config.setConfig('clientName', clientName);
         primaryColor && Config.setConfig('primaryColor', primaryColor);
         await configureAccountsSDK();
-        !skipAutoLogin && (await login({ onLogin: onLoginSucess, skipUpdate }));
+        !skipAutoLogin && (await login({ onLogin: onLoginSuccess, skipUpdate }));
         onSuccess && onSuccess();
       } catch (e) {
         throw e;
