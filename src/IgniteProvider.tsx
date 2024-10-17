@@ -321,7 +321,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         clientName && Config.setConfig('clientName', clientName);
         primaryColor && Config.setConfig('primaryColor', primaryColor);
         await configureAccountsSDK();
-        !skipAutoLogin && (await login({ onLogin: onLoginSuccess, skipUpdate }));
+        !skipAutoLogin &&
+          (await login({ onLogin: onLoginSuccess, skipUpdate }));
         onSuccess && onSuccess();
       } catch (e) {
         throw e;
