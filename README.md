@@ -49,6 +49,18 @@ In your project go to `android/app/src/main/res/values/strings.xml` and add this
 
 Replace `samplescheme` with your scheme - you can find it in your Ticketmaster app settings.
 
+#### Multi Scheme
+
+If you have multiple schemes you can add them using the following format:
+
+```xml
+<string name="app_tm_modern_accounts_scheme">samplescheme1</string>
+<string name="app_tm_modern_accounts_scheme_2">samplescheme2</string>
+<string name="app_tm_modern_accounts_scheme_3">samplescheme3</string>
+<string name="app_tm_modern_accounts_scheme_4">samplescheme4</string>
+<string name="app_tm_modern_accounts_scheme_5">samplescheme5</string>
+```
+
 #### allowBackup in AndroidManifest
 
 Open the `AndroidManifest.xml` file and:
@@ -175,10 +187,11 @@ const {
   login,
   logout,
   getToken,
-  refreshToken,
   getMemberInfo,
   getIsLoggedIn,
   isLoggingIn,
+  refreshToken,
+  refreshConfiguration,
   authState: { isLoggedIn, memberInfo, isConfigured },
 } = useIgnite();
 
@@ -209,6 +222,8 @@ type AuthSource = {
   sportXRAccessToken?: string;
 };
 ```
+
+You can see the results of `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` in the console when running the example app.
 
 
 The `login()` method from the `useIgnite` hook accepts an object with properties `onLogin` and `skipUpdate`:
@@ -250,9 +265,96 @@ type LogoutParams = {
 };
 ```
 
-You can see the results of `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` in the console when running the example app.
 
-#### TicketsSdkModal (iOS only)
+#### Reconfigure Accounts SDK
+
+If you want to switch between different API keys within on app, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them.
+
+
+The below uses React Native Config but feel free to use whatever appropriate to store your API key values
+
+Example:
+
+```env
+TEAM_API_KEYS={"team1_ios":"someApiKey1", "team1_android":"someApiKey2", "team2_ios":"someApiKey3",  "team2_android":"someApiKey4"}
+```
+
+```tsx
+import { Platform } from 'react-native'
+import { useIgnite } from 'react-native-ticketmaster-ignite';
+import Config from 'react-native-config'
+
+const platform = Platform.OS
+const teamApiKeys = JSON.parse(Config.TEAM_API_KEYS)
+const { refreshConfiguration } = useIgnite();
+const team2 = 'team2'
+const apiKey = teamApiKeys[`${team2}_${platform}`]
+
+try {
+  await refreshConfiguration({
+    apiKey: apiKey,
+    clientName: 'Team 2'
+    primaryColor: '#FF0000',
+  });
+} catch (e) {
+  console.log('Account SDK refresh configuration error:', (e as Error).message);
+}
+```
+
+The `refreshConfiguration()` method from the `useIgnite` has the below list of properties (apiKey is the only ):
+
+- `apiKey` - An API configuration key from your Ticketmaster developer account
+- `clientName` - Company name 
+- `primaryColor` - Company brand color
+- `onSuccess` - a callback that fires after successful Accounts SDK configuration
+- `onLoginSucess` - a callback that fires after the user successfully logins
+- `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they switch to a new login configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app.
+- `skipUpdate` - Set value to `true` to prevent a rerender after successful authentication (⚠️ warning: if set to `true`, `isLoggedIn`, `isLoggingIn` and `memberInfo` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually. It's recommended you implement AccountsSDK directly and not use this hook if you want complete control of React Native screen and state updates. The default value is `false`.)
+
+Here are the types:
+
+```typescript
+type RefreshConfigParams = {
+  apiKey: string;
+  clientName?: string;
+  primaryColor?: string;
+  skipAutoLogin?: boolean;
+  skipUpdate?: boolean;
+  onSuccess?: () => void;
+  onLoginSucess?: () => void;
+};
+```
+
+You will need give `IgniteProvider` a default API key and you will have to persist the users most recently selected API key so that it can be provided to
+`IgniteProvider` on the next app launch.
+
+Possible implementation example below:
+
+```env
+TEAM_API_KEYS={"team1_ios":"someApiKey1", "team1_android":"someApiKey2", "team2_ios":"someApiKey3",  "team2_android":"someApiKey4"}
+```
+
+```typescript
+import { IgniteProvider } from 'react-native-ticketmaster-ignite';
+import Config from 'react-native-config'
+
+const platform = Platform.OS
+const teamApiKeys = JSON.parse(Config.TEAM_API_KEYS)
+const persistedTeam = '[SOME_PERSISTED_VALUE]'
+const apiKey = persistedTeam ? teamApiKeys[`${persistedTeam}_${platform}`] : teamApiKeys[`team1_${platform}`]
+
+<IgniteProvider
+  options={{
+    apiKey: apiKey,
+    clientName: CLIENT_NAME,
+    primaryColor: PRIMARY_COLOR
+  }}
+>
+    <App />
+</IgniteProvider>
+```
+
+### TicketsSdkModal (iOS only)
 
 Example:
 
@@ -282,7 +384,7 @@ return (
 
 ```
 
-#### TicketsSdkEmbedded
+### TicketsSdkEmbedded
 
 ```typescript
 
@@ -311,7 +413,7 @@ import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 return <TicketsSdkEmbedded />;
 ```
 
-#### SecureEntryView (Android only)
+### SecureEntryView (Android only)
 
 Replace `SECURE_ENTRY_TOKEN` with a token for a secure entry barcode.
 
@@ -326,11 +428,11 @@ import { SecureEntryAndroid } from 'react-native-ticketmaster-ignite';
 </View>
 ```
 
-#### RetailSDK
+### RetailSDK
 
 Module responsible for the purchase and prepurchase flows in the Retail SDK.
 
-###### Events Purchase
+##### Events Purchase
 
 Purchase flow (also known as Events Details Page or EDP - see more [here](https://ignite.ticketmaster.com/v1/docs/events-detail-page-edp)) should be used for buying single events by their IDs.
 
@@ -348,7 +450,7 @@ const onShowPurchase = async () => {
 };
 ```
 
-###### Venue PrePurchase
+##### Venue PrePurchase
 
 The venue prepurchase flow (also known as Venue Details Page or VDP - see more [here](https://ignite.ticketmaster.com/v1/docs/venue-detail-page-vdp)) should be used for showing events for a particular venue. From there, the user will be able to progress with a selected event into the purchase flow.
 
@@ -366,7 +468,7 @@ const onShowPrePurchaseVenue = async () => {
 };
 ```
 
-###### Attraction PrePurchase
+##### Attraction PrePurchase
 
 The attraction prepurchase flow (also known as Attraction Details Page or VDP - see more [here](https://ignite.ticketmaster.com/docs/attraction-detail-page-adp)) should be used for showing events for a particular attraction, eg. a sports team or musicial. From there, the user will be able to progress with a selected event into the purchase flow.
 
@@ -384,7 +486,7 @@ const onShowPrePurchaseAttraction = async () => {
 };
 ```
 
-## Analytics
+### Analytics
 
 You can send a callback method to `IgniteProvider` to receive Ignite SDK analytics in your app which you can then send off to your chosen analytics service.
 

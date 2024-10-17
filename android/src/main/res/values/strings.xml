@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">TicketmasterIgniteExample</string>
+    <string name="app_name"></string>
+    <string name="app_tm_modern_accounts_scheme_2"></string>
+    <string name="app_tm_modern_accounts_scheme_3"></string>
+    <string name="app_tm_modern_accounts_scheme_4"></string>
+    <string name="app_tm_modern_accounts_scheme_5"></string>
 </resources>

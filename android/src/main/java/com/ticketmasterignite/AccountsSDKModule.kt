@@ -2,6 +2,7 @@ package com.ticketmasterignite
 
 import android.app.Activity
 import android.content.Intent
+import android.annotation.SuppressLint
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
@@ -27,8 +28,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import Config
-import Region
 
 class AccountsSDKModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
@@ -73,28 +72,23 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun login(resultCallback: Callback) {
-    runBlocking() {
-      val loginStartedParams: WritableMap = Arguments.createMap().apply {
-        putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
+    IgniteSDKSingleton.getAuthenticationSDK()?.let { authentication ->
+      runBlocking() {
+        val loginStartedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
+        mResultCallback = resultCallback
+        val currentFragmentActivity = currentActivity as FragmentActivity
+        val intent = authentication.getLoginIntent(currentFragmentActivity)
+        currentActivity?.startActivityForResult(intent, CODE)
       }
-      GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
-      mResultCallback = resultCallback
-      val currentFragmentActivity = currentActivity as FragmentActivity
-      val authentication = TMAuthentication.Builder()
-        .apiKey(Config.get("apiKey"))
-        .clientName(Config.get("clientName")) // Team name to be displayed
-        .colors(TMAuthentication.ColorTheme())
-        .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
-        .region(Region.getRegion()) // Region that the SDK will use. Default is US
-        .build(currentFragmentActivity)
-      val intent = authentication.getLoginIntent(currentFragmentActivity)
-      currentActivity?.startActivityForResult(intent, CODE)
     }
   }
 
   @ReactMethod
   fun isLoggedIn(promise: Promise) =
-    TicketsSDKSingleton.getTMAuthentication()?.let { authentication ->
+    IgniteSDKSingleton.getAuthenticationSDK()?.let { authentication ->
       runBlocking {
         try {
           val response = withContext(context = Dispatchers.IO) {
@@ -116,8 +110,6 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun configureAccountsSDK(promise: Promise) {
     runBlocking(Dispatchers.Main) {
-      val region = Config.get("region")
-
       val configurationStartedParams: WritableMap = Arguments.createMap().apply {
         putString(
           "accountsSdkServiceConfigurationStarted",
@@ -130,10 +122,12 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         val authentication = TMAuthentication.Builder()
           .apiKey(Config.get("apiKey"))
           .clientName(Config.get("clientName"))
-          .colors(TMAuthentication.ColorTheme())
+          .colors(createTMAuthenticationColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
           .environment(TMXDeploymentEnvironment.Production)
           .region(Region.getRegion())
+          .forceNewSession(true)
           .build(currentFragmentActivity)
+        IgniteSDKSingleton.setAuthenticationSDK(authentication)
 
         val serviceConfiguredParams: WritableMap = Arguments.createMap().apply {
           putString("accountsSdkServiceConfigured", "accountsSdkServiceConfigured")
@@ -154,7 +148,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
               )
             }
             GlobalEventEmitter.sendEvent("igniteAnalytics", configuredCompletedParams)
-            promise.resolve(true)
+            promise.resolve("Accounts SDK configuration successful")
           }
       } catch (e: Exception) {
         promise.reject("Accounts SDK Configuration Error: ", e)
@@ -197,7 +191,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun getMemberInfo(promise: Promise) = TicketsSDKSingleton.getTMAuthentication()?.let {
+  fun getMemberInfo(promise: Promise) = IgniteSDKSingleton.getAuthenticationSDK()?.let {
     runBlocking {
       try {
         val archticsAccessToken = async { it.getToken(AuthSource.ARCHTICS) }
@@ -224,7 +218,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun refreshToken(promise: Promise) = TicketsSDKSingleton.getTMAuthentication()?.let {
+  fun refreshToken(promise: Promise) = IgniteSDKSingleton.getAuthenticationSDK()?.let {
     runBlocking {
       try {
         val hostAccessToken = async { it.getToken(AuthSource.HOST) }
@@ -272,6 +266,24 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         primary = Color(color),
         primaryVariant = Color(color),
         secondary = Color(color)
+      )
+    )
+
+  @SuppressLint("ConflictingOnColor")
+  private fun createTMAuthenticationColors(color: Int): TMAuthentication.ColorTheme =
+    TMAuthentication.ColorTheme(
+      // The Color class is part of the Compose library
+      lightColors(
+        primary = Color(color),
+        primaryVariant = Color(color),
+        secondary = Color(color),
+        onPrimary = Color.White // Color used for text and icons displayed on top of the primary color.
+      ),
+      darkColors(
+        primary = Color(color),
+        primaryVariant = Color(color),
+        secondary = Color(color),
+        onPrimary = Color.White // Color used for text and icons displayed on top of the primary color.
       )
     )
 }
