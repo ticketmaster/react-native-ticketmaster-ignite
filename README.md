@@ -286,9 +286,9 @@ import { Platform } from 'react-native'
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 import Config from 'react-native-config'
 
+const { refreshConfiguration } = useIgnite();
 const platform = Platform.OS;
 const teamApiKeys = JSON.parse(Config.TEAM_API_KEYS);
-const { refreshConfiguration } = useIgnite();
 const team2 = 'team2';
 const apiKey = teamApiKeys[`${team2}_${platform}`];
 
