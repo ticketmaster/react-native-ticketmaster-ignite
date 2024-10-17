@@ -61,7 +61,7 @@ If you have multiple schemes you can add them using the following format:
 <string name="app_tm_modern_accounts_scheme_5">samplescheme5</string>
 ```
 
-You can set up to 5 teams
+You can set up to 5 schemes
 
 #### allowBackup in AndroidManifest
 
@@ -270,10 +270,10 @@ type LogoutParams = {
 
 #### Reconfigure Accounts SDK
 
-If you want to switch between different API keys within on app, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them.
+If you want to switch between different API keys within one app, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them.
 
 
-The below uses React Native Config but feel free to use whatever appropriate to store your API key values
+The below example uses React Native Config but feel free to use whatever appropriate to store your API key values
 
 Example:
 
@@ -286,11 +286,11 @@ import { Platform } from 'react-native'
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 import Config from 'react-native-config'
 
-const platform = Platform.OS
-const teamApiKeys = JSON.parse(Config.TEAM_API_KEYS)
+const platform = Platform.OS;
+const teamApiKeys = JSON.parse(Config.TEAM_API_KEYS);
 const { refreshConfiguration } = useIgnite();
-const team2 = 'team2'
-const apiKey = teamApiKeys[`${team2}_${platform}`]
+const team2 = 'team2';
+const apiKey = teamApiKeys[`${team2}_${platform}`];
 
 try {
   await refreshConfiguration({
@@ -303,14 +303,14 @@ try {
 }
 ```
 
-The `refreshConfiguration()` method from the `useIgnite` has the below list of properties (apiKey is the only ):
+The `refreshConfiguration()` method from the `useIgnite` accepts the below list of properties (apiKey is the only compulsory param):
 
 - `apiKey` - An API configuration key from your Ticketmaster developer account
 - `clientName` - Company name 
 - `primaryColor` - Company brand color
 - `onSuccess` - a callback that fires after successful Accounts SDK configuration
 - `onLoginSucess` - a callback that fires after the user successfully logins
-- `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they switch to a new login configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app.
+- `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they login after switching to a new API key configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app.
 - `skipUpdate` - Set value to `true` to prevent a rerender after successful authentication (⚠️ warning: if set to `true`, `isLoggedIn`, `isLoggingIn` and `memberInfo` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually. It's recommended you implement AccountsSDK directly and not use this hook if you want complete control of React Native screen and state updates. The default value is `false`.)
 
 Here are the types:
@@ -340,10 +340,10 @@ TEAM_API_KEYS={"team1_ios":"someApiKey1", "team1_android":"someApiKey2", "team2_
 import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 import Config from 'react-native-config'
 
-const platform = Platform.OS
-const teamApiKeys = JSON.parse(Config.TEAM_API_KEYS)
-const persistedTeam = '[SOME_PERSISTED_VALUE]'
-const apiKey = persistedTeam ? teamApiKeys[`${persistedTeam}_${platform}`] : teamApiKeys[`team1_${platform}`]
+const platform = Platform.OS;
+const teamApiKeys = JSON.parse(Config.TEAM_API_KEYS);
+const persistedTeam = '[SOME_PERSISTED_VALUE]';
+const apiKey = persistedTeam ? teamApiKeys[`${persistedTeam}_${platform}`] : teamApiKeys[`team1_${platform}`];
 
 <IgniteProvider
   options={{
