@@ -273,28 +273,14 @@ type LogoutParams = {
 If you want to switch between different API keys within one app, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them.
 
 
-The below example uses React Native Config but feel free to use whatever appropriate to store your API key values
-
 Example:
 
-```env
-TEAM_API_KEYS={"team1_ios":"someApiKey1", "team1_android":"someApiKey2", "team2_ios":"someApiKey3",  "team2_android":"someApiKey4"}
-```
-
 ```tsx
-import { Platform } from 'react-native'
 import { useIgnite } from 'react-native-ticketmaster-ignite';
-import Config from 'react-native-config'
-
-const { refreshConfiguration } = useIgnite();
-const platform = Platform.OS;
-const teamApiKeys = JSON.parse(Config.TEAM_API_KEYS);
-const team2 = 'team2';
-const apiKey = teamApiKeys[`${team2}_${platform}`];
 
 try {
   await refreshConfiguration({
-    apiKey: apiKey,
+    apiKey: 'someApiKey',
     clientName: 'Team 2'
     primaryColor: '#FF0000',
   });
@@ -309,7 +295,7 @@ The `refreshConfiguration()` method from the `useIgnite` accepts the below list 
 - `clientName` - Company name 
 - `primaryColor` - Company brand color
 - `onSuccess` - a callback that fires after successful Accounts SDK configuration
-- `onLoginSuccess` - a callback that fires after the user successfully logins
+- `onLoginSuccess` - a callback that fires after successful login
 - `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they login after switching to a new API key configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app.
 - `skipUpdate` - Set value to `true` to prevent a rerender after successful authentication (⚠️ warning: if set to `true`, `isLoggedIn`, `isLoggingIn` and `memberInfo` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually. It's recommended you implement AccountsSDK directly and not use this hook if you want complete control of React Native screen and state updates. The default value is `false`.)
 
@@ -327,34 +313,8 @@ type RefreshConfigParams = {
 };
 ```
 
-You will need give `IgniteProvider` a default API key and you will have to persist the users most recently selected API key so that it can be provided to
-`IgniteProvider` on the next app launch.
+`IgniteProvider` always requires an API key so make sure you have set a default/fallback for app launch. This library does not persist API keys, so you will need to persist the users previous team selection to make sure the correct API key is used after app restarts.
 
-Possible implementation example below:
-
-```env
-TEAM_API_KEYS={"team1_ios":"someApiKey1", "team1_android":"someApiKey2", "team2_ios":"someApiKey3",  "team2_android":"someApiKey4"}
-```
-
-```typescript
-import { IgniteProvider } from 'react-native-ticketmaster-ignite';
-import Config from 'react-native-config'
-
-const platform = Platform.OS;
-const teamApiKeys = JSON.parse(Config.TEAM_API_KEYS);
-const persistedTeam = '[SOME_PERSISTED_VALUE]';
-const apiKey = persistedTeam ? teamApiKeys[`${persistedTeam}_${platform}`] : teamApiKeys[`team1_${platform}`];
-
-<IgniteProvider
-  options={{
-    apiKey: apiKey,
-    clientName: CLIENT_NAME,
-    primaryColor: PRIMARY_COLOR
-  }}
->
-    <App />
-</IgniteProvider>
-```
 
 ### TicketsSdkModal (iOS only)
 
