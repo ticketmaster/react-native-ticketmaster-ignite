@@ -3,9 +3,7 @@ package com.ticketmasterignite.retail
 import android.os.Bundle
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.ticketmasterignite.R
-import com.ticketmaster.authenticationsdk.TMXDeploymentRegion
 import com.ticketmaster.discoveryapi.enums.TMMarketDomain
 import com.ticketmaster.foundation.entity.TMAuthenticationParams
 import com.ticketmaster.purchase.TMPurchase
@@ -15,7 +13,6 @@ import com.ticketmaster.purchase.listener.TMPurchaseFavoritesListener
 import com.ticketmaster.purchase.listener.TMPurchaseSharingListener
 import com.ticketmaster.purchase.listener.TMPurchaseUserAnalyticsListener
 import com.ticketmaster.purchase.listener.TMPurchaseWebAnalyticsListener
-import Region
 
 class PurchaseActivity : AppCompatActivity() {
   private val userAnalyticsListener: TMPurchaseUserAnalyticsListener =
