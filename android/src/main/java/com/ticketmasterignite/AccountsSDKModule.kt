@@ -158,33 +158,28 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun logout(promise: Promise) {
-    runBlocking {
-      val logoutStartedParams: WritableMap = Arguments.createMap().apply {
-        putString("accountsSdkLogoutStarted", "accountsSdkLogoutStarted")
-      }
-      GlobalEventEmitter.sendEvent("igniteAnalytics", logoutStartedParams)
-      withContext(context = Dispatchers.IO) {
-        try {
-          val currentFragmentActivity = currentActivity as FragmentActivity
-          val authentication = TMAuthentication.Builder()
-            .apiKey(Config.get("apiKey"))
-            .clientName(Config.get("clientName"))
-            .colors(TMAuthentication.ColorTheme())
-            .environment(TMXDeploymentEnvironment.Production)
-            .region(Region.getRegion())
-            .build(currentFragmentActivity)
-          authentication.logout(currentFragmentActivity)
-          val loggedOutParams: WritableMap = Arguments.createMap().apply {
-            putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
+    IgniteSDKSingleton.getAuthenticationSDK()?.let { authentication ->
+      runBlocking() {
+        val logoutStartedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkLogoutStarted", "accountsSdkLogoutStarted")
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutStartedParams)
+        withContext(context = Dispatchers.IO) {
+          try {
+            val currentFragmentActivity = currentActivity as FragmentActivity
+            authentication.logout(currentFragmentActivity)
+            val loggedOutParams: WritableMap = Arguments.createMap().apply {
+              putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
+            }
+            GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
+            val logoutCompletedParams: WritableMap = Arguments.createMap().apply {
+              putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
+            }
+            GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
+            promise.resolve(true)
+          } catch (e: Exception) {
+            promise.reject("Accounts SDK Logout Error: ", e)
           }
-          GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
-          val logoutCompletedParams: WritableMap = Arguments.createMap().apply {
-            putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
-          }
-          GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
-          promise.resolve(true)
-        } catch (e: Exception) {
-          promise.reject("Accounts SDK Logout Error: ", e)
         }
       }
     }
