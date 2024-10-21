@@ -71,12 +71,12 @@ export const IgniteContext = createContext<IgniteContextType>({
   getMemberInfo: async () => null,
   refreshToken: async () => null,
   refreshConfiguration: async () => {},
+  isLoggingIn: false,
   authState: {
     isConfigured: false,
     isLoggedIn: false,
     memberInfo: null,
   },
-  isLoggingIn: false,
 });
 
 export const IgniteProvider: React.FC<IgniteProviderProps> = ({
@@ -321,9 +321,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         clientName && Config.setConfig('clientName', clientName);
         primaryColor && Config.setConfig('primaryColor', primaryColor);
         await configureAccountsSDK();
+        onSuccess && onSuccess();
         !skipAutoLogin &&
           (await login({ onLogin: onLoginSuccess, skipUpdate }));
-        onSuccess && onSuccess();
       } catch (e) {
         throw e;
       }

@@ -8,26 +8,29 @@ import SectionHeader from './SectionHeader';
 const RetailSDKOptions = () => {
   const onShowPurchase = async () => {
     try {
-      await RetailSDK.presentPurchase(Config.DEMO_EVENT_ID);
+      RetailSDK.presentPurchase(Config.DEMO_EVENT_ID);
     } catch (e) {
-      console.log('error when showing Purchase', (e as Error).message);
+      console.log('Retail SDK error - Purchase:', (e as Error).message);
     }
   };
 
   const onShowPrePurchaseVenue = async () => {
     try {
-      await RetailSDK.presentPrePurchaseVenue(Config.DEMO_VENUE_ID);
+      RetailSDK.presentPrePurchaseVenue(Config.DEMO_VENUE_ID);
     } catch (e) {
-      console.log('error when showing PrePurchase venue', (e as Error).message);
+      console.log(
+        'Retail SDK error - PrePurchase venue:',
+        (e as Error).message
+      );
     }
   };
 
   const onShowPrePurchaseAttraction = async () => {
     try {
-      await RetailSDK.presentPrePurchaseAttraction(Config.DEMO_ATTRACTION_ID);
+      RetailSDK.presentPrePurchaseAttraction(Config.DEMO_ATTRACTION_ID);
     } catch (e) {
       console.log(
-        'error when showing PrePurchase attraction',
+        'Retail SDK error - PrePurchase attraction:',
         (e as Error).message
       );
     }

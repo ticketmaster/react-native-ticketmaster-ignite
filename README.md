@@ -173,7 +173,7 @@ Exposes the following functions:
 
 To handle authentication in a React Native app you can either use the Accounts SDK module mentioned above directly or you can use the `useIgnite` hook.
 
-The `useIgnite` hook implements all of the native Accounts SDK methods for easy out of the box use in a React Native apps. It also provides `isLoggingIn` and an `authState` object that with properties `isLoggedIn`, `memberInfo` and `isConfigured`, these properties update themselves during and after authenticaion.
+The `useIgnite` hook implements all of the native Accounts SDK methods for easy out of the box use in a React Native apps. It also provides `isLoggingIn` and an `authState` object with properties `isLoggedIn`, `memberInfo` and `isConfigured`, these properties update themselves during and after authenticaion.
 
 Once the user authenticates `isLoggedIn` will remain true after app restarts
 
@@ -405,7 +405,7 @@ import { RetailSDK } from 'react-native-ticketmaster-ignite';
 
 const onShowPurchase = async () => {
   try {
-    await RetailSDK.presentPurchase(DEMO_EVENT_ID);
+    RetailSDK.presentPurchase(DEMO_EVENT_ID);
   } catch (e) {
     console.log((e as Error).message);
   }
@@ -423,7 +423,7 @@ import { RetailSDK } from 'react-native-ticketmaster-ignite';
 
 const onShowPrePurchaseVenue = async () => {
   try {
-    await RetailSDK.presentPrePurchaseVenue(DEMO_VENUE_ID);
+    RetailSDK.presentPrePurchaseVenue(DEMO_VENUE_ID);
   } catch (e) {
     console.log((e as Error).message);
   }
@@ -441,7 +441,7 @@ import { RetailSDK } from 'react-native-ticketmaster-ignite';
 
 const onShowPrePurchaseAttraction = async () => {
   try {
-    await RetailSDK.presentPrePurchaseAttraction(DEMO_ATTRACTION_ID);
+    RetailSDK.presentPrePurchaseAttraction(DEMO_ATTRACTION_ID);
   } catch (e) {
     console.log((e as Error).message);
   }
