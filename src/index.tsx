@@ -16,4 +16,4 @@ export {
   useIgnite,
 };
 
-export { IgniteAnalytics, IgniteAnalyticName } from './types';
+export { IgniteAnalytics, IgniteAnalyticName, PrebuiltModules } from './types';

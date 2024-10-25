@@ -109,3 +109,23 @@ export enum IgniteAnalyticName {
   PURCHASE_SDK_DID_VIEW_SUB_PAGE_FOR = 'purchaseSdkDidViewSubPageFor',
   PURCHASE_SDK_DID_MAKE_DECISION_FOR = 'purchaseSdkDidMakeDecisionFor',
 }
+
+export type PrebuiltModules = {
+  moreTicketsActionsModule: {
+    enabled: boolean;
+  };
+  venueDirectionsModule: {
+    enabled: boolean;
+  };
+  seatUpgradesModule: {
+    enabled: boolean;
+  };
+  venueConcessionsModule: {
+    enabled: boolean;
+    orderButtonCallback: () => void | Promise<void>;
+    walletButtonCallback: () => void | Promise<void>;
+  };
+  invoiceModule: {
+    enabled: boolean;
+  };
+};

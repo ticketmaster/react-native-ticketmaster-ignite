@@ -1,10 +1,14 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
-import { IgniteAnalytics } from 'react-native-ticketmaster-ignite';
+import {
+  IgniteAnalytics,
+  PrebuiltModules,
+} from 'react-native-ticketmaster-ignite';
 
 interface IgniteProviderProps {
   children: React.ReactNode;
   autoUpdate?: boolean;
+  prebuiltModules: PrebuiltModules;
   analytics?: (data: IgniteAnalytics) => void | Promise<void>;
   options: {
     apiKey: string;
@@ -36,8 +40,8 @@ type RefreshConfigParams = {
   primaryColor?: string;
   skipAutoLogin?: boolean;
   skipUpdate?: boolean;
-  onSuccess?: () => void;
-  onLoginSuccess?: () => void;
+  onSuccess?: () => void | Promise<void>;
+  onLoginSuccess?: () => void | Promise<void>;
 };
 
 type IgniteContextType = {
@@ -83,10 +87,18 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   children,
   options,
   autoUpdate = true,
+  prebuiltModules,
   analytics,
 }) => {
   const { Config, AccountsSDK } = NativeModules;
   const { apiKey, clientName, primaryColor, region } = options;
+  const {
+    moreTicketsActionsModule,
+    venueDirectionsModule,
+    seatUpgradesModule,
+    venueConcessionsModule,
+    invoiceModule,
+  } = prebuiltModules;
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
     isConfigured: false,
@@ -140,13 +152,52 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     }
   }, [AccountsSDK, autoUpdate, setAccountDetails]);
 
-  useEffect(() => {
+  const setNativeConfigValues = useCallback(() => {
     Config.setConfig('apiKey', apiKey);
     Config.setConfig('clientName', clientName);
     Config.setConfig('primaryColor', primaryColor);
     Config.setConfig('region', region || 'US');
+    moreTicketsActionsModule &&
+      Config.setConfig(
+        'moreTicketsActionsModule',
+        moreTicketsActionsModule.enabled ? 'true' : 'false'
+      );
+    venueDirectionsModule &&
+      Config.setConfig(
+        'venueDirectionsModule',
+        venueDirectionsModule.enabled ? 'true' : 'false'
+      );
+    seatUpgradesModule &&
+      Config.setConfig(
+        'seatUpgradesModule',
+        seatUpgradesModule.enabled ? 'true' : 'false'
+      );
+    venueConcessionsModule &&
+      Config.setConfig(
+        'venueConcessionsModule',
+        venueConcessionsModule.enabled ? 'true' : 'false'
+      );
+    invoiceModule &&
+      Config.setConfig(
+        'invoiceModule',
+        invoiceModule.enabled ? 'true' : 'false'
+      );
+  }, [
+    Config,
+    apiKey,
+    clientName,
+    invoiceModule,
+    moreTicketsActionsModule,
+    primaryColor,
+    region,
+    seatUpgradesModule,
+    venueConcessionsModule,
+    venueDirectionsModule,
+  ]);
 
+  useEffect(() => {
     const onConfigureAccountsSdk = async () => {
+      setNativeConfigValues();
       try {
         await configureAccountsSDK();
       } catch (e) {
