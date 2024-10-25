@@ -8,7 +8,7 @@ import {
 interface IgniteProviderProps {
   children: React.ReactNode;
   autoUpdate?: boolean;
-  prebuiltModules: PrebuiltModules;
+  prebuiltModules?: PrebuiltModules;
   analytics?: (data: IgniteAnalytics) => void | Promise<void>;
   options: {
     apiKey: string;
@@ -87,7 +87,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   children,
   options,
   autoUpdate = true,
-  prebuiltModules,
+  prebuiltModules = {},
   analytics,
 }) => {
   const { Config, AccountsSDK } = NativeModules;

@@ -111,21 +111,21 @@ export enum IgniteAnalyticName {
 }
 
 export type PrebuiltModules = {
-  moreTicketsActionsModule: {
+  moreTicketsActionsModule?: {
     enabled: boolean;
   };
-  venueDirectionsModule: {
+  venueDirectionsModule?: {
     enabled: boolean;
   };
-  seatUpgradesModule: {
+  seatUpgradesModule?: {
     enabled: boolean;
   };
-  venueConcessionsModule: {
+  venueConcessionsModule?: {
     enabled: boolean;
     orderButtonCallback: () => void | Promise<void>;
     walletButtonCallback: () => void | Promise<void>;
   };
-  invoiceModule: {
+  invoiceModule?: {
     enabled: boolean;
   };
 };
