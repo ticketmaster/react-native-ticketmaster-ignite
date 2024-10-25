@@ -133,23 +133,12 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           putString("accountsSdkServiceConfigured", "accountsSdkServiceConfigured")
         }
         GlobalEventEmitter.sendEvent("igniteAnalytics", serviceConfiguredParams)
+        val configuredCompletedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkServiceConfiguredCompleted", "accountsSdkServiceConfiguredCompleted")
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", configuredCompletedParams)
 
-        TicketsSDKClient
-          .Builder()
-          .authenticationSDKClient(authentication)
-          .colors(createTicketsColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
-          .build(currentFragmentActivity)
-          .apply {
-            TicketsSDKSingleton.setTicketsSdkClient(this)
-            val configuredCompletedParams: WritableMap = Arguments.createMap().apply {
-              putString(
-                "accountsSdkServiceConfiguredCompleted",
-                "accountsSdkServiceConfiguredCompleted"
-              )
-            }
-            GlobalEventEmitter.sendEvent("igniteAnalytics", configuredCompletedParams)
-            promise.resolve("Accounts SDK configuration successful")
-          }
+        promise.resolve("Accounts SDK configuration successful")
       } catch (e: Exception) {
         promise.reject("Accounts SDK Configuration Error: ", e)
       }
