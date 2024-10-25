@@ -154,11 +154,11 @@ The `eventHeaderType` property specifies what tools will be available in the hea
 
 | Property | Explanation | Demo |
 |----------|----------|----------|
-| `NO_TOOLBARS`    | Show no toolbars in Event's header   | ![](docs/assets/NO_TOOLBARS.png)
+| `NO_TOOLBARS`    | Show no toolbars in Event's header   | ![](docs/assets/NO_TOOLBARS.png){width= 70%}
    |
-| `EVENT_INFO`    | Show only the event info button |![](docs/assets/EVENT_INFO.png)|
-| `EVENT_SHARE`   | Show only the event share button   |![](docs/assets/EVENT_SHARE.png)|
-| `EVENT_INFO_SHARE`    | Show both the info and share buttons   |![](docs/assets/EVENT_INFO_SHARE.png)|
+| `EVENT_INFO`    | Show only the event info button |![](docs/assets/EVENT_INFO.png){width= 70%}|
+| `EVENT_SHARE`   | Show only the event share button   |![](docs/assets/EVENT_SHARE.png){width= 70%}|
+| `EVENT_INFO_SHARE`    | Show both the info and share buttons   |![](docs/assets/EVENT_INFO_SHARE.png){width= 70%}|
 
 ##### The `autoUpdate` prop 
 
