@@ -142,7 +142,7 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 </IgniteProvider>
 ```
 
-###### The `region` property
+##### The `region` property
 
 The options prop also accepts a `region` property `US` or `UK`. The default value is `US` and should be used unless you have specifically been told to set your region to `UK`.
 
