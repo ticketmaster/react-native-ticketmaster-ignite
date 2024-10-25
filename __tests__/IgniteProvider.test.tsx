@@ -65,6 +65,50 @@ describe('IgniteProvider', () => {
         fakePrimaryColor
       );
     });
+
+    describe('with region', () => {
+      it('calls with the custom region when passed', () => {
+        render(
+          <IgniteProvider options={{ ...options, region: 'UK' }}>
+            <View />
+          </IgniteProvider>
+        );
+
+        expect(fakeSetConfig).toHaveBeenCalledWith('region', 'UK');
+      });
+
+      it('calls with the US region when no region passed', () => {
+        render(component);
+
+        expect(fakeSetConfig).toHaveBeenCalledWith('region', 'US');
+      });
+    });
+
+    describe('with eventHeaderType', () => {
+      it('calls with the custom eventHeaderType when passed', () => {
+        render(
+          <IgniteProvider
+            options={{ ...options, eventHeaderType: 'EVENT_INFO' }}
+          >
+            <View />
+          </IgniteProvider>
+        );
+
+        expect(fakeSetConfig).toHaveBeenCalledWith(
+          'eventHeaderType',
+          'EVENT_INFO'
+        );
+      });
+
+      it('calls with the EVENT_INFO_SHARE eventHeaderType when no eventHeaderType passed', () => {
+        render(component);
+
+        expect(fakeSetConfig).toHaveBeenCalledWith(
+          'eventHeaderType',
+          'EVENT_INFO_SHARE'
+        );
+      });
+    });
   });
 
   describe('calls AccountsSDK methods on render', () => {

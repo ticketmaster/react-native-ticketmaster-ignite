@@ -11,6 +11,7 @@ interface IgniteProviderProps {
     clientName: string;
     primaryColor: string;
     region?: Region;
+    eventHeaderType?: EventHeaderType;
   };
 }
 
@@ -56,6 +57,12 @@ type IgniteContextType = {
 
 type Region = 'US' | 'UK';
 
+type EventHeaderType =
+  | 'NO_TOOLBARS'
+  | 'EVENT_INFO'
+  | 'EVENT_SHARE'
+  | 'EVENT_INFO_SHARE';
+
 type AuthSource = {
   hostAccessToken?: string;
   archticsAccessToken?: string;
@@ -86,7 +93,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   analytics,
 }) => {
   const { Config, AccountsSDK } = NativeModules;
-  const { apiKey, clientName, primaryColor, region } = options;
+  const { apiKey, clientName, primaryColor, region, eventHeaderType } = options;
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
     isConfigured: false,
@@ -145,6 +152,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('clientName', clientName);
     Config.setConfig('primaryColor', primaryColor);
     Config.setConfig('region', region || 'US');
+    Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
 
     const onConfigureAccountsSdk = async () => {
       try {
