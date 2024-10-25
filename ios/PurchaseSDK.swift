@@ -21,6 +21,13 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
       self.dismiss(animated: true)
     }
   }
+
+  enum EventHeaderType: String {
+      case noToolbars = "NO_TOOLBARS"
+      case eventInfo = "EVENT_INFO"
+      case eventShare = "EVENT_SHARE"
+      case eventInfoShare = "EVENT_INFO_SHARE"
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -28,9 +35,9 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
     let apiKey = Config.shared.get(for: "apiKey")
     let region = Config.shared.get(for: "region")
     let primaryColor = Config.shared.get(for: "primaryColor")
-    let eventHeaderType = Config.shared.get(for: "eventHeaderType")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
-    
+    let eventHeaderTypeString = Config.shared.get(for: "eventHeaderType")
+    let eventHeaderType = EventHeaderType(rawValue: eventHeaderTypeString)
     
     TMPurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: { isPurchaseApiSet in
       print("Purchase api key set result: \(isPurchaseApiSet)")
@@ -39,11 +46,10 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
       TMPurchase.shared.marketDomain = .US
 
       let headerConfig = TMPurchaseWebsiteConfiguration(eventID: self.eventId)
-      headerConfig.showInfoToolbarButton = (eventHeaderType == "EVENT_INFO" || eventHeaderType == "EVENT_INFO_SHARE")
-      headerConfig.showShareToolbarButton = (eventHeaderType == "EVENT_SHARE" || eventHeaderType == "EVENT_INFO_SHARE")
+      headerConfig.showInfoToolbarButton = (eventHeaderType == .eventInfo || eventHeaderType == .eventInfoShare)
+      headerConfig.showShareToolbarButton = (eventHeaderType == .eventShare || eventHeaderType == .eventInfoShare)
 
       let edpNav = TMPurchaseNavigationController(configuration: headerConfig)
-
       edpNav.modalPresentationStyle = .fullScreen
       edpNav.userAnalyticsDelegate =  self
       edpNav.webAnalyticsDelegate =  self
