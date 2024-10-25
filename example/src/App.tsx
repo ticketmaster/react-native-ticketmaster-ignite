@@ -27,6 +27,7 @@ const App = () => {
             apiKey: Config.API_KEY || '',
             clientName: Config.CLIENT_NAME || '',
             primaryColor: Config.PRIMARY_COLOR || '',
+            eventHeaderType: 'EVENT_INFO',
           }}
         >
           <Root />

@@ -28,6 +28,7 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
     let apiKey = Config.shared.get(for: "apiKey")
     let region = Config.shared.get(for: "region")
     let primaryColor = Config.shared.get(for: "primaryColor")
+    let eventHeaderType = Config.shared.get(for: "eventHeaderType")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
     
     
@@ -35,8 +36,14 @@ class PurchaseSDK: UIViewController, TMPurchaseUserAnalyticsDelegate, TMPurchase
       print("Purchase api key set result: \(isPurchaseApiSet)")
       
       TMPurchase.shared.brandColor = backgroundColor!
-      
-      let edpNav = TMPurchaseNavigationController.eventDetailsNavigationController(eventIdentifier: self.eventId, marketDomain: .US)
+      TMPurchase.shared.marketDomain = .US
+
+      let headerConfig = TMPurchaseWebsiteConfiguration(eventID: self.eventId)
+      headerConfig.showInfoToolbarButton = (eventHeaderType == "EVENT_INFO" || eventHeaderType == "EVENT_INFO_SHARE")
+      headerConfig.showShareToolbarButton = (eventHeaderType == "EVENT_SHARE" || eventHeaderType == "EVENT_INFO_SHARE")
+
+      let edpNav = TMPurchaseNavigationController(configuration: headerConfig)
+
       edpNav.modalPresentationStyle = .fullScreen
       edpNav.userAnalyticsDelegate =  self
       edpNav.webAnalyticsDelegate =  self
