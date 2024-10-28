@@ -173,7 +173,10 @@ class TicketsFragment() : Fragment() {
                 .apply {
                     //After creating the TicketsSDKClient object, add it into the TicketsSDKSingleton
                     TicketsSDKSingleton.setTicketsSdkClient(this)
-
+                    TicketsSDKSingleton.setEnvironment(
+                      this@TicketsFragment.requireActivity(),
+                      TicketsSDKSingleton.SDKEnvironment.Production,
+                      Region.getTicketsSDKRegion());
                     //Validate if there is an active token.
                     if (tokenMap.isNotEmpty()) {
                         //If there is an active token, it launches the event fragment

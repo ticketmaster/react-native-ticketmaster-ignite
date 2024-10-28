@@ -1,5 +1,6 @@
 package com.ticketmasterignite.retail
 
+import EventHeader
 import android.os.Bundle
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -37,8 +38,8 @@ class PurchaseActivity : AppCompatActivity() {
       val tmPurchaseWebsiteConfiguration = TMPurchaseWebsiteConfiguration(
         intent.getStringExtra("eventId").orEmpty(),
         TMMarketDomain.US,
-        showInfoToolbarButton = true,
-        showShareToolbarButton = true
+        showInfoToolbarButton = EventHeader.getShowInfoToolbarButtonValue(),
+        showShareToolbarButton = EventHeader.getShowShareToolbarButtonValue(),
       )
 
       val factory = TMPurchaseFragmentFactory(

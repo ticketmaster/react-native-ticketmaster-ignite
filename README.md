@@ -116,11 +116,15 @@ In `android/build.gradle` set the `minSdkVersion` to `26`.
 
 This is the only module that must be implemented for the library to work correctly. The purpose of `IgniteProvider` is to pass the config `options` to the native code.
 
-Props accepted are:
+Props required in `options` are:
 
 - `apiKey`
 - `clientName`
 - `primaryColor`
+
+Additional available props are: 
+- `region`
+- `eventHeaderType`
 
 In order to use it, wrap your application with the `IgniteProvider` and pass the API key and client name as a prop:
 
@@ -138,7 +142,24 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 </IgniteProvider>
 ```
 
+##### The `region` property
+
 The options prop also accepts a `region` property `US` or `UK`. The default value is `US` and should be used unless you have specifically been told to set your region to `UK`.
+
+##### The `eventHeaderType` property 
+
+The `eventHeaderType` property accepts one of the following values - `NO_TOOLBARS`, `EVENT_INFO`, `EVENT_SHARE` and `EVENT_INFO_SHARE`. When the property has not been passed, the `IgniteProvider` will default to `EVENT_INFO_SHARE`. 
+
+The `eventHeaderType` property specifies what tools will be available in the header of the event screen:
+
+| Property | Explanation | Demo |
+|----------|----------|----------|
+| `NO_TOOLBARS`    | Show no toolbars in Event's header   | <img src="docs/assets/NO_TOOLBARS.png" width="400"> |
+| `EVENT_INFO`    | Show only the event info button |<img src="docs/assets/EVENT_INFO.png" width="400">|
+| `EVENT_SHARE`   | Show only the event share button   |<img src="docs/assets/EVENT_SHARE.png" width="400">|
+| `EVENT_INFO_SHARE`    | Show both the info and share buttons   |<img src="docs/assets/EVENT_INFO_SHARE.png" width="400">|
+
+##### The `autoUpdate` prop 
 
 `autoUpdate` is a prop that can be set to false to prevent `IgniteProvider` from rerendering your app on app launch. (⚠️ warning: if set to `false`, `authState`'s `isLoggedIn`, `memberInfo` and `isConfigured` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually after app restarts. The default value is `true`. See more on `authState` later on.)
 
