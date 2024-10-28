@@ -501,6 +501,19 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
 </IgniteProvider>
 ```
 
+## Running the example app  
+
+To run the demo/example app:
+
+Clone the project and then
+
+```bash
+cd react-native-ticketmaster-ignite
+yarn
+cd example/ios
+pod install
+```
+
 ## Environment variables
 
 You will need an API key for this app to run, you can get one here [Developer Account](https://developer-acct.ticketmaster.com/user/login).
