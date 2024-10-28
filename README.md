@@ -13,7 +13,7 @@
 
 This library serves as a wrapper for the 3 Ticketmaster Ignite SDK's: [Accounts](https://ignite.ticketmaster.com/docs/accounts-sdk-overview), [Retail](https://ignite.ticketmaster.com/docs/retail-sdk-overview) and [Tickets](https://ignite.ticketmaster.com/docs/tickets-sdk-overview).
 
-In order to use it, setup a developer account with Ticketmaster [here](https://developer.ticketmaster.com/). Once you have it you'll get an **API key** and **scheme** that you'll need to use to finish the setup (see the setting variables paragraph below).
+In order to use the library, setup a developer account with Ticketmaster by contacting nexus_sdk@ticketmaster.com. When your account is activated you will receive an **API key** and **scheme** that you'll need to use to finish the setup (see the setting variables paragraph below).
 
 ## Installation
 
@@ -499,6 +499,19 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
 >
     <App />
 </IgniteProvider>
+```
+
+## Running the example app  
+
+To run the demo/example app:
+
+Clone the project and then
+
+```bash
+cd react-native-ticketmaster-ignite
+yarn
+cd example/ios
+pod install
 ```
 
 ## Environment variables
