@@ -8,6 +8,7 @@
 #endif
 
 @interface RNTTicketsSdkEmbeddedViewManager : RCTViewManager
+@property (strong) TicketsSdkEmbeddedViewController *ticketsViewController;
 @end
 
 @implementation RNTTicketsSdkEmbeddedViewManager
@@ -26,11 +27,10 @@ RCT_EXPORT_MODULE(RNTTicketsSdkEmbeddedView)
 
 - (UIView *)view
 {
-    TicketsSdkEmbeddedViewController *vc = [[TicketsSdkEmbeddedViewController alloc] init];
-  return vc.view;
+    self.ticketsViewController = [[TicketsSdkEmbeddedViewController alloc] init];
+
+    return self.ticketsViewController.view;
 }
-
-
 
 
 @end

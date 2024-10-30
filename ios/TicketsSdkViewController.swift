@@ -28,8 +28,7 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
     func sendEvent(_ name: String, body: [String : Any]) {
         EventEmitter.emitter.sendEvent(withName: name, body: body)
     }
-    
-    
+
     public func userDidView(
         page: TMTickets.Analytics.Page,
         metadata: TMTickets.Analytics.MetadataType) {

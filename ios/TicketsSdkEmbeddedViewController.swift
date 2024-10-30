@@ -1,8 +1,7 @@
 import TicketmasterTickets
 
-public class TicketsSdkEmbeddedViewController: UIViewController, TMTicketsAnalyticsDelegate {
-    var ticketsView: TMTicketsView!
-    
+@objc public class TicketsSdkEmbeddedViewController: UIViewController, TMTicketsAnalyticsDelegate {
+
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -11,9 +10,9 @@ public class TicketsSdkEmbeddedViewController: UIViewController, TMTicketsAnalyt
 
         TMTickets.shared.configure {
             print(" - Tickets SDK Configured")
-            self.ticketsView = TMTicketsView.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: self.view.frame.height))
-            self.view.addSubview(self.ticketsView)
-            TMTickets.shared.start(ticketsView: self.ticketsView)
+            let ticketsView = TMTicketsView.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: self.view.frame.height))
+            self.view.addSubview(ticketsView)
+            TMTickets.shared.start(ticketsView: ticketsView)
         } failure: { error in
             print(" - Tickets SDK Configuration Error: \(error.localizedDescription)")
         }
@@ -25,11 +24,11 @@ public class TicketsSdkEmbeddedViewController: UIViewController, TMTicketsAnalyt
         
     }
     
+    
     func sendEvent(_ name: String, body: [String : Any]) {
         EventEmitter.emitter.sendEvent(withName: name, body: body)
     }
-    
-    
+
     public func userDidView(
         page: TMTickets.Analytics.Page,
         metadata: TMTickets.Analytics.MetadataType) {
