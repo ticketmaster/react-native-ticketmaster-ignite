@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.WritableMap
 import com.ticketmasterignite.R
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
@@ -31,52 +33,59 @@ import com.ticketmaster.tickets.ticketssdk.TicketsColors
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKClient
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 import com.ticketmaster.tickets.venuenext.VenueNextModule
+import com.ticketmasterignite.GlobalEventEmitter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class TicketsFragment() : Fragment() {
-    private lateinit var customView: TicketsView
+  private lateinit var customView: TicketsView
 
-    private fun createTicketsColors(color: Int): TicketsColors =
-        TicketsColors(
-            lightColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color)),
-            darkColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color))
-        )
+  private fun createTicketsColors(color: Int): TicketsColors =
+    TicketsColors(
+      lightColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color)),
+      darkColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color))
+    )
 
-    private fun createAuthColors(color: Int): TMAuthentication.ColorTheme =
-        TMAuthentication.ColorTheme(
-            lightColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color)),
-            darkColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color))
-        )
+  private fun createAuthColors(color: Int): TMAuthentication.ColorTheme =
+    TMAuthentication.ColorTheme(
+      lightColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color)),
+      darkColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color))
+    )
 
-    private suspend fun validateAuthToken(authentication: TMAuthentication): Map<AuthSource, String> {
-        val tokenMap = mutableMapOf<AuthSource, String>()
-        AuthSource.values().forEach {
-            //Validate if there is an active token for the AuthSource, if not it returns null.
-            authentication.getToken(it)?.let { token ->
-                tokenMap[it] = token
-            }
-        }
-        return tokenMap
+  private suspend fun validateAuthToken(authentication: TMAuthentication): Map<AuthSource, String> {
+    val tokenMap = mutableMapOf<AuthSource, String>()
+    AuthSource.values().forEach {
+      //Validate if there is an active token for the AuthSource, if not it returns null.
+      authentication.getToken(it)?.let { token ->
+        tokenMap[it] = token
+      }
     }
+    return tokenMap
+  }
 
-    private fun launchTicketsView() {
-        //Retrieve an EventFragment
-        TicketsSDKSingleton.getEventsFragment(requireContext())?.let {
-            childFragmentManager.beginTransaction().add(R.id.tickets_container, it).commit()
-        }
+  private fun launchTicketsView() {
+    //Retrieve an EventFragment
+    TicketsSDKSingleton.getEventsFragment(requireContext())?.let {
+      childFragmentManager.beginTransaction().add(R.id.tickets_container, it).commit()
     }
+  }
 
-    private val resultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        when (result.resultCode) {
-            AppCompatActivity.RESULT_OK -> launchTicketsView()
-            AppCompatActivity.RESULT_CANCELED -> {
-            }
+  private val resultLauncher = registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult()
+  ) { result ->
+    when (result.resultCode) {
+      AppCompatActivity.RESULT_OK -> {
+        val params: WritableMap = Arguments.createMap().apply {
+          putString("ticketsSdkDidViewEvents", "ticketsSdkDidViewEvents")
         }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+        launchTicketsView()
+      }
+      AppCompatActivity.RESULT_CANCELED -> {
+      }
     }
+  }
 
   private fun setCustomModules() {
     TicketsSDKSingleton.moduleDelegate = object : TicketsModuleDelegate {
@@ -119,7 +128,7 @@ class TicketsFragment() : Fragment() {
         if (Config.get("venueConcessionsModule") == "true") {
           val venueNextModule = VenueNextModule.Builder(order.venueId).build()
           modules.add(venueNextModule.createVenueNextView(context!!) {
-            //Venue next click event
+            //Present VenueNext SDK Order/other Concession UI or handle in userDidPressActionButton()
           })
         }
 
@@ -132,14 +141,33 @@ class TicketsFragment() : Fragment() {
         //Add the list to a LiveData object.
         return MutableLiveData(modules)
       }
-      override fun userDidPressActionButton(buttonTitle: String?, callbackValue: String?, eventOrders: EventOrders?) {
-        //buttonTitle: text inside the Material Button
-        //callbackValue: LeftClick, MiddleButton or RightClick
-        Log.d("userDidPressAction", eventOrders.toString())
+
+      override fun userDidPressActionButton(
+        buttonTitle: String?,
+        callbackValue: String?,
+        eventOrders: EventOrders?
+      ) {
+        if (buttonTitle == "Order") {
+          val params: WritableMap = Arguments.createMap()
+          val paramValues: WritableMap = Arguments.createMap().apply {
+            putString("eventOrderInfo", eventOrders.toString())
+          }
+          params.putMap("ticketsSdkVenueConcessionsOrderFor", paramValues)
+
+          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+        }
+        if (buttonTitle == "Wallet") {
+          val params: WritableMap = Arguments.createMap()
+          val paramValues: WritableMap = Arguments.createMap().apply {
+            putString("eventOrderInfo", eventOrders.toString())
+          }
+          params.putMap("ticketsSdkVenueConcessionsWalletFor", paramValues)
+
+          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+        }
       }
     }
   }
-
 
   private fun getDirectionsModule(
     latLng: TicketsModuleDelegate.LatLng?
@@ -149,54 +177,60 @@ class TicketsFragment() : Fragment() {
     ).build()
   }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        val coroutineScope = CoroutineScope(Dispatchers.IO)
-        coroutineScope.launch(Dispatchers.Main) {
-            val authentication = TMAuthentication.Builder()
-                .apiKey(Config.get("apiKey"))
-                .clientName(Config.get("clientName")) // Team name to be displayed
-                .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
-                .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
-                .region(Region.getRegion()) // Region that the SDK will use. Default is US
-                .forceNewSession(true)
-                .build(this@TicketsFragment.requireActivity())
-            val tokenMap = validateAuthToken(authentication)
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    val coroutineScope = CoroutineScope(Dispatchers.IO)
+    coroutineScope.launch(Dispatchers.Main) {
+      val authentication = TMAuthentication.Builder()
+        .apiKey(Config.get("apiKey"))
+        .clientName(Config.get("clientName")) // Team name to be displayed
+        .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
+        .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
+        .region(Region.getRegion()) // Region that the SDK will use. Default is US
+        .forceNewSession(true)
+        .build(this@TicketsFragment.requireActivity())
+      val tokenMap = validateAuthToken(authentication)
 
-            TicketsSDKClient
-                .Builder()
-                .authenticationSDKClient(authentication) //Authentication object
-                //Optional value to define the colors for the Tickets page
-                .colors(createTicketsColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
-                //Function that generates a TicketsSDKClient object
-                .build(this@TicketsFragment.requireActivity())
-                .apply {
-                    //After creating the TicketsSDKClient object, add it into the TicketsSDKSingleton
-                    TicketsSDKSingleton.setTicketsSdkClient(this)
-                    TicketsSDKSingleton.setEnvironment(
-                      this@TicketsFragment.requireActivity(),
-                      TicketsSDKSingleton.SDKEnvironment.Production,
-                      Region.getTicketsSDKRegion());
-                    //Validate if there is an active token.
-                    if (tokenMap.isNotEmpty()) {
-                        //If there is an active token, it launches the event fragment
-                        launchTicketsView()
-                        setCustomModules()
-                    } else {
-                        //If there is no active token, it launches a login intent. Launch an ActivityForResult, if result
-                        //is RESULT_OK, there is an active token to be retrieved.
-                        resultLauncher.launch(TicketsSDKSingleton.getLoginIntent(this@TicketsFragment.requireActivity()))
-                    }
-                }
+      TicketsSDKClient
+        .Builder()
+        .authenticationSDKClient(authentication) //Authentication object
+        //Optional value to define the colors for the Tickets page
+        .colors(createTicketsColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
+        //Function that generates a TicketsSDKClient object
+        .build(this@TicketsFragment.requireActivity())
+        .apply {
+          //After creating the TicketsSDKClient object, add it into the TicketsSDKSingleton
+          TicketsSDKSingleton.setTicketsSdkClient(this)
+          TicketsSDKSingleton.setEnvironment(
+            this@TicketsFragment.requireActivity(),
+            TicketsSDKSingleton.SDKEnvironment.Production,
+            Region.getTicketsSDKRegion()
+          );
+          //Validate if there is an active token.
+          if (tokenMap.isNotEmpty()) {
+            val params: WritableMap = Arguments.createMap().apply {
+              putString("ticketsSdkDidViewEvents", "ticketsSdkDidViewEvents")
+            }
+            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+            //If there is an active token, it launches the event fragment
+            launchTicketsView()
+            setCustomModules()
+            // The below lets React Native know it needs to update its isLoggedIn value
+          } else {
+            //If there is no active token, it launches a login intent. Launch an ActivityForResult, if result
+            //is RESULT_OK, there is an active token to be retrieved.
+            resultLauncher.launch(TicketsSDKSingleton.getLoginIntent(this@TicketsFragment.requireActivity()))
+          }
         }
     }
+  }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        customView = TicketsView(requireNotNull(context))
-        return customView // this CustomView could be any view that you want to render
+  override fun onCreateView(
+    inflater: LayoutInflater, container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View {
+    customView = TicketsView(requireNotNull(context))
+    return customView // this CustomView could be any view that you want to render
 
-    }
+  }
 }

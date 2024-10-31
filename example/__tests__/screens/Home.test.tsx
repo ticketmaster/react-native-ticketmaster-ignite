@@ -32,6 +32,7 @@ describe('Home', () => {
         // @ts-ignore
         useIgnite.mockReturnValue({
           isLoggingIn: true,
+          authState: { isLoggedIn: false },
         });
 
         const component = render(<Home />);
@@ -47,6 +48,7 @@ describe('Home', () => {
         // @ts-ignore
         useIgnite.mockReturnValue({
           isLoggingIn: false,
+          authState: { isLoggedIn: false },
         });
 
         const component = render(<Home />);

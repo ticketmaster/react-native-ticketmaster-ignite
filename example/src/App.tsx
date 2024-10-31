@@ -23,25 +23,6 @@ const App = () => {
       <NavigationContainer theme={navTheme}>
         <IgniteProvider
           // analytics={igniteAnalytics}
-          prebuiltModules={{
-            moreTicketsActionsModule: {
-              enabled: true,
-            },
-            venueDirectionsModule: {
-              enabled: true,
-            },
-            seatUpgradesModule: {
-              enabled: true,
-            },
-            venueConcessionsModule: {
-              enabled: true,
-              orderButtonCallback: () => {},
-              walletButtonCallback: () => {},
-            },
-            invoiceModule: {
-              enabled: true,
-            },
-          }}
           options={{
             apiKey: Config.API_KEY || '',
             clientName: Config.CLIENT_NAME || '',

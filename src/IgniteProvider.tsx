@@ -46,14 +46,14 @@ type RefreshConfigParams = {
 };
 
 type IgniteContextType = {
-  login: (LoginParams?: LoginParams) => Promise<void>;
-  logout: (LogoutParams?: LogoutParams) => Promise<void>;
+  login: (loginParams?: LoginParams) => Promise<void>;
+  logout: (logoutParams?: LogoutParams) => Promise<void>;
   getIsLoggedIn: () => Promise<boolean>;
   getToken: () => Promise<string | AuthSource | null>;
   getMemberInfo: () => Promise<Record<string, any> | null>;
   refreshToken: () => Promise<string | AuthSource | null>;
   refreshConfiguration: (
-    RefreshConfigParams: RefreshConfigParams
+    refreshConfigParams: RefreshConfigParams
   ) => Promise<void>;
   authState: AuthStateParams;
   isLoggingIn: boolean;
@@ -90,11 +90,31 @@ export const IgniteContext = createContext<IgniteContextType>({
   },
 });
 
+const defaultPrebuiltModules = {
+  moreTicketsActionsModule: {
+    enabled: false,
+  },
+  venueDirectionsModule: {
+    enabled: false,
+  },
+  seatUpgradesModule: {
+    enabled: false,
+  },
+  venueConcessionsModule: {
+    enabled: false,
+    orderButtonCallback: async () => {},
+    walletButtonCallback: async () => {},
+  },
+  invoiceModule: {
+    enabled: false,
+  },
+};
+
 export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   children,
   options,
   autoUpdate = true,
-  prebuiltModules = {},
+  prebuiltModules = defaultPrebuiltModules,
   analytics,
 }) => {
   const { Config, AccountsSDK } = NativeModules;
@@ -226,8 +246,23 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       'igniteAnalytics',
       async (result: IgniteAnalytics) => {
         if (result && analytics) analytics(result);
-        if (result.purchaseSdkDidEndCheckoutFor && autoUpdate)
+        if (
+          (result.purchaseSdkDidEndCheckoutFor ||
+            result.ticketsSdkDidViewEvents) &&
+          autoUpdate
+        ) {
           await setAccountDetails();
+        }
+        if (result.ticketsSdkVenueConcessionsOrderFor) {
+          venueConcessionsModule?.orderButtonCallback(
+            result.ticketsSdkVenueConcessionsOrderFor
+          );
+        }
+        if (result.ticketsSdkVenueConcessionsWalletFor) {
+          venueConcessionsModule?.walletButtonCallback(
+            result.ticketsSdkVenueConcessionsWalletFor
+          );
+        }
       }
     );
 

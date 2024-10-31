@@ -7,7 +7,6 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    
     TMTickets.shared.analyticsDelegate = self
     TMTickets.shared.moduleDelegate = self
     print("Tickets SDK Configuring...")
@@ -26,6 +25,9 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
     super.viewDidAppear(animated)
     print("TicketsSdkViewController viewDidAppear")
   }
+  deinit {
+    sendEvent("igniteAnalytics", body: ["ticketsSdkDidViewEvents": "ticketsSdkDidViewEvents"])
+  }
   
   func sendEvent(_ name: String, body: [String : Any]) {
     EventEmitter.emitter.sendEvent(withName: name, body: body)
@@ -42,35 +44,20 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
     print(" - Adding Prebuilt Modules")
     var output: [TMTicketsModule] = []
     
-    let showMoreTicketsActionsModule = Config.shared.get(for: "moreTicketsActionsModule")
-    let showVenueDirectionsModule = Config.shared.get(for: "venueDirectionsModule")
-    let showSeatUpgradesModule = Config.shared.get(for: "seatUpgradesModule")
-    let showVenueConcessionsModule = Config.shared.get(for: "venueConcessionsModule")
-    let showInvoiceModule = Config.shared.get(for: "invoiceModule")
-    
-    
     // show an Account Manager More Ticket Actions module
     // note that this module will only render if Event is an Account Manager Event, otherwise it will not be displayed
     // this is a standard "prebuilt" module that we provide to all our partners
     if let module = TMTicketsPrebuiltModule.accountManagerMoreTicketActions(event: event) {
-      if(showMoreTicketsActionsModule == "true") {
+      if(Config.shared.get(for: "moreTicketsActionsModule") == "true") {
         output.append(module)
       }
     }
     
-    // show an Account Manager Invoice Actions module
-    // note that this module will only render if Event is an Account Manager Event, otherwise it will not be displayed
-    // this is a standard "prebuilt" module that we provide to all our partners
-    if let module = TMTicketsPrebuiltModule.accountManagerInvoiceAction(event: event) {
-      if(showInvoiceModule == "true") {
-        output.append(module)
-      }
-    }
     
     // show a street-map around the Venue with a Directions button that opens Apple Maps
     // this is a standard "prebuilt" module that we provide to all our partners
     if let module = TMTicketsPrebuiltModule.venueDirectionsViaAppleMaps(event: event) {
-      if(showVenueDirectionsModule == "true") {
+      if(Config.shared.get(for: "venueDirectionsModule") == "true") {
         output.append(module)
       }
     }
@@ -79,7 +66,7 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
     // note that this module will only render if Event is an Account Manager Event, otherwise it will not be displayed
     // this is a standard "prebuilt" module that we provide to all our partners
     if let module = TMTicketsPrebuiltModule.accountManagerSeatUpgrades(event: event) {
-      if(showSeatUpgradesModule == "true") {
+      if(Config.shared.get(for: "seatUpgradesModule") == "true") {
         output.append(module)
       }
     }
@@ -87,7 +74,16 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
     // show a Venue Concessions module
     // this is a standard "prebuilt" module that we provide to all our partners
     if let module = TMTicketsPrebuiltModule.venueConcessions(event: event, showWalletButton: true) {
-      if(showVenueConcessionsModule == "true") {
+      if(Config.shared.get(for: "venueConcessionsModule") == "true") {
+        output.append(module)
+      }
+    }
+    
+    // show an Account Manager Invoice Actions module
+    // note that this module will only render if Event is an Account Manager Event, otherwise it will not be displayed
+    // this is a standard "prebuilt" module that we provide to all our partners
+    if let module = TMTicketsPrebuiltModule.accountManagerInvoiceAction(event: event) {
+      if(Config.shared.get(for: "invoiceModule") == "true") {
         output.append(module)
       }
     }
@@ -99,18 +95,15 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
     // Tickets SDK won't call this method unless it is not sure what to do with the given module
     // to get analytics about all modules, see userDidPerform(action:metadata:)
     print("\(module.identifier): \(button.callbackValue)")
-    
-    // these are just examples, they are not required
     if module.identifier == TMTicketsPrebuiltModule.ModuleName.venueConcessions.rawValue {
       if button.callbackValue == TMTicketsPrebuiltModule.ButtonCallbackName.order.rawValue {
         completion(nil) // dismiss My Tickets view in Tickets SDK
+        sendEvent("igniteAnalytics", body: ["ticketsSdkVenueConcessionsOrderFor": ["eventOrderInfo": "\(event)"]])
         print("handleModuleActionButton: Present Venue Concessions: Order")
-        // TODO: present VenueNext SDK Order (or other Concession UI)
-        
       } else if button.callbackValue == TMTicketsPrebuiltModule.ButtonCallbackName.wallet.rawValue {
         print("handleModuleActionButton: Present Venue Concessions: Wallet")
         completion(nil) // dismiss My Tickets view in Tickets SDK
-        // TODO: present VenueNext SDK Wallet (or other Concession UI)
+        sendEvent("igniteAnalytics", body: ["ticketsSdkVenueConcessionsWalletFor": ["eventOrderInfo": "\(event)"]])
       }
     }
   }
@@ -120,6 +113,8 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
     metadata: TMTickets.Analytics.MetadataType) {
       
       print("userDidViewPage: \(page.rawValue)")
+      // The below lets React Native know it needs to update its isLoggedIn value
+      sendEvent("igniteAnalytics", body: ["ticketsSdkDidViewEvents": "ticketsSdkDidViewEvents"])
       
       // different Pages return different types of metadata
       switch metadata {
@@ -128,7 +123,7 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
       case .event(let event):
         return
       case .eventTickets(let event, let tickets):
-        //                sendEvent("igniteAnalytics", body: ["ticketsSDKModalUserDidViewEventTickets:": "\(event) \(tickets)"])
+      // sendEvent("igniteAnalytics", body: ["ticketsSdkDidViewEventTickets:": "\(event) \(tickets)"])
         return
       case .eventTicket(event: let event, let ticket):
         let ticketSummary = "\(ticket.sectionName ?? "_") \(ticket.rowName ?? "_") \(ticket.seatName ?? "_")"
@@ -155,7 +150,7 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
       case .events(let events):
         return
       case .event(let event):
-        //                sendEvent("igniteAnalytics", body: ["ticketsSDKModalUserDidPerformEvent:": "\(event)"])
+        // sendEvent("igniteAnalytics", body: ["ticketsSdkDidPerformEvent:": "\(event)"])
         return
         return
       case .eventTickets(let event, let tickets):
