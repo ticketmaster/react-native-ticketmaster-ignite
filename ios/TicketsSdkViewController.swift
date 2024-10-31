@@ -53,7 +53,6 @@ public class TicketsSdkViewController: UIViewController, TMTicketsAnalyticsDeleg
       }
     }
     
-    
     // show a street-map around the Venue with a Directions button that opens Apple Maps
     // this is a standard "prebuilt" module that we provide to all our partners
     if let module = TMTicketsPrebuiltModule.venueDirectionsViaAppleMaps(event: event) {
