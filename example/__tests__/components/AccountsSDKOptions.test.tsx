@@ -22,6 +22,7 @@ describe('AccountsSDKOptions', () => {
       refreshToken: refreshTokenMock,
       getMemberInfo: getMemberInfoMock,
       getIsLoggedIn: getIsLoggedInMock,
+      authState: { isLoggedIn: false },
     });
   });
 
@@ -70,8 +71,10 @@ describe('AccountsSDKOptions', () => {
       it('calls getIsLoggedIn for isLoggedIn button', () => {
         const { getByText } = render(<AccountsSDKOptions />);
 
-        fireEvent(getByText('IsLoggedIn'), 'press');
-
+        fireEvent(
+          getByText(`IsLoggedIn - useIgnite hook value: ${false}`),
+          'press'
+        );
         expect(getIsLoggedInMock).toHaveBeenCalled();
       });
     });

@@ -122,7 +122,10 @@ class PurchaseUserAnalyticsListener: TMPurchaseUserAnalyticsListener {
   }
 
   override fun onManageMyTicketsOpened(event: DiscoveryEvent) {
-    return
+    val params: WritableMap = Arguments.createMap().apply {
+      putString("purchaseSdkManageMyTickets", "purchaseSdkManageMyTickets")
+    }
+    GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
 }

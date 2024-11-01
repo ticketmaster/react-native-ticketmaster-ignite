@@ -28,10 +28,8 @@ RCT_EXPORT_MODULE(RNTTicketsSdkEmbeddedView)
 - (UIView *)view
 {
     self.ticketsViewController = [[TicketsSdkEmbeddedViewController alloc] init];
-
     return self.ticketsViewController.view;
 }
-
 
 @end
 

@@ -12,6 +12,7 @@ const AccountsSdkOptions = () => {
     refreshToken,
     getMemberInfo,
     getIsLoggedIn,
+    authState: { isLoggedIn },
   } = useIgnite();
 
   const onLogin = async () => {
@@ -75,7 +76,7 @@ const AccountsSdkOptions = () => {
       onPress: () => onLogout(),
     },
     {
-      title: 'IsLoggedIn',
+      title: `IsLoggedIn - useIgnite hook value: ${isLoggedIn}`,
       platforms: ['ios', 'android'],
       onPress: () => onGetIsLoggedIn(),
     },

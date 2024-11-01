@@ -20,7 +20,7 @@ export const TicketsSdkEmbedded = ({
           renderTimeDelay={renderTimeDelay}
         />
       ) : (
-        <TicketsSdkEmbeddedAndroid />
+        <TicketsSdkEmbeddedAndroid style={style} />
       )}
     </>
   );

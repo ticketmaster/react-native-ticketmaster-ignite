@@ -55,6 +55,10 @@ type MakeDecisionData = {
   decision: string;
 };
 
+type TicketsSdkVenueConcessionsData = {
+  eventOrderInfo: string;
+};
+
 export type IgniteAnalytics = {
   accountsSdkServiceConfigurationStarted: 'accountsSdkServiceConfigurationStarted';
   accountsSdkServiceConfigured: 'accountsSdkServiceConfigured';
@@ -82,6 +86,10 @@ export type IgniteAnalytics = {
   purchaseSdkDidShare: ShareData;
   purchaseSdkDidViewSubPageFor: SubPageData;
   purchaseSdkDidMakeDecisionFor: MakeDecisionData;
+  purchaseSdkManageMyTickets: 'purchaseSdkManageMyTickets';
+  ticketsSdkDidViewEvents: 'ticketsSdkDidViewEvents';
+  ticketsSdkVenueConcessionsOrderFor: TicketsSdkVenueConcessionsData;
+  ticketsSdkVenueConcessionsWalletFor: TicketsSdkVenueConcessionsData;
 };
 
 export enum IgniteAnalyticName {
@@ -108,4 +116,32 @@ export enum IgniteAnalyticName {
   PURCHASE_SDK_DID_SHARE = 'purchaseSdkDidShare',
   PURCHASE_SDK_DID_VIEW_SUB_PAGE_FOR = 'purchaseSdkDidViewSubPageFor',
   PURCHASE_SDK_DID_MAKE_DECISION_FOR = 'purchaseSdkDidMakeDecisionFor',
+  PURCHASE_SDK_MANAGE_MY_TICKETS = 'purchaseSdkManageMyTickets',
+  TICKETS_SDK_DID_VIEW_EVENTS = 'ticketsSdkDidViewEvents',
+  TICKETS_SDK_VENUE_CONCESSIONS_ORDER_FOR = 'ticketsSdkVenueConcessionsOrderFor',
+  TICKETS_SDK_VENUE_CONCESSIONS_WALLET_FOR = 'ticketsSdkVenueConcessionsWalletFor',
 }
+
+export type PrebuiltModules = {
+  moreTicketsActionsModule?: {
+    enabled: boolean;
+  };
+  venueDirectionsModule?: {
+    enabled: boolean;
+  };
+  seatUpgradesModule?: {
+    enabled: boolean;
+  };
+  venueConcessionsModule?: {
+    enabled: boolean;
+    orderButtonCallback: (
+      data: TicketsSdkVenueConcessionsData
+    ) => void | Promise<void>;
+    walletButtonCallback: (
+      data: TicketsSdkVenueConcessionsData
+    ) => void | Promise<void>;
+  };
+  invoiceModule?: {
+    enabled: boolean;
+  };
+};

@@ -116,12 +116,12 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   
   @objc public func isLoggedIn(_ resolve: @escaping ([String: Bool]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     TMAuthentication.shared.memberInfo { memberInfo in
-      let hasToken = TMAuthentication.shared.hasToken()
+      let hasToken = TMAuthentication.shared.hasUnexpiredToken()
       resolve(["result": hasToken])
       
     } failure: { oldMemberInfo, error, backend in
       if(TMAuthentication.shared.hasToken()){
-        let hasToken = TMAuthentication.shared.hasToken()
+        let hasToken = TMAuthentication.shared.hasUnexpiredToken()
         resolve(["result": hasToken])
       } else {
         reject("Accounts SDK Is Logged In Error", error.localizedDescription, error as NSError)

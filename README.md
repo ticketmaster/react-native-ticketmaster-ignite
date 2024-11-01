@@ -468,6 +468,53 @@ const onShowPrePurchaseAttraction = async () => {
   }
 };
 ```
+### Prebuilt Modules
+
+To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which accepts the following object:
+
+```typescript
+<IgniteProvider
+  options={{
+    apiKey: API_KEY,
+    clientName: CLIENT_NAME,
+    primaryColor: PRIMARY_COLOR
+  }}
+  prebuiltModules={{
+    moreTicketsActionsModule: {
+      enabled: true,
+    },
+    venueDirectionsModule: {
+      enabled: true,
+    },
+    seatUpgradesModule: {
+      enabled: true,
+    },
+    venueConcessionsModule: {
+      enabled: true,
+      orderButtonCallback: () => {},
+      walletButtonCallback: () => {},
+    },
+    invoiceModule: {
+      enabled: true,
+    },
+  }}
+>
+    <App />
+</IgniteProvider>
+```
+
+You only need to provide the prebuilt modules you want to display to `prebuiltModules`. Any module omitted will be set to `enabled: false` by default.
+Here is an example of only showing the Venue Directions Module:
+
+```typescript
+ prebuiltModules={{
+    venueDirectionsModule: {
+      enabled: true,
+    },
+  }}
+```
+
+To learn more about Prebuilt Modules see [here](https://ignite.ticketmaster.com/docs/modules-overview). This library currently does not support prebuilt module customization.
 
 ### Analytics
 

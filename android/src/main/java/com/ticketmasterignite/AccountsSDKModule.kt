@@ -105,7 +105,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           promise.reject("Accounts SDK isLoggedIn Error: ", e)
         }
       }
-    } ?: false
+    } ?: promise.resolve(false)
 
   @ReactMethod
   fun configureAccountsSDK(promise: Promise) {
