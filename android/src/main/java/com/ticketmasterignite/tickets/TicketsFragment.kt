@@ -2,7 +2,6 @@ package com.ticketmasterignite.tickets
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -90,23 +89,16 @@ class TicketsFragment() : Fragment() {
   private fun setCustomModules() {
     TicketsSDKSingleton.moduleDelegate = object : TicketsModuleDelegate {
       override fun getCustomModulesLiveData(order: TicketsModuleDelegate.Order): LiveData<List<TicketsSDKModule>> {
-        // create a list of TicketsSDKModule type, all the modules created will be added to the list.
         val modules: ArrayList<TicketsSDKModule> = ArrayList()
 
-        // show an Account Manager More Ticket Actions module
-        // this is a standard "prebuilt" module that we provide to all our partners
         if (Config.get("moreTicketsActionsModule") == "true") {
           modules.add(MoreTicketActionsModule(order.eventId))
         }
 
-        // show a street-map around the Venue with a Directions button that opens Google Maps
-        // this is a standard "prebuilt" module that we provide to all our partners
         if (Config.get("venueDirectionsModule") == "true") {
           modules.add(getDirectionsModule(order.orderInfo.latLng))
         }
 
-        // show an Account Manager Seat Upgrades module
-        // this is a standard "prebuilt" module that we provide to all our partners
         if (Config.get("seatUpgradesModule") == "true") {
           val firstTicketSource = order.tickets.firstOrNull()?.source
           if (firstTicketSource != null) {
@@ -123,8 +115,6 @@ class TicketsFragment() : Fragment() {
           }
         }
 
-        // show a Venue Concessions module
-        // this is a standard "prebuilt" module that we provide to all our partners
         if (Config.get("venueConcessionsModule") == "true") {
           val venueNextModule = VenueNextModule.Builder(order.venueId).build()
           modules.add(venueNextModule.createVenueNextView(context!!) {
@@ -132,13 +122,10 @@ class TicketsFragment() : Fragment() {
           })
         }
 
-        // show an Account Manager Invoice Actions module
-        // this is a standard "prebuilt" module that we provide to all our partners
         if (Config.get("invoiceModule") == "true") {
           modules.add(InvoiceModule())
         }
 
-        //Add the list to a LiveData object.
         return MutableLiveData(modules)
       }
 
@@ -208,6 +195,7 @@ class TicketsFragment() : Fragment() {
           );
           //Validate if there is an active token.
           if (tokenMap.isNotEmpty()) {
+            // The below lets React Native know it needs to update its isLoggedIn value
             val params: WritableMap = Arguments.createMap().apply {
               putString("ticketsSdkDidViewEvents", "ticketsSdkDidViewEvents")
             }
@@ -215,7 +203,6 @@ class TicketsFragment() : Fragment() {
             //If there is an active token, it launches the event fragment
             launchTicketsView()
             setCustomModules()
-            // The below lets React Native know it needs to update its isLoggedIn value
           } else {
             //If there is no active token, it launches a login intent. Launch an ActivityForResult, if result
             //is RESULT_OK, there is an active token to be retrieved.

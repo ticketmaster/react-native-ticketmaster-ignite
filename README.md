@@ -503,7 +503,8 @@ To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which acc
 </IgniteProvider>
 ```
 
-All top level fields in the `prebuiltModules` object are optional. Here is an example of only showing the Venue Directions Module:
+You only need to provide the prebuilt modules you want to display to `prebuiltModules`. Any module omitted will be set to `enabled: false` by default.
+Here is an example of only showing the Venue Directions Module:
 
 ```typescript
  prebuiltModules={{
