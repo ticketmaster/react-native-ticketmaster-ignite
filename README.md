@@ -385,16 +385,8 @@ import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
 ```
 
-⚠️  Please note that `style` and `renderTimeDelay` props only affect iOS.
+⚠️  Please note that the `renderTimeDelay` prop only affects iOS.
 
-The Android implementation can be as simple as the below:
-
-```typescript
-
-import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
-
-return <TicketsSdkEmbedded />;
-```
 
 ### SecureEntryView (Android only)
 
