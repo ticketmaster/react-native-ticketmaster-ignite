@@ -51,6 +51,7 @@ const BottomTabs = () => {
         name="Tickets SDK (Embedded)"
         component={MyEvents}
         options={{
+          headerShadowVisible: false,
           tabBarLabel: 'Tickets SDK (Embedded)',
           unmountOnBlur: true,
           tabBarIcon: ({ focused }) => (
@@ -63,6 +64,7 @@ const BottomTabs = () => {
           name="Secure Entry"
           component={SecureEntryView}
           options={{
+            headerShadowVisible: false,
             tabBarLabel: 'Secure Entry',
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => (

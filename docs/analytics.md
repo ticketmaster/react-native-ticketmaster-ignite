@@ -54,3 +54,17 @@ More information about the flow of these state change analytics can be found her
 | subPage |  The subpage that has been viewed |
 | decision (iOS only) |  The decision of the user to trigger the analytic |
 | activityType (iOS only) |  The activity type the user used to share the event |
+
+## Tickets SDK
+
+| Name | Values | Description |
+| ----- | ---- | -----   |
+| ticketsSdkDidViewEvents | ticketsSdkDidViewEvents | The user has sucessfully authenticated and been shown their purchased events |
+| ticketsSdkVenueConcessionsOrderFor | eventOrderInfo | The user has pressed the order button on the Venue Concessions module | 
+| ticketsSdkVenueConcessionsWalletFor | eventOrderInfo | The user has pressed the wallet button on the Venue Concessions module |
+
+### Tickets SDK Value Descriptions
+
+| Name | Description |
+| ----- | ---- |
+| eventOrderInfo |  Information about the event and specfic order the user was viewing  |
