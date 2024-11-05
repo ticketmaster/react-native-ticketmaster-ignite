@@ -123,7 +123,7 @@ export enum IgniteAnalyticName {
 }
 
 export type PrebuiltModules = {
-  moreTicketsActionsModule?: {
+  moreTicketActionsModule?: {
     enabled: boolean;
   };
   venueDirectionsModule?: {

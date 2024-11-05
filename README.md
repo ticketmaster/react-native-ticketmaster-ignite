@@ -472,7 +472,7 @@ To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which acc
     primaryColor: PRIMARY_COLOR
   }}
   prebuiltModules={{
-    moreTicketsActionsModule: {
+    moreTicketActionsModule: {
       enabled: true,
     },
     venueDirectionsModule: {
