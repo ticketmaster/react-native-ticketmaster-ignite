@@ -91,7 +91,7 @@ class TicketsFragment() : Fragment() {
       override fun getCustomModulesLiveData(order: TicketsModuleDelegate.Order): LiveData<List<TicketsSDKModule>> {
         val modules: ArrayList<TicketsSDKModule> = ArrayList()
 
-        if (Config.get("moreTicketsActionsModule") == "true") {
+        if (Config.get("moreTicketActionsModule") == "true") {
           modules.add(MoreTicketActionsModule(order.eventId))
         }
 

@@ -91,7 +91,7 @@ export const IgniteContext = createContext<IgniteContextType>({
 });
 
 const defaultPrebuiltModules = {
-  moreTicketsActionsModule: {
+  moreTicketActionsModule: {
     enabled: false,
   },
   venueDirectionsModule: {
@@ -120,7 +120,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   const { Config, AccountsSDK } = NativeModules;
   const { apiKey, clientName, primaryColor, region, eventHeaderType } = options;
   const {
-    moreTicketsActionsModule,
+    moreTicketActionsModule,
     venueDirectionsModule,
     seatUpgradesModule,
     venueConcessionsModule,
@@ -185,10 +185,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('primaryColor', primaryColor);
     Config.setConfig('region', region || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
-    moreTicketsActionsModule &&
+    moreTicketActionsModule &&
       Config.setConfig(
-        'moreTicketsActionsModule',
-        moreTicketsActionsModule.enabled ? 'true' : 'false'
+        'moreTicketActionsModule',
+        moreTicketActionsModule.enabled ? 'true' : 'false'
       );
     venueDirectionsModule &&
       Config.setConfig(
@@ -217,7 +217,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     primaryColor,
     region,
     eventHeaderType,
-    moreTicketsActionsModule,
+    moreTicketActionsModule,
     invoiceModule,
     seatUpgradesModule,
     venueDirectionsModule,

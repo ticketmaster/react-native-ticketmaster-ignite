@@ -78,7 +78,7 @@ extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate 
     var output: [TMTicketsModule] = []
     
     if let module = TMTicketsPrebuiltModule.accountManagerMoreTicketActions(event: event) {
-      if(Config.shared.get(for: "moreTicketsActionsModule") == "true") {
+      if(Config.shared.get(for: "moreTicketActionsModule") == "true") {
         output.append(module)
       }
     }
