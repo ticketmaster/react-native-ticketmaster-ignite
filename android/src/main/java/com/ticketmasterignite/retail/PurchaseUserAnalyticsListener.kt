@@ -12,7 +12,7 @@ import com.ticketmaster.purchase.entity.TMPurchaseOrder
 import com.ticketmaster.purchase.listener.TMPurchaseUserAnalyticsListener
 import com.ticketmasterignite.GlobalEventEmitter
 
-class PurchaseUserAnalyticsListener: TMPurchaseUserAnalyticsListener {
+class PurchaseUserAnalyticsListener(private val closeScreen: () -> Unit): TMPurchaseUserAnalyticsListener {
 
   override fun onTicketSelectionStarted(event: DiscoveryEvent) {
     val params: WritableMap = Arguments.createMap()
@@ -73,6 +73,7 @@ class PurchaseUserAnalyticsListener: TMPurchaseUserAnalyticsListener {
     params.putMap("purchaseSdkDidEndCheckoutFor", paramValues)
 
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+    closeScreen.invoke()
   }
 
   override fun onSubPageOpened(event: DiscoveryEvent, subPage: TMPurchaseSubPage) {
@@ -125,7 +126,8 @@ class PurchaseUserAnalyticsListener: TMPurchaseUserAnalyticsListener {
     val params: WritableMap = Arguments.createMap().apply {
       putString("purchaseSdkManageMyTickets", "purchaseSdkManageMyTickets")
     }
-    GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-  }
 
+    GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+    closeScreen.invoke()
+  }
 }

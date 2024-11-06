@@ -71,10 +71,7 @@ describe('AccountsSDKOptions', () => {
       it('calls getIsLoggedIn for isLoggedIn button', () => {
         const { getByText } = render(<AccountsSDKOptions />);
 
-        fireEvent(
-          getByText(`IsLoggedIn - useIgnite hook value: ${false}`),
-          'press'
-        );
+        fireEvent(getByText(`IsLoggedIn - ${false}`), 'press');
         expect(getIsLoggedInMock).toHaveBeenCalled();
       });
     });
