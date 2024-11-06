@@ -425,7 +425,7 @@ const onShowPurchase = async () => {
 };
 ```
 
-After a user has purchased tickets, you can handle **Manage My Tickets** SDK button presses by listening for the `purchaseSdkManageMyTickets` analytic, see the [analytics](https://github.com/ticketmaster/react-native-ticketmaster-ignite/blob/main/README.md#analytics) section below on how to listen for Ignite SDK analytics.
+After a user has purchased tickets, you can handle **Manage My Tickets** SDK button presses by listening for the `PURCHASE_SDK_MANAGE_MY_TICKETS` analytic, see the [analytics](https://github.com/ticketmaster/react-native-ticketmaster-ignite/blob/main/README.md#analytics) section below on how to listen for Ignite SDK analytics.
 
 ##### Venue PrePurchase
 
