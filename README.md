@@ -425,8 +425,6 @@ const onShowPurchase = async () => {
 };
 ```
 
-After a user has purchased tickets, you can handle **Manage My Tickets** SDK button presses by listening for the `PURCHASE_SDK_MANAGE_MY_TICKETS` analytic, see the [analytics](https://github.com/ticketmaster/react-native-ticketmaster-ignite/blob/main/README.md#analytics) section below on how to listen for Ignite SDK analytics.
-
 ##### Venue PrePurchase
 
 The venue prepurchase flow (also known as Venue Details Page or VDP - see more [here](https://ignite.ticketmaster.com/v1/docs/venue-detail-page-vdp)) should be used for showing events for a particular venue. From there, the user will be able to progress with a selected event into the purchase flow.
