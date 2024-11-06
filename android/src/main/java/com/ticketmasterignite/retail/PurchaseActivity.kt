@@ -17,7 +17,7 @@ import com.ticketmaster.purchase.listener.TMPurchaseWebAnalyticsListener
 
 class PurchaseActivity : AppCompatActivity() {
   private val userAnalyticsListener: TMPurchaseUserAnalyticsListener =
-    PurchaseUserAnalyticsListener()
+    PurchaseUserAnalyticsListener { finish() }
   private val webAnalyticsListener: TMPurchaseWebAnalyticsListener =
     PurchaseWebAnalyticsListener()
   private val sharingListener: TMPurchaseSharingListener =

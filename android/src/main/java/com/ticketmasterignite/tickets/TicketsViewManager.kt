@@ -63,11 +63,11 @@ class TicketsViewManager (
             val parentView = root.findViewById<ViewGroup>(reactNativeViewId)
             setupLayout(parentView)
 
-            val myFragment = TicketsFragment()
+            val ticketsFragment = TicketsFragment()
             val activity = reactContext.currentActivity as FragmentActivity
             activity.supportFragmentManager
                 .beginTransaction()
-                .replace(reactNativeViewId, myFragment, reactNativeViewId.toString())
+                .replace(reactNativeViewId, ticketsFragment, reactNativeViewId.toString())
                 .commit()
         }
 
