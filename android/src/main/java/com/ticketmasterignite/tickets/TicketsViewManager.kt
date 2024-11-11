@@ -9,13 +9,12 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.annotations.ReactProp
-import com.facebook.react.uimanager.annotations.ReactPropGroup
+import com.facebook.react.uimanager.SimpleViewManager
 
 class TicketsViewManager (
     private val reactContext: ReactApplicationContext
-    ) : ViewGroupManager<FrameLayout>() {
+    ) : SimpleViewManager<FrameLayout>() {
         private var propWidth: Int? = null
         private var propHeight: Int? = null
 
@@ -37,13 +36,13 @@ class TicketsViewManager (
          */
         override fun receiveCommand(
             root: FrameLayout,
-            commandId: String,
+            commandId: Int,
             args: ReadableArray?
         ) {
             super.receiveCommand(root, commandId, args)
             val reactNativeViewId = requireNotNull(args).getInt(0)
 
-            when (commandId.toInt()) {
+            when (commandId) {
                 COMMAND_CREATE -> createFragment(root, reactNativeViewId)
             }
         }
