@@ -86,27 +86,27 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
-@ReactMethod
-fun isLoggedIn(promise: Promise) {
+  @ReactMethod
+  fun isLoggedIn(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
-        promise.resolve(false)
-        return
+      promise.resolve(false)
+      return
     }
 
     runBlocking {
-        try {
-            val response = withContext(Dispatchers.IO) {
-                AuthSource.values().any { source ->
-                    authenticationSDK.getToken(source)?.isNotBlank() == true
-                }
-            }
-            promise.resolve(response)
-        } catch (e: Exception) {
-            promise.reject("Accounts SDK isLoggedIn Error: ", e)
+      try {
+        val response = withContext(Dispatchers.IO) {
+          AuthSource.values().any { source ->
+            authenticationSDK.getToken(source)?.isNotBlank() == true
+          }
         }
+        promise.resolve(response)
+      } catch (e: Exception) {
+        promise.reject("Accounts SDK isLoggedIn Error: ", e)
+      }
     }
-}
+  }
 
   @ReactMethod
   fun configureAccountsSDK(promise: Promise) {
@@ -186,89 +186,89 @@ fun isLoggedIn(promise: Promise) {
     }
   }
 
-@ReactMethod
-fun getMemberInfo(promise: Promise) {
+  @ReactMethod
+  fun getMemberInfo(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
-        promise.resolve(null)
-        return
+      promise.resolve(null)
+      return
     }
 
     runBlocking {
-        try {
-            val archticsAccessToken = async { authenticationSDK.getToken(AuthSource.ARCHTICS) }
-            val hostAccessToken = async { authenticationSDK.getToken(AuthSource.HOST) }
-            val mfxAccessToken = async { authenticationSDK.getToken(AuthSource.MFX) }
-            val sportXRAccessToken = async { authenticationSDK.getToken(AuthSource.SPORTXR) }
-            val (resArchticsAccessToken, resHostAccessToken, resMfxAccessToken, resSportXRAccessToken) = awaitAll(
-                archticsAccessToken,
-                hostAccessToken,
-                mfxAccessToken,
-                sportXRAccessToken
-            )
+      try {
+        val archticsAccessToken = async { authenticationSDK.getToken(AuthSource.ARCHTICS) }
+        val hostAccessToken = async { authenticationSDK.getToken(AuthSource.HOST) }
+        val mfxAccessToken = async { authenticationSDK.getToken(AuthSource.MFX) }
+        val sportXRAccessToken = async { authenticationSDK.getToken(AuthSource.SPORTXR) }
+        val (resArchticsAccessToken, resHostAccessToken, resMfxAccessToken, resSportXRAccessToken) = awaitAll(
+          archticsAccessToken,
+          hostAccessToken,
+          mfxAccessToken,
+          sportXRAccessToken
+        )
 
-            if (resArchticsAccessToken.isNullOrEmpty() && resHostAccessToken.isNullOrEmpty() &&
-                resMfxAccessToken.isNullOrEmpty() && resSportXRAccessToken.isNullOrEmpty()
-            ) {
-                promise.resolve(null)
-            } else {
-                val memberInfoJson = Gson().toJson(authenticationSDK.fetchUserDetails().getOrNull())
-                promise.resolve(memberInfoJson)
-            }
-        } catch (e: Exception) {
-            promise.reject("Accounts SDK getMemberInfo Error: ", e)
+        if (resArchticsAccessToken.isNullOrEmpty() && resHostAccessToken.isNullOrEmpty() &&
+          resMfxAccessToken.isNullOrEmpty() && resSportXRAccessToken.isNullOrEmpty()
+        ) {
+          promise.resolve(null)
+        } else {
+          val memberInfoJson = Gson().toJson(authenticationSDK.fetchUserDetails().getOrNull())
+          promise.resolve(memberInfoJson)
         }
+      } catch (e: Exception) {
+        promise.reject("Accounts SDK getMemberInfo Error: ", e)
+      }
     }
-}
+  }
 
-@ReactMethod
-fun refreshToken(promise: Promise) {
+  @ReactMethod
+  fun refreshToken(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
-        promise.reject("Accounts SDK refreshToken Error", "Authentication SDK not initialized")
-        return
+      promise.reject("Accounts SDK refreshToken Error", "Authentication SDK not initialized")
+      return
     }
 
     runBlocking {
-        try {
-            val hostAccessToken = async { authenticationSDK.getToken(AuthSource.HOST) }
-            val archticsAccessToken = async { authenticationSDK.getToken(AuthSource.ARCHTICS) }
-            val mfxAccessToken = async { authenticationSDK.getToken(AuthSource.MFX) }
-            val sportXRAccessToken = async { authenticationSDK.getToken(AuthSource.SPORTXR) }
+      try {
+        val hostAccessToken = async { authenticationSDK.getToken(AuthSource.HOST) }
+        val archticsAccessToken = async { authenticationSDK.getToken(AuthSource.ARCHTICS) }
+        val mfxAccessToken = async { authenticationSDK.getToken(AuthSource.MFX) }
+        val sportXRAccessToken = async { authenticationSDK.getToken(AuthSource.SPORTXR) }
 
-            val (resArchticsAccessToken, resHostAccessToken, resMfxAccessToken, resSportXRAccessToken) = awaitAll(
-                archticsAccessToken,
-                hostAccessToken,
-                mfxAccessToken,
-                sportXRAccessToken
-            )
+        val (resArchticsAccessToken, resHostAccessToken, resMfxAccessToken, resSportXRAccessToken) = awaitAll(
+          archticsAccessToken,
+          hostAccessToken,
+          mfxAccessToken,
+          sportXRAccessToken
+        )
 
-            val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
-                putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
-            }
-
-            val combinedTokens: WritableMap = Arguments.createMap().apply {
-                if (!resHostAccessToken.isNullOrEmpty()) {
-                    putString("hostAccessToken", resHostAccessToken)
-                }
-                if (!resArchticsAccessToken.isNullOrEmpty()) {
-                    putString("archticsAccessToken", resArchticsAccessToken)
-                }
-                if (!resMfxAccessToken.isNullOrEmpty()) {
-                    putString("mfxAccessToken", resMfxAccessToken)
-                }
-                if (!resSportXRAccessToken.isNullOrEmpty()) {
-                    putString("sportXRAccessToken", resSportXRAccessToken)
-                }
-            }
-
-            GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
-            promise.resolve(combinedTokens)
-        } catch (e: Exception) {
-            promise.reject("Accounts SDK refreshToken Error", e)
+        val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
         }
+
+        val combinedTokens: WritableMap = Arguments.createMap().apply {
+          if (!resHostAccessToken.isNullOrEmpty()) {
+            putString("hostAccessToken", resHostAccessToken)
+          }
+          if (!resArchticsAccessToken.isNullOrEmpty()) {
+            putString("archticsAccessToken", resArchticsAccessToken)
+          }
+          if (!resMfxAccessToken.isNullOrEmpty()) {
+            putString("mfxAccessToken", resMfxAccessToken)
+          }
+          if (!resSportXRAccessToken.isNullOrEmpty()) {
+            putString("sportXRAccessToken", resSportXRAccessToken)
+          }
+        }
+
+        GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
+        promise.resolve(combinedTokens)
+      } catch (e: Exception) {
+        promise.reject("Accounts SDK refreshToken Error", e)
+      }
     }
-}
+  }
 
   private fun createTicketsColors(color: Int): TicketsColors =
     TicketsColors(
