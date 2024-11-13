@@ -8,13 +8,13 @@ import androidx.fragment.app.FragmentActivity
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.annotations.ReactProp
 
 class TicketsViewManager (
   private val reactContext: ReactApplicationContext
-) : SimpleViewManager<FrameLayout>() {
+) : ViewGroupManager<FrameLayout>() {
   private var propWidth: Int? = null
   private var propHeight: Int? = null
 
