@@ -21,8 +21,6 @@ import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
 import com.ticketmaster.authenticationsdk.TMXDeploymentEnvironment
 import com.ticketmaster.tickets.ticketssdk.TicketsColors
-import com.ticketmaster.tickets.ticketssdk.TicketsSDKClient
-import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -129,7 +127,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           .forceNewSession(true)
           .build(currentFragmentActivity)
         IgniteSDKSingleton.setAuthenticationSDK(authentication)
-        
+
         val serviceConfiguredParams: WritableMap = Arguments.createMap().apply {
           putString("accountsSdkServiceConfigured", "accountsSdkServiceConfigured")
         }
