@@ -36,14 +36,14 @@ class TicketsViewManager (
    */
   override fun receiveCommand(
     root: FrameLayout,
-    commandId: String,
+    commandId: Int,
     args: ReadableArray?
   ) {
-    super.receiveCommand(root, commandId, args)
-    val reactNativeViewId = requireNotNull(args).getInt(0)
-
-    when (commandId.toInt()) {
-      COMMAND_CREATE -> createFragment(root, reactNativeViewId)
+    when (commandId) {
+      COMMAND_CREATE -> {
+        val reactNativeViewId = args?.getInt(0) ?: return
+        createFragment(root, reactNativeViewId)
+      }
     }
   }
 
