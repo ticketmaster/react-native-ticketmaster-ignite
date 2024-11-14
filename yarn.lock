@@ -13785,11 +13785,11 @@ __metadata:
   linkType: hard
 
 "use-latest-callback@npm:^0.2.1":
-  version: 0.2.2
-  resolution: "use-latest-callback@npm:0.2.2"
+  version: 0.2.3
+  resolution: "use-latest-callback@npm:0.2.3"
   peerDependencies:
     react: ">=16.8"
-  checksum: f0d17d08bfddd77714620256a3bbde76f4ceb078cffc20050cb395e7e0adb793ab607f3abf964607ae2456b67f7ecabd841cc8be0bb6995c3bcadfdfbde12b8a
+  checksum: 5db2dc0d414508c768ba4d1a337bd73dd0fb2a77eccc9dd7051517b28cd71c849c5e9230b5c97fc76a3811c1500f210cb4e4ebb95fe20347e5f910509a8e533c
   languageName: node
   linkType: hard
 
