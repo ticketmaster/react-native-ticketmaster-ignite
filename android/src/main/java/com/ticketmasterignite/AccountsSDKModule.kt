@@ -215,7 +215,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   fun refreshToken(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
-      promise.reject("Accounts SDK refreshToken Error", "Authentication SDK not initialized")
+      promise.resolve(null)
       return
     }
 
