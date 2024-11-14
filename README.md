@@ -9,6 +9,7 @@
 ![tm-developer-logo](https://github.com/user-attachments/assets/c5835fc2-f1b8-413c-af9d-4449cdf1d24b)
 
 # react-native-ticketmaster-ignite
+
 [![current react-native-ticketmaster-ignite package version](https://img.shields.io/npm/v/react-native-ticketmaster-ignite)](https://www.npmjs.com/package/react-native-ticketmaster-ignite) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ticketmaster/react-native-ticketmaster-ignite/ci.yml?branch=main) [![released under the MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![PR's welcome!](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
 This library serves as a wrapper for the 3 Ticketmaster Ignite SDK's: [Accounts](https://ignite.ticketmaster.com/docs/accounts-sdk-overview), [Retail](https://ignite.ticketmaster.com/docs/retail-sdk-overview) and [Tickets](https://ignite.ticketmaster.com/docs/tickets-sdk-overview).
@@ -25,6 +26,12 @@ npm install --save react-native-ticketmaster-ignite
 
 ```bash
 yarn add react-native-ticketmaster-ignite
+```
+
+#### Expo
+
+```bash
+npx expo install react-native-ticketmaster-ignite
 ```
 
 ## Setting up iOS
@@ -101,6 +108,10 @@ android {
 
 In `android/build.gradle` set the `minSdkVersion` to `26`.
 
+## Setting up Expo
+
+If you are using an expo managed workflow you can use a config plugin to update your native files. See [here](./docs/expo.md) for an example config plugin written for an expo app that uses this library
+
 ## Usage
 
 `react-native-ticketmaster-ignite` exports the following modules:
@@ -122,7 +133,8 @@ Props required in `options` are:
 - `clientName`
 - `primaryColor`
 
-Additional available props are: 
+Additional available props are:
+
 - `region`
 - `eventHeaderType`
 
@@ -146,20 +158,20 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 
 The options prop also accepts a `region` property `US` or `UK`. The default value is `US` and should be used unless you have specifically been told to set your region to `UK`.
 
-##### The `eventHeaderType` property 
+##### The `eventHeaderType` property
 
-The `eventHeaderType` property accepts one of the following values - `NO_TOOLBARS`, `EVENT_INFO`, `EVENT_SHARE` and `EVENT_INFO_SHARE`. When the property has not been passed, the `IgniteProvider` will default to `EVENT_INFO_SHARE`. 
+The `eventHeaderType` property accepts one of the following values - `NO_TOOLBARS`, `EVENT_INFO`, `EVENT_SHARE` and `EVENT_INFO_SHARE`. When the property has not been passed, the `IgniteProvider` will default to `EVENT_INFO_SHARE`.
 
 The `eventHeaderType` property specifies what tools will be available in the header of the event screen:
 
-| Property | Explanation | Demo |
-|----------|----------|----------|
-| `NO_TOOLBARS`    | Show no toolbars in Event's header   | <img src="docs/assets/NO_TOOLBARS.png" width="400"> |
-| `EVENT_INFO`    | Show only the event info button |<img src="docs/assets/EVENT_INFO.png" width="400">|
-| `EVENT_SHARE`   | Show only the event share button   |<img src="docs/assets/EVENT_SHARE.png" width="400">|
-| `EVENT_INFO_SHARE`    | Show both the info and share buttons   |<img src="docs/assets/EVENT_INFO_SHARE.png" width="400">|
+| Property           | Explanation                          | Demo                                                     |
+| ------------------ | ------------------------------------ | -------------------------------------------------------- |
+| `NO_TOOLBARS`      | Show no toolbars in Event's header   | <img src="docs/assets/NO_TOOLBARS.png" width="400">      |
+| `EVENT_INFO`       | Show only the event info button      | <img src="docs/assets/EVENT_INFO.png" width="400">       |
+| `EVENT_SHARE`      | Show only the event share button     | <img src="docs/assets/EVENT_SHARE.png" width="400">      |
+| `EVENT_INFO_SHARE` | Show both the info and share buttons | <img src="docs/assets/EVENT_INFO_SHARE.png" width="400"> |
 
-##### The `autoUpdate` prop 
+##### The `autoUpdate` prop
 
 `autoUpdate` is a prop that can be set to false to prevent `IgniteProvider` from rerendering your app on app launch. (⚠️ warning: if set to `false`, `authState`'s `isLoggedIn`, `memberInfo` and `isConfigured` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually after app restarts. The default value is `true`. See more on `authState` later on.)
 
@@ -235,7 +247,7 @@ try {
 {isLoggedIn && <Text>You are logged in<Text/>}
 ```
 
-`getToken` and `refreshToken` return different data types per platform. iOS returns a `string` and Android returns an object. See Android object type below: 
+`getToken` and `refreshToken` return different data types per platform. iOS returns a `string` and Android returns an object. See Android object type below:
 
 ```typescript
 type AuthSource = {
@@ -247,7 +259,6 @@ type AuthSource = {
 ```
 
 You can see the results of `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` in the console when running the example app.
-
 
 The `login()` method from the `useIgnite` hook accepts an object with properties `onLogin` and `skipUpdate`:
 
@@ -288,11 +299,9 @@ type LogoutParams = {
 };
 ```
 
-
 #### Reconfigure Accounts SDK
 
 If you want to switch between different API keys within one app, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them.
-
 
 Example:
 
@@ -313,7 +322,7 @@ try {
 The `refreshConfiguration()` method from the `useIgnite` accepts the below list of properties (apiKey is the only compulsory param):
 
 - `apiKey` - An API configuration key from your Ticketmaster developer account
-- `clientName` - Company name 
+- `clientName` - Company name
 - `primaryColor` - Company brand color
 - `onSuccess` - a callback that fires after successful Accounts SDK configuration
 - `onLoginSuccess` - a callback that fires after successful login
@@ -335,7 +344,6 @@ type RefreshConfigParams = {
 ```
 
 `IgniteProvider` always requires an API key so make sure you have set a default/fallback for app launch. This library does not persist API keys, so you will need to persist the users previous team selection to make sure the correct API key is used after app restarts.
-
 
 ### TicketsSdkModal (iOS only)
 
@@ -386,7 +394,6 @@ return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
 ```
 
 ⚠️  Please note that the `renderTimeDelay` prop only affects iOS.
-
 
 ### SecureEntryView (Android only)
 
@@ -460,6 +467,25 @@ const onShowPrePurchaseAttraction = async () => {
   }
 };
 ```
+
+##### Discovery API
+
+To get data from the discovery API you can call the API directly in your app.
+
+```typescript
+const entityIds = ['K8vZ9171o57', 'K8vZ91718XV'].join(',');
+
+useEffect(() => {
+  fetch(
+    `https://app.ticketmaster.com/discovery/v2/attractions.json?id=${entityIds}&sort=relevance,desc&extensions=ticketmaster&size=200&page=${page}&locale=en-us&view=internal&apikey=${apiKey}`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data._embedded.attractions);
+    });
+}, [entityIds, page, apiKey]);
+```
+
 ### Prebuilt Modules
 
 To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which accepts the following object:
@@ -555,9 +581,9 @@ pod install
 
 ## Environment variables
 
-You will need an API key for this app to run, you can get one here [Developer Account](https://developer-acct.ticketmaster.com/user/login).
+In order to use the library, setup a developer account with Ticketmaster by contacting nexus_sdk@ticketmaster.com.
 
-For the Retail SDK (PrePurchase and Purchase) views, you will need ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below.
+For the Retail SDK (PrePurchase and Purchase) views, you will need attraction or venue ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below.
 
 Replace "someApiKey" with the API key from your Ticketmaster Developer Account.
 Replace "clientName" with your company name, for example "My Company Name". You can set this in the `options` prop of `<IgniteProvider>`.
