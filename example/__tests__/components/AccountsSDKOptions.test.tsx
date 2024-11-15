@@ -3,6 +3,10 @@ import { render, fireEvent } from '@testing-library/react-native';
 import AccountsSDKOptions from '../../src/components/AccountsSDKOptions';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 
+jest.mock('react-native-ticketmaster-ignite', () => ({
+  useIgnite: jest.fn(),
+}));
+
 describe('AccountsSDKOptions', () => {
   const loginMock = jest.fn();
   const logoutMock = jest.fn();

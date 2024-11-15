@@ -19,7 +19,7 @@ const Root = () => {
         options={{
           animation: 'fade',
           statusBarColor: Config.PRIMARY_COLOR,
-          statusBarStyle: 'light',
+          // statusBarStyle: 'light',
         }}
         component={BottomTabs}
       />

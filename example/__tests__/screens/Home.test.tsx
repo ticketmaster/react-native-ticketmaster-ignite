@@ -4,6 +4,10 @@ import Home from '../../src/screens/Home';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 import { ActivityIndicator } from 'react-native';
 
+jest.mock('react-native-ticketmaster-ignite');
+
+const mockedUseIgnite = useIgnite as jest.MockedFunction<typeof useIgnite>;
+
 describe('Home', () => {
   const loginMock = jest.fn();
   const logoutMock = jest.fn();
@@ -16,7 +20,7 @@ describe('Home', () => {
     jest.clearAllMocks();
 
     // @ts-ignore
-    useIgnite.mockReturnValue({
+    mockedUseIgnite.mockReturnValue({
       login: loginMock,
       logout: logoutMock,
       getToken: getTokenMock,
@@ -30,9 +34,13 @@ describe('Home', () => {
     describe('uses isLogging status to show spinner', () => {
       it('shows the ActivityIndicator when isLogging in is true', async () => {
         // @ts-ignore
-        useIgnite.mockReturnValue({
+        mockedUseIgnite.mockReturnValue({
           isLoggingIn: true,
-          authState: { isLoggedIn: false },
+          authState: {
+            isLoggedIn: false,
+            isConfigured: false,
+            memberInfo: null,
+          },
         });
 
         const component = render(<Home />);
@@ -46,9 +54,13 @@ describe('Home', () => {
 
       it('does not show the ActivityIndicator when isLogging in is false', async () => {
         // @ts-ignore
-        useIgnite.mockReturnValue({
+        mockedUseIgnite.mockReturnValue({
           isLoggingIn: false,
-          authState: { isLoggedIn: false },
+          authState: {
+            isLoggedIn: false,
+            isConfigured: false,
+            memberInfo: null,
+          },
         });
 
         const component = render(<Home />);

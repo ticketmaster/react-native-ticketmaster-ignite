@@ -98,8 +98,8 @@ dependencies {
   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
   implementation 'com.google.code.gson:gson:2.10.1'
 
-  implementation 'com.ticketmaster.accounts:authentication:3.9.0_jdk15to18_bouncycastle-SNAPSHOT'
-  implementation 'com.ticketmaster.tickets:tickets:3.8.3'
+  implementation 'com.ticketmaster.accounts:authentication:3.9.0'
+  implementation 'com.ticketmaster.tickets:tickets:3.9.1'
   implementation 'com.ticketmaster.tickets:secure-entry:1.2.10'
   implementation 'com.ticketmaster.retail:purchase:3.2.0'
   implementation 'com.ticketmaster.retail:prepurchase:3.2.0'
