@@ -473,7 +473,7 @@ const onShowPrePurchaseAttraction = async () => {
 
 ##### Discovery API
 
-To get data from the discovery API you can call the API directly in your app.
+To get data from the discovery API you can call the API directly in your app. To learn more about the Discovery API see [here](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/).
 
 ```typescript
 const entityIds = ['K8vZ9171o57', 'K8vZ91718XV'].join(',');
