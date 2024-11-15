@@ -74,7 +74,7 @@ You can set up to 5 schemes
 Open the `AndroidManifest.xml` file and:
 
 - make sure that the `manifest` contains `xmlns:tools="http://schemas.android.com/tools"`
-- add `tools:replace="android:allowBackup` to the `application`
+- add `tools:replace="android:allowBackup"` to the `application`
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
