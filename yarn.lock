@@ -3162,6 +3162,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testing-library/react-native@npm:^12":
+  version: 12.8.1
+  resolution: "@testing-library/react-native@npm:12.8.1"
+  dependencies:
+    jest-matcher-utils: ^29.7.0
+    pretty-format: ^29.7.0
+    redent: ^3.0.0
+  peerDependencies:
+    jest: ">=28.0.0"
+    react: ">=16.8.0"
+    react-native: ">=0.59"
+    react-test-renderer: ">=16.8.0"
+  peerDependenciesMeta:
+    jest:
+      optional: true
+  checksum: 6f57fb2ea0cf70bf8882418c610b115b8a3deff908790ca54f10898c25e8158b19b5cdafe1ed24df9de9336699694baa919e2a64602a09e50710958432b493e9
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.11
   resolution: "@tsconfig/node10@npm:1.0.11"
@@ -11636,7 +11655,7 @@ __metadata:
     "@react-navigation/native-stack": ^6.9.13
     "@testing-library/jest-native": ^5.4.3
     "@testing-library/react-hooks": ^8.0.1
-    "@testing-library/react-native": ^11
+    "@testing-library/react-native": ^12
     "@tsconfig/react-native": ^3.0.0
     "@types/react": ^18.2.6
     "@types/react-test-renderer": ^18.0.0
@@ -13596,7 +13615,7 @@ __metadata:
 
 "typescript@patch:typescript@^4.6.4 || ^5.2.2#~builtin<compat/typescript>, typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
   version: 5.6.3
-  resolution: "typescript@patch:typescript@npm%3A5.6.3#~builtin<compat/typescript>::version=5.6.3&hash=14eedb"
+  resolution: "typescript@patch:typescript@npm%3A5.6.3#~builtin<compat/typescript>::version=5.6.3&hash=29ae49"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver

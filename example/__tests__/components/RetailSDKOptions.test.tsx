@@ -3,6 +3,14 @@ import { render, fireEvent } from '@testing-library/react-native';
 import RetailSDKOptions from '../../src/components/RetailSDKOptions';
 import { RetailSDK } from 'react-native-ticketmaster-ignite';
 
+jest.mock('react-native-ticketmaster-ignite', () => ({
+  RetailSDK: {
+    presentPrePurchaseVenue: jest.fn(),
+    presentPrePurchaseAttraction: jest.fn(),
+    presentPurchase: jest.fn(),
+  },
+}));
+
 describe('RetailSDKOptions', () => {
   it('calls presentPrePurchaseVenue with venue ID when Show Retail PrePurchase Venue is clicked', () => {
     const fakePresentPrePurchaseVenue = RetailSDK.presentPrePurchaseVenue;
