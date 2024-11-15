@@ -31,11 +31,3 @@ export const TicketsSdkEmbeddedAndroid = jest.fn(() => {
     </View>
   );
 });
-
-export const TicketsSdkModal = jest.fn(() => {
-  return (
-    <View>
-      <Text>Hello Modal</Text>
-    </View>
-  );
-});

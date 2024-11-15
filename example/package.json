@@ -34,7 +34,7 @@
     "@react-native/typescript-config": "0.76.1",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-hooks": "^8.0.1",
-    "@testing-library/react-native": "^11",
+    "@testing-library/react-native": "^12",
     "@tsconfig/react-native": "^3.0.0",
     "@types/react": "^18.2.6",
     "@types/react-test-renderer": "^18.0.0",
@@ -52,6 +52,9 @@
   },
   "jest": {
     "preset": "react-native",
+    "moduleNameMapper": {
+      "^react-native$": "<rootDir>/node_modules/react-native"
+    },
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
