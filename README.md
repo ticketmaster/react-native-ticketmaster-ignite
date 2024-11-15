@@ -27,6 +27,12 @@ npm install --save react-native-ticketmaster-ignite
 yarn add react-native-ticketmaster-ignite
 ```
 
+#### Expo
+
+```bash
+npx expo install react-native-ticketmaster-ignite
+```
+
 ## Setting up iOS
 
 Edit the `Podfile` and set the platform to `15.0`
@@ -68,7 +74,7 @@ You can set up to 5 schemes
 Open the `AndroidManifest.xml` file and:
 
 - make sure that the `manifest` contains `xmlns:tools="http://schemas.android.com/tools"`
-- add `tools:replace="android:allowBackup` to the `application`
+- add `tools:replace="android:allowBackup"` to the `application`
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -99,7 +105,11 @@ android {
 
 #### Set the minSdkVersion
 
-In `android/build.gradle` set the `minSdkVersion` to `26`.
+In `android/build.gradle` set the `minSdkVersion` to `26` and set the `compileSdkVersion` to `35`.
+
+## Setting up Expo
+
+If you are using an expo managed workflow you can use a config plugin to update your native files. See [here](./docs/expo.md) for an example config plugin written for an expo app that uses this library
 
 ## Usage
 
@@ -460,6 +470,25 @@ const onShowPrePurchaseAttraction = async () => {
   }
 };
 ```
+
+##### Discovery API
+
+To get data from the discovery API you can call the API directly in your app. To learn more about the Discovery API see [here](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/).
+
+```typescript
+const entityIds = ['K8vZ9171o57', 'K8vZ91718XV'].join(',');
+
+useEffect(() => {
+  fetch(
+    `https://app.ticketmaster.com/discovery/v2/attractions.json?id=${entityIds}&sort=relevance,desc&extensions=ticketmaster&size=200&page=${page}&locale=en-us&view=internal&apikey=${apiKey}`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data._embedded.attractions);
+    });
+}, [entityIds, page, apiKey]);
+```
+
 ### Prebuilt Modules
 
 To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which accepts the following object:
@@ -555,9 +584,9 @@ pod install
 
 ## Environment variables
 
-You will need an API key for this app to run, you can get one here [Developer Account](https://developer-acct.ticketmaster.com/user/login).
+In order to use the library, setup a developer account with Ticketmaster by contacting nexus_sdk@ticketmaster.com.
 
-For the Retail SDK (PrePurchase and Purchase) views, you will need ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below.
+For the Retail SDK (PrePurchase and Purchase) views, you will need attraction or venue ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below.
 
 Replace "someApiKey" with the API key from your Ticketmaster Developer Account.
 Replace "clientName" with your company name, for example "My Company Name". You can set this in the `options` prop of `<IgniteProvider>`.
