@@ -100,7 +100,18 @@
     ],
     "setupFilesAfterEnv": [
       "./jest-setup.ts"
-    ]
+    ],
+    "transform": {
+      "^.+\\.(js)$": [
+        "babel-jest",
+        {
+          "plugins": [
+            "babel-plugin-syntax-hermes-parser"
+          ]
+        }
+      ],
+      "^.+\\.(ts|tsx)$": "babel-jest"
+    }
   },
   "commitlint": {
     "extends": [
