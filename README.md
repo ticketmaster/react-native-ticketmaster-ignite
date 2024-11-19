@@ -397,6 +397,31 @@ return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
 
 ⚠️  Please note that the `renderTimeDelay` prop only affects iOS.
 
+### Ticket Order ID Deep Link
+
+You can call `setOrderIdDeepLink()` to setup a deep link to an order by passing the method an order or event ID.
+
+Example:
+
+```typescript
+const { setOrderIdDeepLink } = useIgnite();
+
+setOrderIdDeepLink('TICKET_ORDER_ID')
+```
+
+You can then navigate to the component/screen which renders the Tickets SDK and the order with the order ID set will show above the My Tickets SDK view.
+
+If you are using React Navigation and you want to do multiple deep links within an app session without the user closing the app, you will need to set `unmountOnBlur` in the screen `options` prop to `true`, as the deep link is triggered on Ticket SDK mount.
+
+```typescript
+<Tab.Screen
+  name="My Events"
+  component={MyEvents}
+  options={{
+    unmountOnBlur: true,
+  }}
+/>
+```
 
 ### SecureEntryView (Android only)
 

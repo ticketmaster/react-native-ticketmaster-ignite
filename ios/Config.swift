@@ -9,7 +9,7 @@ class Config {
     }
 
     func get(for key: String) -> String {
-        return configModule?.getConfig(key) ?? "NOT FOUND"
+        return configModule?.getConfig(key) ?? ""
 
     }
 

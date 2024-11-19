@@ -25,11 +25,11 @@ module.exports = function withIgnitePlugin(expoConfig) {
     return config;
   });
 
-  withStringsXml(expoConfig, (modConfig) => {
+  withStringsXml(expoConfig, (config) => {
     const schemes = ['sampleScheme'];
 
     schemes.forEach((value, index) => {
-      modConfig.modResults = AndroidConfig.Strings.setStringItem(
+      config.modResults = AndroidConfig.Strings.setStringItem(
         [
           {
             _: value,
@@ -37,16 +37,16 @@ module.exports = function withIgnitePlugin(expoConfig) {
               name: `${
                 index === 0
                   ? 'app_tm_modern_accounts_scheme'
-                  : `app_tm_modern_accounts_scheme_${index + 1}`
+                  : `app_tm_modern_accounts_scheme_${index + 2}`
               }`,
             },
           },
         ],
-        modConfig.modResults
+        config.modResults
       );
     });
 
-    return modConfig;
+    return config;
   });
 
   withProjectBuildGradle(expoConfig, (config) => {

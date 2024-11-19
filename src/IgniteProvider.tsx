@@ -55,6 +55,7 @@ type IgniteContextType = {
   refreshConfiguration: (
     refreshConfigParams: RefreshConfigParams
   ) => Promise<void>;
+  setOrderIdDeepLink: (orderId: string) => void;
   authState: AuthStateParams;
   isLoggingIn: boolean;
 };
@@ -82,6 +83,7 @@ export const IgniteContext = createContext<IgniteContextType>({
   getMemberInfo: async () => null,
   refreshToken: async () => null,
   refreshConfiguration: async () => {},
+  setOrderIdDeepLink: () => {},
   isLoggingIn: false,
   authState: {
     isConfigured: false,
@@ -119,13 +121,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 }) => {
   const { Config, AccountsSDK } = NativeModules;
   const { apiKey, clientName, primaryColor, region, eventHeaderType } = options;
-  const {
-    moreTicketActionsModule,
-    venueDirectionsModule,
-    seatUpgradesModule,
-    venueConcessionsModule,
-    invoiceModule,
-  } = prebuiltModules;
+  const { venueConcessionsModule } = prebuiltModules;
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
     isConfigured: false,
@@ -185,31 +181,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('primaryColor', primaryColor);
     Config.setConfig('region', region || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
-    moreTicketActionsModule &&
-      Config.setConfig(
-        'moreTicketActionsModule',
-        moreTicketActionsModule.enabled ? 'true' : 'false'
-      );
-    venueDirectionsModule &&
-      Config.setConfig(
-        'venueDirectionsModule',
-        venueDirectionsModule.enabled ? 'true' : 'false'
-      );
-    seatUpgradesModule &&
-      Config.setConfig(
-        'seatUpgradesModule',
-        seatUpgradesModule.enabled ? 'true' : 'false'
-      );
-    venueConcessionsModule &&
-      Config.setConfig(
-        'venueConcessionsModule',
-        venueConcessionsModule.enabled ? 'true' : 'false'
-      );
-    invoiceModule &&
-      Config.setConfig(
-        'invoiceModule',
-        invoiceModule.enabled ? 'true' : 'false'
-      );
+
+    Object.entries(prebuiltModules).forEach(([key, value]) => {
+      const isEnabled = value.enabled ? 'true' : 'false';
+      Config.setConfig(key, isEnabled);
+    });
   }, [
     Config,
     apiKey,
@@ -217,12 +193,12 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     primaryColor,
     region,
     eventHeaderType,
-    moreTicketActionsModule,
-    invoiceModule,
-    seatUpgradesModule,
-    venueDirectionsModule,
-    venueConcessionsModule,
+    prebuiltModules,
   ]);
+
+  const setOrderIdDeepLink = (orderId: string) => {
+    Config.setConfig('orderIdDeepLink', orderId);
+  };
 
   useEffect(() => {
     const onConfigureAccountsSdk = async () => {
@@ -356,7 +332,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       if (Platform.OS === 'ios') {
         // iOS getToken has the exact same Native logic as refreshToken, but will not display the login UI if a user is not logged in or has an invalidated token
         const result = await AccountsSDK.getToken();
-        accessToken = result.accessToken;
+        accessToken = result.accessToken === '' ? null : result.accessToken;
       } else if (Platform.OS === 'android') {
         accessToken = await AccountsSDK.refreshToken();
       }
@@ -397,7 +373,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     try {
       const result = await AccountsSDK.refreshToken();
       console.log('Accounts SDK refresh token:', result);
-      return Platform.OS === 'ios' ? result.accessToken : result;
+      return Platform.OS === 'ios'
+        ? result.accessToken === ''
+          ? null
+          : result.accessToken
+        : result;
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
         console.log('Accounts SDK refresh token: null');
@@ -436,6 +416,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         getMemberInfo,
         refreshToken,
         refreshConfiguration,
+        setOrderIdDeepLink,
         authState,
         isLoggingIn,
       }}
