@@ -332,7 +332,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       if (Platform.OS === 'ios') {
         // iOS getToken has the exact same Native logic as refreshToken, but will not display the login UI if a user is not logged in or has an invalidated token
         const result = await AccountsSDK.getToken();
-        accessToken = result.accessToken;
+        accessToken = result.accessToken === '' ? null : result.accessToken;
       } else if (Platform.OS === 'android') {
         accessToken = await AccountsSDK.refreshToken();
       }
