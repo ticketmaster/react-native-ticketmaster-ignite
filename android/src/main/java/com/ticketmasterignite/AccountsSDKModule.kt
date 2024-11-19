@@ -233,10 +233,6 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           sportXRAccessToken
         )
 
-        val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
-        }
-
         val combinedTokens: WritableMap = Arguments.createMap().apply {
           if (!resHostAccessToken.isNullOrEmpty()) {
             putString("hostAccessToken", resHostAccessToken)
@@ -252,8 +248,18 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           }
         }
 
+        val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
+        }
         GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
-        promise.resolve(combinedTokens)
+
+        if (resArchticsAccessToken.isNullOrEmpty() && resHostAccessToken.isNullOrEmpty() &&
+          resMfxAccessToken.isNullOrEmpty() && resSportXRAccessToken.isNullOrEmpty()
+        ) {
+          promise.resolve(null)
+        } else {
+          promise.resolve(combinedTokens)
+        }
       } catch (e: Exception) {
         promise.reject("Accounts SDK refreshToken Error", e)
       }

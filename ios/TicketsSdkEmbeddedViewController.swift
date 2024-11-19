@@ -14,6 +14,9 @@ import TicketmasterTickets
       let ticketsView = TMTicketsView.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: self.view.frame.height))
       self.view.addSubview(ticketsView)
       TMTickets.shared.start(ticketsView: ticketsView)
+      if(!Config.shared.get(for: "orderIdDeepLink").isEmpty) {
+        self.deepLinkToOrder(Config.shared.get(for: "orderIdDeepLink"))
+      }
     } failure: { error in
       print(" - Tickets SDK Configuration Error: \(error.localizedDescription)")
     }
