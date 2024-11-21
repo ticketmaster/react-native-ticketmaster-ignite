@@ -224,7 +224,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         if (result && analytics) analytics(result);
         if (
           (result.purchaseSdkDidEndCheckoutFor ||
-            result.ticketsSdkDidViewEvents) &&
+            result.ticketsSdkDidViewEvents ||
+            // A login process not started by calling login(), typically the iOS refreshToken login flow
+            (result.accountsSdkLoggedIn && !isLoggingIn)) &&
           autoUpdate
         ) {
           await setAccountDetails();

@@ -115,17 +115,14 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   }
   
   @objc public func isLoggedIn(_ resolve: @escaping ([String: Bool]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    TMAuthentication.shared.memberInfo { memberInfo in
+    TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
       let hasToken = TMAuthentication.shared.hasToken()
       resolve(["result": hasToken])
-      
-    } failure: { oldMemberInfo, error, backend in
-      if(TMAuthentication.shared.hasToken()){
-        let hasToken = TMAuthentication.shared.hasToken()
-        resolve(["result": hasToken])
-      } else {
+    } aborted: { oldAuthToken, backend in
+      let hasToken = TMAuthentication.shared.hasToken()
+      resolve(["result": hasToken])
+    } failure: { oldAuthToken, error, backend in
         reject("Accounts SDK Is Logged In Error", error.localizedDescription, error as NSError)
-      }
     }
   }
   
