@@ -298,6 +298,10 @@ type LogoutParams = {
 };
 ```
 
+#### Refresh Token
+
+The Accounts SDK only returns an access token, not a refresh token. If `getToken()` returns `null` the refresh token may have expired. In this situation you can either call `logout()` so the user can login again to retrieve a new refresh token or you can call `refreshToken()` which will automatically present the login UI to the user.
+
 
 #### Reconfigure Accounts SDK
 
