@@ -104,6 +104,7 @@ const defaultPrebuiltModules = {
     enabled: false,
     orderButtonCallback: async () => {},
     walletButtonCallback: async () => {},
+    image: '',
   },
   invoiceModule: {
     enabled: false,
@@ -203,8 +204,16 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     venueConcessionsModule &&
       Config.setConfig(
         'venueConcessionsModule',
-        venueConcessionsModule.enabled ? 'true' : 'false'
+        venueConcessionsModule ? 'true' : 'false'
       );
+    if (venueConcessionsModule) {
+      const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
+      const resolvedImage = resolveAssetSource(venueConcessionsModule.image);
+      Config.setImage(
+        'venueConcessionsModuleImage',
+        venueConcessionsModule.image ? resolvedImage : 'false'
+      );
+    }
     invoiceModule &&
       Config.setConfig(
         'invoiceModule',

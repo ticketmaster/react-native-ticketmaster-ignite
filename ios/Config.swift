@@ -10,8 +10,12 @@ class Config {
 
     func get(for key: String) -> String {
         return configModule?.getConfig(key) ?? "NOT FOUND"
-
     }
+  
+  func getImage(for key: String) -> UIImage {
+    print("getImage swift: \(key)")
+    return (configModule?.getImage(key))!
+  }
 
     func set(for key: String, value: String) {
         configModule?.setConfig(key, value: value)

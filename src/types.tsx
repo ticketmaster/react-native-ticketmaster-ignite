@@ -134,6 +134,7 @@ export type PrebuiltModules = {
   };
   venueConcessionsModule?: {
     enabled: boolean;
+    image: string;
     orderButtonCallback: (
       data: TicketsSdkVenueConcessionsData
     ) => void | Promise<void>;

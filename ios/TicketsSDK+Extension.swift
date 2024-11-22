@@ -1,4 +1,5 @@
 import TicketmasterTickets
+import React
 
 // Extension to provide methods to UIViewController
 extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate {
@@ -75,6 +76,7 @@ extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate 
   
   func addPreBuiltModules(event: TMPurchasedEvent) -> [TMTicketsModule] {
     print(" - Adding Prebuilt Modules")
+    print("image log test \(Config.shared.get(for: "venueConcessionsModuleImage"))")
     var output: [TMTicketsModule] = []
     
     if let module = TMTicketsPrebuiltModule.accountManagerMoreTicketActions(event: event) {
@@ -95,7 +97,23 @@ extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate 
       }
     }
     
-    if let module = TMTicketsPrebuiltModule.venueConcessions(event: event, showWalletButton: true) {
+    
+//  let jsCodeLocation = Bundle.main.url(forResource: "food", withExtension: "jpeg")
+//                let jsCodeLocation =  Bundle(for: RNOnboarding.self).url(forResource: "main", withExtension: "jsbundle")!
+//            let jsCodeLocation = URI(string: Config.shared.get(for: "venueConcessionsModule"))!
+    
+//    let uri = jsCodeLocation?.absoluteString ?? ""
+//    let image = UIImage(named: uri)
+//    let imageView = UIImageView(image: image!)
+    
+//    print("image log test 2 \(image)")
+
+    
+    let headerOverride2 = TMTicketsPrebuiltModule.HeaderOverride(
+        bottomLabelText: "Bring the Lobby to you!", // note that top text is unchanged
+        gradientAlpha: 1.0, // darken edges of image to make text easier to read
+        backgroundImage: Config.shared.getImage(for: Config.shared.get(for: "venueConcessionsModuleImage")))
+    if let module = TMTicketsPrebuiltModule.venueConcessions(event: event, headerOverride: headerOverride2, showWalletButton: true) {
       if(Config.shared.get(for: "venueConcessionsModule") == "true") {
         output.append(module)
       }

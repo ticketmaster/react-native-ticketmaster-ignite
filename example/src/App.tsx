@@ -23,6 +23,26 @@ const App = () => {
       <NavigationContainer theme={navTheme}>
         <IgniteProvider
           // analytics={igniteAnalytics}
+          prebuiltModules={{
+            moreTicketActionsModule: {
+              enabled: true,
+            },
+            venueDirectionsModule: {
+              enabled: true,
+            },
+            seatUpgradesModule: {
+              enabled: true,
+            },
+            venueConcessionsModule: {
+              enabled: true,
+              orderButtonCallback: () => {},
+              walletButtonCallback: () => {},
+              image: require('./assets/images/food.jpeg'),
+            },
+            invoiceModule: {
+              enabled: true,
+            },
+          }}
           options={{
             apiKey: Config.API_KEY || '',
             clientName: Config.CLIENT_NAME || '',
