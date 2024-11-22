@@ -27,6 +27,12 @@ npm install --save react-native-ticketmaster-ignite
 yarn add react-native-ticketmaster-ignite
 ```
 
+#### Expo
+
+```bash
+npx expo install react-native-ticketmaster-ignite
+```
+
 ## Setting up iOS
 
 Edit the `Podfile` and set the platform to `15.0`
@@ -68,7 +74,7 @@ You can set up to 5 schemes
 Open the `AndroidManifest.xml` file and:
 
 - make sure that the `manifest` contains `xmlns:tools="http://schemas.android.com/tools"`
-- add `tools:replace="android:allowBackup` to the `application`
+- add `tools:replace="android:allowBackup"` to the `application`
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -99,7 +105,11 @@ android {
 
 #### Set the minSdkVersion
 
-In `android/build.gradle` set the `minSdkVersion` to `26`.
+In `android/build.gradle` set the `minSdkVersion` to `26` and set the `compileSdkVersion` to `35`.
+
+## Setting up Expo
+
+If you are using an expo managed workflow you can use a config plugin to update your native files. See [here](./docs/expo.md) for an example config plugin written for an expo app that uses this library
 
 ## Usage
 
@@ -288,6 +298,9 @@ type LogoutParams = {
 };
 ```
 
+#### Refresh Token
+
+The Accounts SDK only returns an access token, not a refresh token. If `getToken()` returns `null` the refresh token may have expired. In this situation you can either call `logout()` so the user can manually login again to refresh the refresh token or you can call `refreshToken()` which will automatically present the login UI to the user. If you do not need to use an OAuth access token from the Accounts SDK, you typically do not need to worry about this and can rely on `isLoggedIn` from `useIgnite()` to control your UI login state.
 
 #### Reconfigure Accounts SDK
 
@@ -387,6 +400,31 @@ return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
 
 ⚠️  Please note that the `renderTimeDelay` prop only affects iOS.
 
+### Ticket Order ID Deep Link
+
+You can call `setOrderIdDeepLink()` to setup a deep link to an order by passing the method an order or event ID.
+
+Example:
+
+```typescript
+const { setOrderIdDeepLink } = useIgnite();
+
+setOrderIdDeepLink('TICKET_ORDER_ID')
+```
+
+You can then navigate to the component/screen which renders the Tickets SDK and the order with the order ID set will show above the My Tickets SDK view.
+
+If you are using React Navigation and you want to do multiple deep links within an app session without the user closing the app, you will need to set `unmountOnBlur` in the screen `options` prop to `true`, as the deep link is triggered on Ticket SDK mount.
+
+```typescript
+<Tab.Screen
+  name="My Events"
+  component={MyEvents}
+  options={{
+    unmountOnBlur: true,
+  }}
+/>
+```
 
 ### SecureEntryView (Android only)
 
@@ -460,6 +498,25 @@ const onShowPrePurchaseAttraction = async () => {
   }
 };
 ```
+
+##### Discovery API
+
+To get data from the discovery API you can call the API directly in your app. To learn more about the Discovery API see [here](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/).
+
+```typescript
+const entityIds = ['K8vZ9171o57', 'K8vZ91718XV'].join(',');
+
+useEffect(() => {
+  fetch(
+    `https://app.ticketmaster.com/discovery/v2/attractions.json?id=${entityIds}&sort=relevance,desc&extensions=ticketmaster&size=200&page=${page}&locale=en-us&view=internal&apikey=${apiKey}`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data._embedded.attractions);
+    });
+}, [entityIds, page, apiKey]);
+```
+
 ### Prebuilt Modules
 
 To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which accepts the following object:
@@ -555,9 +612,9 @@ pod install
 
 ## Environment variables
 
-You will need an API key for this app to run, you can get one here [Developer Account](https://developer-acct.ticketmaster.com/user/login).
+In order to use the library, setup a developer account with Ticketmaster by contacting nexus_sdk@ticketmaster.com.
 
-For the Retail SDK (PrePurchase and Purchase) views, you will need ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below.
+For the Retail SDK (PrePurchase and Purchase) views, you will need attraction or venue ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below.
 
 Replace "someApiKey" with the API key from your Ticketmaster Developer Account.
 Replace "clientName" with your company name, for example "My Company Name". You can set this in the `options` prop of `<IgniteProvider>`.

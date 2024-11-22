@@ -24,12 +24,15 @@ type TicketsSdkEmbeddedAndroidProps = {
 const TicketsViewManager =
   requireNativeComponent<TicketsViewManagerProps>('TicketsViewManager');
 
-const createFragment = (viewId: number | null) =>
-  UIManager.dispatchViewManagerCommand(
-    viewId,
-    (UIManager as any).TicketsViewManager.Commands.create.toString(),
-    [viewId]
-  );
+const createFragment = (viewId: number) => {
+  const viewManagerConfig =
+    UIManager.getViewManagerConfig('TicketsViewManager');
+  const commandId = viewManagerConfig?.Commands?.create;
+
+  if (commandId != null) {
+    UIManager.dispatchViewManagerCommand(viewId, commandId, [viewId]);
+  }
+};
 
 export const TicketsSdkEmbeddedAndroid = ({
   style,

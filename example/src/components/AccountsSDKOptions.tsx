@@ -76,7 +76,7 @@ const AccountsSdkOptions = () => {
       onPress: () => onLogout(),
     },
     {
-      title: `IsLoggedIn - useIgnite hook value: ${isLoggedIn}`,
+      title: `IsLoggedIn - ${isLoggedIn}`,
       platforms: ['ios', 'android'],
       onPress: () => onGetIsLoggedIn(),
     },

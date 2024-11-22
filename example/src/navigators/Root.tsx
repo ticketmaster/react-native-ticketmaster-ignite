@@ -1,5 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Config from 'react-native-config';
 import BottomTabs from './BottomTabs';
 
 const Stack = createNativeStackNavigator();
@@ -17,8 +18,8 @@ const Root = () => {
         name="BottomTabs"
         options={{
           animation: 'fade',
-          statusBarColor: 'transparent',
-          statusBarStyle: 'light',
+          statusBarColor: Config.PRIMARY_COLOR,
+          // statusBarStyle: 'light',
         }}
         component={BottomTabs}
       />

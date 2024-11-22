@@ -44,7 +44,7 @@ android.iml
 
 # Cocoapods
 #
-example/ios/Pods
+example/**/Pods
 
 # Ruby
 example/vendor/
@@ -83,7 +83,15 @@ lib/
 example/ios/Podfile.lock
 
 # local node version
-example/ios/.xcode.env.local
+example/**/.xcode.env.local
 
 # example variables
 example/.env
+
+# Yarn
+example/.yarn/*
+!example/.yarn/patches
+!example/.yarn/plugins
+!example/.yarn/releases
+!example/.yarn/sdks
+!example/.yarn/versions

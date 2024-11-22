@@ -3,12 +3,6 @@ import { TicketsSdkEmbeddedIos } from '../src/TicketsSdkEmbeddedIos';
 import { render, waitFor } from '@testing-library/react-native';
 import { Platform } from 'react-native';
 
-jest.mock('react-native', () => {
-  const RN = jest.requireActual('react-native');
-  RN.requireNativeComponent = jest.fn();
-  return RN;
-});
-
 describe('TicketsSdkEmbeddedIos', () => {
   beforeAll(() => {
     Platform.OS = 'ios';

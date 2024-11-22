@@ -14,6 +14,9 @@ public class TicketsSdkViewController: UIViewController{
       let ticketsVC = TMTicketsViewController()
       ticketsVC.modalPresentationStyle = .fullScreen
       self.present(ticketsVC, animated: false, completion: nil)
+      if(!Config.shared.get(for: "orderIdDeepLink").isEmpty) {
+        self.deepLinkToOrder(Config.shared.get(for: "orderIdDeepLink"))
+      }
     } failure: { error in
       print(" - Tickets SDK Configuration Error: \(error.localizedDescription)")
     }

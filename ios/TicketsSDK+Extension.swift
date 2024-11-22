@@ -8,6 +8,11 @@ extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate 
     EventEmitter.emitter.sendEvent(withName: name, body: body)
   }
   
+  func deepLinkToOrder(_ orderId: String) {
+    TMTickets.shared.display(orderOrEventId: orderId)
+    Config.shared.set(for: "orderIdDeepLink", value: "")
+  }
+  
   public func userDidView(
     page: TMTickets.Analytics.Page,
     metadata: TMTickets.Analytics.MetadataType) {

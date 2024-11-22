@@ -68,6 +68,11 @@ class TicketsFragment() : Fragment() {
     TicketsSDKSingleton.getEventsFragment(requireContext())?.let {
       childFragmentManager.beginTransaction().add(R.id.tickets_container, it).commit()
     }
+
+    if (Config.get("orderIdDeepLink").isNotBlank()) {
+      TicketsSDKSingleton.jumpToOrderOrEvent(requireContext(), Config.get("orderIdDeepLink"))
+      Config.set("orderIdDeepLink", "")
+    }
   }
 
   private val resultLauncher = registerForActivityResult(
@@ -80,6 +85,7 @@ class TicketsFragment() : Fragment() {
         }
         GlobalEventEmitter.sendEvent("igniteAnalytics", params)
         launchTicketsView()
+        setCustomModules()
       }
       AppCompatActivity.RESULT_CANCELED -> {
       }

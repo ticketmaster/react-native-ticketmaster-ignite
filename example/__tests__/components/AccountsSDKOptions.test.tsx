@@ -3,6 +3,10 @@ import { render, fireEvent } from '@testing-library/react-native';
 import AccountsSDKOptions from '../../src/components/AccountsSDKOptions';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 
+jest.mock('react-native-ticketmaster-ignite', () => ({
+  useIgnite: jest.fn(),
+}));
+
 describe('AccountsSDKOptions', () => {
   const loginMock = jest.fn();
   const logoutMock = jest.fn();
@@ -71,10 +75,7 @@ describe('AccountsSDKOptions', () => {
       it('calls getIsLoggedIn for isLoggedIn button', () => {
         const { getByText } = render(<AccountsSDKOptions />);
 
-        fireEvent(
-          getByText(`IsLoggedIn - useIgnite hook value: ${false}`),
-          'press'
-        );
+        fireEvent(getByText(`IsLoggedIn - ${false}`), 'press');
         expect(getIsLoggedInMock).toHaveBeenCalled();
       });
     });
