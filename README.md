@@ -17,12 +17,13 @@ In order to use the library, setup a developer account with Ticketmaster by cont
 
 ## Installation
 
+#### NPM
+
 ```bash
 npm install --save react-native-ticketmaster-ignite
 ```
 
---- or ---
-
+#### Yarn
 ```bash
 yarn add react-native-ticketmaster-ignite
 ```
