@@ -401,16 +401,16 @@ return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
 
 ⚠️  Please note that the `renderTimeDelay` prop only affects iOS.
 
-### Ticket Order ID Deep Link
+### Ticket Deep Links
 
-You can call `setOrderIdDeepLink()` to setup a deep link to an order by passing the method an order or event ID.
+You can call `setTicketDeepLink()` to setup a deep link to an order by passing the method an order or event ID.
 
 Example:
 
 ```typescript
-const { setOrderIdDeepLink } = useIgnite();
+const { setTicketDeepLink } = useIgnite();
 
-setOrderIdDeepLink('TICKET_ORDER_ID')
+setTicketDeepLink('TICKET_ORDER_ID')
 ```
 
 You can then navigate to the component/screen which renders the Tickets SDK and the order with the order ID set will show above the My Tickets SDK view.

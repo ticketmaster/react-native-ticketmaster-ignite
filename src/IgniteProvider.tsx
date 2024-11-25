@@ -57,7 +57,7 @@ type IgniteContextType = {
   refreshConfiguration: (
     refreshConfigParams: RefreshConfigParams
   ) => Promise<void>;
-  setOrderIdDeepLink: (id: string) => void;
+  setTicketDeepLink: (id: string) => void;
   authState: AuthStateParams;
   isLoggingIn: boolean;
 };
@@ -85,7 +85,7 @@ export const IgniteContext = createContext<IgniteContextType>({
   getMemberInfo: async () => null,
   refreshToken: async () => null,
   refreshConfiguration: async () => {},
-  setOrderIdDeepLink: () => {},
+  setTicketDeepLink: () => {},
   isLoggingIn: false,
   authState: {
     isConfigured: false,
@@ -198,7 +198,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     prebuiltModules,
   ]);
 
-  const setOrderIdDeepLink = (id: string) => {
+  const setTicketDeepLink = (id: string) => {
     Config.setConfig('orderIdDeepLink', id);
   };
 
@@ -428,7 +428,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         getMemberInfo,
         refreshToken,
         refreshConfiguration,
-        setOrderIdDeepLink,
+        setTicketDeepLink,
         authState,
         isLoggingIn,
       }}
