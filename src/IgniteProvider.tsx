@@ -266,12 +266,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
             if (result.accessToken) {
               console.log('Accounts SDK login successful');
               !skipUpdate && (await setAccountDetails());
-              onLogin && (await onLogin());
-              resolve();
-            } else {
-              // resolve Promise regardless to allow JS methods to continue after "await"
-              resolve();
+              //avoid await on callbacks passed to library as there is no guarantee how long they will take to resolve
+              onLogin && onLogin();
             }
+            resolve();
           } catch (e) {
             !skipUpdate && setIsLoggingIn(false);
             reject(e);
@@ -283,8 +281,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
             if (resultCode === -1) {
               console.log('Accounts SDK login successful');
               !skipUpdate && (await setAccountDetails());
-              onLogin && (await onLogin());
-              resolve();
+              onLogin && onLogin();
             }
             resolve();
             !skipUpdate && setIsLoggingIn(false);
@@ -385,16 +382,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         );
         return result.accessToken === '' ? null : result.accessToken;
       } else {
-        let refreshedToken: AccessToken = null;
         if (result === null) {
-          await login({
-            onLogin: async () => {
-              refreshedToken = await getToken();
-            },
-          });
-          !refreshedToken &&
-            console.log('Accounts SDK access token:', refreshedToken);
-          return refreshedToken;
+          await login();
+          return await getToken();
         } else {
           console.log('Accounts SDK access token:', result);
           return result;
