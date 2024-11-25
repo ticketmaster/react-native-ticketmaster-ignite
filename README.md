@@ -410,7 +410,7 @@ Example:
 ```typescript
 const { setTicketDeepLink } = useIgnite();
 
-setTicketDeepLink('TICKET_ORDER_ID')
+setTicketDeepLink('TICKET_ORDER_OR_EVENT_ID')
 ```
 
 You can then navigate to the component/screen which renders the Tickets SDK and the order with the order ID set will show above the My Tickets SDK view.
