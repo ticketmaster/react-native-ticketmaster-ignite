@@ -57,7 +57,7 @@ type IgniteContextType = {
   refreshConfiguration: (
     refreshConfigParams: RefreshConfigParams
   ) => Promise<void>;
-  setOrderIdDeepLink: (orderId: string) => void;
+  setOrderIdDeepLink: (id: string) => void;
   authState: AuthStateParams;
   isLoggingIn: boolean;
 };
@@ -198,8 +198,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     prebuiltModules,
   ]);
 
-  const setOrderIdDeepLink = (orderId: string) => {
-    Config.setConfig('orderIdDeepLink', orderId);
+  const setOrderIdDeepLink = (id: string) => {
+    Config.setConfig('orderIdDeepLink', id);
   };
 
   useEffect(() => {
