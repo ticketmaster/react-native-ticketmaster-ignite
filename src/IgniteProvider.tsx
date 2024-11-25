@@ -20,12 +20,12 @@ interface IgniteProviderProps {
 }
 
 type LoginParams = {
-  onLogin?: () => void;
+  onLogin?: () => void | Promise<void>;
   skipUpdate?: boolean;
 };
 
 type LogoutParams = {
-  onLogout?: () => void;
+  onLogout?: () => void | Promise<void>;
   skipUpdate?: boolean;
 };
 
@@ -34,6 +34,8 @@ type AuthStateParams = {
   isLoggedIn: boolean;
   memberInfo: Record<string, any> | null;
 };
+
+type AccessToken = string | AuthSource | null;
 
 type RefreshConfigParams = {
   apiKey: string;
@@ -223,12 +225,13 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       async (result: IgniteAnalytics) => {
         if (result && analytics) analytics(result);
         if (
-          (result.purchaseSdkDidEndCheckoutFor ||
-            result.ticketsSdkDidViewEvents ||
-            // A login process not started by calling login(), typically the iOS refreshToken login flow
-            (result.accountsSdkLoggedIn && !isLoggingIn)) &&
-          autoUpdate
+          ((result.purchaseSdkDidEndCheckoutFor ||
+            result.ticketsSdkDidViewEvents) &&
+            autoUpdate) ||
+          // iOS TMAuthentication.shared.validToken() successful login
+          (result.accountsSdkLoggedIn && !isLoggingIn && Platform.OS === 'ios')
         ) {
+          console.log('Accounts SDK login successful');
           await setAccountDetails();
         }
         if (result.ticketsSdkVenueConcessionsOrderFor) {
@@ -263,9 +266,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
             if (result.accessToken) {
               console.log('Accounts SDK login successful');
               !skipUpdate && (await setAccountDetails());
+              //avoid await on callbacks passed to library as there is no guarantee how long they will take to resolve
               onLogin && onLogin();
-              resolve();
             }
+            resolve();
           } catch (e) {
             !skipUpdate && setIsLoggingIn(false);
             reject(e);
@@ -275,11 +279,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           !skipUpdate && setIsLoggingIn(true);
           AccountsSDK.login(async (resultCode: any) => {
             if (resultCode === -1) {
-              console.log('Accounts SDK Login successful');
+              console.log('Accounts SDK login successful');
               !skipUpdate && (await setAccountDetails());
               onLogin && onLogin();
-              resolve();
             }
+            resolve();
             !skipUpdate && setIsLoggingIn(false);
           });
           setTimeout(() => {
@@ -326,9 +330,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     }
   }, [AccountsSDK]);
 
-  const getToken = useCallback(async (): Promise<
-    string | AuthSource | null
-  > => {
+  const getToken = useCallback(async (): Promise<AccessToken> => {
     let accessToken;
     try {
       if (Platform.OS === 'ios') {
@@ -369,17 +371,25 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     }
   }, [AccountsSDK]);
 
-  const refreshToken = useCallback(async (): Promise<
-    string | AuthSource | null
-  > => {
+  const refreshToken = useCallback(async (): Promise<AccessToken> => {
     try {
       const result = await AccountsSDK.refreshToken();
-      console.log('Accounts SDK refresh token:', result);
-      return Platform.OS === 'ios'
-        ? result.accessToken === ''
-          ? null
-          : result.accessToken
-        : result;
+      if (Platform.OS === 'ios') {
+        // login() is automatically triggered in Accounts SDK TMAuthentication.shared.validToken() method on iOS
+        console.log(
+          'Accounts SDK access token:',
+          result.accessToken === '' ? null : result.accessToken
+        );
+        return result.accessToken === '' ? null : result.accessToken;
+      } else {
+        if (result === null) {
+          await login();
+          return await getToken();
+        } else {
+          console.log('Accounts SDK access token:', result);
+          return result;
+        }
+      }
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
         console.log('Accounts SDK refresh token: null');
@@ -388,7 +398,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK]);
+  }, [AccountsSDK, getToken, login]);
 
   const refreshConfiguration = useCallback(
     // eslint-disable-next-line prettier/prettier, @typescript-eslint/no-shadow
