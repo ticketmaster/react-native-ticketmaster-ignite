@@ -509,7 +509,7 @@ const entityIds = ['K8vZ9171o57', 'K8vZ91718XV'].join(',');
 
 useEffect(() => {
   fetch(
-    `https://app.ticketmaster.com/discovery/v2/attractions.json?id=${entityIds}&sort=relevance,desc&extensions=ticketmaster&size=200&page=${page}&locale=en-us&view=internal&apikey=${apiKey}`
+    `https://app.ticketmaster.com/discovery/v2/attractions.json?id=${entityIds}&sort=relevance,desc&size=200&page=${page}&locale=en-us&apikey=${apiKey}`
   )
     .then((response) => response.json())
     .then((data) => {
