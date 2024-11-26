@@ -29,6 +29,25 @@ const App = () => {
             primaryColor: Config.PRIMARY_COLOR || '',
             eventHeaderType: 'EVENT_INFO',
           }}
+          prebuiltModules={{
+            moreTicketActionsModule: {
+              enabled: true,
+            },
+            venueDirectionsModule: {
+              enabled: true,
+            },
+            seatUpgradesModule: {
+              enabled: true,
+            },
+            venueConcessionsModule: {
+              enabled: true,
+              orderButtonCallback: () => {},
+              walletButtonCallback: () => {},
+            },
+            invoiceModule: {
+              enabled: true,
+            },
+          }}
         >
           <Root />
         </IgniteProvider>

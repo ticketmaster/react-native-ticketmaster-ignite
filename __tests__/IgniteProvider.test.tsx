@@ -253,54 +253,215 @@ describe('IgniteProvider', () => {
           });
         });
 
-        describe('label', () => {
-          it('calls with custom label for seatUpgradesModule when label passed', () => {
-            render(
-              <IgniteProvider
-                options={options}
-                prebuiltModules={{
-                  seatUpgradesModule: { enabled: false, label: 'custom label' },
-                }}
-              >
-                <View />
-              </IgniteProvider>
-            );
+        describe('labels', () => {
+          describe('topLabelText', () => {
+            it('calls with custom topLabelText for seatUpgradesModule when topLabelText passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: {
+                      enabled: false,
+                      topLabelText: 'custom label',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
 
-            expect(fakeSetConfig).toHaveBeenCalledWith(
-              'seatUpgradesModuleLabel',
-              'custom label'
-            );
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'seatUpgradesModuleTopLabelText',
+                'custom label'
+              );
+            });
+
+            it('calls with empty string when topLabelText is empty string', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: { enabled: false, topLabelText: '' },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'seatUpgradesModuleTopLabelText',
+                ''
+              );
+            });
+
+            it('does not call when label not passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: { enabled: false },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'seatUpgradesModuleTopLabelText'
+              );
+            });
+
+            it('does not call when seatUpgradesModule not passed', () => {
+              render(
+                <IgniteProvider options={options}>
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'seatUpgradesModuleTopLabelText'
+              );
+            });
           });
 
-          it('calls with default label for seatUpgradesModule when label now passed', () => {
-            render(
-              <IgniteProvider
-                options={options}
-                prebuiltModules={{
-                  seatUpgradesModule: { enabled: false },
-                }}
-              >
-                <View />
-              </IgniteProvider>
-            );
+          describe('centerLabelText', () => {
+            it('calls with custom centerLabelText for seatUpgradesModule when centerLabelText passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: {
+                      enabled: false,
+                      centerLabelText: 'custom label center',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
 
-            expect(fakeSetConfig).toHaveBeenCalledWith(
-              'seatUpgradesModuleLabel',
-              'Seat Upgrades'
-            );
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'seatUpgradesModuleCenterLabelText',
+                'custom label center'
+              );
+            });
+
+            it('calls with empty string when centerLabelText is empty string', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: { enabled: false, centerLabelText: '' },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'seatUpgradesModuleCenterLabelText',
+                ''
+              );
+            });
+
+            it('does not call when label not passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: { enabled: false },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'seatUpgradesModuleCenterLabelText'
+              );
+            });
+
+            it('does not call when seatUpgradesModule not passed', () => {
+              render(
+                <IgniteProvider options={options}>
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'seatUpgradesModuleCenterLabelText'
+              );
+            });
           });
 
-          it('calls with default label for seatUpgradesModule when seatUpgradesModule now passed', () => {
-            render(
-              <IgniteProvider options={options}>
-                <View />
-              </IgniteProvider>
-            );
+          describe('bottomLabelText', () => {
+            it('calls with custom bottomLabelText for seatUpgradesModule when bottomLabelText passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: {
+                      enabled: false,
+                      bottomLabelText: 'custom label bottom',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
 
-            expect(fakeSetConfig).toHaveBeenCalledWith(
-              'seatUpgradesModuleLabel',
-              'Seat Upgrades'
-            );
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'seatUpgradesModuleBottomLabelText',
+                'custom label bottom'
+              );
+            });
+
+            it('calls with empty string when bottomLabelText is empty string', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: { enabled: false, bottomLabelText: '' },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'seatUpgradesModuleBottomLabelText',
+                ''
+              );
+            });
+
+            it('does not call when label not passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: { enabled: false },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'seatUpgradesModuleBottomLabelText'
+              );
+            });
+
+            it('does not call when seatUpgradesModule not passed', () => {
+              render(
+                <IgniteProvider options={options}>
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'seatUpgradesModuleBottomLabelText'
+              );
+            });
           });
         });
       });
@@ -344,61 +505,308 @@ describe('IgniteProvider', () => {
       });
 
       describe('venueConcessionsModule', () => {
-        it('calls with true when venueConcessionsModule passed as true', () => {
-          render(
-            <IgniteProvider
-              options={options}
-              prebuiltModules={{
-                venueConcessionsModule: {
-                  enabled: true,
-                  orderButtonCallback: jest.fn(),
-                  walletButtonCallback: jest.fn(),
-                },
-              }}
-            >
-              <View />
-            </IgniteProvider>
-          );
+        describe('enabled', () => {
+          it('calls with true when venueConcessionsModule passed as true', () => {
+            render(
+              <IgniteProvider
+                options={options}
+                prebuiltModules={{
+                  venueConcessionsModule: {
+                    enabled: true,
+                    orderButtonCallback: jest.fn(),
+                    walletButtonCallback: jest.fn(),
+                  },
+                }}
+              >
+                <View />
+              </IgniteProvider>
+            );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
-            'venueConcessionsModule',
-            'true'
-          );
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'venueConcessionsModule',
+              'true'
+            );
+          });
+
+          it('calls with false when venueConcessionsModule passed as false', () => {
+            render(
+              <IgniteProvider
+                options={options}
+                prebuiltModules={{
+                  venueConcessionsModule: {
+                    enabled: false,
+                    orderButtonCallback: jest.fn(),
+                    walletButtonCallback: jest.fn(),
+                  },
+                }}
+              >
+                <View />
+              </IgniteProvider>
+            );
+
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'venueConcessionsModule',
+              'false'
+            );
+          });
+
+          it('calls with false when venueConcessionsModule not passed', () => {
+            render(
+              <IgniteProvider options={options} prebuiltModules={{}}>
+                <View />
+              </IgniteProvider>
+            );
+
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'venueConcessionsModule',
+              'false'
+            );
+          });
         });
 
-        it('calls with false when venueConcessionsModule passed as false', () => {
-          render(
-            <IgniteProvider
-              options={options}
-              prebuiltModules={{
-                venueConcessionsModule: {
-                  enabled: false,
-                  orderButtonCallback: jest.fn(),
-                  walletButtonCallback: jest.fn(),
-                },
-              }}
-            >
-              <View />
-            </IgniteProvider>
-          );
+        describe('labels', () => {
+          describe('topLabelText', () => {
+            it('calls with custom topLabelText for venueConcessionsModule when topLabelText passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      enabled: false,
+                      orderButtonCallback: jest.fn(),
+                      walletButtonCallback: jest.fn(),
+                      topLabelText: 'custom label venue',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
-            'venueConcessionsModule',
-            'false'
-          );
-        });
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'venueConcessionsModuleTopLabelText',
+                'custom label venue'
+              );
+            });
 
-        it('calls with false when venueConcessionsModule not passed', () => {
-          render(
-            <IgniteProvider options={options} prebuiltModules={{}}>
-              <View />
-            </IgniteProvider>
-          );
+            it('calls with empty string when topLabelText is empty string', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      enabled: false,
+                      orderButtonCallback: jest.fn(),
+                      walletButtonCallback: jest.fn(),
+                      topLabelText: '',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
-            'venueConcessionsModule',
-            'false'
-          );
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'venueConcessionsModuleTopLabelText',
+                ''
+              );
+            });
+
+            it('does not call when label not passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      enabled: false,
+                      orderButtonCallback: jest.fn(),
+                      walletButtonCallback: jest.fn(),
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'venueConcessionsModuleTopLabelText'
+              );
+            });
+
+            it('does not call when venueConcessionsModule not passed', () => {
+              render(
+                <IgniteProvider options={options}>
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'venueConcessionsModuleTopLabelText'
+              );
+            });
+          });
+
+          describe('centerLabelText', () => {
+            it('calls with custom centerLabelText for venueConcessionsModule when centerLabelText passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      enabled: false,
+                      orderButtonCallback: jest.fn(),
+                      walletButtonCallback: jest.fn(),
+                      centerLabelText: 'custom label venue center',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'venueConcessionsModuleCenterLabelText',
+                'custom label venue center'
+              );
+            });
+
+            it('calls with empty string when centerLabelText is empty string', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      enabled: false,
+                      orderButtonCallback: jest.fn(),
+                      walletButtonCallback: jest.fn(),
+                      centerLabelText: '',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'venueConcessionsModuleCenterLabelText',
+                ''
+              );
+            });
+
+            it('does not call when label not passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      enabled: false,
+                      orderButtonCallback: jest.fn(),
+                      walletButtonCallback: jest.fn(),
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'venueConcessionsModuleCenterLabelText'
+              );
+            });
+
+            it('does not call when venueConcessionsModule not passed', () => {
+              render(
+                <IgniteProvider options={options}>
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'venueConcessionsModuleCenterLabelText'
+              );
+            });
+          });
+
+          describe('bottomLabelText', () => {
+            it('calls with custom bottomLabelText for venueConcessionsModule when bottomLabelText passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      enabled: false,
+                      orderButtonCallback: jest.fn(),
+                      walletButtonCallback: jest.fn(),
+                      bottomLabelText: 'custom label venue bottom',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'venueConcessionsModuleBottomLabelText',
+                'custom label venue bottom'
+              );
+            });
+
+            it('calls with empty string when bottomLabelText is empty string', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      enabled: false,
+                      orderButtonCallback: jest.fn(),
+                      walletButtonCallback: jest.fn(),
+                      bottomLabelText: '',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'venueConcessionsModuleBottomLabelText',
+                ''
+              );
+            });
+
+            it('does not call when label not passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      enabled: false,
+                      orderButtonCallback: jest.fn(),
+                      walletButtonCallback: jest.fn(),
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'venueConcessionsModuleBottomLabelText'
+              );
+            });
+
+            it('does not call when venueConcessionsModule not passed', () => {
+              render(
+                <IgniteProvider options={options}>
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'venueConcessionsModuleBottomLabelText'
+              );
+            });
+          });
         });
       });
     });

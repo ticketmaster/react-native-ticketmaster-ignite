@@ -93,14 +93,28 @@ extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate 
         output.append(module)
       }
     }
-    
-    if let module = TMTicketsPrebuiltModule.accountManagerSeatUpgrades(event: event) {
+
+    let seatUpgradeOverride = TMTicketsPrebuiltModule.HeaderOverride(
+      topLabelText: Config.shared.optionalString(for: "seatUpgradesModuleTopLabelText"),
+      centerLabelText: Config.shared.optionalString(for: "seatUpgradesModuleCenterLabelText"),
+      bottomLabelText: Config.shared.optionalString(for: "seatUpgradesModuleBottomLabelText"), 
+      gradientAlpha: 1.0
+    )
+
+    if let module = TMTicketsPrebuiltModule.accountManagerSeatUpgrades(event: event, headerOverride: seatUpgradeOverride) {
       if(Config.shared.get(for: "seatUpgradesModule") == "true") {
         output.append(module)
       }
     }
-    
-    if let module = TMTicketsPrebuiltModule.venueConcessions(event: event, showWalletButton: true) {
+
+    let venueConcessionsOverride = TMTicketsPrebuiltModule.HeaderOverride(
+      topLabelText: Config.shared.optionalString(for: "venueConcessionsModuleTopLabelText"),
+      centerLabelText: Config.shared.optionalString(for: "venueConcessionsModuleCenterLabelText"),
+      bottomLabelText: Config.shared.optionalString(for: "venueConcessionsModuleBottomLabelText"), 
+      gradientAlpha: 1.0
+    )
+
+    if let module = TMTicketsPrebuiltModule.venueConcessions(event: event, headerOverride: venueConcessionsOverride, showWalletButton: true) {
       if(Config.shared.get(for: "venueConcessionsModule") == "true") {
         output.append(module)
       }
