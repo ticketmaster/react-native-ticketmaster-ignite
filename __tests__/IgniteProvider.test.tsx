@@ -109,6 +109,246 @@ describe('IgniteProvider', () => {
         );
       });
     });
+
+    describe('with prebuiltModules', () => {
+      describe('moreTicketActionsModule', () => {
+        it('calls with true when moreTicketActionsModule passed as true', () => {
+          render(
+            <IgniteProvider
+              options={options}
+              prebuiltModules={{ moreTicketActionsModule: { enabled: true } }}
+            >
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'moreTicketActionsModule',
+            'true'
+          );
+        });
+
+        it('calls with false when moreTicketActionsModule passed as false', () => {
+          render(
+            <IgniteProvider
+              options={options}
+              prebuiltModules={{ moreTicketActionsModule: { enabled: false } }}
+            >
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'moreTicketActionsModule',
+            'false'
+          );
+        });
+
+        it('calls with false when moreTicketActionsModule not passed', () => {
+          render(
+            <IgniteProvider options={options} prebuiltModules={{}}>
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'moreTicketActionsModule',
+            'false'
+          );
+        });
+      });
+
+      describe('venueDirectionsModule', () => {
+        it('calls with true when venueDirectionsModule passed as true', () => {
+          render(
+            <IgniteProvider
+              options={options}
+              prebuiltModules={{ venueDirectionsModule: { enabled: true } }}
+            >
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'venueDirectionsModule',
+            'true'
+          );
+        });
+
+        it('calls with false when venueDirectionsModule passed as false', () => {
+          render(
+            <IgniteProvider
+              options={options}
+              prebuiltModules={{ venueDirectionsModule: { enabled: false } }}
+            >
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'venueDirectionsModule',
+            'false'
+          );
+        });
+
+        it('calls with false when venueDirectionsModule not passed', () => {
+          render(
+            <IgniteProvider options={options} prebuiltModules={{}}>
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'venueDirectionsModule',
+            'false'
+          );
+        });
+      });
+
+      describe('seatUpgradesModule', () => {
+        it('calls with true when seatUpgradesModule passed as true', () => {
+          render(
+            <IgniteProvider
+              options={options}
+              prebuiltModules={{ seatUpgradesModule: { enabled: true } }}
+            >
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'seatUpgradesModule',
+            'true'
+          );
+        });
+
+        it('calls with false when seatUpgradesModule passed as false', () => {
+          render(
+            <IgniteProvider
+              options={options}
+              prebuiltModules={{ seatUpgradesModule: { enabled: false } }}
+            >
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'seatUpgradesModule',
+            'false'
+          );
+        });
+
+        it('calls with false when seatUpgradesModule not passed', () => {
+          render(
+            <IgniteProvider options={options} prebuiltModules={{}}>
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'seatUpgradesModule',
+            'false'
+          );
+        });
+      });
+
+      describe('invoiceModule', () => {
+        it('calls with true when invoiceModule passed as true', () => {
+          render(
+            <IgniteProvider
+              options={options}
+              prebuiltModules={{ invoiceModule: { enabled: true } }}
+            >
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith('invoiceModule', 'true');
+        });
+
+        it('calls with false when invoiceModule passed as false', () => {
+          render(
+            <IgniteProvider
+              options={options}
+              prebuiltModules={{ invoiceModule: { enabled: false } }}
+            >
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith('invoiceModule', 'false');
+        });
+
+        it('calls with false when invoiceModule not passed', () => {
+          render(
+            <IgniteProvider options={options} prebuiltModules={{}}>
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith('invoiceModule', 'false');
+        });
+      });
+
+      describe('venueConcessionsModule', () => {
+        it('calls with true when venueConcessionsModule passed as true', () => {
+          render(
+            <IgniteProvider
+              options={options}
+              prebuiltModules={{
+                venueConcessionsModule: {
+                  enabled: true,
+                  orderButtonCallback: jest.fn(),
+                  walletButtonCallback: jest.fn(),
+                },
+              }}
+            >
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'venueConcessionsModule',
+            'true'
+          );
+        });
+
+        it('calls with false when venueConcessionsModule passed as false', () => {
+          render(
+            <IgniteProvider
+              options={options}
+              prebuiltModules={{
+                venueConcessionsModule: {
+                  enabled: false,
+                  orderButtonCallback: jest.fn(),
+                  walletButtonCallback: jest.fn(),
+                },
+              }}
+            >
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'venueConcessionsModule',
+            'false'
+          );
+        });
+
+        it('calls with false when venueConcessionsModule not passed', () => {
+          render(
+            <IgniteProvider options={options} prebuiltModules={{}}>
+              <View />
+            </IgniteProvider>
+          );
+
+          expect(fakeSetConfig).toHaveBeenCalledWith(
+            'venueConcessionsModule',
+            'false'
+          );
+        });
+      });
+    });
   });
 
   describe('calls AccountsSDK methods on render', () => {
