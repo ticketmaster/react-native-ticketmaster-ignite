@@ -206,49 +206,102 @@ describe('IgniteProvider', () => {
       });
 
       describe('seatUpgradesModule', () => {
-        it('calls with true when seatUpgradesModule passed as true', () => {
-          render(
-            <IgniteProvider
-              options={options}
-              prebuiltModules={{ seatUpgradesModule: { enabled: true } }}
-            >
-              <View />
-            </IgniteProvider>
-          );
+        describe('enabled', () => {
+          it('calls with true when seatUpgradesModule passed as true', () => {
+            render(
+              <IgniteProvider
+                options={options}
+                prebuiltModules={{ seatUpgradesModule: { enabled: true } }}
+              >
+                <View />
+              </IgniteProvider>
+            );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
-            'seatUpgradesModule',
-            'true'
-          );
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'seatUpgradesModule',
+              'true'
+            );
+          });
+
+          it('calls with false when seatUpgradesModule passed as false', () => {
+            render(
+              <IgniteProvider
+                options={options}
+                prebuiltModules={{ seatUpgradesModule: { enabled: false } }}
+              >
+                <View />
+              </IgniteProvider>
+            );
+
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'seatUpgradesModule',
+              'false'
+            );
+          });
+
+          it('calls with false when seatUpgradesModule not passed', () => {
+            render(
+              <IgniteProvider options={options} prebuiltModules={{}}>
+                <View />
+              </IgniteProvider>
+            );
+
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'seatUpgradesModule',
+              'false'
+            );
+          });
         });
 
-        it('calls with false when seatUpgradesModule passed as false', () => {
-          render(
-            <IgniteProvider
-              options={options}
-              prebuiltModules={{ seatUpgradesModule: { enabled: false } }}
-            >
-              <View />
-            </IgniteProvider>
-          );
+        describe('label', () => {
+          it('calls with custom label for seatUpgradesModule when label passed', () => {
+            render(
+              <IgniteProvider
+                options={options}
+                prebuiltModules={{
+                  seatUpgradesModule: { enabled: false, label: 'custom label' },
+                }}
+              >
+                <View />
+              </IgniteProvider>
+            );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
-            'seatUpgradesModule',
-            'false'
-          );
-        });
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'seatUpgradesModuleLabel',
+              'custom label'
+            );
+          });
 
-        it('calls with false when seatUpgradesModule not passed', () => {
-          render(
-            <IgniteProvider options={options} prebuiltModules={{}}>
-              <View />
-            </IgniteProvider>
-          );
+          it('calls with default label for seatUpgradesModule when label now passed', () => {
+            render(
+              <IgniteProvider
+                options={options}
+                prebuiltModules={{
+                  seatUpgradesModule: { enabled: false },
+                }}
+              >
+                <View />
+              </IgniteProvider>
+            );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
-            'seatUpgradesModule',
-            'false'
-          );
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'seatUpgradesModuleLabel',
+              'Seat Upgrades'
+            );
+          });
+
+          it('calls with default label for seatUpgradesModule when seatUpgradesModule now passed', () => {
+            render(
+              <IgniteProvider options={options}>
+                <View />
+              </IgniteProvider>
+            );
+
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'seatUpgradesModuleLabel',
+              'Seat Upgrades'
+            );
+          });
         });
       });
 

@@ -102,6 +102,7 @@ const defaultPrebuiltModules = {
     enabled: false,
   },
   seatUpgradesModule: {
+    label: 'Seat Upgrades',
     enabled: false,
   },
   venueConcessionsModule: {
@@ -188,6 +189,12 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       const isEnabled = value.enabled ? 'true' : 'false';
       Config.setConfig(key, isEnabled);
     });
+
+    Config.setConfig(
+      'seatUpgradesModuleLabel',
+      prebuiltModules.seatUpgradesModule?.label ||
+        defaultPrebuiltModules.seatUpgradesModule.label
+    );
   }, [
     Config,
     apiKey,

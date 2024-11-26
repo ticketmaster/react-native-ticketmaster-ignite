@@ -131,6 +131,7 @@ export type PrebuiltModules = {
   };
   seatUpgradesModule?: {
     enabled: boolean;
+    label?: string;
   };
   venueConcessionsModule?: {
     enabled: boolean;
