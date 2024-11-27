@@ -123,7 +123,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 }) => {
   const { Config, AccountsSDK } = NativeModules;
   const { apiKey, clientName, primaryColor, region, eventHeaderType } = options;
-  const { venueConcessionsModule } = prebuiltModules;
+  const { venueConcessionsModule, seatUpgradesModule } = prebuiltModules;
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
     isConfigured: false,
@@ -167,6 +167,19 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     }
   }, [AccountsSDK]);
 
+  function setModuleConfig(
+    module: any,
+    label: string,
+    configKeyPrefix: string
+  ) {
+    if (module?.[label] !== undefined) {
+      Config.setConfig(
+        `${configKeyPrefix}${label.charAt(0).toUpperCase() + label.slice(1)}`,
+        module[label]
+      );
+    }
+  }
+
   const configureAccountsSDK = useCallback(async () => {
     try {
       const result = await AccountsSDK.configureAccountsSDK();
@@ -184,43 +197,23 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('region', region || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
 
-    if (prebuiltModules.seatUpgradesModule?.topLabelText !== undefined) {
-      Config.setConfig(
-        'seatUpgradesModuleTopLabelText',
-        prebuiltModules.seatUpgradesModule?.topLabelText
-      );
-    }
-    if (prebuiltModules.seatUpgradesModule?.centerLabelText !== undefined) {
-      Config.setConfig(
-        'seatUpgradesModuleCenterLabelText',
-        prebuiltModules.seatUpgradesModule?.centerLabelText
-      );
-    }
-    if (prebuiltModules.seatUpgradesModule?.bottomLabelText !== undefined) {
-      Config.setConfig(
-        'seatUpgradesModuleBottomLabelText',
-        prebuiltModules.seatUpgradesModule?.bottomLabelText
-      );
-    }
+    const seatUpgradesLabels = [
+      'topLabelText',
+      'centerLabelText',
+      'bottomLabelText',
+    ];
+    const venueConcessionsLabels = [
+      'topLabelText',
+      'centerLabelText',
+      'bottomLabelText',
+    ];
 
-    if (prebuiltModules.venueConcessionsModule?.topLabelText !== undefined) {
-      Config.setConfig(
-        'venueConcessionsModuleTopLabelText',
-        prebuiltModules.venueConcessionsModule?.topLabelText
-      );
-    }
-    if (prebuiltModules.venueConcessionsModule?.centerLabelText !== undefined) {
-      Config.setConfig(
-        'venueConcessionsModuleCenterLabelText',
-        prebuiltModules.venueConcessionsModule?.centerLabelText
-      );
-    }
-    if (prebuiltModules.venueConcessionsModule?.bottomLabelText !== undefined) {
-      Config.setConfig(
-        'venueConcessionsModuleBottomLabelText',
-        prebuiltModules.venueConcessionsModule?.bottomLabelText
-      );
-    }
+    seatUpgradesLabels.forEach((label) =>
+      setModuleConfig(seatUpgradesModule, label, 'seatUpgradesModule')
+    );
+    venueConcessionsLabels.forEach((label) =>
+      setModuleConfig(venueConcessionsModule, label, 'venueConcessionsModule')
+    );
 
     Object.entries(prebuiltModules).forEach(([key, value]) => {
       const isEnabled = value.enabled ? 'true' : 'false';
