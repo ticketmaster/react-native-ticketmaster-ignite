@@ -167,19 +167,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     }
   }, [AccountsSDK]);
 
-  function setModuleConfig(
-    module: any,
-    label: string,
-    configKeyPrefix: string
-  ) {
-    if (module?.[label] !== undefined) {
-      Config.setConfig(
-        `${configKeyPrefix}${label.charAt(0).toUpperCase() + label.slice(1)}`,
-        module[label]
-      );
-    }
-  }
-
   const configureAccountsSDK = useCallback(async () => {
     try {
       const result = await AccountsSDK.configureAccountsSDK();
@@ -191,6 +178,19 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, [AccountsSDK, autoUpdate, setAccountDetails]);
 
   const setNativeConfigValues = useCallback(() => {
+    const setModuleConfig = (
+      module: any,
+      label: string,
+      configKeyPrefix: string
+    ) => {
+      if (module?.[label] !== undefined) {
+        Config.setConfig(
+          `${configKeyPrefix}${label.charAt(0).toUpperCase() + label.slice(1)}`,
+          module[label]
+        );
+      }
+    };
+
     Config.setConfig('apiKey', apiKey);
     Config.setConfig('clientName', clientName);
     Config.setConfig('primaryColor', primaryColor);
@@ -227,6 +227,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     region,
     eventHeaderType,
     prebuiltModules,
+    seatUpgradesModule,
+    venueConcessionsModule,
   ]);
 
   const setTicketDeepLink = (id: string) => {
