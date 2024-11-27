@@ -13,4 +13,7 @@ object Config {
     }
   }
 
+  fun optionalString(key: String): String? {
+    return configValues[key]
+  }
 }

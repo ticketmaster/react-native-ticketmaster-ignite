@@ -202,11 +202,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       'centerLabelText',
       'bottomLabelText',
     ];
-    const venueConcessionsLabels = [
-      'topLabelText',
-      'centerLabelText',
-      'bottomLabelText',
-    ];
+    const venueConcessionsLabels = ['topLabelText', 'bottomLabelText'];
 
     seatUpgradesLabels.forEach((label) =>
       setModuleConfig(seatUpgradesModule, label, 'seatUpgradesModule')

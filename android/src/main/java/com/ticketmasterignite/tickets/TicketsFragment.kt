@@ -121,9 +121,28 @@ class TicketsFragment() : Fragment() {
           }
         }
 
+        val venueConcessionsModuleTextOverride = VenueNextModule.VenueNextTextOverride(
+          food = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
+            ModuleBase.TextOverride(it)
+          } ?: null,
+          merch = when (val text = Config.optionalString("venueConcessionsModuleTopLabelText")) {
+            null -> null
+            "" -> ModuleBase.TextOverride("")
+            else -> ModuleBase.TextOverride("")
+          },
+          experiences = when (val text = Config.optionalString("venueConcessionsModuleTopLabelText")) {
+            null -> null
+            "" -> ModuleBase.TextOverride("")
+            else -> ModuleBase.TextOverride("")
+          },
+          fingertips = Config.optionalString("venueConcessionsModuleBottomLabelText")?.let {
+            ModuleBase.TextOverride(it)
+          } ?: null
+        )
+
         if (Config.get("venueConcessionsModule") == "true") {
           val venueNextModule = VenueNextModule.Builder(order.venueId).build()
-          modules.add(venueNextModule.createVenueNextView(context!!) {
+          modules.add(venueNextModule.createVenueNextView(context!!, textOverride = venueConcessionsModuleTextOverride) {
             //Present VenueNext SDK Order/other Concession UI or handle in userDidPressActionButton()
           })
         }

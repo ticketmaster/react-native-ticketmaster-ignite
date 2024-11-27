@@ -138,7 +138,6 @@ export type PrebuiltModules = {
   venueConcessionsModule?: {
     enabled: boolean;
     topLabelText?: string;
-    centerLabelText?: string;
     bottomLabelText?: string;
     orderButtonCallback: (
       data: TicketsSdkVenueConcessionsData
