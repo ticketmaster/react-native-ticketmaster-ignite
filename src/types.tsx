@@ -133,9 +133,11 @@ export type PrebuiltModules = {
     enabled: boolean;
     topLabelText?: string;
     bottomLabelText?: string;
+    androidCustomImageImageUrl?: string;
   };
   venueConcessionsModule?: {
     enabled: boolean;
+    androidCustomImageImageUrl?: string;
     topLabelText?: string;
     bottomLabelText?: string;
     orderButtonCallback: (

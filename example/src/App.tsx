@@ -40,10 +40,12 @@ const App = () => {
               enabled: true,
               topLabelText: 'Custom Top Level Text',
               bottomLabelText: 'Custom Bottom Level Text',
+              androidCustomImageImageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Cinema_Seats_%28428921869%29.jpg/640px-Cinema_Seats_%28428921869%29.jpg',
             },
             venueConcessionsModule: {
               topLabelText: 'Custom Top Level Text',
               bottomLabelText: 'Custom Bottom Level Text',
+              androidCustomImageImageUrl: '',
               enabled: true,
               orderButtonCallback: () => {},
               walletButtonCallback: () => {},

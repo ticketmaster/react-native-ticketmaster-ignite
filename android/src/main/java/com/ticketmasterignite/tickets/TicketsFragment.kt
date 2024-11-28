@@ -105,6 +105,12 @@ class TicketsFragment() : Fragment() {
           modules.add(getDirectionsModule(order.orderInfo.latLng))
         }
 
+        val seatUpgradesModuleImageOverride = when (val text = Config.optionalString("seatUpgradesModuleAndroidCustomImageImageUrl")) {
+          null -> null
+          "" -> null
+          else -> ModuleBase.ImageOverride(url = text)
+        }
+
          val seatUpgradesModuleTextOverride = ModuleBase.TextOverride(
            text = Config.optionalString("seatUpgradesModuleTopLabelText") ?: "Seat Upgrades",
            orientation = ModuleBase.TextOverride.Orientation.LEFT
@@ -121,7 +127,8 @@ class TicketsFragment() : Fragment() {
                   firstTicketSource
                 ),
                 eventId = order.eventId,
-                textOverride = seatUpgradesModuleTextOverride
+                textOverride = seatUpgradesModuleTextOverride,
+                imageOverride = seatUpgradesModuleImageOverride
               ).build()
             )
           }
@@ -146,9 +153,15 @@ class TicketsFragment() : Fragment() {
           } ?: null
         )
 
+        val venueConcessionImageOverride = when (val text = Config.optionalString("venueConcessionsModuleAndroidCustomImageImageUrl")) {
+          null -> null
+          "" -> null
+          else -> ModuleBase.ImageOverride(url = text)
+        }
+
         if (Config.get("venueConcessionsModule") == "true") {
           val venueNextModule = VenueNextModule.Builder(order.venueId).build()
-          modules.add(venueNextModule.createVenueNextView(context!!, textOverride = venueConcessionsModuleTextOverride) {
+          modules.add(venueNextModule.createVenueNextView(context!!, textOverride = venueConcessionsModuleTextOverride, imageOverride = venueConcessionImageOverride) {
             //Present VenueNext SDK Order/other Concession UI or handle in userDidPressActionButton()
           })
         }

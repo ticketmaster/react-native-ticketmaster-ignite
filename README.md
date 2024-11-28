@@ -540,6 +540,7 @@ To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which acc
       enabled: true,
       topLabelText: "test top label"; // not required
       bottomLabelText: "test bottom label"; // not required
+      androidCustomImageImageUrl: "..." // not required
     },
     venueConcessionsModule: {
       enabled: true,
@@ -547,6 +548,7 @@ To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which acc
       walletButtonCallback: () => {},
       topLabelText: "test top label"; // not required
       bottomLabelText: "test bottom label"; // not required
+      androidCustomImageImageUrl: "..." // not required
     },
     invoiceModule: {
       enabled: true,
@@ -591,12 +593,24 @@ On Android you can only customise the `topLabelText` for `seatUpgradesModule`. I
 
 ##### Custom Images
 
+The example app included in this library demonstrates how to use custom images. Check out the code and the explanation below for the full context.
+
 ###### iOS
-To display custom images in the prebuilt modules on iOS, add your images to the `Images.xcassets` folder in your app and name them `seatUpgradeOverride` and `venueConcessionsOverride`. If custom images are not provided, the default images will be used automatically. For reference, the example app included in this library demonstrates how to use custom images.
+Image customisation is only possible for non-Expo project and bare Expo projects as it requires access to `Images.xcassets` in the `ios` directory.
+
+To display custom images in the prebuilt modules on iOS, add your images to the `Images.xcassets` folder in your app and name them `seatUpgradeOverride` and `venueConcessionsOverride`. If custom images are not provided, the default images will be used automatically.
 
 | Custom images | Default images |
 |----------|----------|
 |  <img src="docs/assets/prebuilt_modules_customisation/ios_custom_images.png" width="250">   | <img src="docs/assets/prebuilt_modules_customisation/ios_default_images.png" width="250">   |
+
+###### Android
+In order to customise the images on Android, store your assets and pass the URL as `androidCustomImageImageUrl` to `seatUpgradeOverride` and/or `venueConcessionsOverride`. 
+
+| Custom images | Default images |
+|----------|----------|
+|  <img src="docs/assets/prebuilt_modules_customisation/android_custom_images.png" width="250">   | <img src="docs/assets/prebuilt_modules_customisation/android_default_images.png" width="250">   |
+
 
 ### Analytics
 

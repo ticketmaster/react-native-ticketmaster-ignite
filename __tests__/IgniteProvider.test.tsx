@@ -393,6 +393,79 @@ describe('IgniteProvider', () => {
               );
             });
           });
+
+          describe('androidCustomImageImageUrl', () => {
+            it('calls with custom androidCustomImageImageUrl for seatUpgradesModule when androidCustomImageImageUrl passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: {
+                      enabled: false,
+                      androidCustomImageImageUrl: 'www.test.com',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'seatUpgradesModuleAndroidCustomImageImageUrl',
+                'www.test.com'
+              );
+            });
+
+            it('calls with empty string when androidCustomImageImageUrl is empty string', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: {
+                      enabled: false,
+                      androidCustomImageImageUrl: '',
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).toHaveBeenCalledWith(
+                'seatUpgradesModuleAndroidCustomImageImageUrl',
+                ''
+              );
+            });
+
+            it('does not call when label not passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: { enabled: false },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'seatUpgradesModuleAndroidCustomImageImageUrl'
+              );
+            });
+
+            it('does not call when seatUpgradesModule not passed', () => {
+              render(
+                <IgniteProvider options={options}>
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+                'seatUpgradesModuleAndroidCustomImageImageUrl'
+              );
+            });
+          });
         });
       });
 
@@ -655,6 +728,87 @@ describe('IgniteProvider', () => {
                 'venueConcessionsModuleBottomLabelText'
               );
             });
+          });
+        });
+
+        describe('androidCustomImageImageUrl', () => {
+          it('calls with custom androidCustomImageImageUrl for venueConcessionsModule when androidCustomImageImageUrl passed', () => {
+            render(
+              <IgniteProvider
+                options={options}
+                prebuiltModules={{
+                  venueConcessionsModule: {
+                    enabled: false,
+                    orderButtonCallback: jest.fn(),
+                    walletButtonCallback: jest.fn(),
+                    androidCustomImageImageUrl: 'www.test.com',
+                  },
+                }}
+              >
+                <View />
+              </IgniteProvider>
+            );
+
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'venueConcessionsModuleAndroidCustomImageImageUrl',
+              'www.test.com'
+            );
+          });
+
+          it('calls with empty string when androidCustomImageImageUrl is empty string', () => {
+            render(
+              <IgniteProvider
+                options={options}
+                prebuiltModules={{
+                  venueConcessionsModule: {
+                    enabled: false,
+                    orderButtonCallback: jest.fn(),
+                    walletButtonCallback: jest.fn(),
+                    androidCustomImageImageUrl: '',
+                  },
+                }}
+              >
+                <View />
+              </IgniteProvider>
+            );
+
+            expect(fakeSetConfig).toHaveBeenCalledWith(
+              'venueConcessionsModuleAndroidCustomImageImageUrl',
+              ''
+            );
+          });
+
+          it('does not call when label not passed', () => {
+            render(
+              <IgniteProvider
+                options={options}
+                prebuiltModules={{
+                  venueConcessionsModule: {
+                    enabled: false,
+                    orderButtonCallback: jest.fn(),
+                    walletButtonCallback: jest.fn(),
+                  },
+                }}
+              >
+                <View />
+              </IgniteProvider>
+            );
+
+            expect(fakeSetConfig).not.toHaveBeenCalledWith(
+              'venueConcessionsModuleAndroidCustomImageImageUrl'
+            );
+          });
+
+          it('does not call when seatUpgradesModule not passed', () => {
+            render(
+              <IgniteProvider options={options}>
+                <View />
+              </IgniteProvider>
+            );
+
+            expect(fakeSetConfig).not.toHaveBeenCalledWith(
+              'venueConcessionsModuleAndroidCustomImageImageUrl'
+            );
           });
         });
       });
