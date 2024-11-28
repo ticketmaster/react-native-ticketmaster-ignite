@@ -105,6 +105,11 @@ class TicketsFragment() : Fragment() {
           modules.add(getDirectionsModule(order.orderInfo.latLng))
         }
 
+         val seatUpgradesModuleTextOverride = ModuleBase.TextOverride(
+           text = Config.optionalString("seatUpgradesModuleTopLabelText") ?: "Seat Upgrades",
+           orientation = ModuleBase.TextOverride.Orientation.LEFT
+         )
+
         if (Config.get("seatUpgradesModule") == "true") {
           val firstTicketSource = order.tickets.firstOrNull()?.source
           if (firstTicketSource != null) {
@@ -115,7 +120,8 @@ class TicketsFragment() : Fragment() {
                   context!!,
                   firstTicketSource
                 ),
-                eventId = order.eventId
+                eventId = order.eventId,
+                textOverride = seatUpgradesModuleTextOverride
               ).build()
             )
           }
