@@ -591,6 +591,13 @@ On Android you can only customise the `topLabelText` for `seatUpgradesModule`. I
 
 ##### Custom Images
 
+###### iOS
+To display custom images in the prebuilt modules on iOS, add your images to the `Images.xcassets` folder in your app and name them `seatUpgradeOverride` and `venueConcessionsOverride`. If custom images are not provided, the default images will be used automatically. For reference, the example app included in this library demonstrates how to use custom images.
+
+| Custom images | Default images |
+|----------|----------|
+|  <img src="docs/assets/prebuilt_modules_customisation/ios_custom_images.png" width="250">   | <img src="docs/assets/prebuilt_modules_customisation/ios_default_images.png" width="250">   |
+
 ### Analytics
 
 You can send a callback method to `IgniteProvider` to receive Ignite SDK analytics in your app which you can then send off to your chosen analytics service.
