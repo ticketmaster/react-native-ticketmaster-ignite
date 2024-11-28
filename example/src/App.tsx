@@ -38,8 +38,12 @@ const App = () => {
             },
             seatUpgradesModule: {
               enabled: true,
+              topLabelText: 'Custom Top Level Text',
+              bottomLabelText: 'Custom Bottom Level Text',
             },
             venueConcessionsModule: {
+              topLabelText: 'Custom Top Level Text',
+              bottomLabelText: 'Custom Bottom Level Text',
               enabled: true,
               orderButtonCallback: () => {},
               walletButtonCallback: () => {},

@@ -197,11 +197,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('region', region || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
 
-    const seatUpgradesLabels = [
-      'topLabelText',
-      'centerLabelText',
-      'bottomLabelText',
-    ];
+    const seatUpgradesLabels = ['topLabelText', 'bottomLabelText'];
     const venueConcessionsLabels = ['topLabelText', 'bottomLabelText'];
 
     seatUpgradesLabels.forEach((label) =>
