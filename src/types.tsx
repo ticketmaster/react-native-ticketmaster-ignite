@@ -136,6 +136,7 @@ export type PrebuiltModules = {
     androidCustomImageImageUrl?: string;
   };
   venueConcessionsModule?: {
+    image?: any;
     enabled: boolean;
     androidCustomImageImageUrl?: string;
     topLabelText?: string;

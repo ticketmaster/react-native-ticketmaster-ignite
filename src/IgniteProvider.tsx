@@ -207,6 +207,12 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       setModuleConfig(venueConcessionsModule, label, 'venueConcessionsModule')
     );
 
+    if (venueConcessionsModule && venueConcessionsModule.image) {
+      const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
+      const resolvedImage = resolveAssetSource(venueConcessionsModule.image);
+      Config.setImage('venueConcessionsModuleImage', resolvedImage);
+    }
+
     Object.entries(prebuiltModules).forEach(([key, value]) => {
       const isEnabled = value.enabled ? 'true' : 'false';
       Config.setConfig(key, isEnabled);

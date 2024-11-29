@@ -113,7 +113,7 @@ extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate 
       centerLabelText: Config.shared.optionalString(for: "venueConcessionsModuleCenterLabelText"),
       bottomLabelText: Config.shared.optionalString(for: "venueConcessionsModuleBottomLabelText"), 
       gradientAlpha: 1.0,
-      backgroundImage: UIImage(named: "venueConcessionsOverride") ?? nil
+      backgroundImage: Config.shared.getImage(for: "venueConcessionsModuleImage") ?? nil
     )
 
     if let module = TMTicketsPrebuiltModule.venueConcessions(event: event, headerOverride: venueConcessionsOverride, showWalletButton: true) {

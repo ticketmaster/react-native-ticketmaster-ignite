@@ -20,4 +20,9 @@ class Config {
         let value = configModule?.getConfig(key)
         return value == nil ? nil : value
     }
+
+    func getImage(for key: String) -> UIImage? {
+        print("getImage swift: \(key)")
+        return configModule?.getImage(key)
+    }
 }
