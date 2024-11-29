@@ -99,7 +99,7 @@ extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate 
       centerLabelText: Config.shared.optionalString(for: "seatUpgradesModuleCenterLabelText"),
       bottomLabelText: Config.shared.optionalString(for: "seatUpgradesModuleBottomLabelText"),
       gradientAlpha: 1.0,
-      backgroundImage: UIImage(named: "seatUpgradeOverride") ?? nil
+      backgroundImage: Config.shared.getImage(for: "seatUpgradesModuleImage") ?? nil
     )
 
     if let module = TMTicketsPrebuiltModule.accountManagerSeatUpgrades(event: event, headerOverride: seatUpgradeOverride) {

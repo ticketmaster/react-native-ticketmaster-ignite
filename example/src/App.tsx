@@ -18,8 +18,6 @@ const App = () => {
   //   console.log('Received Ignite analytics', data);
   // };
 
-  const imagePath = require('../assets/chairs.png');
-
   return (
     <SafeAreaProvider>
       <NavigationContainer theme={navTheme}>
@@ -40,12 +38,13 @@ const App = () => {
             },
             seatUpgradesModule: {
               enabled: true,
+              image: require('../assets/seatUpgradesOverride.png'),
               topLabelText: 'Custom Top Level Text',
               bottomLabelText: 'Custom Bottom Level Text',
               androidCustomImageImageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Cinema_Seats_%28428921869%29.jpg/640px-Cinema_Seats_%28428921869%29.jpg',
             },
             venueConcessionsModule: {
-              image: imagePath,
+              image: require('../assets/venueConcessionsOverride.png'),
               topLabelText: 'Custom Top Level Text',
               bottomLabelText: 'Custom Bottom Level Text',
               androidCustomImageImageUrl: '',

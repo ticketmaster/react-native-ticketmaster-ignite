@@ -131,6 +131,7 @@ export type PrebuiltModules = {
   };
   seatUpgradesModule?: {
     enabled: boolean;
+    image?: any;
     topLabelText?: string;
     bottomLabelText?: string;
     androidCustomImageImageUrl?: string;
