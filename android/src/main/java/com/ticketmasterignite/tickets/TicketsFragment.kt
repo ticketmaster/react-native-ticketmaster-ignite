@@ -36,6 +36,7 @@ import com.ticketmasterignite.GlobalEventEmitter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class TicketsFragment() : Fragment() {
   private lateinit var customView: TicketsView
@@ -92,6 +93,37 @@ class TicketsFragment() : Fragment() {
     }
   }
 
+  private fun getImageOverride(imageName: String): ModuleBase.ImageOverride? {
+    return Config.getImage(imageName)?.let { imageJsonString ->
+      val resolvedImage = JSONObject(imageJsonString)
+      val uri = resolvedImage.optString("uri")
+      val isPackagerAsset = resolvedImage.optBoolean("__packager_asset", false)
+
+      when {
+        uri.contains("10.0.") -> {
+          println("Loading image in the debug mode")
+          ModuleBase.ImageOverride(url = uri)
+        }
+
+        isPackagerAsset && uri.isNotEmpty() -> {
+          println("Loading image in the release mode")
+          val resourceName = uri.substringAfterLast('/').substringBeforeLast('.')
+          val resourceId =
+            context?.resources?.getIdentifier(resourceName, "drawable", context?.packageName)
+
+          if (resourceId != null && resourceId != 0) {
+            ModuleBase.ImageOverride(src = resourceId)
+          } else {
+            println("Resource not found: $resourceName")
+            null
+          }
+        }
+
+        else -> null
+      }
+    }
+  }
+
   private fun setCustomModules() {
     TicketsSDKSingleton.moduleDelegate = object : TicketsModuleDelegate {
       override fun getCustomModulesLiveData(order: TicketsModuleDelegate.Order): LiveData<List<TicketsSDKModule>> {
@@ -103,12 +135,6 @@ class TicketsFragment() : Fragment() {
 
         if (Config.get("venueDirectionsModule") == "true") {
           modules.add(getDirectionsModule(order.orderInfo.latLng))
-        }
-
-        val seatUpgradesModuleImageOverride = when (val text = Config.optionalString("seatUpgradesModuleAndroidCustomImageImageUrl")) {
-          null -> null
-          "" -> null
-          else -> ModuleBase.ImageOverride(url = text)
         }
 
          val seatUpgradesModuleTextOverride = ModuleBase.TextOverride(
@@ -128,7 +154,7 @@ class TicketsFragment() : Fragment() {
                 ),
                 eventId = order.eventId,
                 textOverride = seatUpgradesModuleTextOverride,
-                imageOverride = seatUpgradesModuleImageOverride
+                imageOverride = getImageOverride("seatUpgradesModuleImage")
               ).build()
             )
           }
@@ -153,16 +179,12 @@ class TicketsFragment() : Fragment() {
           } ?: null
         )
 
-        val venueConcessionImageOverride = when (val text = Config.optionalString("venueConcessionsModuleAndroidCustomImageImageUrl")) {
-          null -> null
-          "" -> null
-          else -> ModuleBase.ImageOverride(url = text)
-        }
-
         if (Config.get("venueConcessionsModule") == "true") {
           val venueNextModule = VenueNextModule.Builder(order.venueId).build()
-          modules.add(venueNextModule.createVenueNextView(context!!, textOverride = venueConcessionsModuleTextOverride, imageOverride = venueConcessionImageOverride) {
-            //Present VenueNext SDK Order/other Concession UI or handle in userDidPressActionButton()
+          modules.add(venueNextModule.createVenueNextView(
+            context!!,
+            textOverride = venueConcessionsModuleTextOverride,
+            imageOverride = getImageOverride("venueConcessionsModuleImage")) {
           })
         }
 

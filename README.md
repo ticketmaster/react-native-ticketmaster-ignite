@@ -540,7 +540,6 @@ To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which acc
       enabled: true,
       topLabelText: "test top label"; // not required
       bottomLabelText: "test bottom label"; // not required
-      androidCustomImageImageUrl: "..." // not required
     },
     venueConcessionsModule: {
       enabled: true,
@@ -548,7 +547,6 @@ To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which acc
       walletButtonCallback: () => {},
       topLabelText: "test top label"; // not required
       bottomLabelText: "test bottom label"; // not required
-      androidCustomImageImageUrl: "..." // not required
     },
     invoiceModule: {
       enabled: true,

@@ -197,8 +197,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('region', region || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
 
-    const seatUpgradesParams = ['topLabelText', 'bottomLabelText', 'androidCustomImageImageUrl'];
-    const venueConcessionsParams = ['topLabelText', 'bottomLabelText', 'androidCustomImageImageUrl'];
+    const seatUpgradesParams = ['topLabelText', 'bottomLabelText'];
+    const venueConcessionsParams = ['topLabelText', 'bottomLabelText'];
 
     seatUpgradesParams.forEach((label) =>
       setModuleConfig(seatUpgradesModule, label, 'seatUpgradesModule')
