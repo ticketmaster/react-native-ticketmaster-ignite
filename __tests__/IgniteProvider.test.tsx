@@ -26,6 +26,7 @@ describe('IgniteProvider', () => {
 
   describe('Calling setConfig on the Config NativeModule on render', () => {
     const fakeSetConfig = jest.fn();
+    const fakeSetImage = jest.fn();
     const fakeConfigureAccountsSDK = jest.fn(() =>
       Promise.resolve('configured')
     );
@@ -38,6 +39,7 @@ describe('IgniteProvider', () => {
     beforeEach(() => {
       NativeModules.Config = {
         setConfig: fakeSetConfig,
+        setImage: fakeSetImage,
       };
       NativeModules.AccountsSDK = {
         configureAccountsSDK: fakeConfigureAccountsSDK,
@@ -394,6 +396,60 @@ describe('IgniteProvider', () => {
             });
           });
         });
+
+        describe('image', () => {
+          describe('does not call setImage', () => {
+            it('when seatUpgradesModule not passed', () => {
+              render(
+                <IgniteProvider options={options} prebuiltModules={{}}>
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetImage).not.toHaveBeenCalledWith(
+                'seatUpgradesModuleImage'
+              );
+            });
+
+            it('when seatUpgradesModule is passed but no image passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{ seatUpgradesModule: { enabled: true } }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetImage).not.toHaveBeenCalledWith(
+                'seatUpgradesModuleImage'
+              );
+            });
+          });
+
+          describe('calls setImage', () => {
+            it('when image passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    seatUpgradesModule: {
+                      enabled: true,
+                      image: require('./testImage.png'),
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetImage).toHaveBeenCalledWith(
+                'seatUpgradesModuleImage',
+                { testUri: '../../../__tests__/testImage.png' }
+              );
+            });
+          });
+        });
       });
 
       describe('invoiceModule', () => {
@@ -653,6 +709,68 @@ describe('IgniteProvider', () => {
 
               expect(fakeSetConfig).not.toHaveBeenCalledWith(
                 'venueConcessionsModuleBottomLabelText'
+              );
+            });
+          });
+        });
+
+        describe('image', () => {
+          describe('does not call setImage', () => {
+            it('when venueConcessionsModule not passed', () => {
+              render(
+                <IgniteProvider options={options} prebuiltModules={{}}>
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetImage).not.toHaveBeenCalledWith(
+                'venueConcessionsModuleImage'
+              );
+            });
+
+            it('when venueConcessionsModule is passed but no image passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      enabled: true,
+                      walletButtonCallback: jest.fn(),
+                      orderButtonCallback: jest.fn(),
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetImage).not.toHaveBeenCalledWith(
+                'venueConcessionsModuleImage'
+              );
+            });
+          });
+
+          describe('calls setImage', () => {
+            it('when image passed', () => {
+              render(
+                <IgniteProvider
+                  options={options}
+                  prebuiltModules={{
+                    venueConcessionsModule: {
+                      image: require('./testImage.png'),
+                      enabled: true,
+                      walletButtonCallback: jest.fn(),
+                      orderButtonCallback: jest.fn(),
+                    },
+                  }}
+                >
+                  <View />
+                </IgniteProvider>
+              );
+
+              expect(fakeSetImage).toHaveBeenCalledWith(
+                'venueConcessionsModuleImage',
+                { testUri: '../../../__tests__/testImage.png' }
               );
             });
           });

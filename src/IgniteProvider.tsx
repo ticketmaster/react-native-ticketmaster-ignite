@@ -4,6 +4,8 @@ import {
   IgniteAnalytics,
   PrebuiltModules,
 } from 'react-native-ticketmaster-ignite';
+import { toCapitalise } from './utils/utils';
+import { seatUpgradesModule, venueConcessionsModule } from './types';
 
 interface IgniteProviderProps {
   children: React.ReactNode;
@@ -178,16 +180,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, [AccountsSDK, autoUpdate, setAccountDetails]);
 
   const setNativeConfigValues = useCallback(() => {
-    const setModuleConfig = (
-      module: any,
-      label: string,
-      configKeyPrefix: string
-    ) => {
+    const setModuleConfig = (module: any, label: string, prefix: string) => {
       if (module?.[label] !== undefined) {
-        Config.setConfig(
-          `${configKeyPrefix}${label.charAt(0).toUpperCase() + label.slice(1)}`,
-          module[label]
-        );
+        Config.setConfig(`${prefix}${toCapitalise(label)}`, module[label]);
       }
     };
 
@@ -199,6 +194,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
     const seatUpgradesParams = ['topLabelText', 'bottomLabelText'];
     const venueConcessionsParams = ['topLabelText', 'bottomLabelText'];
+    const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
 
     seatUpgradesParams.forEach((label) =>
       setModuleConfig(seatUpgradesModule, label, 'seatUpgradesModule')
@@ -208,13 +204,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     );
 
     if (venueConcessionsModule && venueConcessionsModule.image) {
-      const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
       const resolvedImage = resolveAssetSource(venueConcessionsModule.image);
       Config.setImage('venueConcessionsModuleImage', resolvedImage);
     }
 
     if (seatUpgradesModule && seatUpgradesModule.image) {
-      const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
       const resolvedImage = resolveAssetSource(seatUpgradesModule.image);
       Config.setImage('seatUpgradesModuleImage', resolvedImage);
     }

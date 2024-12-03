@@ -22,7 +22,6 @@ class Config {
     }
 
     func getImage(for key: String) -> UIImage? {
-        print("getImage swift: \(key)")
         return configModule?.getImage(key)
     }
 }
