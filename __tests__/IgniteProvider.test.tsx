@@ -86,6 +86,24 @@ describe('IgniteProvider', () => {
       });
     });
 
+    describe('with marketDomain', () => {
+      it('calls with the custom marketDomain when passed', () => {
+        render(
+          <IgniteProvider options={{ ...options, marketDomain: 'UK' }}>
+            <View />
+          </IgniteProvider>
+        );
+
+        expect(fakeSetConfig).toHaveBeenCalledWith('marketDomain', 'UK');
+      });
+
+      it('calls with the US marketDomain when no marketDomain passed', () => {
+        render(component);
+
+        expect(fakeSetConfig).toHaveBeenCalledWith('marketDomain', 'US');
+      });
+    });
+
     describe('with eventHeaderType', () => {
       it('calls with the custom eventHeaderType when passed', () => {
         render(
