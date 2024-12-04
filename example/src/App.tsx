@@ -29,6 +29,31 @@ const App = () => {
             primaryColor: Config.PRIMARY_COLOR || '',
             eventHeaderType: 'EVENT_INFO',
           }}
+          prebuiltModules={{
+            moreTicketActionsModule: {
+              enabled: true,
+            },
+            venueDirectionsModule: {
+              enabled: true,
+            },
+            seatUpgradesModule: {
+              enabled: true,
+              image: require('../assets/seatUpgradesOverride.png'),
+              topLabelText: 'Custom Top Level Text',
+              bottomLabelText: 'Custom Bottom Level Text',
+            },
+            venueConcessionsModule: {
+              image: require('../assets/venueConcessionsOverride.png'),
+              topLabelText: 'Custom Top Level Text',
+              bottomLabelText: 'Custom Bottom Level Text',
+              enabled: true,
+              orderButtonCallback: () => {},
+              walletButtonCallback: () => {},
+            },
+            invoiceModule: {
+              enabled: true,
+            },
+          }}
         >
           <Root />
         </IgniteProvider>

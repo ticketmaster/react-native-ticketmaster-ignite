@@ -36,6 +36,7 @@ import com.ticketmasterignite.GlobalEventEmitter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class TicketsFragment() : Fragment() {
   private lateinit var customView: TicketsView
@@ -92,6 +93,37 @@ class TicketsFragment() : Fragment() {
     }
   }
 
+  private fun getImageOverride(imageName: String): ModuleBase.ImageOverride? {
+    return Config.getImage(imageName)?.let { imageJsonString ->
+      val resolvedImage = JSONObject(imageJsonString)
+      val uri = resolvedImage.optString("uri")
+      val isPackagerAsset = resolvedImage.optBoolean("__packager_asset", false)
+
+      when {
+        uri.contains("10.0.") -> {
+          println("Loading image in the debug mode")
+          ModuleBase.ImageOverride(url = uri)
+        }
+
+        isPackagerAsset && uri.isNotEmpty() -> {
+          println("Loading image in the release mode")
+          val resourceName = uri.substringAfterLast('/').substringBeforeLast('.')
+          val resourceId =
+            context?.resources?.getIdentifier(resourceName, "drawable", context?.packageName)
+
+          if (resourceId != null && resourceId != 0) {
+            ModuleBase.ImageOverride(src = resourceId)
+          } else {
+            println("Resource not found: $resourceName")
+            null
+          }
+        }
+
+        else -> null
+      }
+    }
+  }
+
   private fun setCustomModules() {
     TicketsSDKSingleton.moduleDelegate = object : TicketsModuleDelegate {
       override fun getCustomModulesLiveData(order: TicketsModuleDelegate.Order): LiveData<List<TicketsSDKModule>> {
@@ -105,6 +137,11 @@ class TicketsFragment() : Fragment() {
           modules.add(getDirectionsModule(order.orderInfo.latLng))
         }
 
+         val seatUpgradesModuleTextOverride = ModuleBase.TextOverride(
+           text = Config.optionalString("seatUpgradesModuleTopLabelText") ?: "Seat Upgrades",
+           orientation = ModuleBase.TextOverride.Orientation.LEFT
+         )
+
         if (Config.get("seatUpgradesModule") == "true") {
           val firstTicketSource = order.tickets.firstOrNull()?.source
           if (firstTicketSource != null) {
@@ -115,16 +152,39 @@ class TicketsFragment() : Fragment() {
                   context!!,
                   firstTicketSource
                 ),
-                eventId = order.eventId
+                eventId = order.eventId,
+                textOverride = seatUpgradesModuleTextOverride,
+                imageOverride = getImageOverride("seatUpgradesModuleImage")
               ).build()
             )
           }
         }
 
+        val venueConcessionsModuleTextOverride = VenueNextModule.VenueNextTextOverride(
+          food = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
+            ModuleBase.TextOverride(it)
+          } ?: null,
+          merch = when (val text = Config.optionalString("venueConcessionsModuleTopLabelText")) {
+            null -> null
+            "" -> ModuleBase.TextOverride("")
+            else -> ModuleBase.TextOverride("")
+          },
+          experiences = when (val text = Config.optionalString("venueConcessionsModuleTopLabelText")) {
+            null -> null
+            "" -> ModuleBase.TextOverride("")
+            else -> ModuleBase.TextOverride("")
+          },
+          fingertips = Config.optionalString("venueConcessionsModuleBottomLabelText")?.let {
+            ModuleBase.TextOverride(it)
+          } ?: null
+        )
+
         if (Config.get("venueConcessionsModule") == "true") {
           val venueNextModule = VenueNextModule.Builder(order.venueId).build()
-          modules.add(venueNextModule.createVenueNextView(context!!) {
-            //Present VenueNext SDK Order/other Concession UI or handle in userDidPressActionButton()
+          modules.add(venueNextModule.createVenueNextView(
+            context!!,
+            textOverride = venueConcessionsModuleTextOverride,
+            imageOverride = getImageOverride("venueConcessionsModuleImage")) {
           })
         }
 

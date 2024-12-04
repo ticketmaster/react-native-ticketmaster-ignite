@@ -4,6 +4,7 @@ import {
   IgniteAnalytics,
   PrebuiltModules,
 } from 'react-native-ticketmaster-ignite';
+import { toCapitalise } from './utils/utils';
 
 interface IgniteProviderProps {
   children: React.ReactNode;
@@ -94,7 +95,7 @@ export const IgniteContext = createContext<IgniteContextType>({
   },
 });
 
-const defaultPrebuiltModules = {
+const defaultPrebuiltModules: PrebuiltModules = {
   moreTicketActionsModule: {
     enabled: false,
   },
@@ -123,7 +124,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 }) => {
   const { Config, AccountsSDK } = NativeModules;
   const { apiKey, clientName, primaryColor, region, eventHeaderType } = options;
-  const { venueConcessionsModule } = prebuiltModules;
+  const { venueConcessionsModule, seatUpgradesModule } = prebuiltModules;
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
     isConfigured: false,
@@ -178,11 +179,38 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, [AccountsSDK, autoUpdate, setAccountDetails]);
 
   const setNativeConfigValues = useCallback(() => {
+    const setModuleConfig = (module: any, label: string, prefix: string) => {
+      if (module?.[label] !== undefined) {
+        Config.setConfig(`${prefix}${toCapitalise(label)}`, module[label]);
+      }
+    };
+
     Config.setConfig('apiKey', apiKey);
     Config.setConfig('clientName', clientName);
     Config.setConfig('primaryColor', primaryColor);
     Config.setConfig('region', region || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
+
+    const seatUpgradesParams = ['topLabelText', 'bottomLabelText'];
+    const venueConcessionsParams = ['topLabelText', 'bottomLabelText'];
+    const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
+
+    seatUpgradesParams.forEach((label) =>
+      setModuleConfig(seatUpgradesModule, label, 'seatUpgradesModule')
+    );
+    venueConcessionsParams.forEach((label) =>
+      setModuleConfig(venueConcessionsModule, label, 'venueConcessionsModule')
+    );
+
+    if (venueConcessionsModule && venueConcessionsModule.image) {
+      const resolvedImage = resolveAssetSource(venueConcessionsModule.image);
+      Config.setImage('venueConcessionsModuleImage', resolvedImage);
+    }
+
+    if (seatUpgradesModule && seatUpgradesModule.image) {
+      const resolvedImage = resolveAssetSource(seatUpgradesModule.image);
+      Config.setImage('seatUpgradesModuleImage', resolvedImage);
+    }
 
     Object.entries(prebuiltModules).forEach(([key, value]) => {
       const isEnabled = value.enabled ? 'true' : 'false';
@@ -196,6 +224,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     region,
     eventHeaderType,
     prebuiltModules,
+    seatUpgradesModule,
+    venueConcessionsModule,
   ]);
 
   const setTicketDeepLink = (id: string) => {

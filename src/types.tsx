@@ -131,9 +131,15 @@ export type PrebuiltModules = {
   };
   seatUpgradesModule?: {
     enabled: boolean;
+    image?: any;
+    topLabelText?: string;
+    bottomLabelText?: string;
   };
   venueConcessionsModule?: {
+    image?: any;
     enabled: boolean;
+    topLabelText?: string;
+    bottomLabelText?: string;
     orderButtonCallback: (
       data: TicketsSdkVenueConcessionsData
     ) => void | Promise<void>;
