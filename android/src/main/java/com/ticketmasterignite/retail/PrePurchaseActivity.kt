@@ -5,7 +5,6 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.ticketmasterignite.R
-import com.ticketmaster.discoveryapi.enums.TMMarketDomain
 import com.ticketmaster.discoveryapi.models.DiscoveryAbstractEntity
 import com.ticketmaster.discoveryapi.models.DiscoveryVenue
 import com.ticketmaster.discoveryapi.models.DiscoveryAttraction
@@ -17,6 +16,7 @@ import com.ticketmaster.prepurchase.listener.TMPrePurchaseFavoritesListener
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseSharingListener
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseUserAnalyticsListener
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseWebAnalyticsListener
+import com.ticketmasterignite.MarketDomain
 
 class PrePurchaseActivity : AppCompatActivity() {
     private lateinit var fragment: Fragment
@@ -50,7 +50,7 @@ class PrePurchaseActivity : AppCompatActivity() {
 
         val tmPrePurchaseWebsiteConfiguration = TMPrePurchaseWebsiteConfiguration(
                 discoveryVenue,
-                TMMarketDomain.US,
+                MarketDomain.getMarketDomain(),
         )
 
         val bundle = tmPrePurchase.getPrePurchaseBundle(

@@ -28,6 +28,7 @@ const App = () => {
             clientName: Config.CLIENT_NAME || '',
             primaryColor: Config.PRIMARY_COLOR || '',
             eventHeaderType: 'EVENT_INFO',
+            marketDomain: 'US',
           }}
           prebuiltModules={{
             moreTicketActionsModule: {

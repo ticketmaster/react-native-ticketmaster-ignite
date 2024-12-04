@@ -33,20 +33,22 @@ class PrePurchaseSDK: UIViewController {
     let region = Config.shared.get(for: "region")
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
+    let marketDomain = MarketDomainObject.shared.getMarketDomain()
     
     TMPrePurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: { isPrePurchaseApiSet in
       print("PrePurchase api key set result: \(isPrePurchaseApiSet)")
       
       TMPrePurchase.shared.brandColor = backgroundColor!
+      TMPrePurchase.shared.marketDomain = marketDomain
       
       var viewController: TMPrePurchaseViewController
       
       if (self.venueId != "") {
         print("Set viewController to Venue")
-        viewController = TMPrePurchaseViewController.venueDetailsViewController(venueIdentifier: self.venueId, enclosingEnvironment: .modalPresentation)
+        viewController = TMPrePurchaseViewController.venueDetailsViewController(venueIdentifier: self.venueId, marketDomain: marketDomain, enclosingEnvironment: .modalPresentation)
       } else {
         print("Set viewController to Attraction")
-        viewController = TMPrePurchaseViewController.attractionDetailsViewController(attractionIdentifier: self.attractionId, enclosingEnvironment: .modalPresentation)
+        viewController = TMPrePurchaseViewController.attractionDetailsViewController(attractionIdentifier: self.attractionId, marketDomain: marketDomain, enclosingEnvironment: .modalPresentation)
       }
       
       viewController.modalPresentationStyle = .fullScreen

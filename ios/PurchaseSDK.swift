@@ -30,18 +30,20 @@ class PurchaseSDK: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    // TMPurchase.shared.configure also needs to be configured in PrePurchaseSDK+Extension
     let apiKey = Config.shared.get(for: "apiKey")
     let region = Config.shared.get(for: "region")
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
     let eventHeaderTypeString = Config.shared.get(for: "eventHeaderType")
     let eventHeaderType = EventHeaderType(rawValue: eventHeaderTypeString)
+    let marketDomain = MarketDomainObject.shared.getMarketDomain()
     
     TMPurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: { isPurchaseApiSet in
       print("Purchase api key set result: \(isPurchaseApiSet)")
       
       TMPurchase.shared.brandColor = backgroundColor!
-      TMPurchase.shared.marketDomain = .US
+      TMPurchase.shared.marketDomain = marketDomain
 
       let headerConfig = TMPurchaseWebsiteConfiguration(eventID: self.eventId)
       headerConfig.showInfoToolbarButton = (eventHeaderType == .eventInfo || eventHeaderType == .eventInfoShare)

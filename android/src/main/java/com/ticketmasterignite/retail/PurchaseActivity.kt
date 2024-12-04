@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import com.ticketmasterignite.R
-import com.ticketmaster.discoveryapi.enums.TMMarketDomain
 import com.ticketmaster.foundation.entity.TMAuthenticationParams
 import com.ticketmaster.purchase.TMPurchase
 import com.ticketmaster.purchase.TMPurchaseFragmentFactory
@@ -14,6 +13,7 @@ import com.ticketmaster.purchase.listener.TMPurchaseFavoritesListener
 import com.ticketmaster.purchase.listener.TMPurchaseSharingListener
 import com.ticketmaster.purchase.listener.TMPurchaseUserAnalyticsListener
 import com.ticketmaster.purchase.listener.TMPurchaseWebAnalyticsListener
+import com.ticketmasterignite.MarketDomain
 
 class PurchaseActivity : AppCompatActivity() {
   private val userAnalyticsListener: TMPurchaseUserAnalyticsListener =
@@ -37,7 +37,7 @@ class PurchaseActivity : AppCompatActivity() {
 
       val tmPurchaseWebsiteConfiguration = TMPurchaseWebsiteConfiguration(
         intent.getStringExtra("eventId").orEmpty(),
-        TMMarketDomain.US,
+        MarketDomain.getMarketDomain(),
         showInfoToolbarButton = EventHeader.getShowInfoToolbarButtonValue(),
         showShareToolbarButton = EventHeader.getShowShareToolbarButtonValue(),
       )
