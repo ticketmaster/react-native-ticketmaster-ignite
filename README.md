@@ -538,17 +538,17 @@ To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which acc
     },
     seatUpgradesModule: {
       enabled: true,
-      topLabelText: "test top label"; // not required
-      bottomLabelText: "test bottom label"; // not required
-      image: require('../assets/seatUpgradesOverride.png'); // not required
+      topLabelText: "test top label", // not required
+      bottomLabelText: "test bottom label", // not required
+      image: require('../assets/seatUpgradesOverride.png'), // not required
     },
     venueConcessionsModule: {
       enabled: true,
       orderButtonCallback: () => {},
       walletButtonCallback: () => {},
-      topLabelText: "test top label"; // not required
-      bottomLabelText: "test bottom label"; // not required
-      image: require('../assets/venueConcessionsOverride.png'); // not required
+      topLabelText: "test top label", // not required
+      bottomLabelText: "test bottom label", // not required
+      image: require('../assets/venueConcessionsOverride.png'), // not required
     },
     invoiceModule: {
       enabled: true,
@@ -579,9 +579,9 @@ The `seatUpgradesModule` and `venueConcessionsModule` can be further customised 
 ##### Custom Labels
 
 You can: 
-- pass custom `topLabelText` and/or `bottomLabelText` to display a custom text;
-- not pass `topLabelText` and/or `topLabelText` at all to show modules default values; 
-- pass empty strings in `topLabelText` and/or `topLabelText` to hide the labels. 
+- pass custom `topLabelText` and/or `bottomLabelText` to display a custom text
+- not pass `topLabelText` and/or `topLabelText` at all to show modules default values
+- pass empty strings in `topLabelText` and/or `topLabelText` to hide the labels
 
 On Android you can only customise the `topLabelText` for `seatUpgradesModule`. If you pass custom `bottomLabelText` it will only be used on iOS. See the example use cases below. 
 
@@ -591,7 +591,7 @@ You can select custom images for `seatUpgradesModule` and `venueConcessionsModul
 
 ##### Demo
 
-| Column 1 | Default view | Custom view | Empty strings |
+| Platform | Default view | Custom view | Empty strings |
 |----------|----------|----------|----------|
 | ios    | <img src="docs/assets/prebuilt_modules_customisation/ios_default.png" width="150">   | <img src="docs/assets/prebuilt_modules_customisation/ios_custom.png" width="150">   |<img src="docs/assets/prebuilt_modules_customisation/ios_empty_strings.png" width="150">   |
 | android    | <img src="docs/assets/prebuilt_modules_customisation/android_default.png" width="150">   | <img src="docs/assets/prebuilt_modules_customisation/android_custom.png" width="150">   |<img src="docs/assets/prebuilt_modules_customisation/android_empty_strings.png" width="150">   |
