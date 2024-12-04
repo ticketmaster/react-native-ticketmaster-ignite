@@ -5,7 +5,6 @@ import {
   PrebuiltModules,
 } from 'react-native-ticketmaster-ignite';
 import { toCapitalise } from './utils/utils';
-import { seatUpgradesModule, venueConcessionsModule } from './types';
 
 interface IgniteProviderProps {
   children: React.ReactNode;

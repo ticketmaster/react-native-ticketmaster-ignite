@@ -27,7 +27,6 @@ RCT_EXPORT_METHOD(setImage:(NSString *)key value:(NSDictionary *)value) {
     if (!configValues) {
         configValues = [NSMutableDictionary dictionary];
     }
-
     [configValues setObject:value[@"uri"]	 forKey:key];
 }
 
@@ -46,8 +45,9 @@ RCT_EXPORT_METHOD(setImage:(NSString *)key value:(NSDictionary *)value) {
     // Load the image from the bundle (production) or from a URL (development)
     if ([imagePath hasPrefix:@"http://"] || [imagePath hasPrefix:@"https://"]) {
         NSLog(@"loading image from URL: %@", imagePath);
-
+      
         NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
+      
         if (imageData) {
             return [UIImage imageWithData:imageData];
         } else {
@@ -56,16 +56,15 @@ RCT_EXPORT_METHOD(setImage:(NSString *)key value:(NSDictionary *)value) {
         }
     } else {
         NSLog(@"loading image from bundle: %@", imagePath);
-        NSString *bundlePath = [[NSBundle mainBundle] resourcePath];
+      
         NSString *path = [NSString stringWithFormat:@"%@", imagePath];
-
-        UIImage *img = [UIImage imageWithContentsOfFile:path];
-        
-        if (!img) {
+        UIImage *image = [UIImage imageWithContentsOfFile:path];
+      
+        if (!image) {
             NSLog(@"Failed to load image from path: %@", path);
           return nil;
         }
-        return img;
+        return image;
     }
 }
 
