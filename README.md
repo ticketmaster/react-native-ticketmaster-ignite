@@ -540,6 +540,7 @@ To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which acc
       enabled: true,
       topLabelText: "test top label"; // not required
       bottomLabelText: "test bottom label"; // not required
+      image: require('../assets/seatUpgradesOverride.png'); // not required
     },
     venueConcessionsModule: {
       enabled: true,
@@ -547,6 +548,7 @@ To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which acc
       walletButtonCallback: () => {},
       topLabelText: "test top label"; // not required
       bottomLabelText: "test bottom label"; // not required
+      image: require('../assets/venueConcessionsOverride.png'); // not required
     },
     invoiceModule: {
       enabled: true,
@@ -583,32 +585,16 @@ You can:
 
 On Android you can only customise the `topLabelText` for `seatUpgradesModule`. If you pass custom `bottomLabelText` it will only be used on iOS. See the example use cases below. 
 
-| | iOS | Android |
-|----------|----------|----------|
-| Custom labels    |  <img src="docs/assets/prebuilt_modules_customisation/ios_custom_labels.png" width="250">   | <img src="docs/assets/prebuilt_modules_customisation/android_custom_labels.png" width="250">   |
-| No labels passed    | <img src="docs/assets/prebuilt_modules_customisation/ios_no_params.png" width="250">   | <img src="docs/assets/prebuilt_modules_customisation/android_no_params.png" width="250">   |
-| Empty strings    | <img src="docs/assets/prebuilt_modules_customisation/ios_empty_strings.png" width="250">  | <img src="docs/assets/prebuilt_modules_customisation/android_empty_strings.png" width="250">   |
-
 ##### Custom Images
 
-The example app included in this library demonstrates how to use custom images. Check out the code and the explanation below for the full context.
+You can select custom images for `seatUpgradesModule` and `venueConcessionsModule` by pulling the image with `require()` and passing it as a prop. The example app included in this library uses custom images to demo the usage. 
 
-###### iOS
-Image customisation is only possible for non-Expo project and bare Expo projects as it requires access to `Images.xcassets` in the `ios` directory.
+##### Demo
 
-To display custom images in the prebuilt modules on iOS, add your images to the `Images.xcassets` folder in your app and name them `seatUpgradeOverride` and `venueConcessionsOverride`. If custom images are not provided, the default images will be used automatically.
-
-| Custom images | Default images |
-|----------|----------|
-|  <img src="docs/assets/prebuilt_modules_customisation/ios_custom_images.png" width="250">   | <img src="docs/assets/prebuilt_modules_customisation/ios_default_images.png" width="250">   |
-
-###### Android
-In order to customise the images on Android, store your assets and pass the URL as `androidCustomImageImageUrl` to `seatUpgradeOverride` and/or `venueConcessionsOverride`. 
-
-| Custom images | Default images |
-|----------|----------|
-|  <img src="docs/assets/prebuilt_modules_customisation/android_custom_images.png" width="250">   | <img src="docs/assets/prebuilt_modules_customisation/android_default_images.png" width="250">   |
-
+| Column 1 | Default view | Custom view | Empty strings |
+|----------|----------|----------|----------|
+| ios    | <img src="docs/assets/prebuilt_modules_customisation/ios_default.png" width="150">   | <img src="docs/assets/prebuilt_modules_customisation/ios_custom.png" width="150">   |<img src="docs/assets/prebuilt_modules_customisation/ios_empty_strings.png" width="150">   |
+| android    | <img src="docs/assets/prebuilt_modules_customisation/android_default.png" width="150">   | <img src="docs/assets/prebuilt_modules_customisation/android_custom.png" width="150">   |<img src="docs/assets/prebuilt_modules_customisation/android_empty_strings.png" width="150">   |
 
 ### Analytics
 
