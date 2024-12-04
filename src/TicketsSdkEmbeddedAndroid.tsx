@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   PixelRatio,
+  StyleSheet,
   UIManager,
   View,
   ViewProps,
@@ -11,7 +12,7 @@ import {
 } from 'react-native';
 
 interface TicketsViewManagerProps extends ViewProps {
-  textProps: {
+  styleProps: {
     width: number;
     height: number;
   };
@@ -44,15 +45,10 @@ export const TicketsSdkEmbeddedAndroid = ({
   const onLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
     setLayout({
-      // converts dpi to px, provide desired height
       width: PixelRatio.getPixelSizeForLayoutSize(width),
       height: PixelRatio.getPixelSizeForLayoutSize(height),
     });
     setMounted(true);
-  };
-
-  const textProps = {
-    ...layout,
   };
 
   useEffect(() => {
@@ -64,8 +60,12 @@ export const TicketsSdkEmbeddedAndroid = ({
   }, [mounted]);
 
   return (
-    <View onLayout={onLayout} style={style || { flex: 1 }}>
-      {mounted && <TicketsViewManager textProps={textProps} ref={ref} />}
+    <View onLayout={onLayout} style={style || styles.container}>
+      {mounted && <TicketsViewManager styleProps={{ ...layout }} ref={ref} />}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+});

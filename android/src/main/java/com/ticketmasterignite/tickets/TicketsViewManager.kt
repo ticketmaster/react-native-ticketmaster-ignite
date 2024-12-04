@@ -47,11 +47,11 @@ class TicketsViewManager (
     }
   }
 
-  @ReactProp(name = "textProps")
-  fun setProps(view: FrameLayout, textProps: ReadableMap?) {
-    if (textProps != null) {
-      propWidth = textProps.getInt("width")
-      propHeight = textProps.getInt("height")
+  @ReactProp(name = "styleProps")
+  fun setProps(view: FrameLayout, styleProps: ReadableMap?) {
+    if (styleProps != null) {
+      propWidth = styleProps.getInt("width")
+      propHeight = styleProps.getInt("height")
     }
   }
 
