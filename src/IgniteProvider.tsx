@@ -16,6 +16,7 @@ interface IgniteProviderProps {
     clientName: string;
     primaryColor: string;
     region?: Region;
+    marketDomain?: MarketDomain;
     eventHeaderType?: EventHeaderType;
   };
 }
@@ -42,6 +43,8 @@ type RefreshConfigParams = {
   apiKey: string;
   clientName?: string;
   primaryColor?: string;
+  region?: string;
+  marketDomain?: string;
   skipAutoLogin?: boolean;
   skipUpdate?: boolean;
   onSuccess?: () => void | Promise<void>;
@@ -64,6 +67,29 @@ type IgniteContextType = {
 };
 
 type Region = 'US' | 'UK';
+
+type MarketDomain =
+  | 'AE'
+  | 'AT'
+  | 'AU'
+  | 'BE'
+  | 'CA'
+  | 'CH'
+  | 'CZ'
+  | 'DE'
+  | 'DK'
+  | 'ES'
+  | 'FI'
+  | 'IE'
+  | 'MX'
+  | 'NL'
+  | 'NO'
+  | 'NZ'
+  | 'PL'
+  | 'SE'
+  | 'UK'
+  | 'US'
+  | 'ZA';
 
 type EventHeaderType =
   | 'NO_TOOLBARS'
@@ -123,7 +149,14 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   analytics,
 }) => {
   const { Config, AccountsSDK } = NativeModules;
-  const { apiKey, clientName, primaryColor, region, eventHeaderType } = options;
+  const {
+    apiKey,
+    clientName,
+    primaryColor,
+    region,
+    eventHeaderType,
+    marketDomain,
+  } = options;
   const { venueConcessionsModule, seatUpgradesModule } = prebuiltModules;
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
@@ -189,6 +222,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('clientName', clientName);
     Config.setConfig('primaryColor', primaryColor);
     Config.setConfig('region', region || 'US');
+    Config.setConfig('marketDomain', marketDomain || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
 
     const seatUpgradesParams = ['topLabelText', 'bottomLabelText'];
@@ -222,6 +256,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     clientName,
     primaryColor,
     region,
+    marketDomain,
     eventHeaderType,
     prebuiltModules,
     seatUpgradesModule,
@@ -432,11 +467,13 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
   const refreshConfiguration = useCallback(
     // eslint-disable-next-line prettier/prettier, @typescript-eslint/no-shadow
-    async ({ apiKey, clientName, primaryColor, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess  }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {},   }) => {
+    async ({ apiKey, clientName, primaryColor, region, marketDomain, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {},   }) => {
       try {
         Config.setConfig('apiKey', apiKey);
         clientName && Config.setConfig('clientName', clientName);
         primaryColor && Config.setConfig('primaryColor', primaryColor);
+        region && Config.setConfig('region', region);
+        marketDomain && Config.setConfig('marketDomain', marketDomain);
         await configureAccountsSDK();
         onSuccess && onSuccess();
         !skipAutoLogin &&

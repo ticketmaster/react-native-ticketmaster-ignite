@@ -127,14 +127,15 @@ If you are using an expo managed workflow you can use a config plugin to update 
 
 This is the only module that must be implemented for the library to work correctly. The purpose of `IgniteProvider` is to pass the config `options` to the native code.
 
-Props required in `options` are:
+Required props in `options` are:
 
 - `apiKey`
 - `clientName`
 - `primaryColor`
 
-Additional available props are: 
+Optional props in `options` are: 
 - `region`
+- `marketDomain`
 - `eventHeaderType`
 
 In order to use it, wrap your application with the `IgniteProvider` and pass the API key and client name as a prop:
@@ -155,7 +156,12 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 
 ##### The `region` property
 
-The options prop also accepts a `region` property `US` or `UK`. The default value is `US` and should be used unless you have specifically been told to set your region to `UK`.
+The `region` property determines the server deployment region the SDK's will connect to. The values can be either `US` or `UK`. The default value is `US` and should be used unless you have specifically been told to set your region to `UK`.
+
+##### The `marketDomain` property
+The `marketDomain` property is used to configure the country that the Retail SDK needs to retrieve attractions, venues and events for. The default value is `US`
+
+See [here](./docs/marketDomains.md) for the list of supported market domains.
 
 ##### The `eventHeaderType` property 
 
@@ -329,6 +335,8 @@ The `refreshConfiguration()` method from the `useIgnite` accepts the below list 
 - `apiKey` - An API configuration key from your Ticketmaster developer account
 - `clientName` - Company name 
 - `primaryColor` - Company brand color
+- `region` - Server deployment region
+- `marketDomain` - Country for Retail SDK configuration
 - `onSuccess` - a callback that fires after successful Accounts SDK configuration
 - `onLoginSuccess` - a callback that fires after successful login
 - `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they login after switching to a new API key configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app.
@@ -341,6 +349,8 @@ type RefreshConfigParams = {
   apiKey: string;
   clientName?: string;
   primaryColor?: string;
+  region?: Region;
+  marketDomain?: MarketDomain;
   skipAutoLogin?: boolean;
   skipUpdate?: boolean;
   onSuccess?: () => void;
