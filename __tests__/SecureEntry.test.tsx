@@ -44,7 +44,7 @@ describe('TicketsSdkEmbeddedAndroid', () => {
     Platform.OS = 'android';
   });
 
-  it('renders the SecureEntryAndroid component immediately if no delay is specified', async () => {
+  it('renders the SecureEntryAndroid component', async () => {
     const { getByTestId } = render(
       <SecureEntry token="anyToken" style={{ flex: 1 }} />
     );
