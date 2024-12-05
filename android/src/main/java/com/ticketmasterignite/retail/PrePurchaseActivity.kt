@@ -47,10 +47,10 @@ class PrePurchaseActivity : AppCompatActivity() {
         } else {
             DiscoveryAttraction(hostID = attractionId)
         }
-
+        val marketDomain = Config.get("marketDomain")
         val tmPrePurchaseWebsiteConfiguration = TMPrePurchaseWebsiteConfiguration(
                 discoveryVenue,
-                MarketDomain.getMarketDomain(),
+                MarketDomain.getMarketDomain(marketDomain),
         )
 
         val bundle = tmPrePurchase.getPrePurchaseBundle(

@@ -36,9 +36,10 @@ class PurchaseActivity : AppCompatActivity() {
         brandColor = Color.parseColor(Config.get("primaryColor"))
       )
 
+      val marketDomain = Config.get("marketDomain")
       val tmPurchaseWebsiteConfiguration = TMPurchaseWebsiteConfiguration(
         intent.getStringExtra("eventId").orEmpty(),
-        MarketDomain.getMarketDomain(),
+        MarketDomain.getMarketDomain(marketDomain),
         showInfoToolbarButton = EventHeader.getShowInfoToolbarButtonValue(eventHeaderType),
         showShareToolbarButton = EventHeader.getShowShareToolbarButtonValue(eventHeaderType),
       )
