@@ -39,7 +39,7 @@ describe('SecureEntryIos', () => {
   });
 });
 
-describe('TicketsSdkEmbeddedAndroid', () => {
+describe('SecureEntryAndroid', () => {
   beforeAll(() => {
     Platform.OS = 'android';
   });
