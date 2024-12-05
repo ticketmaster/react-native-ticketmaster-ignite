@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, Platform, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet } from 'react-native';
 import Config from 'react-native-config';
 import { SecureEntry } from 'react-native-ticketmaster-ignite';
 
