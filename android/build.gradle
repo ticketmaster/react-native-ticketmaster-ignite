@@ -106,9 +106,8 @@ dependencies {
   implementation 'com.ticketmaster.retail:discoveryapi:3.2.0'
   implementation 'com.ticketmaster.retail:foundation:3.2.0'
 
-  testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-  testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-  // For JUnit 5
-  // testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-  // testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+  testImplementation 'junit:junit:4.13.2'
+  testImplementation 'org.mockito:mockito-core:4.1.0'
+  testImplementation 'org.mockito:mockito-inline:4.1.0'
+  testImplementation "io.mockk:mockk:1.12.0"
 }
