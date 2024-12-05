@@ -1,20 +1,30 @@
-import React, { useEffect, useRef } from 'react';
-import { requireNativeComponent, useWindowDimensions } from 'react-native';
-import { PixelRatio, UIManager, findNodeHandle } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  PixelRatio,
+  UIManager,
+  findNodeHandle,
+  LayoutChangeEvent,
+  requireNativeComponent,
+  useWindowDimensions,
+  View,
+  ViewStyle,
+  StyleSheet,
+  ViewProps,
+} from 'react-native';
 
-interface SecureEntryNativeProps {
+interface SecureEntryNativeProps extends ViewProps {
   token: string;
-  style: {};
+  style: { width: number; height: number };
 }
 
-interface SecureEntryViewProps {
+interface SecureEntryAndroidProps {
   token: string;
+  style?: ViewStyle;
 }
 
 const createFragment = (viewId: number | null) =>
   UIManager.dispatchViewManagerCommand(
     viewId,
-    // we are calling the 'create' command
     (UIManager as any).SecureEntryViewManager.Commands.create.toString(),
     [viewId]
   );
@@ -23,27 +33,48 @@ const SecureEntryViewManager = requireNativeComponent<SecureEntryNativeProps>(
   'SecureEntryViewManager'
 );
 
-export const SecureEntryAndroid: React.FC<SecureEntryViewProps> = (props) => {
+export const SecureEntryAndroid = ({
+  token,
+  style,
+}: SecureEntryAndroidProps) => {
   const ref = useRef(null);
-  const height = useWindowDimensions().height;
-  const width = useWindowDimensions().width;
-  const token = props.token.toString();
+  const intialWidth = useWindowDimensions().width;
+  const initialHeight = useWindowDimensions().height;
+  const [mounted, setMounted] = useState(false);
+  const [layout, setLayout] = useState({
+    width: PixelRatio.getPixelSizeForLayoutSize(intialWidth),
+    height: PixelRatio.getPixelSizeForLayoutSize(initialHeight),
+  });
+
+  const onLayout = (event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+    setLayout({
+      width: PixelRatio.getPixelSizeForLayoutSize(width),
+      height: PixelRatio.getPixelSizeForLayoutSize(height),
+    });
+    setMounted(true);
+  };
 
   useEffect(() => {
+    if (!mounted) return;
     const viewId = findNodeHandle(ref.current);
-    createFragment(viewId);
-  }, []);
+    if (viewId) {
+      createFragment(viewId);
+    }
+  }, [mounted]);
 
   return (
-    <SecureEntryViewManager
-      token={token}
-      style={{
-        // converts dpi to px, provide desired height
-        height: PixelRatio.getPixelSizeForLayoutSize(height),
-        // converts dpi to px, provide desired width
-        width: PixelRatio.getPixelSizeForLayoutSize(width),
-      }}
-      ref={ref}
-    />
+    <View onLayout={onLayout} style={style || styles.container}>
+      <SecureEntryViewManager
+        token={token}
+        style={{ ...layout }}
+        ref={ref}
+        testID={'SecureEntryAndroid'}
+      />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+});

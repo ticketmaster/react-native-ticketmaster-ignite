@@ -437,7 +437,7 @@ If you are using React Navigation and you want to do multiple deep links within 
 />
 ```
 
-### SecureEntryView (Android only)
+### Secure Entry View
 
 Replace `SECURE_ENTRY_TOKEN` with a token for a secure entry barcode.
 
@@ -445,12 +445,23 @@ Example:
 
 ```typescript
 
-import { SecureEntryAndroid } from 'react-native-ticketmaster-ignite';
+import { SecureEntry } from 'react-native-ticketmaster-ignite';
 
 <View>
-  <SecureEntryAndroid token="SECURE_ENTRY_TOKEN" />
+  <SecureEntry token="SECURE_ENTRY_TOKEN" style={{ flex: 1}} />
 </View>
 ```
+
+React Navigation note: Initially, the altered RN Bottom Tabs View frame height is not available to Native code on iOS, if you notice the Secure Entry view is not fitting/not rendering in your RN view with Bottom Tabs on the first render, try adding a 100ms delay to the SDK view:
+
+```typescript
+
+import { SecureEntry } from 'react-native-ticketmaster-ignite';
+
+return <SecureEntry token="SECURE_ENTRY_TOKEN" renderTimeDelay={100}/>;
+```
+
+⚠️  Please note that the `renderTimeDelay` prop only affects iOS.
 
 ### RetailSDK
 
