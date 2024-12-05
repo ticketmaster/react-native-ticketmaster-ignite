@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   barcode: {
-    top: Platform.OS === 'ios' ? 230 : 270,
+    top: '30%',
     height: 300,
-    width: Platform.OS === 'ios' ? 300 : 350,
+    width: '70%',
     alignSelf: 'center',
   },
 });
