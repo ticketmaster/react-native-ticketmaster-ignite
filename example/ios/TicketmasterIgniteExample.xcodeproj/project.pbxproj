@@ -443,7 +443,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "TicketmasterIgniteExampleTests/TicketmasterIgniteExampleTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TicketmasterIgniteExample.app/TicketmasterIgniteExample";
 			};
 			name = Debug;
@@ -470,7 +470,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "TicketmasterIgniteExampleTests/TicketmasterIgniteExampleTests-Bridging-Header.h";
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TicketmasterIgniteExample.app/TicketmasterIgniteExample";
 			};
 			name = Release;

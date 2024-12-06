@@ -91,3 +91,33 @@ jobs:
       - name: Build example for iOS
         run: |
           yarn turbo run build:ios
+
+      - name: Run unit tests swift
+        run: |
+          yarn turbo run build:ios
+
+  test-swift:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Set up Xcode
+        run: |
+          sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+          xcodebuild -version
+
+      - name: Install cocoapods
+        run: |
+          cd example/ios
+          pod install
+        env:
+          NO_FLIPPER: 1
+
+      - name: Run unit tests swift
+        run: |
+          cd example/ios
+          xcodebuild -workspace TicketmasterIgniteExample.xcworkspace -scheme TicketmasterIgniteExample -destination 'platform=iOS Simulator,name=iPhone 16' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGN_ENTITLEMENTS="" CODE_SIGNING_ALLOWED=NO test
