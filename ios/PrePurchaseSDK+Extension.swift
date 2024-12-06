@@ -27,10 +27,11 @@ extension PrePurchaseSDK: TMPrePurchaseNavigationDelegate, TMPrePurchaseAnalytic
     let apiKey = Config.shared.get(for: "apiKey")
     let region = Config.shared.get(for: "region")
     let primaryColor = Config.shared.get(for: "primaryColor")
+    let marketDomainConfig = Config.shared.get(for: "marketDomain")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
     let eventHeaderTypeString = Config.shared.get(for: "eventHeaderType")
     let eventHeaderType = EventHeaderType(rawValue: eventHeaderTypeString)
-    let marketDomain = MarketDomainObject.shared.getMarketDomain()
+    let marketDomain = MarketDomainObject.shared.getMarketDomain(marketDomainConfig: marketDomainConfig)
     
     TMPurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: {isPurchaseApiSet in
       print("Purchase api key set result: \(isPurchaseApiSet)")
