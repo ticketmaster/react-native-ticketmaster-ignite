@@ -6,13 +6,11 @@ enum class EventHeaderType(val value: String) {
 }
 
 object EventHeader {
-  private var eventHeaderType = Config.get("eventHeaderType")
-
-  fun getShowInfoToolbarButtonValue(): Boolean {
+  fun getShowInfoToolbarButtonValue(eventHeaderType: String): Boolean {
     return eventHeaderType == EventHeaderType.EVENT_INFO.value || eventHeaderType == EventHeaderType.EVENT_INFO_SHARE.value
   }
 
-  fun getShowShareToolbarButtonValue(): Boolean {
+  fun getShowShareToolbarButtonValue(eventHeaderType: String): Boolean {
     return eventHeaderType == EventHeaderType.EVENT_SHARE.value || eventHeaderType == EventHeaderType.EVENT_INFO_SHARE.value
   }
 }

@@ -23,7 +23,7 @@ jobs:
       - name: Typecheck files
         run: yarn typecheck
 
-  test:
+  react-native-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,8 +32,28 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Run unit tests
+      - name: Run React Native unit tests
         run: yarn test --maxWorkers=2 --coverage
+
+  kotlin-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Run Kotlin unit tests
+        run: |
+          cd example/android
+          ./gradlew :react-native-ticketmaster-ignite:testDebugUnitTest
 
   build-library:
     runs-on: ubuntu-latest
