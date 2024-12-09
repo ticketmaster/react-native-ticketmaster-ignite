@@ -157,7 +157,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     eventHeaderType,
     marketDomain,
   } = options;
-  const { venueConcessionsModule, seatUpgradesModule } = prebuiltModules;
+  const { venueConcessionsModule } = prebuiltModules;
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
     isConfigured: false,
@@ -212,12 +212,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, [AccountsSDK, autoUpdate, setAccountDetails]);
 
   const setNativeConfigValues = useCallback(() => {
-    const setModuleConfig = (module: any, label: string, prefix: string) => {
-      if (module?.[label] !== undefined) {
-        Config.setConfig(`${prefix}${toCapitalise(label)}`, module[label]);
-      }
-    };
-
     Config.setConfig('apiKey', apiKey);
     Config.setConfig('clientName', clientName);
     Config.setConfig('primaryColor', primaryColor);
@@ -225,30 +219,24 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('marketDomain', marketDomain || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
 
-    const seatUpgradesParams = ['topLabelText', 'bottomLabelText'];
-    const venueConcessionsParams = ['topLabelText', 'bottomLabelText'];
     const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
 
-    seatUpgradesParams.forEach((label) =>
-      setModuleConfig(seatUpgradesModule, label, 'seatUpgradesModule')
-    );
-    venueConcessionsParams.forEach((label) =>
-      setModuleConfig(venueConcessionsModule, label, 'venueConcessionsModule')
-    );
+    Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
+      const isEnabled = moduleOptions.enabled ? 'true' : 'false';
+      Config.setConfig(moduleName, isEnabled);
 
-    if (venueConcessionsModule && venueConcessionsModule.image) {
-      const resolvedImage = resolveAssetSource(venueConcessionsModule.image);
-      Config.setImage('venueConcessionsModuleImage', resolvedImage);
-    }
-
-    if (seatUpgradesModule && seatUpgradesModule.image) {
-      const resolvedImage = resolveAssetSource(seatUpgradesModule.image);
-      Config.setImage('seatUpgradesModuleImage', resolvedImage);
-    }
-
-    Object.entries(prebuiltModules).forEach(([key, value]) => {
-      const isEnabled = value.enabled ? 'true' : 'false';
-      Config.setConfig(key, isEnabled);
+      Object.entries(moduleOptions).forEach(([optionName, optionValue]) => {
+        if (optionName.includes('Label')) {
+          Config.setConfig(
+            `${moduleName}${toCapitalise(optionName)}`,
+            optionValue
+          );
+        }
+        if (optionName.includes('image')) {
+          const resolvedImage = resolveAssetSource(optionValue);
+          Config.setImage(moduleName + 'Image', resolvedImage);
+        }
+      });
     });
   }, [
     Config,
@@ -259,8 +247,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     marketDomain,
     eventHeaderType,
     prebuiltModules,
-    seatUpgradesModule,
-    venueConcessionsModule,
   ]);
 
   const setTicketDeepLink = (id: string) => {
@@ -296,7 +282,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           // iOS TMAuthentication.shared.validToken() successful login
           (result.accountsSdkLoggedIn && !isLoggingIn && Platform.OS === 'ios')
         ) {
-          console.log('Accounts SDK login successful');
           await setAccountDetails();
         }
         if (result.ticketsSdkVenueConcessionsOrderFor) {
