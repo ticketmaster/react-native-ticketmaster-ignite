@@ -3,9 +3,8 @@ package com.ticketmasterignite
 import com.ticketmaster.discoveryapi.enums.TMMarketDomain
 
 object MarketDomain {
-  private var marketDomain = Config.get("marketDomain")
 
-  fun getMarketDomain(): TMMarketDomain {
+  fun getMarketDomain(marketDomain: String): TMMarketDomain {
     return when (marketDomain) {
       "AU" -> TMMarketDomain.AU
       "CA" -> TMMarketDomain.CA

@@ -28,6 +28,7 @@ class PurchaseActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.venue_layout)
+    val eventHeaderType = Config.get("eventHeaderType")
 
     if (savedInstanceState == null) {
       val tmPurchase = TMPurchase(
@@ -35,11 +36,12 @@ class PurchaseActivity : AppCompatActivity() {
         brandColor = Color.parseColor(Config.get("primaryColor"))
       )
 
+      val marketDomain = Config.get("marketDomain")
       val tmPurchaseWebsiteConfiguration = TMPurchaseWebsiteConfiguration(
         intent.getStringExtra("eventId").orEmpty(),
-        MarketDomain.getMarketDomain(),
-        showInfoToolbarButton = EventHeader.getShowInfoToolbarButtonValue(),
-        showShareToolbarButton = EventHeader.getShowShareToolbarButtonValue(),
+        MarketDomain.getMarketDomain(marketDomain),
+        showInfoToolbarButton = EventHeader.getShowInfoToolbarButtonValue(eventHeaderType),
+        showShareToolbarButton = EventHeader.getShowShareToolbarButtonValue(eventHeaderType),
       )
 
       val factory = TMPurchaseFragmentFactory(
