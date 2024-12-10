@@ -5,7 +5,6 @@
 //  Created by justyna zygmunt on 06/12/2024.
 //
 import XCTest
-import Testing
 import TicketmasterFoundation
 @testable import react_native_ticketmaster_ignite
 
