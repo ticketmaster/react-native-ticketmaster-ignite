@@ -32,8 +32,9 @@ class PrePurchaseSDK: UIViewController {
     let apiKey = Config.shared.get(for: "apiKey")
     let region = Config.shared.get(for: "region")
     let primaryColor = Config.shared.get(for: "primaryColor")
+    let marketDomainConfig = Config.shared.get(for: "marketDomain")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
-    let marketDomain = MarketDomainObject.shared.getMarketDomain()
+    let marketDomain = MarketDomainObject.shared.getMarketDomain(marketDomainConfig: marketDomainConfig)
     
     TMPrePurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: { isPrePurchaseApiSet in
       print("PrePurchase api key set result: \(isPrePurchaseApiSet)")
