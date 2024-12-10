@@ -93,7 +93,7 @@ jobs:
           yarn turbo run build:ios
 
   test-swift:
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -112,12 +112,12 @@ jobs:
           pod install
         env:
           NO_FLIPPER: 1
-          
-      - name: Build example for iOS
-      run: |
-        yarn turbo run build:ios
+
+      - name: Clear DerivedData
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData
 
       - name: Run unit tests swift
         run: |
           cd example/ios
-          xcodebuild -workspace TicketmasterIgniteExample.xcworkspace -scheme TicketmasterIgniteExample -destination 'platform=iOS Simulator,name=iPhone 16' test
+          xcodebuild clean test -workspace TicketmasterIgniteExample.xcworkspace -scheme TicketmasterIgniteExample -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGN_ENTITLEMENTS="" CODE_SIGNING_ALLOWED=NO
