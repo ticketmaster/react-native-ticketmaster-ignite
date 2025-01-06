@@ -269,7 +269,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
   useEffect(() => {
     const igniteEventEmitter = new NativeEventEmitter(
-      NativeModules.EventEmitter
+      NativeModules.GlobalEventEmitter
     );
     igniteEventEmitter.addListener(
       'igniteAnalytics',
