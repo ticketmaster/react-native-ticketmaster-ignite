@@ -1,4 +1,5 @@
 import TicketmasterAuthentication
+
 @objc(RetailSDK)
 class RetailSDK: NSObject {
   @objc public func presentPrePurchaseVenue(_ venueId: String) {

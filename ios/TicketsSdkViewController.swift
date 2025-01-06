@@ -1,6 +1,5 @@
 import TicketmasterTickets
 
-@objc(TicketsSdkViewController)
 public class TicketsSdkViewController: UIViewController{
   var ticketsView: TMTicketsView!
   
