@@ -1,6 +1,6 @@
 import TicketmasterSecureEntry
 
-public class SecureEntryViewController: UIViewController {
+@objc public class SecureEntryViewController: UIViewController {
   
   public override func viewDidLoad() {
     super.viewDidLoad()

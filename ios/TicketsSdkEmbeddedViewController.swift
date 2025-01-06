@@ -1,7 +1,7 @@
 import Foundation
 import TicketmasterTickets
 
-public class TicketsSdkEmbeddedViewController: UIViewController {
+@objc public class TicketsSdkEmbeddedViewController: UIViewController {
   
   public override func viewDidLoad() {
     super.viewDidLoad()
