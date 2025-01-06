@@ -1,7 +1,7 @@
 #import "React/RCTBridgeModule.h"
 #import "React/RCTEventEmitter.h"
 
-@interface RCT_EXTERN_MODULE(EventEmitter, RCTEventEmitter)
+@interface RCT_EXTERN_MODULE(GlobalEventEmitter, RCTEventEmitter)
 
 - (dispatch_queue_t)methodQueue
 {

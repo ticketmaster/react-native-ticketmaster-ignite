@@ -11,7 +11,7 @@ public class SecureEntryViewController: UIViewController {
     // Pre-sync time, for Rotating Entry
     SecureEntryView.syncTime()
   }
-  
+
   public override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     print("SecureEntryViewController viewDidAppear")

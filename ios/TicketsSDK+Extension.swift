@@ -4,7 +4,7 @@ import TicketmasterTickets
 extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate {
   
   func sendEvent(_ name: String, body: [String : Any]) {
-    EventEmitter.emitter.sendEvent(withName: name, body: body)
+    GlobalEventEmitter.emitter.sendEvent(withName: name, body: body)
   }
   
   func deepLinkToOrder(_ orderId: String) {

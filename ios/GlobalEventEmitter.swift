@@ -1,11 +1,11 @@
-@objc(EventEmitter)
-class EventEmitter: RCTEventEmitter {
+@objc(GlobalEventEmitter)
+class GlobalEventEmitter: RCTEventEmitter {
 
   public static var emitter: RCTEventEmitter!
 
   override init() {
     super.init()
-      EventEmitter.emitter = self
+    GlobalEventEmitter.emitter = self
   }
 
  override func supportedEvents() -> [String] {

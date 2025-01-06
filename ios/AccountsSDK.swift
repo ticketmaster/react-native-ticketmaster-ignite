@@ -127,7 +127,7 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   
   
   func sendEvent(_ name: String, body: [String : Any]) {
-    EventEmitter.emitter.sendEvent(withName: name, body: body)
+    GlobalEventEmitter.emitter.sendEvent(withName: name, body: body)
   }
   
   func onStateChanged(backend: TicketmasterAuthentication.TMAuthentication.BackendService?, state: TicketmasterAuthentication.TMAuthentication.ServiceState, error: (Error)?) {
