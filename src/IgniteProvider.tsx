@@ -327,6 +327,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           !skipUpdate && setIsLoggingIn(false);
         } else if (Platform.OS === 'android') {
           !skipUpdate && setIsLoggingIn(true);
+          setTimeout(() => {
+            if (isLoggingIn && !skipUpdate) setIsLoggingIn(false);
+          }, 8000);
           AccountsSDK.login(async (resultCode: any) => {
             if (resultCode === -1) {
               console.log('Accounts SDK login successful');
@@ -336,9 +339,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
             resolve();
             !skipUpdate && setIsLoggingIn(false);
           });
-          setTimeout(() => {
-            if (isLoggingIn && !skipUpdate) setIsLoggingIn(false);
-          }, 8000);
         }
       });
     },
