@@ -1,3 +1,6 @@
+import Foundation
+import React
+
 @objc(GlobalEventEmitter)
 class GlobalEventEmitter: RCTEventEmitter {
 
