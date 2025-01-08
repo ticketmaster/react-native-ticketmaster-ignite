@@ -62,6 +62,7 @@ type IgniteContextType = {
     refreshConfigParams: RefreshConfigParams
   ) => Promise<void>;
   setTicketDeepLink: (id: string) => void;
+  setConsentJSForWebView: (value: string) => void;
   authState: AuthStateParams;
   isLoggingIn: boolean;
 };
@@ -113,6 +114,7 @@ export const IgniteContext = createContext<IgniteContextType>({
   refreshToken: async () => null,
   refreshConfiguration: async () => {},
   setTicketDeepLink: () => {},
+  setConsentJSForWebView: () => {},
   isLoggingIn: false,
   authState: {
     isConfigured: false,
@@ -253,6 +255,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('orderIdDeepLink', id);
   };
 
+  const setConsentJSForWebView = (value: string) => {
+    Config.setConfig('consentJSForWebView', value);
+  };
+
   useEffect(() => {
     const onConfigureAccountsSdk = async () => {
       setNativeConfigValues();
@@ -269,7 +275,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
   useEffect(() => {
     const igniteEventEmitter = new NativeEventEmitter(
-      NativeModules.GlobalEventEmitter
+      NativeModules.EventEmitter
     );
     igniteEventEmitter.addListener(
       'igniteAnalytics',
@@ -327,9 +333,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           !skipUpdate && setIsLoggingIn(false);
         } else if (Platform.OS === 'android') {
           !skipUpdate && setIsLoggingIn(true);
-          setTimeout(() => {
-            if (isLoggingIn && !skipUpdate) setIsLoggingIn(false);
-          }, 8000);
           AccountsSDK.login(async (resultCode: any) => {
             if (resultCode === -1) {
               console.log('Accounts SDK login successful');
@@ -339,6 +342,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
             resolve();
             !skipUpdate && setIsLoggingIn(false);
           });
+          setTimeout(() => {
+            if (isLoggingIn && !skipUpdate) setIsLoggingIn(false);
+          }, 8000);
         }
       });
     },
@@ -481,6 +487,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         refreshToken,
         refreshConfiguration,
         setTicketDeepLink,
+        setConsentJSForWebView,
         authState,
         isLoggingIn,
       }}
