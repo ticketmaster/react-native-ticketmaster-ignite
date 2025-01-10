@@ -1,6 +1,4 @@
 import TicketmasterAuthentication
-import TicketmasterTickets
-
 
 @objc(AccountsSDK)
 class AccountsSDK: NSObject, TMAuthenticationDelegate  {
