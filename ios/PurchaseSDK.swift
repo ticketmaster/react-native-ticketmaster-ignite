@@ -1,5 +1,6 @@
 import TicketmasterAuthentication
 import TicketmasterPurchase
+import WebKit
 
 @objc(PurchaseSDK)
 class PurchaseSDK: UIViewController {
@@ -38,6 +39,11 @@ class PurchaseSDK: UIViewController {
     let eventHeaderTypeString = Config.shared.get(for: "eventHeaderType")
     let eventHeaderType = EventHeaderType(rawValue: eventHeaderTypeString)
     let marketDomain = MarketDomainObject.shared.getMarketDomain()
+      
+    let consentJSForWebView = Config.shared.get(for: "consentJSForWebView")
+    let script = WKUserScript(source: consentJSForWebView, injectionTime: .atDocumentStart, forMainFrameOnly: false)
+    let userContent = WKUserContentController()
+    userContent.addUserScript(script)
     
     TMPurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: { isPurchaseApiSet in
       print("Purchase api key set result: \(isPurchaseApiSet)")
@@ -48,6 +54,7 @@ class PurchaseSDK: UIViewController {
       let headerConfig = TMPurchaseWebsiteConfiguration(eventID: self.eventId)
       headerConfig.showInfoToolbarButton = (eventHeaderType == .eventInfo || eventHeaderType == .eventInfoShare)
       headerConfig.showShareToolbarButton = (eventHeaderType == .eventShare || eventHeaderType == .eventInfoShare)
+      headerConfig.internalTestingKeys["getConsentString"] = userContent
 
       let edpNav = TMPurchaseNavigationController(configuration: headerConfig)
       edpNav.modalPresentationStyle = .fullScreen
