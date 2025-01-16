@@ -215,7 +215,7 @@ The `useIgnite` hook implements all of the native Accounts SDK methods for easy 
 
 Once the user authenticates `isLoggedIn` will remain true after app restarts
 
-`isConfigured` becomes true after the SDK has successfully configured and the local storage `isLoggedIn` value and `memberInfo` response data have both been retrieved from by the SDK. This makes it useful to condition for any splash screen, loading spinners or animations during app launch.
+`isConfigured` becomes true after the SDK has successfully configured and the local storage `isLoggedIn` value and `memberInfo` response data have both been retrieved by the SDK. This makes it useful to condition for any splash screen, loading spinners or animations during app launch.
 
 Example:
 
