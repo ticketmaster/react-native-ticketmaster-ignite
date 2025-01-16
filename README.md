@@ -610,8 +610,6 @@ On Android you can only customise the `topLabelText` for `seatUpgradesModule`. I
 
 You can select custom images for `seatUpgradesModule` and `venueConcessionsModule` by pulling the image with `require()` and passing it as a prop. The example app included in this library uses custom images to demo the usage. 
 
-##### Demo
-
 | Platform | Default view | Custom view | Empty strings |
 |----------|----------|----------|----------|
 | ios    | <img src="docs/assets/prebuilt_modules_customisation/ios_default.png" width="150">   | <img src="docs/assets/prebuilt_modules_customisation/ios_custom.png" width="150">   |<img src="docs/assets/prebuilt_modules_customisation/ios_empty_strings.png" width="150">   |
