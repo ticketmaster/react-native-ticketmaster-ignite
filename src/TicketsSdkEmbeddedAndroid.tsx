@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  LayoutRectangle,
   LayoutChangeEvent,
   PixelRatio,
   StyleSheet,
@@ -12,14 +13,16 @@ import {
 } from 'react-native';
 
 interface TicketsViewManagerProps extends ViewProps {
-  styleProps: {
+  style: {
     width: number;
     height: number;
   };
+  layout?: LayoutRectangle;
 }
 
 type TicketsSdkEmbeddedAndroidProps = {
   style?: ViewStyle;
+  layoutProp?: LayoutRectangle;
 };
 
 const TicketsViewManager =
@@ -37,10 +40,17 @@ const createFragment = (viewId: number) => {
 
 export const TicketsSdkEmbeddedAndroid = ({
   style,
+  layoutProp,
 }: TicketsSdkEmbeddedAndroidProps) => {
   const ref = useRef(null);
   const [mounted, setMounted] = useState(false);
   const [layout, setLayout] = useState({ width: 0, height: 0 });
+  const [fullLayout, setFullLayout] = useState<LayoutRectangle>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
@@ -48,6 +58,15 @@ export const TicketsSdkEmbeddedAndroid = ({
       width: PixelRatio.getPixelSizeForLayoutSize(width),
       height: PixelRatio.getPixelSizeForLayoutSize(height),
     });
+    layoutProp &&
+      setFullLayout({
+        x: PixelRatio.getPixelSizeForLayoutSize(layoutProp.x),
+        y: PixelRatio.getPixelSizeForLayoutSize(layoutProp.y),
+        width: PixelRatio.getPixelSizeForLayoutSize(layoutProp.width || width),
+        height: PixelRatio.getPixelSizeForLayoutSize(
+          layoutProp.height || height
+        ),
+      });
     setMounted(true);
   };
 
@@ -61,7 +80,9 @@ export const TicketsSdkEmbeddedAndroid = ({
 
   return (
     <View onLayout={onLayout} style={style || styles.container}>
-      {mounted && <TicketsViewManager styleProps={{ ...layout }} ref={ref} />}
+      {mounted && (
+        <TicketsViewManager style={layout} layout={fullLayout} ref={ref} />
+      )}
     </View>
   );
 };

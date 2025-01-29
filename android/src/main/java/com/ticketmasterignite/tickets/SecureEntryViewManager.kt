@@ -5,14 +5,7 @@ import android.view.Choreographer
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
@@ -20,12 +13,17 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.annotations.ReactPropGroup
+import com.ticketmasterignite.tickets.TicketsViewManager.Companion
 
-class SecureEntryViewFragmentManager (
+class SecureEntryViewManager (
   private val reactContext: ReactApplicationContext
 ) : ViewGroupManager<FrameLayout>() {
-  private var propWidth: Int? = null
-  private var propHeight: Int? = null
+  private var propWidth: Int = 0
+  private var propHeight: Int = 0
+  private var propLeft: Int = 0
+  private var propTop: Int = 0
+  private var propRight: Int = 0
+  private var propBottom: Int = 0
   private var secureEntryToken: String? = null
   private var customFragment: SecureEntryFragment? = null
 
@@ -47,14 +45,14 @@ class SecureEntryViewFragmentManager (
    */
   override fun receiveCommand(
     root: FrameLayout,
-    commandId: String,
+    commandId: Int,
     args: ReadableArray?
   ) {
-    super.receiveCommand(root, commandId, args)
-    val reactNativeViewId = requireNotNull(args).getInt(0)
-
-    when (commandId.toInt()) {
-      COMMAND_CREATE -> createFragment(root, reactNativeViewId)
+    when (commandId) {
+      COMMAND_CREATE -> {
+        val reactNativeViewId = args?.getInt(0) ?: return
+        createFragment(root, reactNativeViewId)
+      }
     }
   }
 
@@ -67,6 +65,16 @@ class SecureEntryViewFragmentManager (
   @ReactProp(name = "token")
   fun setToken(view: View, token: String) {
     secureEntryToken = token
+  }
+
+  @ReactProp(name = "layout")
+  fun setLayout(view: FrameLayout, layout: ReadableMap) {
+    if (layout.getInt("y") != 0) {
+      propLeft = layout.getInt("x")
+      propTop = layout.getInt("y")
+      propRight = layout.getInt("width")
+      propBottom = layout.getInt("height")
+    }
   }
 
 
@@ -108,15 +116,19 @@ class SecureEntryViewFragmentManager (
    * Layout all children properly
    */
   private fun manuallyLayoutChildren(view: View) {
-    // propWidth and propHeight coming from react-native props
-    val width = requireNotNull(propWidth)
-    val height = requireNotNull(propHeight)
+    if(propTop != 0) {
+      view.measure(
+        View.MeasureSpec.makeMeasureSpec(propRight, View.MeasureSpec.EXACTLY),
+        View.MeasureSpec.makeMeasureSpec(propBottom, View.MeasureSpec.EXACTLY))
 
-    view.measure(
-      View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
-      View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+      view.layout(propLeft, propTop, propRight, propBottom)
+    } else {
+      view.measure(
+        View.MeasureSpec.makeMeasureSpec(propWidth, View.MeasureSpec.EXACTLY),
+        View.MeasureSpec.makeMeasureSpec(propHeight, View.MeasureSpec.EXACTLY))
 
-    view.layout(0, 80, width, height)
+      view.layout(0, 80, propWidth, propHeight)
+    }
   }
 
   companion object {

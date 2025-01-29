@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  LayoutRectangle,
   PixelRatio,
   UIManager,
   findNodeHandle,
   LayoutChangeEvent,
   requireNativeComponent,
-  useWindowDimensions,
   View,
   ViewStyle,
   StyleSheet,
@@ -15,35 +15,43 @@ import {
 interface SecureEntryNativeProps extends ViewProps {
   token: string;
   style: { width: number; height: number };
+  layout?: LayoutRectangle;
 }
 
-interface SecureEntryAndroidProps {
+type SecureEntryAndroidProps = {
   token: string;
   style?: ViewStyle;
-}
-
-const createFragment = (viewId: number | null) =>
-  UIManager.dispatchViewManagerCommand(
-    viewId,
-    (UIManager as any).SecureEntryViewManager.Commands.create.toString(),
-    [viewId]
-  );
+  layoutProp?: LayoutRectangle;
+};
 
 const SecureEntryViewManager = requireNativeComponent<SecureEntryNativeProps>(
   'SecureEntryViewManager'
 );
 
+const createFragment = (viewId: number) => {
+  const viewManagerConfig = UIManager.getViewManagerConfig(
+    'SecureEntryViewManager'
+  );
+  const commandId = viewManagerConfig?.Commands?.create;
+
+  if (commandId != null) {
+    UIManager.dispatchViewManagerCommand(viewId, commandId, [viewId]);
+  }
+};
+
 export const SecureEntryAndroid = ({
   token,
   style,
+  layoutProp,
 }: SecureEntryAndroidProps) => {
   const ref = useRef(null);
-  const intialWidth = useWindowDimensions().width;
-  const initialHeight = useWindowDimensions().height;
   const [mounted, setMounted] = useState(false);
-  const [layout, setLayout] = useState({
-    width: PixelRatio.getPixelSizeForLayoutSize(intialWidth),
-    height: PixelRatio.getPixelSizeForLayoutSize(initialHeight),
+  const [layout, setLayout] = useState({ width: 0, height: 0 });
+  const [fullLayout, setFullLayout] = useState<LayoutRectangle>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
   });
 
   const onLayout = (event: LayoutChangeEvent) => {
@@ -52,6 +60,15 @@ export const SecureEntryAndroid = ({
       width: PixelRatio.getPixelSizeForLayoutSize(width),
       height: PixelRatio.getPixelSizeForLayoutSize(height),
     });
+    layoutProp &&
+      setFullLayout({
+        x: PixelRatio.getPixelSizeForLayoutSize(layoutProp.x),
+        y: PixelRatio.getPixelSizeForLayoutSize(layoutProp.y),
+        width: PixelRatio.getPixelSizeForLayoutSize(layoutProp.width || width),
+        height: PixelRatio.getPixelSizeForLayoutSize(
+          layoutProp.height || height
+        ),
+      });
     setMounted(true);
   };
 
@@ -65,12 +82,15 @@ export const SecureEntryAndroid = ({
 
   return (
     <View onLayout={onLayout} style={style || styles.container}>
-      <SecureEntryViewManager
-        token={token}
-        style={{ ...layout }}
-        ref={ref}
-        testID={'SecureEntryAndroid'}
-      />
+      {mounted && (
+        <SecureEntryViewManager
+          token={token}
+          style={layout}
+          layout={fullLayout}
+          ref={ref}
+          testID={'SecureEntryAndroid'}
+        />
+      )}
     </View>
   );
 };

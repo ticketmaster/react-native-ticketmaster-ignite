@@ -11,12 +11,17 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.annotations.ReactProp
+import com.facebook.react.uimanager.annotations.ReactPropGroup
 
 class TicketsViewManager (
   private val reactContext: ReactApplicationContext
 ) : ViewGroupManager<FrameLayout>() {
-  private var propWidth: Int? = null
-  private var propHeight: Int? = null
+  private var propWidth: Int = 0
+  private var propHeight: Int = 0
+  private var propLeft: Int = 0
+  private var propTop: Int = 0
+  private var propRight: Int = 0
+  private var propBottom: Int = 0
 
   override fun getName() = REACT_CLASS
 
@@ -47,11 +52,19 @@ class TicketsViewManager (
     }
   }
 
-  @ReactProp(name = "styleProps")
-  fun setProps(view: FrameLayout, styleProps: ReadableMap?) {
-    if (styleProps != null) {
-      propWidth = styleProps.getInt("width")
-      propHeight = styleProps.getInt("height")
+  @ReactPropGroup(names = ["width", "height"], customType = "Style")
+  fun setStyle(view: FrameLayout, index: Int, value: Int) {
+    if (index == 0) propWidth = value
+    if (index == 1) propHeight = value
+  }
+
+  @ReactProp(name = "layout")
+  fun setLayout(view: FrameLayout, layout: ReadableMap) {
+    if (layout.getInt("y") != 0) {
+      propLeft = layout.getInt("x")
+      propTop = layout.getInt("y")
+      propRight = layout.getInt("width")
+      propBottom = layout.getInt("height")
     }
   }
 
@@ -84,15 +97,19 @@ class TicketsViewManager (
    * Layout all children properly
    */
   private fun manuallyLayoutChildren(view: View) {
-    // propWidth and propHeight coming from react-native props
-    val width = requireNotNull(propWidth)
-    val height = requireNotNull(propHeight)
+    if(propTop != 0) {
+      view.measure(
+        View.MeasureSpec.makeMeasureSpec(propRight, View.MeasureSpec.EXACTLY),
+        View.MeasureSpec.makeMeasureSpec(propBottom, View.MeasureSpec.EXACTLY))
 
-    view.measure(
-      View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
-      View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+      view.layout(propLeft, propTop, propRight, propBottom)
+    } else {
+      view.measure(
+        View.MeasureSpec.makeMeasureSpec(propWidth, View.MeasureSpec.EXACTLY),
+        View.MeasureSpec.makeMeasureSpec(propHeight, View.MeasureSpec.EXACTLY))
 
-    view.layout(0, 0, width, height)
+      view.layout(0, 0, propWidth, propHeight)
+    }
   }
 
   companion object {
