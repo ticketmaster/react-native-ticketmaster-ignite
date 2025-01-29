@@ -5,7 +5,7 @@ import { SecureEntryAndroid } from './SecureEntryAndroid';
 
 type SecureEntryProps = {
   /**
-   * Manually position the layout of the Android UI component. Useful for temporary issues that exist with UI placement within React Navigation containers when React Native’s New Architecture is turned on.
+   * Manually layout the position of the Android UI component. Useful for temporary issues that exist with UI placement within React Navigation containers when React Native’s New Architecture is turned on.
    *
    * Android only.
    *
