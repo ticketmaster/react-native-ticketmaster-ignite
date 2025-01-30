@@ -5,7 +5,6 @@ import {
   findNodeHandle,
   LayoutChangeEvent,
   requireNativeComponent,
-  useWindowDimensions,
   View,
   ViewStyle,
   StyleSheet,
@@ -15,36 +14,39 @@ import {
 interface SecureEntryNativeProps extends ViewProps {
   token: string;
   style: { width: number; height: number };
+  offsetTop?: number;
 }
 
-interface SecureEntryAndroidProps {
+type SecureEntryAndroidProps = {
   token: string;
   style?: ViewStyle;
-}
-
-const createFragment = (viewId: number | null) =>
-  UIManager.dispatchViewManagerCommand(
-    viewId,
-    (UIManager as any).SecureEntryViewManager.Commands.create.toString(),
-    [viewId]
-  );
+  offsetTopProp?: number;
+};
 
 const SecureEntryViewManager = requireNativeComponent<SecureEntryNativeProps>(
   'SecureEntryViewManager'
 );
 
+const createFragment = (viewId: number) => {
+  const viewManagerConfig = UIManager.getViewManagerConfig(
+    'SecureEntryViewManager'
+  );
+  const commandId = viewManagerConfig?.Commands?.create;
+
+  if (commandId != null) {
+    UIManager.dispatchViewManagerCommand(viewId, commandId, [viewId]);
+  }
+};
+
 export const SecureEntryAndroid = ({
   token,
   style,
+  offsetTopProp,
 }: SecureEntryAndroidProps) => {
   const ref = useRef(null);
-  const intialWidth = useWindowDimensions().width;
-  const initialHeight = useWindowDimensions().height;
   const [mounted, setMounted] = useState(false);
-  const [layout, setLayout] = useState({
-    width: PixelRatio.getPixelSizeForLayoutSize(intialWidth),
-    height: PixelRatio.getPixelSizeForLayoutSize(initialHeight),
-  });
+  const [layout, setLayout] = useState({ width: 0, height: 0 });
+  const [offsetTop, setOffsetTop] = useState<number>(0);
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
@@ -52,6 +54,8 @@ export const SecureEntryAndroid = ({
       width: PixelRatio.getPixelSizeForLayoutSize(width),
       height: PixelRatio.getPixelSizeForLayoutSize(height),
     });
+    offsetTopProp &&
+      setOffsetTop(PixelRatio.getPixelSizeForLayoutSize(offsetTopProp));
     setMounted(true);
   };
 
@@ -65,12 +69,15 @@ export const SecureEntryAndroid = ({
 
   return (
     <View onLayout={onLayout} style={style || styles.container}>
-      <SecureEntryViewManager
-        token={token}
-        style={{ ...layout }}
-        ref={ref}
-        testID={'SecureEntryAndroid'}
-      />
+      {mounted && (
+        <SecureEntryViewManager
+          token={token}
+          style={layout}
+          offsetTop={offsetTop}
+          ref={ref}
+          testID={'SecureEntryAndroid'}
+        />
+      )}
     </View>
   );
 };

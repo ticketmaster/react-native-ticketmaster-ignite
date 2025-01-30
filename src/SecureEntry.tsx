@@ -4,14 +4,21 @@ import { SecureEntryIos } from './SecureEntryIos';
 import { SecureEntryAndroid } from './SecureEntryAndroid';
 
 type SecureEntryProps = {
-  token: string;
+  /**
+   * Add offset to the top of the native UI component. Useful for temporary issues that exist with UI placement within React Navigation containers when React Native’s New Architecture is turned on.
+   *
+   * Android only.
+   */
+  offsetTop?: number;
   style?: ViewStyle;
+  token: string;
   renderTimeDelay?: number | undefined;
 };
 
 export const SecureEntry = ({
   token,
   style,
+  offsetTop,
   renderTimeDelay,
 }: SecureEntryProps) => {
   return (
@@ -23,7 +30,11 @@ export const SecureEntry = ({
           renderTimeDelay={renderTimeDelay}
         />
       ) : (
-        <SecureEntryAndroid token={token} style={style} />
+        <SecureEntryAndroid
+          token={token}
+          style={style}
+          offsetTopProp={offsetTop}
+        />
       )}
     </>
   );

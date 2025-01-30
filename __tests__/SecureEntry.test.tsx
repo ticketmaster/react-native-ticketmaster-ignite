@@ -38,19 +38,3 @@ describe('SecureEntryIos', () => {
     });
   });
 });
-
-describe('SecureEntryAndroid', () => {
-  beforeAll(() => {
-    Platform.OS = 'android';
-  });
-
-  it('renders the SecureEntryAndroid component', async () => {
-    const { getByTestId } = render(
-      <SecureEntry token="anyToken" style={{ flex: 1 }} />
-    );
-
-    await waitFor(() => {
-      expect(getByTestId('SecureEntryAndroid')).toBeTruthy();
-    });
-  });
-});

@@ -11,12 +11,14 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.annotations.ReactProp
+import com.facebook.react.uimanager.annotations.ReactPropGroup
 
 class TicketsViewManager (
   private val reactContext: ReactApplicationContext
 ) : ViewGroupManager<FrameLayout>() {
-  private var propWidth: Int? = null
-  private var propHeight: Int? = null
+  private var propWidth: Int = 0
+  private var propHeight: Int = 0
+  private var propOffsetTop: Int = 0
 
   override fun getName() = REACT_CLASS
 
@@ -47,11 +49,16 @@ class TicketsViewManager (
     }
   }
 
-  @ReactProp(name = "styleProps")
-  fun setProps(view: FrameLayout, styleProps: ReadableMap?) {
-    if (styleProps != null) {
-      propWidth = styleProps.getInt("width")
-      propHeight = styleProps.getInt("height")
+  @ReactPropGroup(names = ["width", "height"], customType = "Style")
+  fun setStyle(view: FrameLayout, index: Int, value: Int) {
+    if (index == 0) propWidth = value
+    if (index == 1) propHeight = value
+  }
+
+  @ReactProp(name = "offsetTop")
+  fun setOffsetTop(view: FrameLayout, offsetTop: Int) {
+    if (offsetTop != 0) {
+      propOffsetTop = offsetTop
     }
   }
 
@@ -84,15 +91,12 @@ class TicketsViewManager (
    * Layout all children properly
    */
   private fun manuallyLayoutChildren(view: View) {
-    // propWidth and propHeight coming from react-native props
-    val width = requireNotNull(propWidth)
-    val height = requireNotNull(propHeight)
+      view.measure(
+        View.MeasureSpec.makeMeasureSpec(propWidth, View.MeasureSpec.EXACTLY),
+        View.MeasureSpec.makeMeasureSpec(propHeight, View.MeasureSpec.EXACTLY))
 
-    view.measure(
-      View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
-      View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
-
-    view.layout(0, 0, width, height)
+      view.layout(0, 0, propWidth, propHeight)
+      view.offsetTopAndBottom(propOffsetTop)
   }
 
   companion object {
