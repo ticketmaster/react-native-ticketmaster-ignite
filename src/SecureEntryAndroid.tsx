@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  LayoutRectangle,
   PixelRatio,
   UIManager,
   findNodeHandle,
@@ -15,13 +14,13 @@ import {
 interface SecureEntryNativeProps extends ViewProps {
   token: string;
   style: { width: number; height: number };
-  layout?: LayoutRectangle;
+  offsetTop?: number;
 }
 
 type SecureEntryAndroidProps = {
   token: string;
   style?: ViewStyle;
-  layoutProp?: LayoutRectangle;
+  offsetTopProp?: number;
 };
 
 const SecureEntryViewManager = requireNativeComponent<SecureEntryNativeProps>(
@@ -42,17 +41,12 @@ const createFragment = (viewId: number) => {
 export const SecureEntryAndroid = ({
   token,
   style,
-  layoutProp,
+  offsetTopProp,
 }: SecureEntryAndroidProps) => {
   const ref = useRef(null);
   const [mounted, setMounted] = useState(false);
   const [layout, setLayout] = useState({ width: 0, height: 0 });
-  const [fullLayout, setFullLayout] = useState<LayoutRectangle>({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  });
+  const [offsetTop, setOffsetTop] = useState<number>(0);
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
@@ -60,15 +54,8 @@ export const SecureEntryAndroid = ({
       width: PixelRatio.getPixelSizeForLayoutSize(width),
       height: PixelRatio.getPixelSizeForLayoutSize(height),
     });
-    layoutProp &&
-      setFullLayout({
-        x: PixelRatio.getPixelSizeForLayoutSize(layoutProp.x),
-        y: PixelRatio.getPixelSizeForLayoutSize(layoutProp.y),
-        width: PixelRatio.getPixelSizeForLayoutSize(layoutProp.width || width),
-        height: PixelRatio.getPixelSizeForLayoutSize(
-          layoutProp.height || height
-        ),
-      });
+    offsetTopProp &&
+      setOffsetTop(PixelRatio.getPixelSizeForLayoutSize(offsetTopProp));
     setMounted(true);
   };
 
@@ -86,7 +73,7 @@ export const SecureEntryAndroid = ({
         <SecureEntryViewManager
           token={token}
           style={layout}
-          layout={fullLayout}
+          offsetTop={offsetTop}
           ref={ref}
           testID={'SecureEntryAndroid'}
         />

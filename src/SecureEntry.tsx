@@ -5,19 +5,11 @@ import { SecureEntryAndroid } from './SecureEntryAndroid';
 
 type SecureEntryProps = {
   /**
-   * Manually layout the position of the Android UI component. Useful for temporary issues that exist with UI placement within React Navigation containers when React Native’s New Architecture is turned on.
+   * Add offset to the top of the native UI component. Useful for temporary issues that exist with UI placement within React Navigation containers when React Native’s New Architecture is turned on.
    *
    * Android only.
-   *
-   * x - X position of native UI view.
-   *
-   * y - Y position of the native UI view. Y must be greater than 0 to trigger manual positioning.
-   *
-   * width - width of the Native UI view. Defaults to full width of parent view if 0 is sent.
-   *
-   * height - height of the native UI view. Defaults to full height of parent view if 0 is sent.
    */
-  layout?: LayoutRectangle;
+  offsetTop?: number;
   style?: ViewStyle;
   token: string;
   renderTimeDelay?: number | undefined;
@@ -26,7 +18,7 @@ type SecureEntryProps = {
 export const SecureEntry = ({
   token,
   style,
-  layout,
+  offsetTop,
   renderTimeDelay,
 }: SecureEntryProps) => {
   return (
@@ -38,7 +30,11 @@ export const SecureEntry = ({
           renderTimeDelay={renderTimeDelay}
         />
       ) : (
-        <SecureEntryAndroid token={token} style={style} layoutProp={layout} />
+        <SecureEntryAndroid
+          token={token}
+          style={style}
+          offsetTopProp={offsetTop}
+        />
       )}
     </>
   );

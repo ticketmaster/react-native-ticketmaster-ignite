@@ -13,17 +13,13 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.annotations.ReactPropGroup
-import com.ticketmasterignite.tickets.TicketsViewManager.Companion
 
 class SecureEntryViewManager (
   private val reactContext: ReactApplicationContext
 ) : ViewGroupManager<FrameLayout>() {
   private var propWidth: Int = 0
   private var propHeight: Int = 0
-  private var propLeft: Int = 0
-  private var propTop: Int = 0
-  private var propRight: Int = 0
-  private var propBottom: Int = 0
+  private var propOffsetTop: Int = 0
   private var secureEntryToken: String? = null
   private var customFragment: SecureEntryFragment? = null
 
@@ -67,16 +63,12 @@ class SecureEntryViewManager (
     secureEntryToken = token
   }
 
-  @ReactProp(name = "layout")
-  fun setLayout(view: FrameLayout, layout: ReadableMap) {
-    if (layout.getInt("y") != 0) {
-      propLeft = layout.getInt("x")
-      propTop = layout.getInt("y")
-      propRight = layout.getInt("width")
-      propBottom = layout.getInt("height")
+  @ReactProp(name = "offsetTop")
+  fun setOffsetTop(view: FrameLayout, offsetTop: Int) {
+    if (offsetTop != 0) {
+      propOffsetTop = offsetTop
     }
   }
-
 
   /**
    * Replace your React Native view with a custom fragment
@@ -116,19 +108,12 @@ class SecureEntryViewManager (
    * Layout all children properly
    */
   private fun manuallyLayoutChildren(view: View) {
-    if(propTop != 0) {
-      view.measure(
-        View.MeasureSpec.makeMeasureSpec(propRight, View.MeasureSpec.EXACTLY),
-        View.MeasureSpec.makeMeasureSpec(propBottom, View.MeasureSpec.EXACTLY))
-
-      view.layout(propLeft, propTop, propRight, propBottom)
-    } else {
       view.measure(
         View.MeasureSpec.makeMeasureSpec(propWidth, View.MeasureSpec.EXACTLY),
         View.MeasureSpec.makeMeasureSpec(propHeight, View.MeasureSpec.EXACTLY))
 
       view.layout(0, 80, propWidth, propHeight)
-    }
+      view.offsetTopAndBottom(propOffsetTop)
   }
 
   companion object {

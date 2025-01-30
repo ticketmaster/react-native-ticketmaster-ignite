@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  LayoutRectangle,
   LayoutChangeEvent,
   PixelRatio,
   StyleSheet,
@@ -17,12 +16,12 @@ interface TicketsViewManagerProps extends ViewProps {
     width: number;
     height: number;
   };
-  layout?: LayoutRectangle;
+  offsetTop?: number;
 }
 
 type TicketsSdkEmbeddedAndroidProps = {
   style?: ViewStyle;
-  layoutProp?: LayoutRectangle;
+  offsetTopProp?: number;
 };
 
 const TicketsViewManager =
@@ -40,17 +39,12 @@ const createFragment = (viewId: number) => {
 
 export const TicketsSdkEmbeddedAndroid = ({
   style,
-  layoutProp,
+  offsetTopProp,
 }: TicketsSdkEmbeddedAndroidProps) => {
   const ref = useRef(null);
   const [mounted, setMounted] = useState(false);
   const [layout, setLayout] = useState({ width: 0, height: 0 });
-  const [fullLayout, setFullLayout] = useState<LayoutRectangle>({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  });
+  const [offsetTop, setOffsetTop] = useState<number>(0);
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
@@ -58,15 +52,8 @@ export const TicketsSdkEmbeddedAndroid = ({
       width: PixelRatio.getPixelSizeForLayoutSize(width),
       height: PixelRatio.getPixelSizeForLayoutSize(height),
     });
-    layoutProp &&
-      setFullLayout({
-        x: PixelRatio.getPixelSizeForLayoutSize(layoutProp.x),
-        y: PixelRatio.getPixelSizeForLayoutSize(layoutProp.y),
-        width: PixelRatio.getPixelSizeForLayoutSize(layoutProp.width || width),
-        height: PixelRatio.getPixelSizeForLayoutSize(
-          layoutProp.height || height
-        ),
-      });
+    offsetTopProp &&
+      setOffsetTop(PixelRatio.getPixelSizeForLayoutSize(offsetTopProp));
     setMounted(true);
   };
 
@@ -81,7 +68,7 @@ export const TicketsSdkEmbeddedAndroid = ({
   return (
     <View onLayout={onLayout} style={style || styles.container}>
       {mounted && (
-        <TicketsViewManager style={layout} layout={fullLayout} ref={ref} />
+        <TicketsViewManager style={layout} offsetTop={offsetTop} ref={ref} />
       )}
     </View>
   );
