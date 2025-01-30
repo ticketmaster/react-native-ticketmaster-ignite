@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, ViewStyle, LayoutRectangle } from 'react-native';
+import { Platform, ViewStyle } from 'react-native';
 import { SecureEntryIos } from './SecureEntryIos';
 import { SecureEntryAndroid } from './SecureEntryAndroid';
 
