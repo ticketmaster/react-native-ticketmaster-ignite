@@ -413,6 +413,8 @@ return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
 
 React Native New Architecture + React Navigation note: There is a bug with android native UI views when New Architecture mode is switched on where the native UI does not take into account the header height from React Navigation. If this happens in your app you can use the `offsetTop` prop to add offset to the top of the native UI.
 
+⚠️ Please note that the `offsetTop` prop only affects Android.
+
 Example: 
 ```typescript
 return <TicketsSdkEmbedded style={{height: '95%', backgroundColor: PRIMARY_COLOR, bottom: 10}} offsetTop={100}/>
@@ -471,6 +473,8 @@ return <SecureEntry token="SECURE_ENTRY_TOKEN" renderTimeDelay={100}/>;
 ⚠️  Please note that the `renderTimeDelay` prop only affects iOS.
 
 React Native New Architecture + React Navigation note: There is a bug with android native UI views when New Architecture mode is switched on where the native UI does not take into account the header height from React Navigation. If this happens in your app you can use the `offsetTop` prop to add offset to the top of the native UI.
+
+⚠️ Please note that the `offsetTop` prop only affects Android.
 
 Example: 
 ```typescript
