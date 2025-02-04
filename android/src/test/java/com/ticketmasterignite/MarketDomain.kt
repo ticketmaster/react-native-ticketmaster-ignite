@@ -1,8 +1,8 @@
 package com.ticketmasterignite
 
-import com.ticketmaster.discoveryapi.enums.TMMarketDomain
 import org.junit.Test
 import org.junit.Assert.*
+import com.ticketmaster.discoveryapi.enums.TMMarketDomain
 
 class MarketDomainTest{
 

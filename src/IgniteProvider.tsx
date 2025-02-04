@@ -15,6 +15,7 @@ interface IgniteProviderProps {
     apiKey: string;
     clientName: string;
     primaryColor: string;
+    environment?: string;
     region?: Region;
     marketDomain?: MarketDomain;
     eventHeaderType?: EventHeaderType;
@@ -68,28 +69,8 @@ type IgniteContextType = {
 
 type Region = 'US' | 'UK';
 
-type MarketDomain =
-  | 'AE'
-  | 'AT'
-  | 'AU'
-  | 'BE'
-  | 'CA'
-  | 'CH'
-  | 'CZ'
-  | 'DE'
-  | 'DK'
-  | 'ES'
-  | 'FI'
-  | 'IE'
-  | 'MX'
-  | 'NL'
-  | 'NO'
-  | 'NZ'
-  | 'PL'
-  | 'SE'
-  | 'UK'
-  | 'US'
-  | 'ZA';
+// eslint-disable-next-line prettier/prettier
+type MarketDomain = 'AE' | 'AT' | 'AU' | 'BE'| 'CA' | 'CH' | 'CZ' | 'DE' | 'DK' | 'ES' | 'FI' | 'IE' | 'MX' | 'NL' | 'NO' | 'NZ' | 'PL' | 'SE' | 'UK' | 'US' | 'ZA';
 
 type EventHeaderType =
   | 'NO_TOOLBARS'
@@ -153,6 +134,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     apiKey,
     clientName,
     primaryColor,
+    environment,
     region,
     eventHeaderType,
     marketDomain,
@@ -218,6 +200,12 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('region', region || 'US');
     Config.setConfig('marketDomain', marketDomain || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
+    if (
+      environment === 'Production' ||
+      environment === 'PreProduction' ||
+      environment === 'Staging'
+    )
+      Config.setConfig('environment', environment);
 
     const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
 
@@ -246,6 +234,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     region,
     marketDomain,
     eventHeaderType,
+    environment,
     prebuiltModules,
   ]);
 

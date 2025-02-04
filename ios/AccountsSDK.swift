@@ -1,9 +1,12 @@
 import TicketmasterAuthentication
+import TicketmasterFoundation
 
 @objc(AccountsSDK)
 class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   
   @objc public func configureAccountsSDK(_ resolve: @escaping (String) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
+    
+    MessageLogger.currentLogLevel = .network
     
     TMAuthentication.shared.delegate = self
     TMAuthentication.shared.forceEphemeralWebBrowserSession = true
@@ -12,8 +15,9 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     // build a combination of Settings and Branding
     let apiKey = Config.shared.get(for: "apiKey")
     let region = Config.shared.get(for: "region")
+    let environment = Config.shared.get(for: "environment")
     let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
-                                                          region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US )
+                                                          region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, environment: TMAuthentication.TMXDeploymentEnvironment(rawValue: environment) ?? .Production )
     
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
