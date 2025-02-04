@@ -238,9 +238,12 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     prebuiltModules,
   ]);
 
-  const setTicketDeepLink = (id: string) => {
-    Config.setConfig('orderIdDeepLink', id);
-  };
+  const setTicketDeepLink = useCallback(
+    (id: string) => {
+      Config.setConfig('orderIdDeepLink', id);
+    },
+    [Config]
+  );
 
   useEffect(() => {
     const onConfigureAccountsSdk = async () => {
