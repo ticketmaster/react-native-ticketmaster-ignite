@@ -1,12 +1,9 @@
 import TicketmasterAuthentication
-import TicketmasterFoundation
 
 @objc(AccountsSDK)
 class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   
   @objc public func configureAccountsSDK(_ resolve: @escaping (String) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    
-    MessageLogger.currentLogLevel = .network
     
     TMAuthentication.shared.delegate = self
     TMAuthentication.shared.forceEphemeralWebBrowserSession = true
