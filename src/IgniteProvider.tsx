@@ -44,6 +44,7 @@ type RefreshConfigParams = {
   apiKey: string;
   clientName?: string;
   primaryColor?: string;
+  environment?: string;
   region?: string;
   marketDomain?: string;
   skipAutoLogin?: boolean;
@@ -200,11 +201,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('region', region || 'US');
     Config.setConfig('marketDomain', marketDomain || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
-    if (
-      environment === 'Production' ||
-      environment === 'PreProduction' ||
-      environment === 'Staging'
-    )
+    if (environment === 'PreProduction' || environment === 'Staging')
       Config.setConfig('environment', environment);
 
     const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
@@ -444,13 +441,19 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
   const refreshConfiguration = useCallback(
     // eslint-disable-next-line prettier/prettier, @typescript-eslint/no-shadow
-    async ({ apiKey, clientName, primaryColor, region, marketDomain, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {},   }) => {
+    async ({ apiKey, clientName, primaryColor, environment, region, marketDomain, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {} }) => {
       try {
         Config.setConfig('apiKey', apiKey);
         clientName && Config.setConfig('clientName', clientName);
         primaryColor && Config.setConfig('primaryColor', primaryColor);
         region && Config.setConfig('region', region);
         marketDomain && Config.setConfig('marketDomain', marketDomain);
+        if (
+          environment === 'Production' ||
+          environment === 'PreProduction' ||
+          environment === 'Staging'
+        )
+          Config.setConfig('environment', environment);
         await configureAccountsSDK();
         onSuccess && onSuccess();
         !skipAutoLogin &&
