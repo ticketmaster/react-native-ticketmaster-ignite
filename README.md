@@ -402,6 +402,8 @@ In Archtics logins, the login to Ticketmaster Host can be done separately. Eithe
 
 `useCombinedLogin` is off by default.
 
+Currently these configurations only affect iOS. Android does non-ephemeral and combined login to Archtics and Ticketmaster Host on every login.
+
 To find out more about ephemeral login and combined login when switching teams see [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out)
 
 ### TicketsSdkModal (iOS only)
