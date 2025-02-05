@@ -14,7 +14,7 @@ class EnvironmentTest {
   @Test
   fun `gets Production TMEnvironment with Staging`() {
     val result = Environment.getTMEnvironment("Staging")
-    assertEquals(TMEnvironment.Production, result)
+    assertEquals(TMEnvironment.Alpha, result)
   }
 
   @Test
