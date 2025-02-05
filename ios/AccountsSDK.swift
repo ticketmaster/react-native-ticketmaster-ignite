@@ -6,8 +6,8 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   @objc public func configureAccountsSDK(_ resolve: @escaping (String) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     
     TMAuthentication.shared.delegate = self
-    TMAuthentication.shared.forceEphemeralWebBrowserSession = true
-    TMAuthentication.shared.useCombinedLogin = false
+    TMAuthentication.shared.forceEphemeralWebBrowserSession = Config.shared.get(for: "ephemeralLogin") == "true"
+    TMAuthentication.shared.useCombinedLogin = Config.shared.get(for: "useCombinedLogin") == "true"
     
     // build a combination of Settings and Branding
     let apiKey = Config.shared.get(for: "apiKey")
@@ -57,8 +57,7 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   
   
   @objc public func logout(_ resolve: @escaping (String) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    // logout of all accounts, not just the accounts in the current configuration
-    TMAuthentication.shared.logoutAll {backends in
+    TMAuthentication.shared.logout {backends in
       resolve("Logout Successful")
       print("Logout Completed")
       print(" - Backends Count: \(backends?.count ?? 0)")

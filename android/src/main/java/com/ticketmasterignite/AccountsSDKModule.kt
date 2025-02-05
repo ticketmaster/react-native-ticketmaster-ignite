@@ -32,6 +32,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   private val CODE = 1
   override fun getName() = "AccountsSDK"
   private var mResultCallback: Callback? = null
+  private var shouldForceNewSession = Config.get("ephemeralLogin") == "true"
 
   private val mActivityEventListener: ActivityEventListener =
     object : BaseActivityEventListener() {
@@ -124,7 +125,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           .colors(createTMAuthenticationColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
           .environment(TMXDeploymentEnvironment.Production)
           .region(Region.getRegion())
-          .forceNewSession(true)
+          .forceNewSession(shouldForceNewSession)
           .build(currentFragmentActivity)
         IgniteSDKSingleton.setAuthenticationSDK(authentication)
 
