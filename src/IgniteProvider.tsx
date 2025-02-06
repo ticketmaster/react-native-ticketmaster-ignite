@@ -17,6 +17,8 @@ interface IgniteProviderProps {
     primaryColor: string;
     environment?: string;
     region?: Region;
+    ephemeralLogin?: boolean;
+    useCombinedLogin?: boolean;
     marketDomain?: MarketDomain;
     eventHeaderType?: EventHeaderType;
   };
@@ -137,6 +139,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     primaryColor,
     environment,
     region,
+    ephemeralLogin = true,
+    useCombinedLogin = false,
     eventHeaderType,
     marketDomain,
   } = options;
@@ -201,6 +205,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('region', region || 'US');
     Config.setConfig('marketDomain', marketDomain || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
+    Config.setConfig('ephemeralLogin', ephemeralLogin ? 'true' : 'false');
+    Platform.OS === 'ios' &&
+      Config.setConfig('useCombinedLogin', useCombinedLogin ? 'true' : 'false');
+
     if (
       environment === 'Production' ||
       environment === 'PreProduction' ||
@@ -211,6 +219,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
 
     Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
+      // Crash on iOS when boolean sent to bridge module
       const isEnabled = moduleOptions.enabled ? 'true' : 'false';
       Config.setConfig(moduleName, isEnabled);
 
@@ -235,6 +244,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     region,
     marketDomain,
     eventHeaderType,
+    ephemeralLogin,
+    useCombinedLogin,
     environment,
     prebuiltModules,
   ]);

@@ -40,6 +40,7 @@ import org.json.JSONObject
 
 class TicketsFragment() : Fragment() {
   private lateinit var customView: TicketsView
+  private var shouldForceNewSession = Config.get("ephemeralLogin") == "true"
 
   private fun createTicketsColors(color: Int): TicketsColors =
     TicketsColors(
@@ -240,7 +241,7 @@ class TicketsFragment() : Fragment() {
         .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
         .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment"))) // Environment that the SDK will use. Default is Production
         .region(Region.getRegion()) // Region that the SDK will use. Default is US
-        .forceNewSession(true)
+        .forceNewSession(shouldForceNewSession)
         .build(this@TicketsFragment.requireActivity())
       val tokenMap = validateAuthToken(authentication)
 

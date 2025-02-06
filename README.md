@@ -361,6 +361,51 @@ type RefreshConfigParams = {
 `IgniteProvider` always requires an API key so make sure you have set a default/fallback for app launch. This library does not persist API keys, so you will need to persist the users previous team selection to make sure the correct API key is used after app restarts.
 
 
+#### Switching Teams
+
+The following only relates to Archtics logins.
+
+##### Non-Ephemeral vs. Ephemeral Login
+
+By default this library does not share cookies between login sessions in Archtics Team logins (ephemeral login) to "avoid a bug where Team1's credentials are accidentally returned to Team2". This means that the user needs to enter their login details twice, once to login to the Archtics Team and see their Archtics tickets and once into Ticketmaster Host to see their Ticketmaster tickets. To share cookies between sessions so the user just needs to enter their login details once (non-ephemeral login). Ephemeral login is on by default, you can turn `ephemeralLogin` off as shown below:
+
+```typescript
+<IgniteProvider
+  options={{
+    apiKey: API_KEY,
+    clientName: CLIENT_NAME,
+    primaryColor: PRIMARY_COLOR
+    ephemeralLogin: false,
+  }}
+>
+    <App />
+</IgniteProvider>
+```
+
+##### Combined login
+
+In Archtics logins, the login to Ticketmaster Host can be done separately. Either as soon as the user logs in or they can login to Host themselves within the Tickets SDK when viewing their Archtics tickets. To login to both Archtics and Host you can turn `useCombinedLogin` on as shown below:
+
+```typescript
+<IgniteProvider
+  options={{
+    apiKey: API_KEY,
+    clientName: CLIENT_NAME,
+    primaryColor: PRIMARY_COLOR
+    ephemeralLogin: false,
+    useCombinedLogin: true,
+  }}
+>
+    <App />
+</IgniteProvider>
+```
+
+`useCombinedLogin` is off by default.
+
+Currently these configurations only affect iOS. Android does non-ephemeral and combined login to Archtics and Ticketmaster Host on every login.
+
+To find out more about ephemeral login and combined login when switching teams see [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out)
+
 ### TicketsSdkModal (iOS only)
 
 Example:
