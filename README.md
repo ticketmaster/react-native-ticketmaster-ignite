@@ -374,7 +374,7 @@ By default this library does not share cookies between login sessions in Archtic
   options={{
     apiKey: API_KEY,
     clientName: CLIENT_NAME,
-    primaryColor: PRIMARY_COLOR
+    primaryColor: PRIMARY_COLOR,
     ephemeralLogin: false,
   }}
 >
@@ -391,7 +391,7 @@ In Archtics logins, the login to Ticketmaster Host can be done separately. Eithe
   options={{
     apiKey: API_KEY,
     clientName: CLIENT_NAME,
-    primaryColor: PRIMARY_COLOR
+    primaryColor: PRIMARY_COLOR,
     ephemeralLogin: false,
     useCombinedLogin: true,
   }}
