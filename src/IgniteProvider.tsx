@@ -15,6 +15,7 @@ interface IgniteProviderProps {
     apiKey: string;
     clientName: string;
     primaryColor: string;
+    environment?: string;
     region?: Region;
     ephemeralLogin?: boolean;
     useCombinedLogin?: boolean;
@@ -45,6 +46,7 @@ type RefreshConfigParams = {
   apiKey: string;
   clientName?: string;
   primaryColor?: string;
+  environment?: string;
   region?: string;
   marketDomain?: string;
   skipAutoLogin?: boolean;
@@ -70,28 +72,8 @@ type IgniteContextType = {
 
 type Region = 'US' | 'UK';
 
-type MarketDomain =
-  | 'AE'
-  | 'AT'
-  | 'AU'
-  | 'BE'
-  | 'CA'
-  | 'CH'
-  | 'CZ'
-  | 'DE'
-  | 'DK'
-  | 'ES'
-  | 'FI'
-  | 'IE'
-  | 'MX'
-  | 'NL'
-  | 'NO'
-  | 'NZ'
-  | 'PL'
-  | 'SE'
-  | 'UK'
-  | 'US'
-  | 'ZA';
+// eslint-disable-next-line prettier/prettier
+type MarketDomain = 'AE' | 'AT' | 'AU' | 'BE'| 'CA' | 'CH' | 'CZ' | 'DE' | 'DK' | 'ES' | 'FI' | 'IE' | 'MX' | 'NL' | 'NO' | 'NZ' | 'PL' | 'SE' | 'UK' | 'US' | 'ZA';
 
 type EventHeaderType =
   | 'NO_TOOLBARS'
@@ -155,6 +137,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     apiKey,
     clientName,
     primaryColor,
+    environment,
     region,
     ephemeralLogin = true,
     useCombinedLogin = false,
@@ -226,6 +209,13 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Platform.OS === 'ios' &&
       Config.setConfig('useCombinedLogin', useCombinedLogin ? 'true' : 'false');
 
+    if (
+      environment === 'Production' ||
+      environment === 'PreProduction' ||
+      environment === 'Staging'
+    )
+      Config.setConfig('environment', environment);
+
     const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
 
     Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
@@ -256,12 +246,16 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     eventHeaderType,
     ephemeralLogin,
     useCombinedLogin,
+    environment,
     prebuiltModules,
   ]);
 
-  const setTicketDeepLink = (id: string) => {
-    Config.setConfig('orderIdDeepLink', id);
-  };
+  const setTicketDeepLink = useCallback(
+    (id: string) => {
+      Config.setConfig('orderIdDeepLink', id);
+    },
+    [Config]
+  );
 
   useEffect(() => {
     const onConfigureAccountsSdk = async () => {
@@ -462,13 +456,19 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
   const refreshConfiguration = useCallback(
     // eslint-disable-next-line prettier/prettier, @typescript-eslint/no-shadow
-    async ({ apiKey, clientName, primaryColor, region, marketDomain, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {},   }) => {
+    async ({ apiKey, clientName, primaryColor, environment, region, marketDomain, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {} }) => {
       try {
         Config.setConfig('apiKey', apiKey);
         clientName && Config.setConfig('clientName', clientName);
         primaryColor && Config.setConfig('primaryColor', primaryColor);
         region && Config.setConfig('region', region);
         marketDomain && Config.setConfig('marketDomain', marketDomain);
+        if (
+          environment === 'Production' ||
+          environment === 'PreProduction' ||
+          environment === 'Staging'
+        )
+          Config.setConfig('environment', environment);
         await configureAccountsSDK();
         onSuccess && onSuccess();
         !skipAutoLogin &&

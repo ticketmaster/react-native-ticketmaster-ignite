@@ -12,8 +12,9 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     // build a combination of Settings and Branding
     let apiKey = Config.shared.get(for: "apiKey")
     let region = Config.shared.get(for: "region")
+    let environment = Config.shared.get(for: "environment")
     let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
-                                                          region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US )
+                                                          region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, environment: TMAuthentication.TMXDeploymentEnvironment(rawValue: environment) ?? .Production )
     
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor

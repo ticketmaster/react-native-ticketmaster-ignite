@@ -18,7 +18,6 @@ import com.facebook.react.bridge.WritableMap
 import com.ticketmasterignite.R
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
-import com.ticketmaster.authenticationsdk.TMXDeploymentEnvironment
 import com.ticketmaster.tickets.EventOrders
 import com.ticketmaster.tickets.TicketsModuleDelegate
 import com.ticketmaster.tickets.event_tickets.DirectionsModule
@@ -32,6 +31,7 @@ import com.ticketmaster.tickets.ticketssdk.TicketsColors
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKClient
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 import com.ticketmaster.tickets.venuenext.VenueNextModule
+import com.ticketmasterignite.Environment
 import com.ticketmasterignite.GlobalEventEmitter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -239,7 +239,7 @@ class TicketsFragment() : Fragment() {
         .apiKey(Config.get("apiKey"))
         .clientName(Config.get("clientName")) // Team name to be displayed
         .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
-        .environment(TMXDeploymentEnvironment.Production) // Environment that the SDK will use. Default is Production
+        .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment"))) // Environment that the SDK will use. Default is Production
         .region(Region.getRegion()) // Region that the SDK will use. Default is US
         .forceNewSession(shouldForceNewSession)
         .build(this@TicketsFragment.requireActivity())
@@ -257,7 +257,7 @@ class TicketsFragment() : Fragment() {
           TicketsSDKSingleton.setTicketsSdkClient(this)
           TicketsSDKSingleton.setEnvironment(
             this@TicketsFragment.requireActivity(),
-            TicketsSDKSingleton.SDKEnvironment.Production,
+            Environment.getTicketsSDKSingletonEnvironment(Config.get("environment")),
             Region.getTicketsSDKRegion()
           );
           //Validate if there is an active token.

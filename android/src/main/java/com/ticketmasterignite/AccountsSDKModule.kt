@@ -19,7 +19,6 @@ import com.facebook.react.bridge.WritableMap
 import com.google.gson.Gson
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
-import com.ticketmaster.authenticationsdk.TMXDeploymentEnvironment
 import com.ticketmaster.tickets.ticketssdk.TicketsColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -123,7 +122,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           .apiKey(Config.get("apiKey"))
           .clientName(Config.get("clientName"))
           .colors(createTMAuthenticationColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
-          .environment(TMXDeploymentEnvironment.Production)
+          .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment")))
           .region(Region.getRegion())
           .forceNewSession(shouldForceNewSession)
           .build(currentFragmentActivity)
