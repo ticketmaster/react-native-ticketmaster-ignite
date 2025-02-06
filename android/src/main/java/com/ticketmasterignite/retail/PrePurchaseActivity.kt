@@ -16,6 +16,7 @@ import com.ticketmaster.prepurchase.listener.TMPrePurchaseFavoritesListener
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseSharingListener
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseUserAnalyticsListener
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseWebAnalyticsListener
+import com.ticketmasterignite.Environment
 import com.ticketmasterignite.MarketDomain
 
 class PrePurchaseActivity : AppCompatActivity() {
@@ -36,6 +37,7 @@ class PrePurchaseActivity : AppCompatActivity() {
         setContentView(R.layout.venue_layout)
 
         val tmPrePurchase = TMPrePurchase(
+                environment = Environment.getTMEnvironment(Config.get("environment")),
                 discoveryAPIKey = Config.get("apiKey"),
                 brandColor = Color.parseColor(Config.get("primaryColor"))
         )
