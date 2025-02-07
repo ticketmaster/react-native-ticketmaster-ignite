@@ -8,7 +8,7 @@
       <activity
         android:name="com.ticketmaster.authenticationsdk.internal.modernaccounts.presentation.ModernAccountsLoginScreen"
         android:exported="true"
-        android:launchMode="singleInstance"
+        android:launchMode="singleTop"
         android:screenOrientation="portrait"
         tools:replace="android:launchMode">
         <intent-filter>
