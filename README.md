@@ -242,7 +242,7 @@ try {
 }
 
 {
-  !!isLoggingIn && (
+  isLoggingIn && (
     <View style={styles.activityIndicator}>
       <ActivityIndicator color={'blue'} size={'small'} />
     </View>
