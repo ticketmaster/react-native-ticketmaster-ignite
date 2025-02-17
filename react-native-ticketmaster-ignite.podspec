@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 
   # Use install_modules_dependencies helper to install the dependencies if React Native version >=0.71.0.
   # See https://github.com/facebook/react-native/blob/febf6b7f33fdb4904669f99d795eba4c0f95d7bf/scripts/cocoapods/new_architecture.rb#L79.
-  s.dependency "TM-Ignite", '= 1.11.3'
+  s.dependency "TM-Ignite", '= 1.13.4'
   if respond_to?(:install_modules_dependencies, true)
     install_modules_dependencies(s)
   else
