@@ -363,11 +363,11 @@ type RefreshConfigParams = {
 
 #### Switching Teams
 
-The following only relates to Archtics logins.
+The following only relates to Archtics logins. 
 
 ##### Non-Ephemeral vs. Ephemeral Login
 
-By default this library does not share cookies between login sessions in Archtics Team logins (ephemeral login) to "avoid a bug where Team1's credentials are accidentally returned to Team2". This means that the user needs to enter their login details twice, once to login to the Archtics Team and see their Archtics tickets and once into Ticketmaster Host to see their Ticketmaster tickets. Ephemeral login is on by default, to share cookies between sessions so the user just needs to enter their login details once (non-ephemeral login), you can turn `ephemeralLogin` off as shown below:
+You can switch teams using the `refreshConfiguration()` method mentioned above. By default this library does not share cookies between login sessions in Archtics Team logins (ephemeral login) to "avoid a bug where Team1's credentials are accidentally returned to Team2". This means that the user needs to enter their login details twice, once to login to the Archtics Team and see their Archtics tickets and once into Ticketmaster Host to see their Ticketmaster tickets. Ephemeral login is on by default, to share cookies between sessions so the user just needs to enter their login details once (non-ephemeral login), you can turn `ephemeralLogin` off as shown below:
 
 ```typescript
 <IgniteProvider
