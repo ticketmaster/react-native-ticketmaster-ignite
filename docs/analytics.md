@@ -37,7 +37,7 @@ More information about the flow of these state change analytics can be found her
 | purchaseSdkDidPressNavBarButtonFor | eventId<br/> legacyId<br/> eventName<br/> button | The user pressed a button on the navigation header bar |
 | purchaseSdkDidShare | eventId<br/> legacyId<br/> eventName<br/> activityType | The user shared a link to this event |
 | purchaseSdkDidViewSubPageFor | eventId<br/> legacyId<br/> eventName<br/> subPage | The user navigated to a sub-page with the EDP or Cart |
-| purchaseSdkDidMakeDecisionFor (iOS only) | eventId<br/> legacyId<br/> eventName<br/>  date<br/>  timeZone<br/> decision | The user has interacted with an UI component, resulting in a decision |
+| purchaseSdkDidMakeDecisionFor (iOS only) | eventId<br/> legacyId<br/> eventName<br/>  date<br/>  timeZone<br/> decision | The user has interacted with a UI component, resulting in a decision |
 | purchaseSdkManageMyTickets (Android only) | purchaseSdkManageMyTickets | The user has pressed Managed My Tickets on the order confirmation screen |
 
 ### Retail SDK Value Descriptions
