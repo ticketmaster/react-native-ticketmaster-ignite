@@ -90,7 +90,7 @@ Open the `AndroidManifest.xml` file and:
 </manifest>
 ```
 
-#### Set dataBinding to true
+#### Set dataBinding and coreLibraryDesugaringEnabled to true
 
 In `android/app/build.gradle` add:
 
@@ -100,6 +100,17 @@ android {
     buildFeatures {
         dataBinding = true
     }
+
+    compileOptions {
+      // Flag to enable support for the new language APIs
+      coreLibraryDesugaringEnabled true
+    }
+  ...
+}
+
+dependencies {
+  ...
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.3'
   ...
 }
 ```

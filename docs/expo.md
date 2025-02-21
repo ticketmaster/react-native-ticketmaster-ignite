@@ -13,13 +13,18 @@ const {
 
 module.exports = function withIgnitePlugin(expoConfig) {
   withAppBuildGradle(expoConfig, (config) => {
-    const lineChanges = [`buildFeatures {`, `dataBinding = true`, `}`].join(
-      '\n'
+    const buildGradleUpdates1 = [`buildFeatures {`, `dataBinding = true`, `}`, `compileOptions {`, `coreLibraryDesugaringEnabled true`, `}`].join(
+      "\n"
     );
 
     config.modResults.contents = config.modResults.contents.replace(
       `android {`,
-      `android {\n${lineChanges}`
+      `android {\n${buildGradleUpdates1}`
+    );
+
+    config.modResults.contents = config.modResults.contents.replace(
+      `dependencies {`,
+      `dependencies {\ncoreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.3'\n`
     );
 
     return config;
