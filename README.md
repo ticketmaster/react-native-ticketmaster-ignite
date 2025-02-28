@@ -307,7 +307,7 @@ type LogoutParams = {
 
 #### Refresh Token
 
-The Accounts SDK only returns an access token, not a refresh token. If a user has logged in and `getToken()` returns `null` the refresh token may have expired. In this situation you can either call `logout()` so the user can manually login again to refresh the refresh token and receive a new access token or you can call `refreshToken()` which will automatically present the login UI to the user. If you do not need to use an OAuth access token from the Accounts SDK, you typically do not need to worry about this and can rely on `isLoggedIn` from `useIgnite()` to control your login UI state.
+The Accounts SDK only returns an access token, not a refresh token. If the user is logged in and `getToken()` ever returns `null`, the refresh token may have expired. In this situation you can either call `logout()` so the user can manually login again to refresh the refresh token and receive a new access token or you can call `refreshToken()` which will automatically present the login UI to the user. If you do not need to use an OAuth access token from the Accounts SDK, you typically do not need to worry about this and can rely on `isLoggedIn` from `useIgnite()` to control your login UI state.
 
 #### Reconfigure Accounts SDK
 
