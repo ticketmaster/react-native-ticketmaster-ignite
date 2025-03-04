@@ -742,7 +742,7 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
       if (
         data.purchaseSdkDidEndCheckoutFor.reason === 'userCompletedPurchase'
       ) {
-        store.dispatch('Random Value'); // Example - Not needed for navigation
+        store.dispatch(setExampleValue('Random Value')); // Example - Not needed for navigation
         RootNavigation.navigate('BottomTabs', {
           screen: 'MY TICKETS',
         });
