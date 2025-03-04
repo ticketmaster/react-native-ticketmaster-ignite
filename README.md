@@ -90,7 +90,7 @@ Open the `AndroidManifest.xml` file and:
 </manifest>
 ```
 
-#### Set dataBinding to true
+#### Set dataBinding and coreLibraryDesugaringEnabled to true
 
 In `android/app/build.gradle` add:
 
@@ -100,6 +100,17 @@ android {
     buildFeatures {
         dataBinding = true
     }
+
+    compileOptions {
+      // Flag to enable support for the new language APIs
+      coreLibraryDesugaringEnabled true
+    }
+  ...
+}
+
+dependencies {
+  ...
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.3'
   ...
 }
 ```
@@ -709,6 +720,44 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
     <App />
 </IgniteProvider>
 ```
+
+#### Navigate to a Tickets Tab after purchase
+
+This example uses [React Navigation](https://reactnavigation.org/docs/6.x/navigating-without-navigation-prop) and Redux Toolkit, you'll have to replace those code lines with your chosen navigation and state management methods.
+
+```typescript
+import {
+  IgniteAnalytics,
+  IgniteAnalyticName,
+} from 'react-native-ticketmaster-ignite';
+import * as RootNavigation from './RootNavigation';
+import { store } from '../redux/store';
+import { setExampleValue } from '../redux/slices/example';
+
+const igniteAnalytics = async (data: IgniteAnalytics) => {
+  const key = Object.keys(data)[0];
+  switch (key) {
+    // iOS
+    case IgniteAnalyticName.PURCHASE_SDK_DID_END_CHECKOUT_FOR:
+      if (
+        data.purchaseSdkDidEndCheckoutFor.reason === 'userCompletedPurchase'
+      ) {
+        store.dispatch('Random Value'); // Example - Not needed for navigation
+        RootNavigation.navigate('BottomTabs', {
+          screen: 'MY TICKETS',
+        });
+      }
+    // Android
+    case IgniteAnalyticName.PURCHASE_SDK_MANAGE_MY_TICKETS:
+      RootNavigation.navigate('BottomTabs', {
+        screen: 'MY TICKETS',
+      });
+      break;
+  }
+};
+```
+
+You may need to use a `setTimeout()` for iOS as if the SDK views are open it may block React Navigation from navigating in the background.
 
 ## Running the example app  
 
