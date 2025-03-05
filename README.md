@@ -747,6 +747,7 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
           screen: 'MY TICKETS',
         });
       }
+      break;
     // Android
     case IgniteAnalyticName.PURCHASE_SDK_MANAGE_MY_TICKETS:
       RootNavigation.navigate('BottomTabs', {
