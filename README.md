@@ -218,7 +218,7 @@ Exposes the following functions:
 - `getToken`
 - `isLoggedIn`
 
-If you are using the `AccountsSDK` module and not `useIgnite()` then `getToken()` is for only for iOS. In your JavaScript methods to receive an access token or refresh the refresh token always call `refreshToken()` for Android. For iOS the get token and refresh token logic are seperate. For more about `refreshToken()` See [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
+If you are using the `AccountsSDK` module and not `useIgnite()` then `getToken()` is only for iOS. In your JavaScript methods, to receive an access token or refresh the refresh token always call `refreshToken()` for Android. For iOS the get token and refresh token logic are seperate. For more about `refreshToken()` See [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
 
 #### useIgnite
 
@@ -265,7 +265,7 @@ try {
 {isLoggedIn && <Text>You are logged in<Text/>}
 ```
 
-`getToken()` and `refreshToken()` return different data types per platform. iOS returns always returns one token in a `string` and Android returns an object. See Android object type below: 
+`getToken()` and `refreshToken()` return different data types per platform. iOS always returns one token in a `string` and Android returns an object. See Android object type below: 
 
 ```typescript
 type AuthSource = {
