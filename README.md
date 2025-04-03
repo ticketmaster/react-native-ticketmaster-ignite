@@ -218,6 +218,8 @@ Exposes the following functions:
 - `getToken`
 - `isLoggedIn`
 
+If you are using the `AccountsSDK` module and not `useIgnite()` then `getToken()` is for only for iOS. In your JavaScript methods to receive an access token or refresh the refresh token always call `refreshToken()` for Android. For iOS the get token and refresh token logic are seperate. For more about `refreshToken()` See [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
+
 #### useIgnite
 
 To handle authentication in a React Native app you can either use the Accounts SDK module mentioned above directly or you can use the `useIgnite` hook.
@@ -263,7 +265,7 @@ try {
 {isLoggedIn && <Text>You are logged in<Text/>}
 ```
 
-`getToken` and `refreshToken` return different data types per platform. iOS returns a `string` and Android returns an object. See Android object type below: 
+`getToken()` and `refreshToken()` return different data types per platform. iOS returns always returns one token in a `string` and Android returns an object. See Android object type below: 
 
 ```typescript
 type AuthSource = {
@@ -322,7 +324,7 @@ The Accounts SDK only returns an access token, not a refresh token. If the user 
 
 #### Reconfigure Accounts SDK
 
-If you want to switch between different API keys within one app, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them.
+If you want to switch between different API keys within one app session/during runtime, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them.
 
 
 Example:
@@ -350,7 +352,7 @@ The `refreshConfiguration()` method from the `useIgnite` accepts the below list 
 - `marketDomain` - Country for Retail SDK configuration
 - `onSuccess` - a callback that fires after successful Accounts SDK configuration
 - `onLoginSuccess` - a callback that fires after successful login
-- `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they login after switching to a new API key configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app.
+- `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they login after switching to a new API key configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app session.
 - `skipUpdate` - Set value to `true` to prevent a rerender after successful authentication (⚠️ warning: if set to `true`, `isLoggedIn`, `isLoggingIn` and `memberInfo` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually. It's recommended you implement AccountsSDK directly and not use this hook if you want complete control of React Native screen and state updates. The default value is `false`.)
 
 Here are the types:
@@ -395,7 +397,7 @@ You can switch teams using the `refreshConfiguration()` method mentioned above. 
 
 ##### Combined login
 
-In Archtics logins, the login to Ticketmaster Host can be done separately. Either as soon as the user logs in or they can login to Host themselves within the Tickets SDK when viewing their Archtics tickets. To login to both Archtics and Host you can turn `useCombinedLogin` on as shown below:
+In Archtics logins, the login to Ticketmaster Host can be done separately. Either as soon as the user logs in or they can login to Host themselves within the Tickets SDK when viewing their Archtics tickets. To login to both Archtics and Host at the same time you can turn `useCombinedLogin` on as shown below:
 
 ```typescript
 <IgniteProvider
@@ -475,6 +477,7 @@ Example:
 ```typescript
 return <TicketsSdkEmbedded style={{height: '95%', backgroundColor: PRIMARY_COLOR, bottom: 10}} offsetTop={100}/>
 ```
+`backgroundColor` & `bottom` is used to add a backdrop to the `<View/>` that contains the Tickets SDK view so that it matches your screen header colour. This will prevent any white space if you push the SDK view too far down with `offsetTop`. Alternatively you can explicitly set your header height to the same value as the `offsetTop` prop.
 
 ### Ticket Deep Links
 
