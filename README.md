@@ -11,7 +11,7 @@
 # react-native-ticketmaster-ignite
 [![current react-native-ticketmaster-ignite package version](https://img.shields.io/npm/v/react-native-ticketmaster-ignite)](https://www.npmjs.com/package/react-native-ticketmaster-ignite) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ticketmaster/react-native-ticketmaster-ignite/ci.yml?branch=main) [![released under the MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![PR's welcome!](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
-This library serves as a wrapper for the 3 Ticketmaster Ignite SDK's: [Accounts](https://ignite.ticketmaster.com/docs/accounts-sdk-overview), [Retail](https://ignite.ticketmaster.com/docs/retail-sdk-overview) and [Tickets](https://ignite.ticketmaster.com/docs/tickets-sdk-overview).
+This library serves as a wrapper for the three Ticketmaster Ignite SDK's: [Accounts](https://ignite.ticketmaster.com/docs/accounts-sdk-overview), [Retail](https://ignite.ticketmaster.com/docs/retail-sdk-overview) and [Tickets](https://ignite.ticketmaster.com/docs/tickets-sdk-overview).
 
 In order to use the library, setup a developer account with Ticketmaster by contacting nexus_sdk@ticketmaster.com. When your account is activated you will receive an **API key** and **scheme** that you'll need to use to finish the setup.
 
@@ -121,7 +121,7 @@ In `android/build.gradle` set the `minSdkVersion` to `26` and set the `compileSd
 
 ## Setting up Expo
 
-If you are using an expo managed workflow you can use a config plugin to update your native files. See [here](./docs/expo.md) for an example config plugin written for an expo app that uses this library
+If you are using an expo managed workflow you should ignore the iOS and Android setup sections above and use a config plugin to update your native files. See [here](./docs/expo.md) for an **example** config plugin written for an expo app that uses this library
 
 ## Usage
 
