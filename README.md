@@ -780,17 +780,19 @@ pod install
 
 In order to use the library, setup a developer account with Ticketmaster by contacting nexus_sdk@ticketmaster.com.
 
-For the Retail SDK (PrePurchase and Purchase) views, you will need attraction or venue ID's which you can get that from the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/). For the purpose of initial testing you can use the below.
+For the Retail SDK (PrePurchase and Purchase) views, you will need to be provided with your own attraction or venue ID's for events and venue, representatives from nexus_sdk@ticketmaster.com should be able to help with this. For the purpose of initial testing you can use the below.
 
 Replace "someApiKey" with the API key from your Ticketmaster Developer Account.
 Replace "clientName" with your company name, for example "My Company Name". You can set this in the `options` prop of `<IgniteProvider>`.
 Replace "#026cdf" with the main color theme of your app.
 
+If running in the `example` app you can create a `.env` with these values or update the codebase with your desired values.
+
 ```bash
 API_KEY=someApiKey
 CLIENT_NAME=clientName
 PRIMARY_COLOR=#026cdf
-DEMO_EVENT_ID=1100607693B119D8
+DEMO_EVENT_ID=1700626DC66F3CA7
 DEMO_ATTRACTION_ID=2873404
 DEMO_VENUE_ID=KovZpZAEdntA
 ```
