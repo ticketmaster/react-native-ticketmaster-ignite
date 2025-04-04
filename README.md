@@ -763,8 +763,6 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
 };
 ```
 
-You may need to use a `setTimeout()` for iOS as if the SDK views are open it may block React Navigation from navigating in the background.
-
 ## Running the example app  
 
 To run the demo/example app:
