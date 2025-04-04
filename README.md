@@ -210,7 +210,7 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 
 Exposes the following functions:
 
-- `configureAccountsSDK` - Configured in `IgniteProvider` before `<App />` is mounted, generally no need to implement this method manually.
+- `configureAccountsSDK` - Configured in `IgniteProvider` before `<App />` is mounted, generally no need to implement this method manually. 
 - `login`
 - `logout`
 - `refreshToken`
@@ -325,6 +325,8 @@ The Accounts SDK only returns an access token, not a refresh token. If the user 
 #### Reconfigure Accounts SDK
 
 If you want to switch between different API keys within one app session/during runtime, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them.
+
+`refreshConfiguration()` calls `configureAccountsSDK()` so it can also be used for general Accounts SDK configuration/if the initial `configureAccountsSDK()` done by `<IgniteProvider/>` ever fails in your app.
 
 
 Example:
