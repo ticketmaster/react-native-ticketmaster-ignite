@@ -34,6 +34,8 @@ yarn add react-native-ticketmaster-ignite
 npx expo install react-native-ticketmaster-ignite
 ```
 
+If your project is an **Expo Managed Workflow** project then skip the "Setting up iOS" and "Setting up Android" sections and go straight to the [Setting up Expo](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#setting-up-expo) section
+
 ## Setting up iOS
 
 Edit the `Podfile` and set the platform to `15.0`
