@@ -1,7 +1,23 @@
 <resources>
     <string name="app_name"></string>
+    <string name="app_tm_modern_accounts_scheme"></string>
     <string name="app_tm_modern_accounts_scheme_2"></string>
     <string name="app_tm_modern_accounts_scheme_3"></string>
     <string name="app_tm_modern_accounts_scheme_4"></string>
     <string name="app_tm_modern_accounts_scheme_5"></string>
+    <string name="app_tm_modern_accounts_scheme_6"></string>
+    <string name="app_tm_modern_accounts_scheme_7"></string>
+    <string name="app_tm_modern_accounts_scheme_8"></string>
+    <string name="app_tm_modern_accounts_scheme_9"></string>
+    <string name="app_tm_modern_accounts_scheme_10"></string>
+    <string name="app_tm_sportxr_scheme"></string>
+    <string name="app_tm_sportxr_scheme_2"></string>
+    <string name="app_tm_sportxr_scheme_3"></string>
+    <string name="app_tm_sportxr_scheme_4"></string>
+    <string name="app_tm_sportxr_scheme_5"></string>
+    <string name="app_tm_sportxr_scheme_6"></string>
+    <string name="app_tm_sportxr_scheme_7"></string>
+    <string name="app_tm_sportxr_scheme_8"></string>
+    <string name="app_tm_sportxr_scheme_9"></string>
+    <string name="app_tm_sportxr_scheme_10"></string>
 </resources>

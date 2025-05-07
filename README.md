@@ -50,18 +50,25 @@ platform :ios, '15.0'
 
 #### TM scheme
 
-In your project go to `android/app/src/main/res/values/strings.xml` and add this snippet:
+In your project go to `android/app/src/main/res/values/strings.xml` and if you are on Modern Accounts/Archtics add this snippet:
 
 ```xml
 <string name="app_tm_modern_accounts_scheme">samplescheme</string>
 ```
 
-Replace `samplescheme` with your scheme - you can find it in your Ticketmaster app settings.
+And if you are on Sport XR add this snippet:
+
+```xml
+<string name="app_tm_sportxr_scheme">samplescheme</string>
+```
+
+Replace `samplescheme` with your scheme - you can find it in your Ticketmaster developer app settings.
 
 #### Multi Scheme
 
 If you have multiple schemes you can add them using the following format:
 
+Modern Accounts/Archtics 
 ```xml
 <string name="app_tm_modern_accounts_scheme">samplescheme1</string>
 <string name="app_tm_modern_accounts_scheme_2">samplescheme2</string>
@@ -70,7 +77,17 @@ If you have multiple schemes you can add them using the following format:
 <string name="app_tm_modern_accounts_scheme_5">samplescheme5</string>
 ```
 
-You can set up to 5 schemes
+SportXR
+```xml
+<string name="app_tm_sportxr_scheme">samplescheme1</string>
+<string name="app_tm_sportxr_scheme_2">samplescheme2</string>
+<string name="app_tm_sportxr_scheme_3">samplescheme3</string>
+<string name="app_tm_sportxr_scheme_4">samplescheme4</string>
+<string name="app_tm_sportxr_scheme_5">samplescheme5</string>
+```
+
+You can set up to 10 Archtics or 10 SportXR schemes in total
+
 
 #### allowBackup in AndroidManifest
 
@@ -330,7 +347,6 @@ If you want to switch between different API keys within one app session/during r
 
 `refreshConfiguration()` calls `configureAccountsSDK()` so it can also be used for general Accounts SDK configuration/if the initial `configureAccountsSDK()` done by `<IgniteProvider/>` ever fails in your app.
 
-
 Example:
 
 ```tsx
@@ -354,6 +370,7 @@ The `refreshConfiguration()` method from the `useIgnite` accepts the below list 
 - `primaryColor` - Company brand color
 - `region` - Server deployment region
 - `marketDomain` - Country for Retail SDK configuration
+- `eventHeaderType` - Tools that will be available in the header of the event screen
 - `onSuccess` - a callback that fires after successful Accounts SDK configuration
 - `onLoginSuccess` - a callback that fires after successful login
 - `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they login after switching to a new API key configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app session.
@@ -368,6 +385,7 @@ type RefreshConfigParams = {
   primaryColor?: string;
   region?: Region;
   marketDomain?: MarketDomain;
+  eventHeaderType?: EventHeaderType;
   skipAutoLogin?: boolean;
   skipUpdate?: boolean;
   onSuccess?: () => void;
@@ -377,51 +395,12 @@ type RefreshConfigParams = {
 
 `IgniteProvider` always requires an API key so make sure you have set a default/fallback for app launch. This library does not persist API keys, so you will need to persist the users previous team selection to make sure the correct API key is used after app restarts.
 
+`isConfigured` being false during the initial user interactions with the UI is an indication that the initial `configureAccountsSDK()` done by `<IgniteProvider/>` has failed. You can either assess its value on initial user interaction or call `refreshConfiguration()` on mount manually, if you end up experiencing issues with the automatic Accounts SDK configuration this library does. Usually the initial call to the library works completely fine.
+
 
 #### Switching Teams
 
-The following only relates to Archtics logins. 
-
-##### Non-Ephemeral vs. Ephemeral Login
-
-You can switch teams using the `refreshConfiguration()` method mentioned above. By default this library does not share cookies between login sessions in Archtics Team logins (ephemeral login) to "avoid a bug where Team1's credentials are accidentally returned to Team2". This means that the user needs to enter their login details twice, once to login to the Archtics Team and see their Archtics tickets and once into Ticketmaster Host to see their Ticketmaster tickets. Ephemeral login is on by default, to share cookies between sessions so the user just needs to enter their login details once (non-ephemeral login), you can turn `ephemeralLogin` off as shown below:
-
-```typescript
-<IgniteProvider
-  options={{
-    apiKey: API_KEY,
-    clientName: CLIENT_NAME,
-    primaryColor: PRIMARY_COLOR,
-    ephemeralLogin: false,
-  }}
->
-    <App />
-</IgniteProvider>
-```
-
-##### Combined login
-
-In Archtics logins, the login to Ticketmaster Host can be done separately. Either as soon as the user logs in or they can login to Host themselves within the Tickets SDK when viewing their Archtics tickets. To login to both Archtics and Host at the same time you can turn `useCombinedLogin` on as shown below:
-
-```typescript
-<IgniteProvider
-  options={{
-    apiKey: API_KEY,
-    clientName: CLIENT_NAME,
-    primaryColor: PRIMARY_COLOR,
-    ephemeralLogin: false,
-    useCombinedLogin: true,
-  }}
->
-    <App />
-</IgniteProvider>
-```
-
-`useCombinedLogin` is off by default.
-
-Currently these configurations only affect iOS. Android does non-ephemeral and combined login to Archtics and Ticketmaster Host on every login.
-
-To find out more about ephemeral login and combined login when switching teams see [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out)
+You can switch teams using the `refreshConfiguration()` method mentioned above. 
 
 ### TicketsSdkModal (iOS only)
 

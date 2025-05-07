@@ -40,7 +40,6 @@ import org.json.JSONObject
 
 class TicketsFragment() : Fragment() {
   private lateinit var customView: TicketsView
-  private var shouldForceNewSession = Config.get("ephemeralLogin") == "true"
 
   private fun createTicketsColors(color: Int): TicketsColors =
     TicketsColors(
@@ -148,15 +147,14 @@ class TicketsFragment() : Fragment() {
           if (firstTicketSource != null) {
             modules.add(
               SeatUpgradesModule(
-                context = context!!,
                 webPageSettings = NAMWebPageSettings(
                   context!!,
                   firstTicketSource
                 ),
-                eventId = order.eventId,
+                imageOverride = getImageOverride("seatUpgradesModuleImage"),
                 textOverride = seatUpgradesModuleTextOverride,
-                imageOverride = getImageOverride("seatUpgradesModuleImage")
-              ).build()
+                eventId = order.eventId,
+              ).build(this@TicketsFragment)
             )
           }
         }
@@ -241,7 +239,6 @@ class TicketsFragment() : Fragment() {
         .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
         .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment"))) // Environment that the SDK will use. Default is Production
         .region(Region.getRegion()) // Region that the SDK will use. Default is US
-        .forceNewSession(shouldForceNewSession)
         .build(this@TicketsFragment.requireActivity())
       val tokenMap = validateAuthToken(authentication)
 

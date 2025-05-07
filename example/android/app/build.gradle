@@ -122,13 +122,14 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
+    // Flag to enable support for the new language APIs
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.3'
 
     if (hermesEnabled.toBoolean()) {
