@@ -20,6 +20,32 @@
           <data android:scheme="@string/app_tm_modern_accounts_scheme_3" />
           <data android:scheme="@string/app_tm_modern_accounts_scheme_4" />
           <data android:scheme="@string/app_tm_modern_accounts_scheme_5" />
+          <data android:scheme="@string/app_tm_modern_accounts_scheme_6" />
+          <data android:scheme="@string/app_tm_modern_accounts_scheme_7" />
+          <data android:scheme="@string/app_tm_modern_accounts_scheme_8" />
+          <data android:scheme="@string/app_tm_modern_accounts_scheme_9" />
+          <data android:scheme="@string/app_tm_modern_accounts_scheme_10" />
+        </intent-filter>
+      </activity>
+      <activity
+        android:name="com.ticketmaster.authenticationsdk.internal.sportxr.presentation.SportXRLoginScreen"
+        android:exported="true"
+        android:screenOrientation="portrait">
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="@string/app_tm_sportxr_scheme" />
+          <data android:scheme="@string/app_tm_sportxr_scheme_2" />
+          <data android:scheme="@string/app_tm_sportxr_scheme_3" />
+          <data android:scheme="@string/app_tm_sportxr_scheme_4" />
+          <data android:scheme="@string/app_tm_sportxr_scheme_5" />
+          <data android:scheme="@string/app_tm_sportxr_scheme_6" />
+          <data android:scheme="@string/app_tm_sportxr_scheme_7" />
+          <data android:scheme="@string/app_tm_sportxr_scheme_8" />
+          <data android:scheme="@string/app_tm_sportxr_scheme_9" />
+          <data android:scheme="@string/app_tm_sportxr_scheme_10" />
+          <data android:host="login"/>
         </intent-filter>
       </activity>
       <activity

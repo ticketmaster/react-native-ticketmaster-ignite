@@ -34,6 +34,7 @@ class PurchaseActivity : AppCompatActivity() {
     if (savedInstanceState == null) {
       val tmPurchase = TMPurchase(
         apiKey = Config.get("apiKey"),
+        environment = Environment.getTMEnvironment(Config.get("environment")),
         brandColor = Color.parseColor(Config.get("primaryColor"))
       )
 

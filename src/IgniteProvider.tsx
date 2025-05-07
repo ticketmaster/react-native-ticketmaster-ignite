@@ -6,23 +6,23 @@ import {
 } from 'react-native-ticketmaster-ignite';
 import { toCapitalise } from './utils/utils';
 
-interface IgniteProviderProps {
-  children: React.ReactNode;
-  autoUpdate?: boolean;
-  prebuiltModules?: PrebuiltModules;
-  analytics?: (data: IgniteAnalytics) => void | Promise<void>;
-  options: {
-    apiKey: string;
-    clientName: string;
-    primaryColor: string;
-    environment?: string;
-    region?: Region;
-    ephemeralLogin?: boolean;
-    useCombinedLogin?: boolean;
-    marketDomain?: MarketDomain;
-    eventHeaderType?: EventHeaderType;
-  };
-}
+type Region = 'US' | 'UK';
+
+// eslint-disable-next-line prettier/prettier
+type MarketDomain = 'AE' | 'AT' | 'AU' | 'BE'| 'CA' | 'CH' | 'CZ' | 'DE' | 'DK' | 'ES' | 'FI' | 'IE' | 'MX' | 'NL' | 'NO' | 'NZ' | 'PL' | 'SE' | 'UK' | 'US' | 'ZA';
+
+type EventHeaderType =
+  | 'NO_TOOLBARS'
+  | 'EVENT_INFO'
+  | 'EVENT_SHARE'
+  | 'EVENT_INFO_SHARE';
+
+type AuthSource = {
+  hostAccessToken?: string;
+  archticsAccessToken?: string;
+  mfxAccessToken?: string;
+  sportXRAccessToken?: string;
+};
 
 type LoginParams = {
   onLogin?: () => void | Promise<void>;
@@ -42,13 +42,30 @@ type AuthStateParams = {
 
 type AccessToken = string | AuthSource | null;
 
+interface IgniteProviderProps {
+  children: React.ReactNode;
+  autoUpdate?: boolean;
+  prebuiltModules?: PrebuiltModules;
+  analytics?: (data: IgniteAnalytics) => void | Promise<void>;
+  options: {
+    apiKey: string;
+    clientName: string;
+    primaryColor: string;
+    environment?: string;
+    region?: Region;
+    marketDomain?: MarketDomain;
+    eventHeaderType?: EventHeaderType;
+  };
+}
+
 type RefreshConfigParams = {
   apiKey: string;
   clientName?: string;
   primaryColor?: string;
   environment?: string;
-  region?: string;
-  marketDomain?: string;
+  region?: Region;
+  marketDomain?: MarketDomain;
+  eventHeaderType?: EventHeaderType;
   skipAutoLogin?: boolean;
   skipUpdate?: boolean;
   onSuccess?: () => void | Promise<void>;
@@ -68,24 +85,6 @@ type IgniteContextType = {
   setTicketDeepLink: (id: string) => void;
   authState: AuthStateParams;
   isLoggingIn: boolean;
-};
-
-type Region = 'US' | 'UK';
-
-// eslint-disable-next-line prettier/prettier
-type MarketDomain = 'AE' | 'AT' | 'AU' | 'BE'| 'CA' | 'CH' | 'CZ' | 'DE' | 'DK' | 'ES' | 'FI' | 'IE' | 'MX' | 'NL' | 'NO' | 'NZ' | 'PL' | 'SE' | 'UK' | 'US' | 'ZA';
-
-type EventHeaderType =
-  | 'NO_TOOLBARS'
-  | 'EVENT_INFO'
-  | 'EVENT_SHARE'
-  | 'EVENT_INFO_SHARE';
-
-type AuthSource = {
-  hostAccessToken?: string;
-  archticsAccessToken?: string;
-  mfxAccessToken?: string;
-  sportXRAccessToken?: string;
 };
 
 export const IgniteContext = createContext<IgniteContextType>({
@@ -139,8 +138,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     primaryColor,
     environment,
     region,
-    ephemeralLogin = true,
-    useCombinedLogin = false,
     eventHeaderType,
     marketDomain,
   } = options;
@@ -205,9 +202,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Config.setConfig('region', region || 'US');
     Config.setConfig('marketDomain', marketDomain || 'US');
     Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
-    Config.setConfig('ephemeralLogin', ephemeralLogin ? 'true' : 'false');
-    Platform.OS === 'ios' &&
-      Config.setConfig('useCombinedLogin', useCombinedLogin ? 'true' : 'false');
 
     if (
       environment === 'Production' ||
@@ -244,8 +238,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     region,
     marketDomain,
     eventHeaderType,
-    ephemeralLogin,
-    useCombinedLogin,
     environment,
     prebuiltModules,
   ]);
@@ -456,13 +448,14 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
   const refreshConfiguration = useCallback(
     // eslint-disable-next-line prettier/prettier, @typescript-eslint/no-shadow
-    async ({ apiKey, clientName, primaryColor, environment, region, marketDomain, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {} }) => {
+    async ({ apiKey, clientName, primaryColor, environment, region, marketDomain, eventHeaderType, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {} }) => {
       try {
         Config.setConfig('apiKey', apiKey);
         clientName && Config.setConfig('clientName', clientName);
         primaryColor && Config.setConfig('primaryColor', primaryColor);
         region && Config.setConfig('region', region);
         marketDomain && Config.setConfig('marketDomain', marketDomain);
+        eventHeaderType && Config.setConfig('eventHeaderType', eventHeaderType);
         if (
           environment === 'Production' ||
           environment === 'PreProduction' ||

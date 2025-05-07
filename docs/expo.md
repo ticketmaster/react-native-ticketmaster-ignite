@@ -30,28 +30,51 @@ module.exports = function withIgnitePlugin(expoConfig) {
     return config;
   });
 
-  withStringsXml(expoConfig, (config) => {
-    const schemes = ['sampleScheme'];
+  withStringsXml(expoConfig, (modConfig) => {
+    const isModernAccounts = false
+    const isSportXr = false
+    const modernAccountsSchemes = ["sampleScheme"];
+    const sportXRSchemes = [""];
+    
+    if(isModernAccounts) {
+      modernAccountsSchemes.forEach((value, index) => {
+        modConfig.modResults = AndroidConfig.Strings.setStringItem(
+          [
+            {
+              _: value,
+              $: {
+                name: `${
+                  index === 0
+                    ? "app_tm_modern_accounts_scheme"
+                    : `app_tm_modern_accounts_scheme_${index + 1}`
+                }`
+              }
+            }
+          ],
+          modConfig.modResults
+        );
+      });
+    } else if (isSportXr) {
+      sportXRSchemes.forEach((value, index) => {
+        modConfig.modResults = AndroidConfig.Strings.setStringItem(
+          [
+            {
+              _: value,
+              $: {
+                name: `${
+                  index === 0
+                    ? "app_tm_sportxr_scheme"
+                    : `app_tm_sportxr_scheme_${index + 1}`
+                }`
+              }
+            }
+          ],
+          modConfig.modResults
+        );
+      });
+    }
 
-    schemes.forEach((value, index) => {
-      config.modResults = AndroidConfig.Strings.setStringItem(
-        [
-          {
-            _: value,
-            $: {
-              name: `${
-                index === 0
-                  ? 'app_tm_modern_accounts_scheme'
-                  : `app_tm_modern_accounts_scheme_${index + 2}`
-              }`,
-            },
-          },
-        ],
-        config.modResults
-      );
-    });
-
-    return config;
+    return modConfig;
   });
 
   withProjectBuildGradle(expoConfig, (config) => {
@@ -86,6 +109,29 @@ You can then add the config plugin to your array of plugins in `app.json`
     ],
 ```
 
-You will need to update the array of schemes in `withIgnitePlugin.js` to all the Ignite SDK schemes you have for android.
+You will need to update one of `isModernAccounts` or `isSportXr` booleans to true and add all your schemes to the respective array of schemes in `withIgnitePlugin.js`for android.
 
 You can update `withIgnitePlugin.js`'s values for iOS deployment target, compileSdkVersion etc. to the values needed for your project.
+
+
+#### Koin dependency issues 
+
+If you face any Koin dependency issues you can add the below inside `withProjectBuildGradle()` to force koin versions in your project to a specific version 
+
+```javascript
+    const projectGradleUpdates = [`configurations.all {`, `resolutionStrategy {`, `force "io.insert-koin:koin-android:4.0.2"`, `force "io.insert-koin:koin-core:4.0.2"
+      `, `eachDependency { details ->`, `if (details.requested.group == "io.insert-koin" && details.requested.name == "koin-android") {`, `details.useVersion "4.0.2"`, `}`,`if (details.requested.group == "io.insert-koin" && details.requested.name == "koin-core") {`, `details.useVersion "4.0.2"`, `}`, `}`, `}`, `}`].join(
+            "\n"
+          );
+      
+      config.modResults.contents = config.modResults.contents.replace(
+      `allprojects {`,
+      `allprojects {\n${projectGradleUpdates}`
+    );
+
+```
+
+Update all references of `4.0.2` to the desired version 
+
+It has been reported that the inclusion of `expo-dev-client` may cause crashes for Android, you can try removing this library if you experience problems.
+
