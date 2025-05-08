@@ -225,23 +225,9 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 </IgniteProvider>
 ```
 
-#### AccountsSDK
-
-Exposes the following functions:
-
-- `configureAccountsSDK` - Configured in `IgniteProvider` before `<App />` is mounted, generally no need to implement this method manually. 
-- `login`
-- `logout`
-- `refreshToken`
-- `getMemberInfo`
-- `getToken`
-- `isLoggedIn`
-
-If you are using the `AccountsSDK` module and not `useIgnite()` then `getToken()` is only for iOS. In your JavaScript methods, to receive an access token or refresh the refresh token always call `refreshToken()` for Android. For iOS the get token and refresh token logic are seperate. For more about `refreshToken()` See [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
-
 #### useIgnite
 
-To handle authentication in a React Native app you can either use the Accounts SDK module mentioned above directly or you can use the `useIgnite` hook.
+To handle authentication in a React Native app you can either use the AccountsSDK module mentioned in the below section or you can use the `useIgnite` hook.
 
 The `useIgnite` hook implements all of the native Accounts SDK methods for easy out of the box use in a React Native apps. It also provides `isLoggingIn` and an `authState` object with properties `isLoggedIn`, `memberInfo` and `isConfigured`, these properties update themselves during and after authenticaion.
 
@@ -337,9 +323,25 @@ type LogoutParams = {
 };
 ```
 
+#### AccountsSDK
+
+Exposes the following functions:
+
+- `configureAccountsSDK` - Configured in `IgniteProvider` before `<App />` is mounted, generally no need to implement this method manually. 
+- `login`
+- `logout`
+- `refreshToken`
+- `getMemberInfo`
+- `getToken`
+- `isLoggedIn`
+
+If you use AccountsSDK you will need to handle the data return type differences between Swift and Kotlin yourself. It is advised you use auth methods from `useIgnite()` above instead of using the AccountsSDK module directly.
+
+If you are using the `AccountsSDK` module and not `useIgnite()` then `getToken()` is only for iOS. In your JavaScript methods, to receive an access token or refresh the refresh token always call `refreshToken()` for Android. For iOS the get token and refresh token logic are seperate.
+
 #### Refresh Token
 
-The Accounts SDK only returns an access token, not a refresh token. If the user is logged in and `getToken()` ever returns `null`, the refresh token may have expired. In this situation you can either call `logout()` so the user can manually login again to refresh the refresh token and receive a new access token or you can call `refreshToken()` which will automatically present the login UI to the user. If you do not need to use an OAuth access token from the Accounts SDK, you typically do not need to worry about this and can rely on `isLoggedIn` from `useIgnite()` to control your login UI state.
+The Accounts SDK only returns an access token, not a refresh token. If the user is logged in and `getToken()` ever returns `null`, the refresh token may have expired. In this situation you can either call `logout()` so the user can manually login again to refresh the refresh token and receive a new access token or you can call `refreshToken()` which will automatically present the login UI to the user (you must use `useIgnite`'s `refreshToken()` method to trigger this behaviour). If you do not need to use an OAuth access token from the Accounts SDK, you typically do not need to worry about this and can rely on `isLoggedIn` from `useIgnite()` to control your login UI state.
 
 #### Reconfigure Accounts SDK
 
