@@ -109,7 +109,7 @@ You can then add the config plugin to your array of plugins in `app.json`
     ],
 ```
 
-You will need to update one of `isModernAccounts` or `isSportXr` booleans to true and add all your schemes to the respective array of schemes in `withIgnitePlugin.js`for android.
+You will need to update one of `isModernAccounts` or `isSportXr` booleans to true and add all your schemes to the respective array of schemes in `withStringsXml()`for android.
 
 You can update `withIgnitePlugin.js`'s values for iOS deployment target, compileSdkVersion etc. to the values needed for your project.
 
