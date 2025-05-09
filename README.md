@@ -50,6 +50,8 @@ platform :ios, '15.0'
 
 #### TM scheme
 
+The scheme is used formulate a deeplink which will be used by the Ticketmaster login activity to deeplink back to your app after login.  
+
 In your project go to `android/app/src/main/res/values/strings.xml` and if you are on Modern Accounts/Archtics add this snippet:
 
 ```xml
