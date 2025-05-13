@@ -767,7 +767,7 @@ In order to use the library, setup a developer account with Ticketmaster by cont
 
 For the Retail SDK (PrePurchase and Purchase) views, you will need to be provided with your own attraction or venue ID's for events and venue, representatives from nexus_sdk@ticketmaster.com should be able to help with this. For the purpose of initial testing you can use the below.
 
-Replace "someApiKey" with the API key from your Ticketmaster Developer Account.
+Replace "someApiKey" with the API keys from your Ticketmaster Developer Account. (iOS and Android need different API keys, see the example at the end of this section)
 Replace "clientName" with your company name, for example "My Company Name". You can set this in the `options` prop of `<IgniteProvider>`.
 Replace "#026cdf" with the main color theme of your app.
 
@@ -780,4 +780,20 @@ PRIMARY_COLOR=#026cdf
 DEMO_EVENT_ID=1700626DC66F3CA7
 DEMO_ATTRACTION_ID=2873404
 DEMO_VENUE_ID=KovZpZAEdntA
+```
+
+You need to use a different key for iOS and Android, you can make the value for API_KEY and object `API_KEY={KeyName_ios: abcde, KeyName_android: abcdefg}` and in your RN code you can use `Platform.OS` to select the right KeyName to pass to the SDK. Example:
+
+Library choice for environment variables is optional
+
+```typescript
+import Config from 'react-native-config'
+
+const apiKeyJson = JSON.parse(Config.API_KEY)
+
+<IgniteProvider
+  options={{
+   apiKey:
+    apiKeyJson[`KeyName_${Platform.OS}`] || '',
+...
 ```
