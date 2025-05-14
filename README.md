@@ -329,7 +329,7 @@ type LogoutParams = {
 
 Exposes the following functions:
 
-- `configureAccountsSDK` - Configured in `IgniteProvider` before `<App />` is mounted, generally no need to implement this method manually. 
+- `configureAccountsSDK` - Called in `IgniteProvider` before `<App />` is mounted, generally no need to implement this method manually. 
 - `login`
 - `logout`
 - `refreshToken`
