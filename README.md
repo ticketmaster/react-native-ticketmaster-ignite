@@ -285,6 +285,7 @@ type AuthSource = {
 
 You can see the results of `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` in the console when running the example app.
 
+##### Login/Logout Callbacks
 
 The `login()` method from the `useIgnite` hook accepts an object with properties `onLogin` and `skipUpdate`:
 
@@ -767,9 +768,11 @@ In order to use the library, setup a developer account with Ticketmaster by cont
 
 For the Retail SDK (PrePurchase and Purchase) views, you will need to be provided with your own attraction or venue ID's for events and venue, representatives from nexus_sdk@ticketmaster.com should be able to help with this. For the purpose of initial testing you can use the below.
 
+
 Replace "someApiKey" with the API keys from your Ticketmaster Developer Account. (iOS and Android need different API keys, see the example at the end of this section)
 Replace "clientName" with your company name, for example "My Company Name". You can set this in the `options` prop of `<IgniteProvider>`.
 Replace "#026cdf" with the main color theme of your app.
+
 
 If running in the `example` app you can create a `.env` with these values or update the codebase with your desired values.
 
@@ -782,7 +785,9 @@ DEMO_ATTRACTION_ID=2873404
 DEMO_VENUE_ID=KovZpZAEdntA
 ```
 
+
 You need to use a different key for iOS and Android, you can make the value for API_KEY and object `API_KEY={KeyName_ios: abcde, KeyName_android: abcdefg}` and in your RN code you can use `Platform.OS` to select the right KeyName to pass to the SDK. Example:
+
 
 Library choice for environment variables is optional
 
@@ -797,3 +802,5 @@ const apiKeyJson = JSON.parse(Config.API_KEY)
     apiKeyJson[`KeyName_${Platform.OS}`] || '',
 ...
 ```
+
+Note: If you change the API key in an .env for iOS you need to **Product** > **Clean Build Folder** for the change to take affect
