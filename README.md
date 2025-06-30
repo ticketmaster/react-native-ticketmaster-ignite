@@ -360,7 +360,7 @@ import { useIgnite } from 'react-native-ticketmaster-ignite';
 try {
   await refreshConfiguration({
     apiKey: 'someApiKey',
-    clientName: 'Team 2'
+    clientName: 'Team 2',
     primaryColor: '#FF0000',
   });
 } catch (e) {
@@ -377,7 +377,7 @@ The `refreshConfiguration()` method from the `useIgnite` accepts the below list 
 - `marketDomain` - Country for Retail SDK configuration
 - `eventHeaderType` - Tools that will be available in the header of the event screen
 - `onSuccess` - a callback that fires after successful Accounts SDK configuration
-- `onLoginSuccess` - a callback that fires after successful login
+- `onLoginSuccess` - a callback that fires after successful login. `login()` is called automatically by `refreshConfiguration()` after it configures the SDK's.
 - `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they login after switching to a new API key configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app session.
 - `skipUpdate` - Set value to `true` to prevent a rerender after successful authentication (⚠️ warning: if set to `true`, `isLoggedIn`, `isLoggingIn` and `memberInfo` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually. It's recommended you implement AccountsSDK directly and not use this hook if you want complete control of React Native screen and state updates. The default value is `false`.)
 
@@ -400,8 +400,43 @@ type RefreshConfigParams = {
 
 `IgniteProvider` always requires an API key so make sure you have set a default/fallback for app launch. This library does not persist API keys, so you will need to persist the users previous team selection to make sure the correct API key is used after app restarts.
 
+`login()` is called automatically by `refreshConfiguration()` after it configures the SDK's. To prevent this set `skipAutoLogin` to true.
+
 `isConfigured` being false during the initial user interactions with the UI is an indication that the initial `configureAccountsSDK()` done by `<IgniteProvider/>` has failed. You can either assess its value on initial user interaction or call `refreshConfiguration()` on mount manually, if you end up experiencing issues with the automatic Accounts SDK configuration this library does. Usually the initial call to the library works completely fine.
 
+Example using `refreshConfiguration()` as the initial method to configure the SDK's:
+
+Inside one of your child components of `IgniteProvider`
+
+```tsx
+import { useIgnite } from 'react-native-ticketmaster-ignite';
+
+  const {
+    refreshConfiguration,
+    authState: {isConfigured}
+  } = useIgnite()
+
+  useEffect(() => {
+    const configureIgniteSdks = async () => {
+      if (isConfigured) {
+        try {
+          await refreshConfiguration({
+            apiKey: 'someApiKey',
+            clientName: 'Team 2',
+            primaryColor: '#FF0000'
+          })
+        } catch (e) {
+          console.log(
+            'Account SDK refresh configuration error:',
+            (e as Error).message
+          )
+        }
+      }
+    }
+    configureIgniteSdks()
+  }, [isConfigured, refreshConfiguration])
+
+```
 
 #### Switching Teams
 
@@ -760,6 +795,7 @@ cd react-native-ticketmaster-ignite
 yarn
 cd example/ios
 pod install
+yarn start
 ```
 
 ## Environment variables
