@@ -117,9 +117,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
       try {
         val currentFragmentActivity = currentActivity as FragmentActivity
-        val authentication = TMAuthentication.Builder()
-          .apiKey(Config.get("apiKey"))
-          .clientName(Config.get("clientName"))
+        val authentication = TMAuthentication.Builder(Config.get("apiKey"), Config.get("clientName"))
           .colors(createTMAuthenticationColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
           .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment")))
           .region(Region.getRegion())
@@ -156,7 +154,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         withContext(context = Dispatchers.IO) {
           try {
             val currentFragmentActivity = currentActivity as FragmentActivity
-            authentication.logout(currentFragmentActivity)
+            authentication.logout()
             val loggedOutParams: WritableMap = Arguments.createMap().apply {
               putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
             }
