@@ -154,7 +154,7 @@ class TicketsFragment() : Fragment() {
                 imageOverride = getImageOverride("seatUpgradesModuleImage"),
                 textOverride = seatUpgradesModuleTextOverride,
                 eventId = order.eventId,
-              ).build(this@TicketsFragment)
+              ).build(context!!)
             )
           }
         }
@@ -225,7 +225,7 @@ class TicketsFragment() : Fragment() {
     latLng: TicketsModuleDelegate.LatLng?
   ): ModuleBase {
     return DirectionsModule(
-      context as AppCompatActivity, latLng?.latitude, latLng?.longitude
+      context as AppCompatActivity, latLng?.latitude!!, latLng.longitude
     ).build()
   }
 
@@ -233,9 +233,7 @@ class TicketsFragment() : Fragment() {
     super.onAttach(context)
     val coroutineScope = CoroutineScope(Dispatchers.IO)
     coroutineScope.launch(Dispatchers.Main) {
-      val authentication = TMAuthentication.Builder()
-        .apiKey(Config.get("apiKey"))
-        .clientName(Config.get("clientName")) // Team name to be displayed
+      val authentication = TMAuthentication.Builder(Config.get("apiKey"), Config.get("clientName"))
         .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
         .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment"))) // Environment that the SDK will use. Default is Production
         .region(Region.getRegion()) // Region that the SDK will use. Default is US
