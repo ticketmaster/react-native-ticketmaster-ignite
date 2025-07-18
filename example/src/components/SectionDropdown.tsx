@@ -50,6 +50,7 @@ const SectionDropdown = ({
         <View style={styles.dropdown}>
           <FlatList
             data={data}
+            // @ts-ignore
             keyExtractor={(item, index) => index.toString()}
             horizontal={false}
             renderItem={({ item }) => (

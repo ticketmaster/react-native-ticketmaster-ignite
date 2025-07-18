@@ -38,6 +38,7 @@ const Logger = () => {
             timestamp: new Date(Date.now()).toLocaleTimeString(),
           },
         ]);
+      // @ts-ignore
       originalConsoleLog.apply(console, arguments);
     };
   }, [isConfigured]);

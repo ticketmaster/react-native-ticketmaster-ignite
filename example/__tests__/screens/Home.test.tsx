@@ -47,6 +47,7 @@ describe('Home', () => {
         const component = render(
           <NavigationContainer>
             <Home
+              // @ts-ignore
               route={{
                 params: {
                   attractionId: 'testAttractionID',
@@ -79,6 +80,7 @@ describe('Home', () => {
         const component = render(
           <NavigationContainer>
             <Home
+              // @ts-ignore
               route={{
                 params: {
                   attractionId: 'testAttractionID',
