@@ -12,9 +12,7 @@ const Logger = () => {
 
   useEffect(() => {
     if (updateLogs) {
-      setTimeout(() => {
-        addLog((prevData: []) => [...prevData, ...recentLogs]);
-      }, 1000);
+      addLog((prevData: []) => [...prevData, ...recentLogs]);
       setRecentLogs([]);
       setUpdateLogs(false);
     }
