@@ -1,27 +1,34 @@
 import React, { useContext } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AppContext } from '../contexts/AppProvider';
 
 const Analytics = () => {
-  const { logs } = useContext(AppContext);
+  const { logs, addLog } = useContext(AppContext);
   return (
-    <ScrollView style={styles.scrollViewContainer}>
-      {logs.map((log, index) => (
-        <View key={index.toString()} style={styles.logWrapper}>
-          <View style={styles.labelWrapper}>
-            <Text style={styles.logType}>{log.type}</Text>
+    <>
+      <View style={styles.buttonWrapper}>
+        <Pressable style={styles.button} onPress={() => addLog([])}>
+          <Text style={styles.textWrapper}>Clear console</Text>
+        </Pressable>
+      </View>
+      <ScrollView style={styles.scrollViewContainer}>
+        {logs.map((log, index) => (
+          <View key={index.toString()} style={styles.logWrapper}>
+            <View style={styles.labelWrapper}>
+              <Text style={styles.logType}>{log.type}</Text>
+            </View>
+            <View style={styles.logMessageWrapper}>
+              <Text style={styles.timeStamp}>{log.timestamp}</Text>
+              <Text style={styles.messageText}>
+                {JSON.stringify(log.message)
+                  .replace(/\\/g, '')
+                  .replace(/""/g, '')}
+              </Text>
+            </View>
           </View>
-          <View style={styles.logMessageWrapper}>
-            <Text style={styles.timeStamp}>{log.timestamp}</Text>
-            <Text style={styles.messageText}>
-              {JSON.stringify(log.message)
-                .replace(/\\/g, '')
-                .replace(/""/g, '')}
-            </Text>
-          </View>
-        </View>
-      ))}
-    </ScrollView>
+        ))}
+      </ScrollView>
+    </>
   );
 };
 
@@ -53,6 +60,27 @@ const styles = StyleSheet.create({
   logType: {
     textTransform: 'capitalize',
     color: '#000000',
+  },
+  textWrapper: {
+    color: '#000000',
+    margin: 10,
+  },
+  buttonWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignContent: 'center',
+    width: '100%',
+    justifyContent: 'space-around',
+    backgroundColor: '#ffffff',
+  },
+  button: {
+    borderColor: 'black',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    width: '80%',
+    borderRadius: 20,
+    marginVertical: 10,
+    alignItems: 'center',
   },
 });
 

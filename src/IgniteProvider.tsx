@@ -375,7 +375,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       } else if (Platform.OS === 'android') {
         accessToken = await AccountsSDK.refreshToken();
       }
-      console.log(`Accounts SDK access token: ${accessToken}`);
+      console.log(`Accounts SDK access token: ${JSON.stringify(accessToken)}`);
       return accessToken;
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
@@ -419,7 +419,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           await login();
           return await getToken();
         } else {
-          console.log(`Accounts SDK access token: ${result}`);
+          console.log(`Accounts SDK access token: ${JSON.stringify(result)}`);
           return result;
         }
       }
