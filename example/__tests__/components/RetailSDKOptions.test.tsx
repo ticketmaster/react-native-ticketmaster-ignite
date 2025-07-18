@@ -14,9 +14,15 @@ jest.mock('react-native-ticketmaster-ignite', () => ({
 describe('RetailSDKOptions', () => {
   it('calls presentPrePurchaseVenue with venue ID when Show Retail PrePurchase Venue is clicked', () => {
     const fakePresentPrePurchaseVenue = RetailSDK.presentPrePurchaseVenue;
-    const { getByText } = render(<RetailSDKOptions />);
+    const { getByText } = render(
+      <RetailSDKOptions
+        attractionId={''}
+        eventId={''}
+        venueId={'testVenueID'}
+      />
+    );
 
-    fireEvent(getByText('Show Retail PrePurchase Venue'), 'press');
+    fireEvent(getByText('PrePurchase Venue'), 'press');
 
     expect(fakePresentPrePurchaseVenue).toHaveBeenCalledWith('testVenueID');
   });
@@ -24,9 +30,15 @@ describe('RetailSDKOptions', () => {
   it('calls presentPrePurchaseAttraction with attraction ID when Show Retail PrePurchase Attraction is clicked', () => {
     const fakePresentPrePurchaseAttraction =
       RetailSDK.presentPrePurchaseAttraction;
-    const { getByText } = render(<RetailSDKOptions />);
+    const { getByText } = render(
+      <RetailSDKOptions
+        attractionId={'testAttractionID'}
+        eventId={''}
+        venueId={''}
+      />
+    );
 
-    fireEvent(getByText('Show Retail PrePurchase Attraction'), 'press');
+    fireEvent(getByText('PrePurchase Attraction'), 'press');
 
     expect(fakePresentPrePurchaseAttraction).toHaveBeenCalledWith(
       'testAttractionID'
@@ -35,9 +47,15 @@ describe('RetailSDKOptions', () => {
 
   it('calls presentPurchase with event ID when Show Retail Purchase is clicked', () => {
     const fakePresentPurchase = RetailSDK.presentPurchase;
-    const { getByText } = render(<RetailSDKOptions />);
+    const { getByText } = render(
+      <RetailSDKOptions
+        attractionId={''}
+        eventId={'testEventID'}
+        venueId={''}
+      />
+    );
 
-    fireEvent(getByText('Show Retail Purchase'), 'press');
+    fireEvent(getByText('Purchase'), 'press');
 
     expect(fakePresentPurchase).toHaveBeenCalledWith('testEventID');
   });

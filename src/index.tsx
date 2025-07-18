@@ -16,4 +16,11 @@ export {
   useIgnite,
 };
 
-export { IgniteAnalytics, IgniteAnalyticName, PrebuiltModules } from './types';
+export {
+  IgniteAnalytics,
+  IgniteAnalyticName,
+  PrebuiltModules,
+  MarketDomain,
+  Region,
+  EventHeaderType,
+} from './types';

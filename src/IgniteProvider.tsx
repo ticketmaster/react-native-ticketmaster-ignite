@@ -5,17 +5,7 @@ import {
   PrebuiltModules,
 } from 'react-native-ticketmaster-ignite';
 import { toCapitalise } from './utils/utils';
-
-type Region = 'US' | 'UK';
-
-// eslint-disable-next-line prettier/prettier
-type MarketDomain = 'AE' | 'AT' | 'AU' | 'BE'| 'CA' | 'CH' | 'CZ' | 'DE' | 'DK' | 'ES' | 'FI' | 'IE' | 'MX' | 'NL' | 'NO' | 'NZ' | 'PL' | 'SE' | 'UK' | 'US' | 'ZA';
-
-type EventHeaderType =
-  | 'NO_TOOLBARS'
-  | 'EVENT_INFO'
-  | 'EVENT_SHARE'
-  | 'EVENT_INFO_SHARE';
+import { EventHeaderType, MarketDomain, Region } from './types';
 
 type AuthSource = {
   hostAccessToken?: string;
@@ -255,7 +245,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       try {
         await configureAccountsSDK();
       } catch (e) {
-        console.log('Accounts SDK error:', (e as Error).message);
+        console.log(`Accounts SDK error: ${(e as Error).message}`);
       }
     };
     onConfigureAccountsSdk();
@@ -362,8 +352,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     try {
       const result = await AccountsSDK.isLoggedIn();
       console.log(
-        'Accounts SDK isLoggedIn:',
-        Platform.OS === 'ios' ? !!result.result : result
+        `Accounts SDK isLoggedIn: ${Platform.OS === 'ios' ? !!result.result : result}`
       );
       return Platform.OS === 'ios' ? !!result.result : result;
     } catch (e) {
@@ -386,7 +375,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       } else if (Platform.OS === 'android') {
         accessToken = await AccountsSDK.refreshToken();
       }
-      console.log('Accounts SDK access token:', accessToken);
+      console.log(`Accounts SDK access token: ${accessToken}`);
       return accessToken;
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
@@ -403,8 +392,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     try {
       result = await AccountsSDK.getMemberInfo();
       console.log(
-        'Accounts SDK memberInfo:',
-        Platform.OS === 'ios' ? result : JSON.parse(result)
+        `Accounts SDK memberInfo: ${Platform.OS === 'ios' ? result : JSON.parse(result)}`
       );
       return Platform.OS === 'ios' ? result : JSON.parse(result);
     } catch (e) {
@@ -421,10 +409,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     try {
       const result = await AccountsSDK.refreshToken();
       if (Platform.OS === 'ios') {
-        // login() is automatically triggered in Accounts SDK TMAuthentication.shared.validToken() method on iOS
+        // login() is automatically triggered in the iOS Accounts SDK refreshToken() method by TMAuthentication.shared.validToken()
         console.log(
-          'Accounts SDK access token:',
-          result.accessToken === '' ? null : result.accessToken
+          `Accounts SDK access token: ${result.accessToken === '' ? null : result.accessToken}`
         );
         return result.accessToken === '' ? null : result.accessToken;
       } else {
@@ -432,7 +419,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           await login();
           return await getToken();
         } else {
-          console.log('Accounts SDK access token:', result);
+          console.log(`Accounts SDK access token: ${result}`);
           return result;
         }
       }

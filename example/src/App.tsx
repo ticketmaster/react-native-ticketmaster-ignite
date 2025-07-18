@@ -4,6 +4,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 import Config from 'react-native-config';
 import Root from './navigators/Root';
+import { AppProvider } from './contexts/AppProvider';
+import Logger from './components/Logger';
 
 const App = () => {
   const navTheme = {
@@ -14,20 +16,20 @@ const App = () => {
     },
   };
 
-  // const igniteAnalytics = async (data: any) => {
-  //   console.log('Received Ignite analytics', data);
-  // };
+  const igniteAnalytics = async (data: any) => {
+    console.log(`Analytics: ${JSON.stringify(data)}`);
+  };
 
   return (
     <SafeAreaProvider>
       <NavigationContainer theme={navTheme}>
         <IgniteProvider
-          // analytics={igniteAnalytics}
+          analytics={igniteAnalytics}
           options={{
             apiKey: Config.API_KEY || '',
             clientName: Config.CLIENT_NAME || '',
             primaryColor: Config.PRIMARY_COLOR || '',
-            eventHeaderType: 'EVENT_INFO',
+            eventHeaderType: 'EVENT_INFO_SHARE',
             marketDomain: 'US',
           }}
           prebuiltModules={{
@@ -56,7 +58,10 @@ const App = () => {
             },
           }}
         >
-          <Root />
+          <AppProvider>
+            <Logger />
+            <Root />
+          </AppProvider>
         </IgniteProvider>
       </NavigationContainer>
     </SafeAreaProvider>
