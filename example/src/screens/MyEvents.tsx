@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 
 const MyEvents = () => {
@@ -7,7 +7,7 @@ const MyEvents = () => {
 };
 
 const styles = StyleSheet.create({
-  ticketsContainer: { height: '95%' },
+  ticketsContainer: { height: Platform.OS === 'ios' ? '90%' : '95%' },
 });
 
 export default MyEvents;

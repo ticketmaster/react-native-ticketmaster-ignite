@@ -1,14 +1,23 @@
 import React from 'react';
 import { RetailSDK } from 'react-native-ticketmaster-ignite';
 import { View, Platform } from 'react-native';
-import Config from 'react-native-config';
 import SDKButton from './SDKButton';
 import SectionHeader from './SectionHeader';
 
-const RetailSDKOptions = () => {
+type RetailSdkOptionsProps = {
+  attractionId: string;
+  eventId: string;
+  venueId: string;
+};
+
+const RetailSDKOptions = ({
+  attractionId,
+  eventId,
+  venueId,
+}: RetailSdkOptionsProps) => {
   const onShowPurchase = async () => {
     try {
-      RetailSDK.presentPurchase(Config.DEMO_EVENT_ID);
+      RetailSDK.presentPurchase(eventId);
     } catch (e) {
       console.log('Retail SDK error - Purchase:', (e as Error).message);
     }
@@ -16,7 +25,7 @@ const RetailSDKOptions = () => {
 
   const onShowPrePurchaseVenue = async () => {
     try {
-      RetailSDK.presentPrePurchaseVenue(Config.DEMO_VENUE_ID);
+      RetailSDK.presentPrePurchaseVenue(venueId);
     } catch (e) {
       console.log(
         'Retail SDK error - PrePurchase venue:',
@@ -27,7 +36,7 @@ const RetailSDKOptions = () => {
 
   const onShowPrePurchaseAttraction = async () => {
     try {
-      RetailSDK.presentPrePurchaseAttraction(Config.DEMO_ATTRACTION_ID);
+      RetailSDK.presentPrePurchaseAttraction(attractionId);
     } catch (e) {
       console.log(
         'Retail SDK error - PrePurchase attraction:',
@@ -38,18 +47,18 @@ const RetailSDKOptions = () => {
 
   const DATA = [
     {
-      title: 'Show Retail PrePurchase Venue',
+      title: 'PrePurchase Venue',
       platforms: ['ios', 'android'],
       onPress: () => onShowPrePurchaseVenue(),
       first: true,
     },
     {
-      title: 'Show Retail PrePurchase Attraction',
+      title: 'PrePurchase Attraction',
       platforms: ['ios', 'android'],
       onPress: () => onShowPrePurchaseAttraction(),
     },
     {
-      title: 'Show Retail Purchase',
+      title: 'Purchase',
       platforms: ['ios', 'android'],
       onPress: () => onShowPurchase(),
       last: true,

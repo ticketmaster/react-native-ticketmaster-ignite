@@ -151,3 +151,35 @@ export type PrebuiltModules = {
     enabled: boolean;
   };
 };
+
+export type Region = 'US' | 'UK';
+
+// eslint-disable-next-line prettier/prettier
+export type MarketDomain =
+  | 'AE'
+  | 'AT'
+  | 'AU'
+  | 'BE'
+  | 'CA'
+  | 'CH'
+  | 'CZ'
+  | 'DE'
+  | 'DK'
+  | 'ES'
+  | 'FI'
+  | 'IE'
+  | 'MX'
+  | 'NL'
+  | 'NO'
+  | 'NZ'
+  | 'PL'
+  | 'SE'
+  | 'UK'
+  | 'US'
+  | 'ZA';
+
+export type EventHeaderType =
+  | 'NO_TOOLBARS'
+  | 'EVENT_INFO'
+  | 'EVENT_SHARE'
+  | 'EVENT_INFO_SHARE';

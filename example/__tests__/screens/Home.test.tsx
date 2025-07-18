@@ -3,6 +3,7 @@ import { render, waitFor } from '@testing-library/react-native';
 import Home from '../../src/screens/Home';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 import { ActivityIndicator } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 
 jest.mock('react-native-ticketmaster-ignite');
 
@@ -43,7 +44,20 @@ describe('Home', () => {
           },
         });
 
-        const component = render(<Home />);
+        const component = render(
+          <NavigationContainer>
+            <Home
+              // @ts-ignore
+              route={{
+                params: {
+                  attractionId: 'testAttractionID',
+                  eventId: 'testEventID',
+                  venueId: 'testVenueID',
+                },
+              }}
+            />
+          </NavigationContainer>
+        );
 
         await waitFor(() => {
           const spinner = component.root.findByType(ActivityIndicator);
@@ -63,7 +77,20 @@ describe('Home', () => {
           },
         });
 
-        const component = render(<Home />);
+        const component = render(
+          <NavigationContainer>
+            <Home
+              // @ts-ignore
+              route={{
+                params: {
+                  attractionId: 'testAttractionID',
+                  eventId: 'testEventID',
+                  venueId: 'testVenueID',
+                },
+              }}
+            />
+          </NavigationContainer>
+        );
 
         await waitFor(() => {
           expect(() => component.root.findByType(ActivityIndicator)).toThrow();
