@@ -132,8 +132,8 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         GlobalEventEmitter.sendEvent("igniteAnalytics", serviceConfiguredParams)
         val configuredCompletedParams: WritableMap = Arguments.createMap().apply {
           putString(
-            "accountsSdkServiceConfiguredCompleted",
-            "accountsSdkServiceConfiguredCompleted"
+            "accountsSdkServiceConfigurationCompleted",
+            "accountsSdkServiceConfigurationCompleted"
           )
         }
         GlobalEventEmitter.sendEvent("igniteAnalytics", configuredCompletedParams)

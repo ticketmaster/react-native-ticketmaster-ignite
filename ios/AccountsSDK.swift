@@ -134,7 +134,7 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     case .serviceConfigured:
       sendEvent("igniteAnalytics", body: ["accountsSdkServiceConfigured": "accountsSdkServiceConfigured"])
     case .serviceConfigurationCompleted:
-      sendEvent("igniteAnalytics", body: ["accountsSdkServiceConfiguredCompleted": "accountsSdkServiceConfiguredCompleted"])
+      sendEvent("igniteAnalytics", body: ["accountsSdkServiceConfigurationCompleted": "accountsSdkServiceConfigurationCompleted"])
     case .loginStarted:
       sendEvent("igniteAnalytics", body: ["accountsSdkLoginStarted": "accountsSdkLoginStarted"])
     case .loginPresented:

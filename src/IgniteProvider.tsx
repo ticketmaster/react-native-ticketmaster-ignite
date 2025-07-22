@@ -126,7 +126,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     apiKey,
     clientName,
     primaryColor,
-    environment,
+    environment = 'Production',
     region,
     eventHeaderType,
     marketDomain,
@@ -391,9 +391,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     let result;
     try {
       result = await AccountsSDK.getMemberInfo();
-      console.log(
-        `Accounts SDK memberInfo: ${Platform.OS === 'ios' ? result : JSON.parse(result)}`
-      );
+      console.log(`Accounts SDK memberInfo: ${JSON.stringify(result)}`);
       return Platform.OS === 'ios' ? result : JSON.parse(result);
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
