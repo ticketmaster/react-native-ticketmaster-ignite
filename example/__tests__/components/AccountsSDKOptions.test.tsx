@@ -67,7 +67,7 @@ describe('AccountsSDKOptions', () => {
       it('calls getMemberInfo func for Get Member button', () => {
         const { getByText } = render(<AccountsSDKOptions />);
 
-        fireEvent(getByText('Get Member'), 'press');
+        fireEvent(getByText('Get Member Info'), 'press');
 
         expect(getMemberInfoMock).toHaveBeenCalled();
       });
@@ -75,7 +75,7 @@ describe('AccountsSDKOptions', () => {
       it('calls getIsLoggedIn for isLoggedIn button', () => {
         const { getByText } = render(<AccountsSDKOptions />);
 
-        fireEvent(getByText(`IsLoggedIn - ${false}`), 'press');
+        fireEvent(getByText(`Get isLoggedIn: ${false}`), 'press');
         expect(getIsLoggedInMock).toHaveBeenCalled();
       });
     });

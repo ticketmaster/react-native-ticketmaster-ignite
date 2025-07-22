@@ -76,7 +76,7 @@ const AccountsSdkOptions = () => {
       onPress: () => onLogout(),
     },
     {
-      title: `IsLoggedIn - ${isLoggedIn}`,
+      title: `Get isLoggedIn: ${isLoggedIn}`,
       platforms: ['ios', 'android'],
       onPress: () => onGetIsLoggedIn(),
     },
@@ -86,7 +86,7 @@ const AccountsSdkOptions = () => {
       onPress: () => onGetToken(),
     },
     {
-      title: 'Get Member',
+      title: 'Get Member Info',
       platforms: ['ios', 'android'],
       onPress: () => onGetMemberInfo(),
     },

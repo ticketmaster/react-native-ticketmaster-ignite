@@ -1,23 +1,26 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 // @ts-ignore
 import MyEvents from '../screens/MyEvents';
 import HomeIcon from '../assets/svg/HomeIcon';
 import MyEventsIcon from '../assets/svg/MyEventsIcon';
-import Config from 'react-native-config';
 import SecureEntryView from '../screens/SecureEntryView';
+import { AppContext } from '../contexts/AppProvider';
+import BackButton from '../components/Backbutton';
+import { BottomTabsParamList } from '../types/sharedTypes';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<BottomTabsParamList>();
 
 const BottomTabs = () => {
+  const { primaryColor } = useContext(AppContext);
   return (
     <Tab.Navigator
       screenOptions={{
         headerTitleAlign: 'center',
         headerShown: true,
         headerStyle: {
-          backgroundColor: Config.PRIMARY_COLOR,
+          backgroundColor: primaryColor,
         },
         headerTintColor: 'white',
         tabBarStyle: {
@@ -33,7 +36,7 @@ const BottomTabs = () => {
           position: 'absolute',
           bottom: 0,
         },
-        tabBarActiveTintColor: Config.PRIMARY_COLOR,
+        tabBarActiveTintColor: primaryColor,
       }}
     >
       <Tab.Screen
@@ -42,31 +45,34 @@ const BottomTabs = () => {
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({ focused }) => (
-            <HomeIcon fill={focused ? Config.PRIMARY_COLOR : 'grey'} />
+            <HomeIcon fill={focused ? primaryColor : 'grey'} />
           ),
+          headerLeft: () => <BackButton text="Back" />,
         }}
       />
       <Tab.Screen
-        name="Tickets SDK (Embedded)"
+        name="TicketsSdkEmbedded"
         component={MyEvents}
         options={{
+          headerTitle: 'Tickets SDK',
           headerShadowVisible: false,
-          tabBarLabel: 'Tickets SDK (Embedded)',
+          tabBarLabel: 'Tickets SDK',
           unmountOnBlur: true,
           tabBarIcon: ({ focused }) => (
-            <MyEventsIcon fill={focused ? Config.PRIMARY_COLOR : 'grey'} />
+            <MyEventsIcon fill={focused ? primaryColor : 'grey'} />
           ),
         }}
       />
       <Tab.Screen
-        name="Secure Entry"
+        name="SecureEntry"
         component={SecureEntryView}
         options={{
+          headerTitle: 'Secure Entry SDK',
           headerShadowVisible: false,
           tabBarLabel: 'Secure Entry',
           unmountOnBlur: true,
           tabBarIcon: ({ focused }) => (
-            <MyEventsIcon fill={focused ? Config.PRIMARY_COLOR : 'grey'} />
+            <MyEventsIcon fill={focused ? primaryColor : 'grey'} />
           ),
         }}
       />
