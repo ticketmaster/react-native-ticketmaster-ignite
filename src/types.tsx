@@ -62,7 +62,7 @@ type TicketsSdkVenueConcessionsData = {
 export type IgniteAnalytics = {
   accountsSdkServiceConfigurationStarted: 'accountsSdkServiceConfigurationStarted';
   accountsSdkServiceConfigured: 'accountsSdkServiceConfigured';
-  accountsSdkServiceConfiguredCompleted: 'accountsSdkServiceConfiguredCompleted';
+  accountsSdkServiceConfigurationCompleted: 'accountsSdkServiceConfigurationCompleted';
   accountsSdkLoginStarted: 'accountsSdkLoginStarted';
   accountsSdkLoggedIn: 'accountsSdkLoggedIn';
   accountsSdkLoginAborted: 'accountsSdkLoginAborted';
@@ -95,7 +95,7 @@ export type IgniteAnalytics = {
 export enum IgniteAnalyticName {
   ACCOUNTS_SDK_SERVICE_CONFIGURATION_STARTED = 'accountsSdkServiceConfigurationStarted',
   ACCOUNTS_SDK_SERVICE_CONFIGURED = 'accountsSdkServiceConfigured',
-  ACCOUNTS_SDK_SERVICE_CONFIGURED_COMPLETED = 'accountsSdkServiceConfiguredCompleted',
+  ACCOUNTS_SDK_SERVICE_CONFIGURATION_COMPLETED = 'accountsSdkServiceConfigurationCompleted',
   ACCOUNTS_SDK_LOGIN_STARTED = 'accountsSdkLoginStarted',
   ACCOUNTS_SDK_LOGGED_IN = 'accountsSdkLoggedIn',
   ACCOUNTS_SDK_LOGIN_ABORTED = 'accountsSdkLoginAborted',

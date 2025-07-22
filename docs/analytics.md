@@ -6,7 +6,7 @@
 | ----- | ---- |
 | accountsSdkServiceConfigurationStarted | accountsSdkServiceConfigurationStarted |
 | accountsSdkServiceConfigured | accountsSdkServiceConfigured |
-| accountsSdkServiceConfiguredCompleted | accountsSdkServiceConfiguredCompleted |
+| accountsSdkServiceConfigurationCompleted | accountsSdkServiceConfigurationCompleted |
 | accountsSdkLoginStarted | accountsSdkLoginStarted |
 | accountsSdkLoginPresented (iOS only) | accountsSdkLoginPresented |
 | accountsSdkLoggedIn | accountsSdkLoggedIn |
