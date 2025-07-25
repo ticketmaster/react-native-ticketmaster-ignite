@@ -56,7 +56,6 @@ class TicketsFragment() : Fragment() {
   private suspend fun validateAuthToken(authentication: TMAuthentication): Map<AuthSource, String> {
     val tokenMap = mutableMapOf<AuthSource, String>()
     AuthSource.values().forEach {
-      //Validate if there is an active token for the AuthSource, if not it returns null.
       authentication.getToken(it)?.let { token ->
         tokenMap[it] = token
       }
@@ -65,7 +64,6 @@ class TicketsFragment() : Fragment() {
   }
 
   private fun launchTicketsView() {
-    //Retrieve an EventFragment
     TicketsSDKSingleton.getEventsFragment(requireContext())?.let {
       childFragmentManager.beginTransaction().add(R.id.tickets_container, it).commit()
     }
@@ -88,6 +86,7 @@ class TicketsFragment() : Fragment() {
         launchTicketsView()
         setCustomModules()
       }
+
       AppCompatActivity.RESULT_CANCELED -> {
       }
     }
@@ -137,10 +136,10 @@ class TicketsFragment() : Fragment() {
           modules.add(getDirectionsModule(order.orderInfo.latLng))
         }
 
-         val seatUpgradesModuleTextOverride = ModuleBase.TextOverride(
-           text = Config.optionalString("seatUpgradesModuleTopLabelText") ?: "Seat Upgrades",
-           orientation = ModuleBase.TextOverride.Orientation.LEFT
-         )
+        val seatUpgradesModuleTextOverride = ModuleBase.TextOverride(
+          text = Config.optionalString("seatUpgradesModuleTopLabelText") ?: "Seat Upgrades",
+          orientation = ModuleBase.TextOverride.Orientation.LEFT
+        )
 
         if (Config.get("seatUpgradesModule") == "true") {
           val firstTicketSource = order.tickets.firstOrNull()?.source
@@ -148,13 +147,13 @@ class TicketsFragment() : Fragment() {
             modules.add(
               SeatUpgradesModule(
                 webPageSettings = NAMWebPageSettings(
-                  context!!,
+                  requireContext(),
                   firstTicketSource
                 ),
                 imageOverride = getImageOverride("seatUpgradesModuleImage"),
                 textOverride = seatUpgradesModuleTextOverride,
                 eventId = order.eventId,
-              ).build(this@TicketsFragment)
+              ).build(requireContext())
             )
           }
         }
@@ -163,16 +162,12 @@ class TicketsFragment() : Fragment() {
           food = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
             ModuleBase.TextOverride(it)
           } ?: null,
-          merch = when (val text = Config.optionalString("venueConcessionsModuleTopLabelText")) {
-            null -> null
-            "" -> ModuleBase.TextOverride("")
-            else -> ModuleBase.TextOverride("")
-          },
-          experiences = when (val text = Config.optionalString("venueConcessionsModuleTopLabelText")) {
-            null -> null
-            "" -> ModuleBase.TextOverride("")
-            else -> ModuleBase.TextOverride("")
-          },
+          merch = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
+            ModuleBase.TextOverride(it)
+          } ?: null,
+          experiences = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
+            ModuleBase.TextOverride(it)
+          } ?: null,
           fingertips = Config.optionalString("venueConcessionsModuleBottomLabelText")?.let {
             ModuleBase.TextOverride(it)
           } ?: null
@@ -180,11 +175,13 @@ class TicketsFragment() : Fragment() {
 
         if (Config.get("venueConcessionsModule") == "true") {
           val venueNextModule = VenueNextModule.Builder(order.venueId).build()
-          modules.add(venueNextModule.createVenueNextView(
-            context!!,
-            textOverride = venueConcessionsModuleTextOverride,
-            imageOverride = getImageOverride("venueConcessionsModuleImage")) {
-          })
+          modules.add(
+            venueNextModule.createVenueNextView(
+              requireContext(),
+              textOverride = venueConcessionsModuleTextOverride,
+              imageOverride = getImageOverride("venueConcessionsModuleImage")
+            ) {}
+          )
         }
 
         if (Config.get("invoiceModule") == "true") {
@@ -221,11 +218,9 @@ class TicketsFragment() : Fragment() {
     }
   }
 
-  private fun getDirectionsModule(
-    latLng: TicketsModuleDelegate.LatLng?
-  ): ModuleBase {
+  private fun getDirectionsModule(latLng: TicketsModuleDelegate.LatLng?): ModuleBase {
     return DirectionsModule(
-      context as AppCompatActivity, latLng?.latitude, latLng?.longitude
+      requireActivity(), latLng?.latitude!!, latLng.longitude
     ).build()
   }
 
@@ -233,44 +228,37 @@ class TicketsFragment() : Fragment() {
     super.onAttach(context)
     val coroutineScope = CoroutineScope(Dispatchers.IO)
     coroutineScope.launch(Dispatchers.Main) {
-      val authentication = TMAuthentication.Builder()
-        .apiKey(Config.get("apiKey"))
-        .clientName(Config.get("clientName")) // Team name to be displayed
-        .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
-        .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment"))) // Environment that the SDK will use. Default is Production
-        .region(Region.getRegion()) // Region that the SDK will use. Default is US
-        .build(this@TicketsFragment.requireActivity())
+      val authenticationResult =
+        TMAuthentication.Builder(Config.get("apiKey"), Config.get("clientName"))
+          .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
+          .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment")))
+          .region(Region.getRegion())
+          .build(requireContext())
+
+      val authentication = authenticationResult.getOrThrow()
       val tokenMap = validateAuthToken(authentication)
 
       TicketsSDKClient
         .Builder()
-        .authenticationSDKClient(authentication) //Authentication object
-        //Optional value to define the colors for the Tickets page
+        .authenticationSDKClient(authentication)
         .colors(createTicketsColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
-        //Function that generates a TicketsSDKClient object
-        .build(this@TicketsFragment.requireActivity())
+        .build(requireContext())
         .apply {
-          //After creating the TicketsSDKClient object, add it into the TicketsSDKSingleton
           TicketsSDKSingleton.setTicketsSdkClient(this)
           TicketsSDKSingleton.setEnvironment(
-            this@TicketsFragment.requireActivity(),
+            requireContext(),
             Environment.getTicketsSDKSingletonEnvironment(Config.get("environment")),
             Region.getTicketsSDKRegion()
-          );
-          //Validate if there is an active token.
+          )
           if (tokenMap.isNotEmpty()) {
-            // The below lets React Native know it needs to update its isLoggedIn value
             val params: WritableMap = Arguments.createMap().apply {
               putString("ticketsSdkDidViewEvents", "ticketsSdkDidViewEvents")
             }
             GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-            //If there is an active token, it launches the event fragment
             launchTicketsView()
             setCustomModules()
           } else {
-            //If there is no active token, it launches a login intent. Launch an ActivityForResult, if result
-            //is RESULT_OK, there is an active token to be retrieved.
-            resultLauncher.launch(TicketsSDKSingleton.getLoginIntent(this@TicketsFragment.requireActivity()))
+            resultLauncher.launch(TicketsSDKSingleton.getLoginIntent(requireActivity()))
           }
         }
     }
@@ -281,7 +269,6 @@ class TicketsFragment() : Fragment() {
     savedInstanceState: Bundle?
   ): View {
     customView = TicketsView(requireNotNull(context))
-    return customView // this CustomView could be any view that you want to render
-
+    return customView
   }
 }
