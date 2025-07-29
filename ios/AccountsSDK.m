@@ -18,6 +18,8 @@ RCT_EXTERN_METHOD(login: (RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejec
 
 RCT_EXTERN_METHOD(logout: (RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(logoutAll: (RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(refreshToken: (RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(getMemberInfo: (RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)

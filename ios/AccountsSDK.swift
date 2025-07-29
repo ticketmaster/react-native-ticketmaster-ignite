@@ -63,6 +63,14 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     }
   }
   
+  @objc public func logoutAll(_ resolve: @escaping (String) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
+    TMAuthentication.shared.logoutAll {backends in
+      resolve("LogoutAll Successful")
+      print("LogoutAll Completed")
+      print(" - Backends Count: \(backends?.count ?? 0)")
+    }
+  }
+  
   @objc public func refreshToken(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     
     TMAuthentication.shared.validToken { authToken in
