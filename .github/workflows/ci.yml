@@ -17,6 +17,9 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      - name: Install dependencies
+        run: yarn install --no-immutable
+
       - name: Lint files
         run: yarn lint
 
@@ -32,6 +35,9 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      - name: Install dependencies
+        run: yarn install --no-immutable
+
       - name: Run React Native unit tests
         run: yarn test --maxWorkers=2 --coverage
 
@@ -43,6 +49,9 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/setup
+
+      - name: Install dependencies
+        run: yarn install --no-immutable
 
       - name: Install JDK
         uses: actions/setup-java@v3
@@ -64,6 +73,9 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      - name: Install dependencies
+        run: yarn install --no-immutable
+
       - name: Build package
         run: yarn prepare
 
@@ -75,6 +87,9 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/setup
+
+      - name: Install dependencies
+        run: yarn install --no-immutable
 
       - name: Install JDK
         uses: actions/setup-java@v3
@@ -100,6 +115,9 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/setup
+
+      - name: Install dependencies
+        run: yarn install --no-immutable
 
       - name: Install cocoapods
         run: |
