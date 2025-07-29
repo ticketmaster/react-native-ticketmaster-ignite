@@ -100,10 +100,10 @@ dependencies {
 
   implementation 'com.ticketmaster.tickets:tickets:3.13.4'
   implementation 'com.ticketmaster.tickets:secure-entry:1.4.0'
-  implementation 'com.ticketmaster.retail:purchase:3.6.0'
-  implementation 'com.ticketmaster.retail:prepurchase:3.6.0'
-  implementation 'com.ticketmaster.retail:discoveryapi:3.6.0'
-  implementation 'com.ticketmaster.retail:foundation:3.6.0'
+  implementation 'com.ticketmaster.retail:purchase:3.6.1'
+  implementation 'com.ticketmaster.retail:prepurchase:3.6.1'
+  implementation 'com.ticketmaster.retail:discoveryapi:3.6.1'
+  implementation 'com.ticketmaster.retail:foundation:3.6.1'
 
   testImplementation 'junit:junit:4.13.2'
   testImplementation 'org.mockito:mockito-core:4.1.0'
