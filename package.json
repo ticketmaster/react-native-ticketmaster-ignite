@@ -60,7 +60,7 @@
     "@release-it/conventional-changelog": "^9.0.2",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-hooks": "^8.0.1",
-    "@testing-library/react-native": "^11",
+    "@testing-library/react-native": "^13.2.1",
     "@types/jest": "^29.5.5",
     "@types/react": "^18.2.6",
     "commitlint": "^19.6.0",
