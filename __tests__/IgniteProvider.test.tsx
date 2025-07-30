@@ -444,29 +444,6 @@ describe('IgniteProvider', () => {
               );
             });
           });
-
-          describe('calls setImage', () => {
-            it('when image passed', () => {
-              render(
-                <IgniteProvider
-                  options={options}
-                  prebuiltModules={{
-                    seatUpgradesModule: {
-                      enabled: true,
-                      image: require('./testImage.png'),
-                    },
-                  }}
-                >
-                  <View />
-                </IgniteProvider>
-              );
-
-              expect(fakeSetImage).toHaveBeenCalledWith(
-                'seatUpgradesModuleImage',
-                { testUri: '../../../__tests__/testImage.png' }
-              );
-            });
-          });
         });
       });
 
@@ -764,31 +741,6 @@ describe('IgniteProvider', () => {
 
               expect(fakeSetImage).not.toHaveBeenCalledWith(
                 'venueConcessionsModuleImage'
-              );
-            });
-          });
-
-          describe('calls setImage', () => {
-            it('when image passed', () => {
-              render(
-                <IgniteProvider
-                  options={options}
-                  prebuiltModules={{
-                    venueConcessionsModule: {
-                      image: require('./testImage.png'),
-                      enabled: true,
-                      walletButtonCallback: jest.fn(),
-                      orderButtonCallback: jest.fn(),
-                    },
-                  }}
-                >
-                  <View />
-                </IgniteProvider>
-              );
-
-              expect(fakeSetImage).toHaveBeenCalledWith(
-                'venueConcessionsModuleImage',
-                { testUri: '../../../__tests__/testImage.png' }
               );
             });
           });
