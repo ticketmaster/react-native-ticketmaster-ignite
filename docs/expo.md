@@ -114,6 +114,28 @@ You will need to update one of `isModernAccounts` or `isSportXr` booleans to tru
 You can update `withIgnitePlugin.js`'s values for iOS deployment target, compileSdkVersion etc. to the values needed for your project.
 
 
+### Troubleshooting  
+
+#### Expo 53
+
+Depending on your expo version, changing the `minSdkVersion` and `compileSdkVersion` will need to be done in `withAppBuildGradle()` instead of `withProjectBuildGradle()`, which can be done by adding the below to `withAppBuildGradle()`:
+
+```javascript
+
+config.modResults.contents = config.modResults.contents.replace(
+      `compileSdk rootProject.ext.compileSdkVersion`,
+      `compileSdk 35`
+    );
+
+config.modResults.contents = config.modResults.contents.replace(
+      `minSdkVersion rootProject.ext.minSdkVersion`,
+      `minSdkVersion 28`
+    );
+```
+
+The `withProjectBuildGradle()` can then be completely removed from the file.
+
+
 #### Koin dependency issues 
 
 If you face any Koin dependency issues you can add the below inside `withProjectBuildGradle()` to force koin versions in your project to a specific version 
