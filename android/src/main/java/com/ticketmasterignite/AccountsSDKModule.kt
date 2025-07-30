@@ -158,42 +158,28 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun logout(promise: Promise) {
     IgniteSDKSingleton.getAuthenticationSDK()?.let { authentication ->
-      runBlocking {
+      runBlocking() {
         val logoutStartedParams: WritableMap = Arguments.createMap().apply {
           putString("accountsSdkLogoutStarted", "accountsSdkLogoutStarted")
         }
         GlobalEventEmitter.sendEvent("igniteAnalytics", logoutStartedParams)
-
         withContext(context = Dispatchers.IO) {
           try {
-            // Call logout() without arguments
-            val logoutSuccess = authentication.logout()
-
-            if (logoutSuccess) {
-              val loggedOutParams: WritableMap = Arguments.createMap().apply {
-                putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
-              }
-              GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
-
-              val logoutCompletedParams: WritableMap = Arguments.createMap().apply {
-                putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
-              }
-              GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
-
-              promise.resolve(true)
-            } else {
-              promise.reject("Accounts SDK Logout Error", Exception("Logout failed"))
+            authentication.logout()
+            val loggedOutParams: WritableMap = Arguments.createMap().apply {
+              putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
             }
+            GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
+            val logoutCompletedParams: WritableMap = Arguments.createMap().apply {
+              putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
+            }
+            GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
+            promise.resolve(true)
           } catch (e: Exception) {
             promise.reject("Accounts SDK Logout Error: ", e)
           }
         }
       }
-    } ?: run {
-      promise.reject(
-        "Accounts SDK Logout Error",
-        Exception("Authentication SDK is not initialized")
-      )
     }
   }
 
