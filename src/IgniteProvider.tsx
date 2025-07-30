@@ -65,6 +65,7 @@ type RefreshConfigParams = {
 type IgniteContextType = {
   login: (loginParams?: LoginParams) => Promise<void>;
   logout: (logoutParams?: LogoutParams) => Promise<void>;
+  logoutAll: (logoutParams?: LogoutParams) => Promise<void>;
   getIsLoggedIn: () => Promise<boolean>;
   getToken: () => Promise<string | AuthSource | null>;
   getMemberInfo: () => Promise<Record<string, any> | null>;
@@ -80,6 +81,7 @@ type IgniteContextType = {
 export const IgniteContext = createContext<IgniteContextType>({
   login: async () => {},
   logout: async () => {},
+  logoutAll: async () => {},
   getIsLoggedIn: async () => false,
   getToken: async () => null,
   getMemberInfo: async () => null,
@@ -348,6 +350,23 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     [AccountsSDK, setAccountDetails]
   );
 
+  const logoutAll = useCallback(
+    // eslint-disable-next-line prettier/prettier
+    async ({ onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }): Promise<void> => {
+      try {
+        Platform.OS === 'ios'
+          ? await AccountsSDK.logoutAll()
+          : await AccountsSDK.logout();
+        console.log('Accounts SDK logoutAll successful');
+        !skipUpdate && (await setAccountDetails());
+        onLogout && onLogout();
+      } catch (e) {
+        throw e;
+      }
+    },
+    [AccountsSDK, setAccountDetails]
+  );
+
   const getIsLoggedIn = useCallback(async (): Promise<boolean> => {
     try {
       const result = await AccountsSDK.isLoggedIn();
@@ -463,6 +482,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       value={{
         login,
         logout,
+        logoutAll,
         getIsLoggedIn,
         getToken,
         getMemberInfo,
