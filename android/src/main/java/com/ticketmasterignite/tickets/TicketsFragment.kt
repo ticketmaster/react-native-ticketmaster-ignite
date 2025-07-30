@@ -162,12 +162,24 @@ class TicketsFragment() : Fragment() {
           food = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
             ModuleBase.TextOverride(it)
           } ?: null,
-          merch = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
-            ModuleBase.TextOverride(it)
-          } ?: null,
-          experiences = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
-            ModuleBase.TextOverride(it)
-          } ?: null,
+          // POTENTIAL REFACTOR
+//          merch = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
+//            ModuleBase.TextOverride(it)
+//          } ?: null,
+//          experiences = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
+//            ModuleBase.TextOverride(it)
+//          } ?: null,
+          merch = when (val text = Config.optionalString("venueConcessionsModuleTopLabelText")) {
+            null -> null
+            "" -> ModuleBase.TextOverride("")
+            else -> ModuleBase.TextOverride("")
+          },
+          experiences = when (val text =
+            Config.optionalString("venueConcessionsModuleTopLabelText")) {
+            null -> null
+            "" -> ModuleBase.TextOverride("")
+            else -> ModuleBase.TextOverride("")
+          },
           fingertips = Config.optionalString("venueConcessionsModuleBottomLabelText")?.let {
             ModuleBase.TextOverride(it)
           } ?: null
