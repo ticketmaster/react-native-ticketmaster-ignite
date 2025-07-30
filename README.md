@@ -446,7 +446,7 @@ You can switch teams using the `refreshConfiguration()` method mentioned above.
 
 ##### Logout All
 
-iOS `logout()` only logouts of the currently configured API key. If you have multiple teams in your app and you would like to logout of all teams at once, you can **replace** `logout()` with `logoutAll()` in your code. Android's `logout()` always logs out of all teams so `logoutAll()` will behave in the exact same way for Android.
+iOS `logout()` only logs out of the currently configured API key. If you have multiple teams in your app and you would like to logout of all teams at once, you can **replace** `logout()` with `logoutAll()` in your code. Android's `logout()` always logs out of all teams so `logoutAll()` will behave in the exact same way for Android.
 
 `logoutAll()` is only useful if your app has multiple teams/API keys within one app.
 
