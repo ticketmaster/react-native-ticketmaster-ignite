@@ -115,21 +115,31 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         )
       }
       GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
+
       try {
         val currentFragmentActivity = currentActivity as FragmentActivity
-        val authentication = TMAuthentication.Builder()
-          .apiKey(Config.get("apiKey"))
-          .clientName(Config.get("clientName"))
+
+        // Pass the required arguments (API key and client name) to the Builder
+        val authenticationResult = TMAuthentication.Builder(
+          Config.get("apiKey"), // API key
+          Config.get("clientName") // Client name
+        )
           .colors(createTMAuthenticationColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
           .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment")))
           .region(Region.getRegion())
           .build(currentFragmentActivity)
+
+        // Unwrap the Result<TMAuthentication> to get the TMAuthentication instance
+        val authentication = authenticationResult.getOrThrow()
+
+        // Set the authentication instance in the IgniteSDKSingleton
         IgniteSDKSingleton.setAuthenticationSDK(authentication)
 
         val serviceConfiguredParams: WritableMap = Arguments.createMap().apply {
           putString("accountsSdkServiceConfigured", "accountsSdkServiceConfigured")
         }
         GlobalEventEmitter.sendEvent("igniteAnalytics", serviceConfiguredParams)
+
         val configuredCompletedParams: WritableMap = Arguments.createMap().apply {
           putString(
             "accountsSdkServiceConfigurationCompleted",
@@ -155,8 +165,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         GlobalEventEmitter.sendEvent("igniteAnalytics", logoutStartedParams)
         withContext(context = Dispatchers.IO) {
           try {
-            val currentFragmentActivity = currentActivity as FragmentActivity
-            authentication.logout(currentFragmentActivity)
+            authentication.logout()
             val loggedOutParams: WritableMap = Arguments.createMap().apply {
               putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
             }

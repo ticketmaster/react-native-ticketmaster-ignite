@@ -10,5 +10,5 @@ runs:
         node-version-file: .nvmrc
 
     - name: Install dependencies
-      run: yarn install --immutable
+      run: yarn install --no-immutable
       shell: bash

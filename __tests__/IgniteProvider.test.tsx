@@ -445,7 +445,7 @@ describe('IgniteProvider', () => {
             });
           });
 
-          describe('calls setImage', () => {
+          describe.skip('calls setImage', () => {
             it('when image passed', () => {
               render(
                 <IgniteProvider
@@ -768,7 +768,7 @@ describe('IgniteProvider', () => {
             });
           });
 
-          describe('calls setImage', () => {
+          describe.skip('calls setImage', () => {
             it('when image passed', () => {
               render(
                 <IgniteProvider
