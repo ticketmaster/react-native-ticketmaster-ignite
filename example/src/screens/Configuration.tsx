@@ -22,7 +22,7 @@ type ConfigurationProps = NativeStackScreenProps<
 const Configuration = ({ navigation }: ConfigurationProps) => {
   const { refreshConfiguration, setTicketDeepLink } = useIgnite();
   const { primaryColor, setPrimaryColor } = useContext(AppContext);
-  const [apiKeyValue, onApiKeyTextChange] = useState(Config.API_KEY || '');
+  const [apiKeyValue, onApiKeyTextChange] = useState('Gi2LTedKc3a56FruWiFIzbCPLCupPs0f');
   const [primaryColorValue, onPrimaryColorTextChange] =
     useState<string>(primaryColor);
   const [clientNameValue, onClientNameTextChange] = useState<string>(
