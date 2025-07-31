@@ -1,4 +1,4 @@
-Here is a config plugin created for an Expo app on Expo 52.
+Here is a config plugin created for an Expo app on Expo 52 against NPM Ignite version `2.8.5`.
 
 Create a file called `withIgnitePlugin.js` and paste in the below code
 
