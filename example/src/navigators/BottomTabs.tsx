@@ -57,7 +57,6 @@ const BottomTabs = () => {
           headerTitle: 'Tickets SDK',
           headerShadowVisible: false,
           tabBarLabel: 'Tickets SDK',
-          unmountOnBlur: true,
           tabBarIcon: ({ focused }) => (
             <MyEventsIcon fill={focused ? primaryColor : 'grey'} />
           ),
@@ -70,7 +69,6 @@ const BottomTabs = () => {
           headerTitle: 'Secure Entry SDK',
           headerShadowVisible: false,
           tabBarLabel: 'Secure Entry',
-          unmountOnBlur: true,
           tabBarIcon: ({ focused }) => (
             <MyEventsIcon fill={focused ? primaryColor : 'grey'} />
           ),
