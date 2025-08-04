@@ -5,11 +5,7 @@ import TicketmasterPrePurchase
 import TicketmasterPurchase
 
 extension PrePurchaseSDK: TMPrePurchaseNavigationDelegate, TMPrePurchaseAnalyticsDelegate {
-  func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, navigateToEventDetailsPageWithIdentifier eventIdentifier: String, domain: TicketmasterFoundation.MarketDomain?) {
-    return
-  }
-  
-  
+
   public func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, didShare pageTitle: String, and pageURL: URL, to activityType: UIActivity.ActivityType) {
     return
   }
@@ -19,7 +15,7 @@ extension PrePurchaseSDK: TMPrePurchaseNavigationDelegate, TMPrePurchaseAnalytic
     return
   }
   
-  public func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, navigateToEventDetailsPageWithIdentifier eventIdentifier: String) {
+  public func prePurchaseViewController(_ viewController: TicketmasterPrePurchase.TMPrePurchaseViewController, navigateToEventDetailsPageWithIdentifier eventIdentifier: String, domain: TicketmasterFoundation.MarketDomain?) {
     
     enum EventHeaderType: String {
         case noToolbars = "NO_TOOLBARS"
