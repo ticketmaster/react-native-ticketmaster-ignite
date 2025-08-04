@@ -138,7 +138,7 @@ dependencies {
 
 #### Set the minSdkVersion
 
-In `android/build.gradle` set the `minSdkVersion` to `26` and set the `compileSdkVersion` to `35`.
+In `android/build.gradle` set the `minSdkVersion` to `28` and set the `compileSdkVersion` to `35`.
 
 ## Setting up Expo
 
