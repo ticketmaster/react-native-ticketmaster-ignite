@@ -38,10 +38,10 @@ If your project is an **Expo Managed Workflow** project then skip the "Setting u
 
 ## Setting up iOS
 
-Edit the `Podfile` and set the platform to `15.0`
+Edit the `Podfile` and set the platform to `17.0`
 
 ```
-platform :ios, '15.0'
+platform :ios, '17.0'
 ```
 
 - `cd` into the `ios` directory and run `pod install`
@@ -138,7 +138,7 @@ dependencies {
 
 #### Set the minSdkVersion
 
-In `android/build.gradle` set the `minSdkVersion` to `26` and set the `compileSdkVersion` to `35`.
+In `android/build.gradle` set the `minSdkVersion` to `28` and set the `compileSdkVersion` to `35`.
 
 ## Setting up Expo
 

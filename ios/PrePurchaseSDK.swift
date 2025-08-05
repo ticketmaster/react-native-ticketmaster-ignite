@@ -45,10 +45,10 @@ class PrePurchaseSDK: UIViewController {
       
       if (self.venueId != "") {
         print("Set viewController to Venue")
-        viewController = TMPrePurchaseViewController.venueDetailsViewController(venueIdentifier: self.venueId, marketDomain: marketDomain, enclosingEnvironment: .modalPresentation, customFont: nil)
+        viewController = TMPrePurchaseViewController.venueDetailsViewController(venueIdentifier: self.venueId, marketDomain: marketDomain, enclosingEnvironment: .modalPresentation, customFont: nil, customBoldFont: nil)
       } else {
         print("Set viewController to Attraction")
-        viewController = TMPrePurchaseViewController.attractionDetailsViewController(attractionIdentifier: self.attractionId, marketDomain: marketDomain, enclosingEnvironment: .modalPresentation, customFont: nil)
+        viewController = TMPrePurchaseViewController.attractionDetailsViewController(attractionIdentifier: self.attractionId, marketDomain: marketDomain, enclosingEnvironment: .modalPresentation, customFont: nil, customBoldFont: nil)
       }
       
       viewController.modalPresentationStyle = .fullScreen

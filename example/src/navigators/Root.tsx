@@ -29,17 +29,10 @@ const Root = () => {
             backgroundColor: primaryColor,
           },
           headerTintColor: '#ffffff',
-          statusBarColor: primaryColor,
         }}
         component={Configuration}
       />
-      <Stack.Screen
-        name="BottomTabs"
-        options={{
-          statusBarColor: primaryColor,
-        }}
-        component={BottomTabs}
-      />
+      <Stack.Screen name="BottomTabs" component={BottomTabs} />
       <Stack.Screen
         name="Analytics"
         options={{
@@ -49,7 +42,6 @@ const Root = () => {
             backgroundColor: primaryColor,
           },
           headerTintColor: '#ffffff',
-          statusBarColor: primaryColor,
           headerLeft: () => <BackButton text="Back" />,
         }}
         component={Analytics}
