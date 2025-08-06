@@ -537,7 +537,7 @@ if (!isFocused) {
 }
 ```
 
-You can also create your own global state variables to unmount the screen with logic similar to the above and React Navigation also provide a layout prop where you can wrap a screen with a component that contains your custom logic, See more [here](https://reactnavigation.org/docs/upgrading-from-6.x/#the-unmountonblur-option-is-removed-in-favor-of-poptotoponblur-in-bottom-tab-navigator-and-drawer-navigator)
+You can also create your own global state variables to unmount the screen with logic similar to the above and React Navigation also provides a layout prop where you can wrap a screen with a component that contains your custom logic see more [here](https://reactnavigation.org/docs/upgrading-from-6.x/#the-unmountonblur-option-is-removed-in-favor-of-poptotoponblur-in-bottom-tab-navigator-and-drawer-navigator)
 
 ### Secure Entry View
 
