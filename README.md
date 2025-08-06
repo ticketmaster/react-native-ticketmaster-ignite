@@ -525,17 +525,19 @@ setTicketDeepLink('TICKET_ORDER_OR_EVENT_ID')
 
 You can then navigate to the component/screen which renders the Tickets SDK and the order with the order ID set will show above the My Tickets SDK view.
 
-If you are using React Navigation and you want to do multiple deep links within an app session without the user closing the app, you will need to set `unmountOnBlur` in the screen `options` prop to `true`, as the deep link is triggered on Ticket SDK mount.
+If you are using React Navigation and you want to do multiple deep links within an app session without the user closing the app, you will need to unmount the RN screen/Tickets SDK component and once remounted the ticket will pop up, as the deep link is triggered on Ticket SDK mount.
+
+To achieve this you can add the below to any screen:
 
 ```typescript
-<Tab.Screen
-  name="My Events"
-  component={MyEvents}
-  options={{
-    unmountOnBlur: true,
-  }}
-/>
+const isFocused = useIsFocused();
+
+if (!isFocused) {
+  return null;
+}
 ```
+
+You can also create your own global state variables to unmount the screen with logic similar to the above and React Navigation also provide a layout prop where you can wrap a screen with a component that contains your custom logic, See more [here](https://reactnavigation.org/docs/upgrading-from-6.x/#the-unmountonblur-option-is-removed-in-favor-of-poptotoponblur-in-bottom-tab-navigator-and-drawer-navigator)
 
 ### Secure Entry View
 
