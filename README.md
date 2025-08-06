@@ -525,7 +525,7 @@ setTicketDeepLink('TICKET_ORDER_OR_EVENT_ID')
 
 You can then navigate to the component/screen which renders the Tickets SDK and the order with the order ID set will show above the My Tickets SDK view.
 
-If you are using React Navigation and you want to do multiple deep links within an app session without the user closing the app, you will need to unmount the RN screen/Tickets SDK component and once remounted the ticket will pop up, as the deep link is triggered on Ticket SDK mount.
+If you are using React Navigation and you want to do multiple deep links within an app session without the user closing the app, you will need to unmount the RN screen/Tickets SDK component and once remounted the ticket will pop up, as the deep link is triggered on Tickets SDK mount.
 
 To achieve this you can add the below to any screen:
 
