@@ -12,7 +12,13 @@ type AuthSource = {
   archticsAccessToken?: string;
   mfxAccessToken?: string;
   sportXRAccessToken?: string;
+  sportXRIdToken?: string;
 };
+
+type SportXrData = {
+  sportXRcookieName?: string;
+  sportXRTeamDomain?: string;
+} | null;
 
 type LoginParams = {
   onLogin?: () => void | Promise<void>;
@@ -30,7 +36,11 @@ type AuthStateParams = {
   memberInfo: Record<string, any> | null;
 };
 
-type AccessToken = string | AuthSource | null;
+type iosTokenData = { accessToken: string; sportXRIdToken: string };
+
+type androidTokenData = AuthSource;
+
+type AccessToken = iosTokenData | androidTokenData | null;
 
 interface IgniteProviderProps {
   children: React.ReactNode;
@@ -67,9 +77,10 @@ type IgniteContextType = {
   logout: (logoutParams?: LogoutParams) => Promise<void>;
   logoutAll: (logoutParams?: LogoutParams) => Promise<void>;
   getIsLoggedIn: () => Promise<boolean>;
-  getToken: () => Promise<string | AuthSource | null>;
+  getToken: () => Promise<AccessToken>;
+  getSportXrData: () => Promise<SportXrData>;
   getMemberInfo: () => Promise<Record<string, any> | null>;
-  refreshToken: () => Promise<string | AuthSource | null>;
+  refreshToken: () => Promise<AccessToken>;
   refreshConfiguration: (
     refreshConfigParams: RefreshConfigParams
   ) => Promise<void>;
@@ -84,6 +95,7 @@ export const IgniteContext = createContext<IgniteContextType>({
   logoutAll: async () => {},
   getIsLoggedIn: async () => false,
   getToken: async () => null,
+  getSportXrData: async () => null,
   getMemberInfo: async () => null,
   refreshToken: async () => null,
   refreshConfiguration: async () => {},
@@ -406,6 +418,16 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     }
   }, [AccountsSDK]);
 
+  const getSportXrData = useCallback(async (): Promise<SportXrData> => {
+    try {
+      const result = await AccountsSDK.getSportXRData();
+      console.log('Accounts SDK SportXr Data retrieved:', result);
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  }, [AccountsSDK]);
+
   const getMemberInfo = useCallback(async () => {
     let result;
     try {
@@ -434,6 +456,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       } else {
         if (result === null) {
           await login();
+          // iOS has its own refresh method AccountsSDK.refreshToken(), Android only has one token method AccountsSDK.refreshToken() which the JS getToken() already calls
           return await getToken();
         } else {
           console.log(`Accounts SDK access token: ${JSON.stringify(result)}`);
@@ -485,6 +508,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         logoutAll,
         getIsLoggedIn,
         getToken,
+        getSportXrData,
         getMemberInfo,
         refreshToken,
         refreshConfiguration,

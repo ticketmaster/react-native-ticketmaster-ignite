@@ -228,30 +228,29 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
 
     runBlocking {
       try {
-        val hostAccessToken = async { authenticationSDK.getToken(AuthSource.HOST) }
-        val archticsAccessToken = async { authenticationSDK.getToken(AuthSource.ARCHTICS) }
-        val mfxAccessToken = async { authenticationSDK.getToken(AuthSource.MFX) }
-        val sportXRAccessToken = async { authenticationSDK.getToken(AuthSource.SPORTXR) }
+        val hostAccessToken = authenticationSDK.getToken(AuthSource.HOST)
+        val archticsAccessToken = authenticationSDK.getToken(AuthSource.ARCHTICS)
+        val mfxAccessToken = authenticationSDK.getToken(AuthSource.MFX)
+        val sportXRTokenData = authenticationSDK.getTMAuthToken(AuthSource.SPORTXR)
+        val sportXRAccessToken = sportXRTokenData?.accessToken
+        val sportXRIdToken = sportXRTokenData?.idToken
 
-        val (resArchticsAccessToken, resHostAccessToken, resMfxAccessToken, resSportXRAccessToken) = awaitAll(
-          archticsAccessToken,
-          hostAccessToken,
-          mfxAccessToken,
-          sportXRAccessToken
-        )
 
         val combinedTokens: WritableMap = Arguments.createMap().apply {
-          if (!resHostAccessToken.isNullOrEmpty()) {
-            putString("hostAccessToken", resHostAccessToken)
+          if (!hostAccessToken.isNullOrEmpty()) {
+            putString("hostAccessToken", hostAccessToken)
           }
-          if (!resArchticsAccessToken.isNullOrEmpty()) {
-            putString("archticsAccessToken", resArchticsAccessToken)
+          if (!archticsAccessToken.isNullOrEmpty()) {
+            putString("archticsAccessToken", archticsAccessToken)
           }
-          if (!resMfxAccessToken.isNullOrEmpty()) {
-            putString("mfxAccessToken", resMfxAccessToken)
+          if (!mfxAccessToken.isNullOrEmpty()) {
+            putString("mfxAccessToken", mfxAccessToken)
           }
-          if (!resSportXRAccessToken.isNullOrEmpty()) {
-            putString("sportXRAccessToken", resSportXRAccessToken)
+          if (!sportXRAccessToken.isNullOrEmpty()) {
+            putString("sportXRAccessToken", sportXRAccessToken)
+          }
+          if (!sportXRIdToken.isNullOrEmpty()) {
+            putString("sportXRIdToken", sportXRIdToken)
           }
         }
 
@@ -260,8 +259,8 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         }
         GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
 
-        if (resArchticsAccessToken.isNullOrEmpty() && resHostAccessToken.isNullOrEmpty() &&
-          resMfxAccessToken.isNullOrEmpty() && resSportXRAccessToken.isNullOrEmpty()
+        if (archticsAccessToken.isNullOrEmpty() && hostAccessToken.isNullOrEmpty() &&
+          mfxAccessToken.isNullOrEmpty() && sportXRAccessToken.isNullOrEmpty()
         ) {
           promise.resolve(null)
         } else {
@@ -269,6 +268,35 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         }
       } catch (e: Exception) {
         promise.reject("Accounts SDK refreshToken Error", e)
+      }
+    }
+  }
+
+  @ReactMethod
+  fun getSportXRData(promise: Promise) {
+    val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
+    if (authenticationSDK == null) {
+      promise.resolve(null)
+      return
+    }
+
+    runBlocking {
+      try {
+        val sportXRcookieName = authenticationSDK.configuration.sportXR?.cookieName
+        // Not available on Android Accounts SDK yet, manually prefix URL scheme to cookieName for now
+        // val sportXRTeamDomain = authenticationSDK.configuration.sportXR?.teamDomain
+
+        val sportXRdata: WritableMap = Arguments.createMap().apply {
+          if (!sportXRcookieName.isNullOrEmpty()) {
+            putString("sportXRcookieName", sportXRcookieName)
+          }
+        //  if (!sportXRTeamDomain.isNullOrEmpty()) {
+        //   putString("sportXRTeamDomain", sportXRTeamDomain)
+        //  }
+        }
+        promise.resolve(sportXRdata)
+      } catch (e: Exception) {
+        promise.reject("Accounts SDK SportXR Data Error", e)
       }
     }
   }

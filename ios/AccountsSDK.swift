@@ -76,7 +76,7 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     TMAuthentication.shared.validToken { authToken in
       print("Token Refreshed (if needed)")
       print(" - AuthToken: \(authToken.accessToken.prefix(20))...")
-      let data = ["accessToken": authToken.accessToken]
+      let data = ["accessToken": authToken.accessToken, "sportXRIdToken": authToken.idToken ?? ""]
       resolve(data)
     } aborted: { oldAuthToken, backend in
       print("Refresh Login Aborted by User")
@@ -106,7 +106,7 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   @objc public func getToken(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
       print("Token Retrieved")
-      let data = ["accessToken": authToken.accessToken]
+      let data = ["accessToken": authToken.accessToken, "sportXRIdToken": authToken.idToken ?? ""]
       resolve(data)
     } aborted: { oldAuthToken, backend in
       print("Token Retrieval Aborted ")
@@ -118,6 +118,17 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     }
   }
   
+  @objc public func getSportXRData (_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
+    TMAuthentication.shared.apigeeConfig { config in
+      print("SportXR Data Retrieved")
+      let data = [ "sportXRcookieName": config.sportXR?.cookieName ?? "", "sportXRTeamDomain": config.sportXR?.teamDomain ?? ""]
+      resolve(data as [String : Any])
+    } failure: { error in
+      print("SportXR Data Retrieval Error: \(error.localizedDescription)")
+      reject( "Accounts SDK SportXR Data Retrieval Error", error.localizedDescription, error as NSError)
+    }
+  }
+  
   @objc public func isLoggedIn(_ resolve: @escaping ([String: Bool]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
       let hasToken = TMAuthentication.shared.hasToken()
@@ -125,7 +136,7 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     } aborted: { oldAuthToken, backend in
       resolve(["result": false])
     } failure: { oldAuthToken, error, backend in
-        reject("Accounts SDK Is Logged In Error", error.localizedDescription, error as NSError)
+      reject("Accounts SDK Is Logged In Error", error.localizedDescription, error as NSError)
     }
   }
   
