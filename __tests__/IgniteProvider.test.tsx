@@ -1573,9 +1573,8 @@ describe('IgniteProvider', () => {
         });
 
         it('returns the access token', async () => {
-          const fakeGetToken = jest.fn(() =>
-            Promise.resolve({ accessToken: '123' })
-          );
+          const iosAccessToken = { accessToken: '123' };
+          const fakeGetToken = jest.fn(() => Promise.resolve(iosAccessToken));
           NativeModules.AccountsSDK = {
             getToken: fakeGetToken,
           };
@@ -1605,7 +1604,7 @@ describe('IgniteProvider', () => {
           });
 
           expect(fakeGetToken).toHaveBeenCalled();
-          expect(accessToken).toEqual('123');
+          expect(accessToken).toEqual(iosAccessToken);
         });
       });
 
@@ -1615,7 +1614,10 @@ describe('IgniteProvider', () => {
         });
 
         it('returns the access token', async () => {
-          const fakeRefreshToken = jest.fn(() => Promise.resolve('111'));
+          const androidAccessToken = { accessToken: '123' };
+          const fakeRefreshToken = jest.fn(() =>
+            Promise.resolve(androidAccessToken)
+          );
           NativeModules.AccountsSDK = {
             refreshToken: fakeRefreshToken,
           };
@@ -1645,7 +1647,7 @@ describe('IgniteProvider', () => {
           });
 
           expect(fakeRefreshToken).toHaveBeenCalled();
-          expect(accessToken).toEqual('111');
+          expect(accessToken).toEqual(androidAccessToken);
         });
       });
     });
@@ -1734,8 +1736,9 @@ describe('IgniteProvider', () => {
       describe('ios', () => {
         it('returns a token', async () => {
           Platform.OS = 'ios';
+          const iosAccessToken = { accessToken: '123' };
           const fakeRefreshToken = jest.fn(() =>
-            Promise.resolve({ accessToken: '909' })
+            Promise.resolve(iosAccessToken)
           );
           NativeModules.AccountsSDK = {
             refreshToken: fakeRefreshToken,
@@ -1766,14 +1769,17 @@ describe('IgniteProvider', () => {
           });
 
           expect(fakeRefreshToken).toHaveBeenCalled();
-          expect(token).toEqual('909');
+          expect(token).toEqual(iosAccessToken);
         });
       });
 
       describe('android', () => {
         it('returns a token', async () => {
           Platform.OS = 'android';
-          const fakeRefreshToken = jest.fn(() => Promise.resolve('909'));
+          const androidAccessToken = { accessToken: '123' };
+          const fakeRefreshToken = jest.fn(() =>
+            Promise.resolve(androidAccessToken)
+          );
           NativeModules.AccountsSDK = {
             refreshToken: fakeRefreshToken,
           };
@@ -1803,7 +1809,7 @@ describe('IgniteProvider', () => {
           });
 
           expect(fakeRefreshToken).toHaveBeenCalled();
-          expect(token).toEqual('909');
+          expect(token).toEqual(androidAccessToken);
         });
       });
     });

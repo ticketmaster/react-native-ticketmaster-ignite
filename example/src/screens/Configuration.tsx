@@ -46,26 +46,43 @@ const Configuration = ({ navigation }: ConfigurationProps) => {
   const [ticketDeeplink, onTicketDeepLinkTextChange] = useState('');
 
   const onConfigure = async () => {
-    await refreshConfiguration({
-      apiKey: apiKeyValue,
-      primaryColor: primaryColorValue,
-      clientName: clientNameValue,
-      environment: environmentValue,
-      region: regionValue,
-      marketDomain: marketDomainValue,
-      eventHeaderType: eventHeaderTypeValue,
-      skipAutoLogin: true,
-    });
-    setPrimaryColor(primaryColorValue);
-    ticketDeeplink && setTicketDeepLink(ticketDeeplink);
-    navigation.navigate('BottomTabs', {
-      screen: 'Home',
-      params: {
-        venueId: VenueIdValue,
-        attractionId: attractionIdValue,
-        eventId: eventIdValue,
-      },
-    });
+    try {
+      await refreshConfiguration({
+        apiKey: apiKeyValue,
+        primaryColor: primaryColorValue,
+        clientName: clientNameValue,
+        environment: environmentValue,
+        region: regionValue,
+        marketDomain: marketDomainValue,
+        eventHeaderType: eventHeaderTypeValue,
+        skipAutoLogin: true,
+      });
+      setPrimaryColor(primaryColorValue);
+      ticketDeeplink && setTicketDeepLink(ticketDeeplink);
+      navigation.navigate('BottomTabs', {
+        screen: 'Home',
+        params: {
+          venueId: VenueIdValue,
+          attractionId: attractionIdValue,
+          eventId: eventIdValue,
+        },
+      });
+    } catch (e) {
+      console.log(
+        'Accounts SDK refreshConfiguration error',
+        (e as Error).message
+      );
+      setPrimaryColor(primaryColorValue);
+      ticketDeeplink && setTicketDeepLink(ticketDeeplink);
+      navigation.navigate('BottomTabs', {
+        screen: 'Home',
+        params: {
+          venueId: VenueIdValue,
+          attractionId: attractionIdValue,
+          eventId: eventIdValue,
+        },
+      });
+    }
   };
 
   return (

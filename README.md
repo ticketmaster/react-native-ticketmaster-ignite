@@ -273,15 +273,22 @@ try {
 {isLoggedIn && <Text>You are logged in<Text/>}
 ```
 
-`getToken()` and `refreshToken()` return different data types per platform. iOS always returns one token in a `string` and Android returns an object. See Android object type below: 
+`getToken()` and `refreshToken()` return different properties per native platform. iOS always returns the currently configured API key's access token inside `accessToken`. See object types below: 
 
+Android: 
 ```typescript
 type AuthSource = {
   hostAccessToken?: string;
   archticsAccessToken?: string;
   mfxAccessToken?: string;
   sportXRAccessToken?: string;
+  sportXRIdToken?: string;
 };
+```
+
+iOS
+```typescript
+type iosTokenData = { accessToken: string; sportXRIdToken: string };
 ```
 
 You can see the results of `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` in the console when running the example app.
@@ -347,6 +354,10 @@ If you are using the `AccountsSDK` module and not `useIgnite()` then `getToken()
 #### Refresh Token
 
 The Accounts SDK only returns an access token, not a refresh token. If the user is logged in and `getToken()` ever returns `null`, the refresh token may have expired. In this situation you can either call `logout()` so the user can manually login again to refresh the refresh token and receive a new access token or you can call `refreshToken()` which will automatically present the login UI to the user (you must use `useIgnite`'s `refreshToken()` method to trigger this behaviour). If you do not need to use an OAuth access token from the Accounts SDK, you typically do not need to worry about this and can rely on `isLoggedIn` from `useIgnite()` to control your login UI state.
+
+On recent versions of the iOS Accounts SDK's it has been observed that once the refresh token expires `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` methods are returning `TicketmasterFoundation.ConnectionError error 0` instead of `null`. In these situations, `isLoggedIn` from `useIgnite()` will be `false` and `getIsLoggedIn()` would throw an exception, so `isLoggedIn` is a better variable to use to control the logged in UI state of the whole application, whereas `await getIsLoggedIn()` is good to call directly after `await login()` or `await refreshToken()` to check/retrieve a boolean to store in your own custom variable. `isLoggedIn` also works good in useEffect dep arrays.
+
+As a fail safe, it may be beneficial to call `refreshToken()` **once** on the first log occurrence of `TicketmasterFoundation.ConnectionError error 0` being logged a catch block, to encourage the user to login just in case the error is due to an expired refresh token instead of a backend server issue.
 
 #### Reconfigure Accounts SDK
 
