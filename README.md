@@ -812,11 +812,6 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
 
 To turn on useful logging to inspect data and for debugging you can turn on logging by passing `true` to the `enableLogs` prop on `IgniteProvider`
 
-As the initial Accounts SDK configuration is done for your app via `IgniteProvider`, any failures in this process will still be logged, as if the Accounts SDK configuration fails then none of the Ignite SDK's will work in your application.
-
-On any logs of `TicketmasterFoundation.ConnectionError error 0` see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
-
-
 ```typescript
 <IgniteProvider enableLogs={true}>
   <App />
@@ -852,6 +847,12 @@ const onConfigurationSuccess = () =>
     configureIgniteSdks()
   }, [refreshConfiguration])
 ```
+
+
+As the initial Accounts SDK configuration is done for your app via `IgniteProvider`, any failures in this process will still be logged, as if the Accounts SDK configuration fails then none of the Ignite SDK's will work in your application.
+
+
+On any logs of `TicketmasterFoundation.ConnectionError error 0` see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
 
 
 ## Running the example app  
