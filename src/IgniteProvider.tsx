@@ -46,6 +46,7 @@ interface IgniteProviderProps {
   children: React.ReactNode;
   autoUpdate?: boolean;
   prebuiltModules?: PrebuiltModules;
+  enableLogs?: boolean;
   analytics?: (data: IgniteAnalytics) => void | Promise<void>;
   options: {
     apiKey: string;
@@ -132,6 +133,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   children,
   options,
   autoUpdate = true,
+  enableLogs = false,
   prebuiltModules = defaultPrebuiltModules,
   analytics,
 }) => {
@@ -155,13 +157,28 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
   const setAccountDetails = useCallback(async () => {
     let _isLoggedIn = false;
+    let isLoggedInResult;
+    let memberInfoResult;
     try {
-      const isLoggedInResult = await AccountsSDK.isLoggedIn();
+      try {
+        isLoggedInResult = await AccountsSDK.isLoggedIn();
+      } catch (e) {
+        if ((e as Error).message.includes('User not logged in'))
+          throw new Error(`User not logged in`);
+        throw new Error(`Accounts SDK isLoggedIn error: ${e}`);
+      }
+
       const isLoggedInParsed =
         Platform.OS === 'ios' ? isLoggedInResult.result : isLoggedInResult;
       _isLoggedIn = isLoggedInParsed;
 
-      const memberInfoResult = await AccountsSDK.getMemberInfo();
+      try {
+        memberInfoResult = await AccountsSDK.getMemberInfo();
+      } catch (e) {
+        if ((e as Error).message.includes('User not logged in'))
+          throw new Error(`User not logged in`);
+        throw new Error(`Accounts SDK memberInfo error: ${e}`);
+      }
 
       setAuthState({
         isConfigured: true,
@@ -192,12 +209,18 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   const configureAccountsSDK = useCallback(async () => {
     try {
       const result = await AccountsSDK.configureAccountsSDK();
-      console.log(result);
+      enableLogs && console.log(result);
+    } catch (e) {
+      throw new Error(
+        `Accounts SDK configuration error: ${(e as Error).message}`
+      );
+    }
+    try {
       autoUpdate && (await setAccountDetails());
     } catch (e) {
       throw e;
     }
-  }, [AccountsSDK, autoUpdate, setAccountDetails]);
+  }, [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]);
 
   const setNativeConfigValues = useCallback(() => {
     Config.setConfig('apiKey', apiKey);
@@ -259,7 +282,13 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       try {
         await configureAccountsSDK();
       } catch (e) {
-        console.log(`Accounts SDK error: ${(e as Error).message}`);
+        if (
+          (e as Error).message.includes('Accounts SDK configuration error:')
+        ) {
+          console.error(`${(e as Error).message}`);
+        } else {
+          console.log(`${(e as Error).message}`);
+        }
       }
     };
     onConfigureAccountsSdk();
@@ -314,8 +343,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           try {
             const result = await AccountsSDK.login();
             if (result.accessToken) {
-              console.log('Accounts SDK login successful');
-              !skipUpdate && (await setAccountDetails());
+              enableLogs && console.log('Accounts SDK login successful');
+              !skipUpdate && autoUpdate && (await setAccountDetails());
               //avoid await on callbacks passed to library as there is no guarantee how long they will take to resolve
               onLogin && onLogin();
             }
@@ -332,8 +361,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           }, 8000);
           AccountsSDK.login(async (resultCode: any) => {
             if (resultCode === -1) {
-              console.log('Accounts SDK login successful');
-              !skipUpdate && (await setAccountDetails());
+              enableLogs && console.log('Accounts SDK login successful');
+              !skipUpdate && autoUpdate && (await setAccountDetails());
               onLogin && onLogin();
             }
             resolve();
@@ -344,57 +373,62 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     },
     // isLoggingIn will update frequently, login() should not trigger/change on those updates
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [AccountsSDK, setAccountDetails]
+    [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]
   );
 
   const logout = useCallback(
     // eslint-disable-next-line prettier/prettier
-    async ({ onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }): Promise<void> => {
+    async (
+      { onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }
+    ): Promise<void> => {
       try {
         await AccountsSDK.logout();
-        console.log('Accounts SDK logout successful');
-        !skipUpdate && (await setAccountDetails());
+        enableLogs && console.log('Accounts SDK logout successful');
+        !skipUpdate && autoUpdate && (await setAccountDetails());
         onLogout && onLogout();
       } catch (e) {
         throw e;
       }
     },
-    [AccountsSDK, setAccountDetails]
+    [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]
   );
 
   const logoutAll = useCallback(
     // eslint-disable-next-line prettier/prettier
-    async ({ onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }): Promise<void> => {
+    async (
+      { onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }
+    ): Promise<void> => {
       try {
         Platform.OS === 'ios'
           ? await AccountsSDK.logoutAll()
           : await AccountsSDK.logout();
-        console.log('Accounts SDK logoutAll successful');
-        !skipUpdate && (await setAccountDetails());
+        enableLogs && console.log('Accounts SDK logoutAll successful');
+        !skipUpdate && autoUpdate && (await setAccountDetails());
         onLogout && onLogout();
       } catch (e) {
         throw e;
       }
     },
-    [AccountsSDK, setAccountDetails]
+    [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]
   );
 
   const getIsLoggedIn = useCallback(async (): Promise<boolean> => {
     try {
       const result = await AccountsSDK.isLoggedIn();
-      console.log(
-        `Accounts SDK isLoggedIn: ${Platform.OS === 'ios' ? !!result.result : result}`
-      );
+      enableLogs &&
+        console.log(
+          `Accounts SDK isLoggedIn: ${Platform.OS === 'ios' ? !!result.result : result}`
+        );
       return Platform.OS === 'ios' ? !!result.result : result;
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
-        console.log('Accounts SDK isLoggedIn: false');
+        enableLogs && console.log('Accounts SDK isLoggedIn: false');
         return false;
       } else {
         throw e;
       }
     }
-  }, [AccountsSDK]);
+  }, [AccountsSDK, enableLogs]);
 
   const getToken = useCallback(async (): Promise<AccessToken> => {
     let accessToken;
@@ -406,50 +440,58 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       } else if (Platform.OS === 'android') {
         accessToken = await AccountsSDK.refreshToken();
       }
-      console.log(`Accounts SDK access token: ${JSON.stringify(accessToken)}`);
+      enableLogs &&
+        console.log(
+          `Accounts SDK access token: ${JSON.stringify(accessToken)}`
+        );
       return accessToken;
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
-        console.log('Accounts SDK access token: null');
+        enableLogs && console.log('Accounts SDK access token: null');
         return null;
       } else {
         throw e;
       }
     }
-  }, [AccountsSDK]);
+  }, [AccountsSDK, enableLogs]);
 
   const getSportXrData = useCallback(async (): Promise<SportXrData> => {
     try {
       const result = await AccountsSDK.getSportXRData();
-      console.log('Accounts SDK SportXr Data retrieved:', result);
+      enableLogs &&
+        console.log(
+          `Accounts SDK SportXr Data retrieved: ${JSON.stringify(result)}`
+        );
       return result;
     } catch (e) {
       throw e;
     }
-  }, [AccountsSDK]);
+  }, [AccountsSDK, enableLogs]);
 
   const getMemberInfo = useCallback(async () => {
     let result;
     try {
       result = await AccountsSDK.getMemberInfo();
-      console.log(`Accounts SDK memberInfo: ${JSON.stringify(result)}`);
+      enableLogs &&
+        console.log(`Accounts SDK memberInfo: ${JSON.stringify(result)}`);
       return Platform.OS === 'ios' ? result : JSON.parse(result);
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
-        console.log('Accounts SDK memberInfo: null');
+        enableLogs && console.log('Accounts SDK memberInfo: null');
         return null;
       } else {
         throw e;
       }
     }
-  }, [AccountsSDK]);
+  }, [AccountsSDK, enableLogs]);
 
   const refreshToken = useCallback(async (): Promise<AccessToken> => {
     try {
       const result = await AccountsSDK.refreshToken();
       if (Platform.OS === 'ios') {
         // login() is automatically triggered in the iOS Accounts SDK refreshToken() method via TMAuthentication.shared.validToken()
-        console.log(`Accounts SDK access token: ${JSON.stringify(result)}`);
+        enableLogs &&
+          console.log(`Accounts SDK access token: ${JSON.stringify(result)}`);
         return result.accessToken === '' ? null : result;
       } else {
         if (result === null) {
@@ -457,19 +499,20 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           // iOS has its own refresh method AccountsSDK.refreshToken(), Android only has one token method AccountsSDK.refreshToken() which the JS getToken() already calls
           return await getToken();
         } else {
-          console.log(`Accounts SDK access token: ${JSON.stringify(result)}`);
+          enableLogs &&
+            console.log(`Accounts SDK access token: ${JSON.stringify(result)}`);
           return result;
         }
       }
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
-        console.log('Accounts SDK refresh token: null');
+        enableLogs && console.log('Accounts SDK refresh token: null');
         return null;
       } else {
         throw e;
       }
     }
-  }, [AccountsSDK, getToken, login]);
+  }, [AccountsSDK, enableLogs, getToken, login]);
 
   const refreshConfiguration = useCallback(
     // eslint-disable-next-line prettier/prettier, @typescript-eslint/no-shadow

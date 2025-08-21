@@ -210,7 +210,7 @@ The `eventHeaderType` property specifies what tools will be available in the hea
 
 ##### The `autoUpdate` prop 
 
-`autoUpdate` is a prop that can be set to false to prevent `IgniteProvider` from rerendering your app on app launch. (⚠️ warning: if set to `false`, `authState`'s `isLoggedIn`, `memberInfo` and `isConfigured` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually after app restarts. The default value is `true`. See more on `authState` later on.)
+`autoUpdate` is a prop that can be set to `false` to prevent `IgniteProvider` from rerendering your app when the auth state changes, as you may want to update and maintain this state with your own logic. (⚠️ warning: if set to `false`, `authState`'s `isLoggedIn`, `memberInfo` and `isConfigured` will not automatically update so will be unavailable for your app and you will have to call `getMemberInfo`, `getIsLoggedIn` and use `IgniteAnalytics` manually to retrieve auth states and data for your app. The default value is `true`. See more on `authState` later on.)
 
 ```typescript
 import { IgniteProvider } from 'react-native-ticketmaster-ignite';
@@ -358,6 +358,8 @@ The Accounts SDK only returns an access token, not a refresh token. If the user 
 On recent versions of the iOS Accounts SDK's it has been observed that once the refresh token expires `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` methods are returning `TicketmasterFoundation.ConnectionError error 0` instead of `null`. In these situations, `isLoggedIn` from `useIgnite()` will be `false` and `getIsLoggedIn()` would throw an exception, so `isLoggedIn` is a better variable to use to control the logged in UI state of the whole application, whereas `await getIsLoggedIn()` is good to call directly after `await login()` or `await refreshToken()` to check/retrieve a boolean to store in your own custom variable. `isLoggedIn` also works good in useEffect dep arrays.
 
 As a fail safe, it may be beneficial to call `refreshToken()` **once** on the first log occurrence of `TicketmasterFoundation.ConnectionError error 0` being logged a catch block, to encourage the user to login just in case the error is due to an expired refresh token instead of a backend server issue.
+
+To catch `TicketmasterFoundation.ConnectionError error 0` logs on app launch [read](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#reconfigure-accounts-sdk)
 
 #### Reconfigure Accounts SDK
 
@@ -805,6 +807,52 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
   }
 };
 ```
+
+### Debugging/Logging
+
+To turn on useful logging to inspect data and for debugging you can turn on logging by passing `true` to the `enableLogs` prop on `IgniteProvider`
+
+As the initial Accounts SDK configuration is done for your app via `IgniteProvider`, any failures in this process will still be logged, as if the Accounts SDK configuration fails then none of the Ignite SDK's will work in your application.
+
+On any logs of `TicketmasterFoundation.ConnectionError error 0` [read](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
+
+
+```typescript
+<IgniteProvider enableLogs={true}>
+  <App />
+</IgniteProvider>
+```
+
+Or use callbacks/exceptions/analytics/returned method data to create your own debug logs
+
+Example Accounts SDK configuration callback log example:
+
+```typescript
+  const { refreshConfiguration } = useIgnite()
+
+const onConfigurationSuccess = () =>
+  console.log('Accounts SDK configuration successful');
+
+ useEffect(() => {
+    const configureIgniteSdks = async () => {
+      try {
+        await refreshConfiguration({
+          apiKey: 'someApiKey',
+          clientName: 'Team 2',
+          primaryColor: '#FF0000',
+          onSuccess: onConfigurationSuccess,
+        })
+      } catch (e) {
+        console.log(
+          'Account SDK refresh configuration error:',
+          (e as Error).message
+        )
+      }
+    }
+    configureIgniteSdks()
+  }, [refreshConfiguration])
+```
+
 
 ## Running the example app  
 
