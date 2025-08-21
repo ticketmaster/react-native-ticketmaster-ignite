@@ -359,7 +359,7 @@ On recent versions of the iOS Accounts SDK's it has been observed that once the 
 
 As a fail safe, it may be beneficial to call `refreshToken()` **once** on the first log occurrence of `TicketmasterFoundation.ConnectionError error 0` being logged a catch block, to encourage the user to login just in case the error is due to an expired refresh token instead of a backend server issue.
 
-To catch `TicketmasterFoundation.ConnectionError error 0` logs on app launch [read](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#reconfigure-accounts-sdk)
+To catch `TicketmasterFoundation.ConnectionError error 0` logs on app launch see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#reconfigure-accounts-sdk)
 
 #### Reconfigure Accounts SDK
 
@@ -814,7 +814,7 @@ To turn on useful logging to inspect data and for debugging you can turn on logg
 
 As the initial Accounts SDK configuration is done for your app via `IgniteProvider`, any failures in this process will still be logged, as if the Accounts SDK configuration fails then none of the Ignite SDK's will work in your application.
 
-On any logs of `TicketmasterFoundation.ConnectionError error 0` [read](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
+On any logs of `TicketmasterFoundation.ConnectionError error 0` see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
 
 
 ```typescript
