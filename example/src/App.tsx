@@ -25,6 +25,7 @@ const App = () => {
       <NavigationContainer theme={navTheme}>
         <IgniteProvider
           analytics={igniteAnalytics}
+          enableLogs={true}
           options={{
             apiKey: Config.API_KEY || '',
             clientName: Config.CLIENT_NAME || '',

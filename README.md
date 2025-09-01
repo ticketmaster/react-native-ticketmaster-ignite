@@ -210,7 +210,7 @@ The `eventHeaderType` property specifies what tools will be available in the hea
 
 ##### The `autoUpdate` prop 
 
-`autoUpdate` is a prop that can be set to false to prevent `IgniteProvider` from rerendering your app on app launch. (⚠️ warning: if set to `false`, `authState`'s `isLoggedIn`, `memberInfo` and `isConfigured` will not automatically update and you will have to call `getMemberInfo` and `getIsLoggedIn` manually after app restarts. The default value is `true`. See more on `authState` later on.)
+`autoUpdate` is a prop that can be set to `false` to prevent `IgniteProvider` from rerendering your app when the auth state changes, as you may want to update and maintain this state with your own logic. (⚠️ warning: if set to `false`, `authState`'s `isLoggedIn`, `memberInfo` and `isConfigured` will not automatically update so will be unavailable for your app and you will have to call `getMemberInfo`, `getIsLoggedIn` and use `IgniteAnalytics` manually to retrieve auth states and data for your app. The default value is `true`. See more on `authState` later on.)
 
 ```typescript
 import { IgniteProvider } from 'react-native-ticketmaster-ignite';
@@ -233,7 +233,7 @@ To handle authentication in a React Native app you can either use the AccountsSD
 
 The `useIgnite` hook implements all of the native Accounts SDK methods for easy out of the box use in a React Native apps. It also provides `isLoggingIn` and an `authState` object with properties `isLoggedIn`, `memberInfo` and `isConfigured`, these properties update themselves during and after authenticaion.
 
-Once the user authenticates `isLoggedIn` will remain true after app restarts
+Once the user authenticates `isLoggedIn` will remain true after app restarts. On the initial render, `isLoggedIn` is `false` and is updated to `true` when the login state is retrieved from the native SDK's. To avoid an incorrect logged out state on the first render, on your apps home screens you can hide sign in text/UI or use an `<ActivityIndicator />`/loading UI in that area of the screen while `isConfigured` is false. 
 
 `isConfigured` becomes true after the Accounts SDK has successfully configured and the local storage `isLoggedIn` value and `memberInfo` response data have both been retrieved by the SDK. This makes it useful to condition against any API calls which require OAuth tokens or any UI buttons that trigger Ignite SDK views and methods, as if the Accounts SDK does not configure, auth will not work in any of the SDK's and API calls that require OAuth tokens will fail.
 
@@ -341,7 +341,7 @@ Exposes the following functions:
 - `configureAccountsSDK` - Called in `IgniteProvider` before `<App />` is mounted, generally no need to implement this method manually. 
 - `login`
 - `logout`
-- `logoutAll`
+- `logoutAll` - iOS only
 - `refreshToken`
 - `getMemberInfo`
 - `getToken`
@@ -358,6 +358,8 @@ The Accounts SDK only returns an access token, not a refresh token. If the user 
 On recent versions of the iOS Accounts SDK's it has been observed that once the refresh token expires `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` methods are returning `TicketmasterFoundation.ConnectionError error 0` instead of `null`. In these situations, `isLoggedIn` from `useIgnite()` will be `false` and `getIsLoggedIn()` would throw an exception, so `isLoggedIn` is a better variable to use to control the logged in UI state of the whole application, whereas `await getIsLoggedIn()` is good to call directly after `await login()` or `await refreshToken()` to check/retrieve a boolean to store in your own custom variable. `isLoggedIn` also works good in useEffect dep arrays.
 
 As a fail safe, it may be beneficial to call `refreshToken()` **once** on the first log occurrence of `TicketmasterFoundation.ConnectionError error 0` being logged a catch block, to encourage the user to login just in case the error is due to an expired refresh token instead of a backend server issue.
+
+To catch `TicketmasterFoundation.ConnectionError error 0` logs on app launch see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#reconfigure-accounts-sdk)
 
 #### Reconfigure Accounts SDK
 
@@ -805,6 +807,53 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
   }
 };
 ```
+
+### Debugging/Logging
+
+To turn on useful logging to inspect data and for debugging you can turn on logging by passing `true` to the `enableLogs` prop on `IgniteProvider`
+
+```typescript
+<IgniteProvider enableLogs={true}>
+  <App />
+</IgniteProvider>
+```
+
+Or use callbacks/exceptions/analytics/returned method data to create your own debug logs
+
+Example Accounts SDK configuration callback log example:
+
+```typescript
+  const { refreshConfiguration } = useIgnite()
+
+const onConfigurationSuccess = () =>
+  console.log('Accounts SDK configuration successful');
+
+ useEffect(() => {
+    const configureIgniteSdks = async () => {
+      try {
+        await refreshConfiguration({
+          apiKey: 'someApiKey',
+          clientName: 'Team 2',
+          primaryColor: '#FF0000',
+          onSuccess: onConfigurationSuccess,
+        })
+      } catch (e) {
+        console.log(
+          'Account SDK refresh configuration error:',
+          (e as Error).message
+        )
+      }
+    }
+    configureIgniteSdks()
+  }, [refreshConfiguration])
+```
+
+
+As the initial Accounts SDK configuration is done for your app via `IgniteProvider`, any failures in this process will still be logged, as if the Accounts SDK configuration fails then none of the Ignite SDK's will work in your application.
+
+
+On any logs of `TicketmasterFoundation.ConnectionError error 0` see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
+
 
 ## Running the example app  
 
