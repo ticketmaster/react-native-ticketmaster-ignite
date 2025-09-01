@@ -305,11 +305,13 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       async (result: IgniteAnalytics) => {
         if (result && analytics) analytics(result);
         if (
-          ((result.purchaseSdkDidEndCheckoutFor ||
-            result.ticketsSdkDidViewEvents) &&
-            autoUpdate) ||
-          // iOS TMAuthentication.shared.validToken() successful login
-          (result.accountsSdkLoggedIn && !isLoggingIn && Platform.OS === 'ios')
+          (result.purchaseSdkDidEndCheckoutFor ||
+            result.ticketsSdkDidViewEvents ||
+            // iOS TMAuthentication.shared.validToken() successful login
+            (result.accountsSdkLoggedIn &&
+              !isLoggingIn &&
+              Platform.OS === 'ios')) &&
+          autoUpdate
         ) {
           await setAccountDetails();
         }
