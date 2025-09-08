@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
+  ScrollView,
   StyleSheet,
 } from 'react-native';
 
@@ -48,25 +48,23 @@ const SectionDropdown = ({
       </TouchableOpacity>
       {isDropdownVisible && (
         <View style={styles.dropdown}>
-          <FlatList
-            data={data}
-            // @ts-ignore
-            keyExtractor={(item, index) => index.toString()}
-            horizontal={false}
-            renderItem={({ item }) => (
+          <ScrollView nestedScrollEnabled={true}>
+            {data.map((item, index) => (
               <TouchableOpacity
+                key={index}
                 style={styles.option}
                 onPress={() => handleSelect(item)}
               >
                 <Text style={styles.optionText}>{item}</Text>
               </TouchableOpacity>
-            )}
-          />
+            ))}
+          </ScrollView>
         </View>
       )}
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     width: '100%',
