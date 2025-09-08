@@ -53,6 +53,7 @@ const SectionDropdown = ({
             // @ts-ignore
             keyExtractor={(item, index) => index.toString()}
             horizontal={false}
+            nestedScrollEnabled={true}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.option}
