@@ -40,10 +40,6 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         resultCode: Int,
         data: Intent?
       ) {
-        if (mResultCallback != null) {
-          mResultCallback!!.invoke(resultCode)
-          mResultCallback = null
-        }
         if (resultCode == Activity.RESULT_CANCELED) {
           val params: WritableMap = Arguments.createMap().apply {
             putString("accountsSdkLoginAborted", "accountsSdkLoginAborted")
@@ -59,6 +55,10 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
             putString("accountsSdkLoginAccountCompleted", "accountsSdkLoginAccountCompleted")
           }
           GlobalEventEmitter.sendEvent("igniteAnalytics", loginCompletedParams)
+        }
+        if (mResultCallback != null) {
+          mResultCallback!!.invoke(resultCode)
+          mResultCallback = null
         }
       }
     }

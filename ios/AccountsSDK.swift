@@ -136,7 +136,12 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     } aborted: { oldAuthToken, backend in
       resolve(["result": false])
     } failure: { oldAuthToken, error, backend in
-      reject("Accounts SDK Is Logged In Error", error.localizedDescription, error as NSError)
+      let hasToken = TMAuthentication.shared.hasToken()
+      if hasToken {
+        resolve(["result": hasToken])
+      } else {
+        reject("Accounts SDK Is Logged In Error", error.localizedDescription, error as NSError)
+      }
     }
   }
   
