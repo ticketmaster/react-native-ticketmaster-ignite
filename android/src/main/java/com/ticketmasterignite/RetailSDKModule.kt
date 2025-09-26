@@ -12,7 +12,7 @@ class RetailSDKModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   @ReactMethod
   fun presentPrePurchaseVenue(venueId: String) {
-    val context = currentActivity
+    val context = reactApplicationContext.currentActivity
     val intent = Intent(context, PrePurchaseActivity::class.java)
     intent.putExtra("venueId", venueId)
     context?.startActivity(intent)
@@ -20,7 +20,7 @@ class RetailSDKModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   @ReactMethod
   fun presentPrePurchaseAttraction(attractionId: String) {
-    val context = currentActivity
+    val context = reactApplicationContext.currentActivity
     val intent = Intent(context, PrePurchaseActivity::class.java)
     intent.putExtra("attractionId", attractionId)
     context?.startActivity(intent)
@@ -28,7 +28,7 @@ class RetailSDKModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   @ReactMethod
   fun presentPurchase(eventId: String) {
-    val context = currentActivity
+    val context = reactApplicationContext.currentActivity
     val intent = Intent(context, PurchaseActivity::class.java)
     intent.putExtra("eventId", eventId)
     context?.startActivity(intent)

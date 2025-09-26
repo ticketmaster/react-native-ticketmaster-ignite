@@ -35,7 +35,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   private val mActivityEventListener: ActivityEventListener =
     object : BaseActivityEventListener() {
       override fun onActivityResult(
-        activity: Activity?,
+        activity: Activity,
         requestCode: Int,
         resultCode: Int,
         data: Intent?
@@ -69,16 +69,16 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun login(resultCallback: Callback) {
-    IgniteSDKSingleton.getAuthenticationSDK()?.let { authentication ->
+    val let = IgniteSDKSingleton.getAuthenticationSDK()?.let { authentication ->
       runBlocking() {
         val loginStartedParams: WritableMap = Arguments.createMap().apply {
           putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
         }
         GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
         mResultCallback = resultCallback
-        val currentFragmentActivity = currentActivity as FragmentActivity
+        val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
         val intent = authentication.getLoginIntent(currentFragmentActivity)
-        currentActivity?.startActivityForResult(intent, CODE)
+        reactApplicationContext.currentActivity?.startActivityForResult(intent, CODE)
       }
     }
   }
@@ -117,7 +117,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
 
       try {
-        val currentFragmentActivity = currentActivity as FragmentActivity
+        val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
 
         // Pass the required arguments (API key and client name) to the Builder
         val authenticationResult = TMAuthentication.Builder(
