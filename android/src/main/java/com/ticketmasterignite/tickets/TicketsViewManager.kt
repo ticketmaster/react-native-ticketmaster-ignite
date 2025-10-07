@@ -90,12 +90,12 @@ class TicketsViewManager (
    * Layout all children properly
    */
   private fun manuallyLayoutChildren(view: View) {
-      view.measure(
-        View.MeasureSpec.makeMeasureSpec(propWidth, View.MeasureSpec.EXACTLY),
-        View.MeasureSpec.makeMeasureSpec(propHeight, View.MeasureSpec.EXACTLY))
-
-      view.layout(0, 0, propWidth, propHeight)
-      view.offsetTopAndBottom(propOffsetTop)
+    if (view == null || !view.isAttachedToWindow) return
+    view.measure(
+      View.MeasureSpec.makeMeasureSpec(propWidth, View.MeasureSpec.EXACTLY),
+      View.MeasureSpec.makeMeasureSpec(propHeight, View.MeasureSpec.EXACTLY))
+    view.layout(0, 0, propWidth, propHeight)
+    view.offsetTopAndBottom(propOffsetTop)
   }
 
   companion object {
