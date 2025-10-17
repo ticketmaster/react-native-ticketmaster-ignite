@@ -69,6 +69,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
               result.putInt("resultCode", Activity.RESULT_CANCELED)
               promise.resolve(result)
             }
+
             else -> {
               promise.reject("Accounts SDK Login Error", "Login failed")
             }
@@ -84,24 +85,28 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun login(promise: Promise) {
-    val authentication = IgniteSDKSingleton.getAuthenticationSDK()
+    try {
+      val authentication = IgniteSDKSingleton.getAuthenticationSDK()
 
-    if (authentication == null) {
-      promise.reject("Accounts SDK Login Error", "Accounts SDK not initialized")
-      return
+      if (authentication == null) {
+        promise.reject("Accounts SDK Login Error", "Accounts SDK not initialized")
+        return
+      }
+
+      val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
+
+      loginPromise = promise
+
+      val loginStartedParams: WritableMap = Arguments.createMap().apply {
+        putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
+      }
+      GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
+
+      val intent = authentication.getLoginIntent(currentFragmentActivity)
+      reactApplicationContext.currentActivity?.startActivityForResult(intent, CODE)
+    } catch (e: Exception) {
+      promise.reject("Accounts SDK Login Error", e)
     }
-
-    val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
-
-    loginPromise = promise
-
-    val loginStartedParams: WritableMap = Arguments.createMap().apply {
-      putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
-    }
-    GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
-
-    val intent = authentication.getLoginIntent(currentFragmentActivity)
-    reactApplicationContext.currentActivity?.startActivityForResult(intent, CODE)
   }
 
 
