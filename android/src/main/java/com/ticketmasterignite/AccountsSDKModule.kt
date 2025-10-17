@@ -85,11 +85,11 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun login(promise: Promise) {
+    val loginStartedParams: WritableMap = Arguments.createMap().apply {
+      putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
+    }
+    GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
     try {
-      val loginStartedParams: WritableMap = Arguments.createMap().apply {
-        putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
-      }
-      GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
       val authentication = IgniteSDKSingleton.getAuthenticationSDK()
 
       if (authentication == null) {
