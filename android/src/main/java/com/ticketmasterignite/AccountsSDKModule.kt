@@ -86,6 +86,10 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun login(promise: Promise) {
     try {
+      val loginStartedParams: WritableMap = Arguments.createMap().apply {
+        putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
+      }
+      GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
       val authentication = IgniteSDKSingleton.getAuthenticationSDK()
 
       if (authentication == null) {
@@ -93,15 +97,8 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         return
       }
 
-      val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
-
       loginPromise = promise
-
-      val loginStartedParams: WritableMap = Arguments.createMap().apply {
-        putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
-      }
-      GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
-
+      val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
       val intent = authentication.getLoginIntent(currentFragmentActivity)
       reactApplicationContext.currentActivity?.startActivityForResult(intent, CODE)
     } catch (e: Exception) {
