@@ -1046,7 +1046,6 @@ describe('IgniteProvider', () => {
         beforeEach(() => {
           Platform.OS = 'android';
         });
-
         it('when login is triggered, it calls the login method on AccountsSDK', async () => {
           const fakeLogin = jest.fn(() => Promise.resolve('logged in'));
           NativeModules.AccountsSDK = {
@@ -1078,16 +1077,17 @@ describe('IgniteProvider', () => {
           expect(fakeLogin).toHaveBeenCalled();
         });
 
-        describe('when Accounts.SDK returns a code for success (-1)', () => {
+        describe('when AccountsSDK.login returns -1', () => {
           it('and skipUpdate is not passed - refreshes the state', async () => {
-            const fakeLogin = jest.fn((callback) => callback(-1));
-            const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
+            const fakeLogin = jest.fn(() =>
+              Promise.resolve({ resultCode: -1 })
+            );
+            const fakeIsLoggedIn = jest.fn(() =>
+              Promise.resolve({ result: true })
+            );
             const fakeGetMemberInfo = jest.fn(() =>
               Promise.resolve('{"name":"Some Name"}')
             );
-            NativeModules.Config = {
-              setConfig: jest.fn(),
-            };
 
             NativeModules.AccountsSDK = {
               login: fakeLogin,
@@ -1123,14 +1123,15 @@ describe('IgniteProvider', () => {
           });
 
           it('and skipUpdate is false - refreshes the state', async () => {
-            const fakeLogin = jest.fn((callback) => callback(-1));
-            const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
+            const fakeLogin = jest.fn(() =>
+              Promise.resolve({ resultCode: -1 })
+            );
+            const fakeIsLoggedIn = jest.fn(() =>
+              Promise.resolve({ result: true })
+            );
             const fakeGetMemberInfo = jest.fn(() =>
               Promise.resolve('{"name":"Some Name"}')
             );
-            NativeModules.Config = {
-              setConfig: jest.fn(),
-            };
 
             NativeModules.AccountsSDK = {
               login: fakeLogin,
@@ -1166,14 +1167,13 @@ describe('IgniteProvider', () => {
           });
 
           it('and skipUpdate is true - does not refresh the state', async () => {
-            const fakeLogin = jest.fn((callback) => callback(-1));
-            const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
-            const fakeGetMemberInfo = jest.fn(() =>
-              Promise.resolve('{"name":"Some Name"}')
+            const fakeLogin = jest.fn(() =>
+              Promise.resolve({ resultCode: -1 })
             );
-            NativeModules.Config = {
-              setConfig: jest.fn(),
-            };
+            const fakeIsLoggedIn = jest.fn(() =>
+              Promise.resolve({ result: true })
+            );
+            const fakeGetMemberInfo = jest.fn(() => Promise.resolve());
 
             NativeModules.AccountsSDK = {
               login: fakeLogin,
@@ -1209,15 +1209,12 @@ describe('IgniteProvider', () => {
           });
         });
 
-        it('when resultCode is not -1, does not refresh the state', async () => {
-          const fakeLogin = jest.fn((callback) => callback(0));
-          const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
-          const fakeGetMemberInfo = jest.fn(() =>
-            Promise.resolve('{"name":"Some Name"}')
+        it('when AccountsSDK.login does not return -1, does not refresh the state', async () => {
+          const fakeLogin = jest.fn(() => Promise.resolve({ resultCode: 1 }));
+          const fakeIsLoggedIn = jest.fn(() =>
+            Promise.resolve({ result: true })
           );
-          NativeModules.Config = {
-            setConfig: jest.fn(),
-          };
+          const fakeGetMemberInfo = jest.fn(() => Promise.resolve());
 
           NativeModules.AccountsSDK = {
             login: fakeLogin,
@@ -1248,8 +1245,10 @@ describe('IgniteProvider', () => {
           });
 
           expect(fakeLogin).toHaveBeenCalled();
-          expect(fakeGetMemberInfo).not.toHaveBeenCalled();
-          expect(fakeIsLoggedIn).not.toHaveBeenCalled();
+          await waitFor(() => {
+            expect(fakeGetMemberInfo).not.toHaveBeenCalled();
+            expect(fakeIsLoggedIn).not.toHaveBeenCalled();
+          });
         });
       });
     });
