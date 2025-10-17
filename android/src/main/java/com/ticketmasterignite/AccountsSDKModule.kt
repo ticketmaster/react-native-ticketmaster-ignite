@@ -6,7 +6,6 @@ import Region
 import android.app.Activity
 import android.content.Intent
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
