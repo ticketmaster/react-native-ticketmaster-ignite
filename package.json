@@ -96,24 +96,7 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
-    ],
-    "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?@?react-native|@react-native|@react-navigation)"
-    ],
-    "setupFilesAfterEnv": [
-      "./jest-setup.ts"
-    ],
-    "transform": {
-      "^.+\\.(js)$": [
-        "babel-jest",
-        {
-          "plugins": [
-            "babel-plugin-syntax-hermes-parser"
-          ]
-        }
-      ],
-      "^.+\\.(ts|tsx)$": "babel-jest"
-    }
+    ]
   },
   "commitlint": {
     "extends": [
