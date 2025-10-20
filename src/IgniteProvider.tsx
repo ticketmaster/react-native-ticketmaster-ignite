@@ -308,7 +308,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           (result.purchaseSdkDidEndCheckoutFor ||
             result.ticketsSdkDidViewEvents ||
             // iOS TMAuthentication.shared.validToken() successful login
-            (result.accountsSdkLoggedIn &&
+            ((result.accountsSdkLoggedIn || result.accountsSdkLoggedOut) &&
               !isLoggingIn &&
               Platform.OS === 'ios')) &&
           autoUpdate
@@ -337,49 +337,31 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, []);
 
   const login = useCallback(
-    // eslint-disable-next-line prettier/prettier
-    async ({ onLogin, skipUpdate }: LoginParams = { skipUpdate: false }): Promise<void> => {
-      return new Promise<void>(async (resolve, reject) => {
-        if (Platform.OS === 'ios') {
-          !skipUpdate && setIsLoggingIn(true);
-          try {
-            const result = await AccountsSDK.login();
-            if (result.accessToken) {
-              enableLogs && console.log('Accounts SDK login successful');
-              !skipUpdate && autoUpdate && (await setAccountDetails());
-              //avoid await on callbacks passed to library as there is no guarantee how long they will take to resolve
-              onLogin && onLogin();
-            }
-            resolve();
-          } catch (e) {
-            !skipUpdate && setIsLoggingIn(false);
-            reject(e);
-          }
-          !skipUpdate && setIsLoggingIn(false);
-        } else if (Platform.OS === 'android') {
-          !skipUpdate && setIsLoggingIn(true);
-          setTimeout(() => {
-            if (isLoggingIn && !skipUpdate) setIsLoggingIn(false);
-          }, 8000);
-          AccountsSDK.login(async (resultCode: any) => {
-            if (resultCode === -1) {
-              enableLogs && console.log('Accounts SDK login successful');
-              !skipUpdate && autoUpdate && (await setAccountDetails());
-              onLogin && onLogin();
-            }
-            resolve();
-            !skipUpdate && setIsLoggingIn(false);
-          });
+    async (
+      { onLogin, skipUpdate }: LoginParams = { skipUpdate: false }
+    ): Promise<void> => {
+      !skipUpdate && setIsLoggingIn(true);
+      try {
+        const result = await AccountsSDK.login();
+        if (
+          (Platform.OS === 'ios' && result.accessToken) ||
+          (Platform.OS === 'android' && result.resultCode === -1)
+        ) {
+          enableLogs && console.log('Accounts SDK login successful');
+          !skipUpdate && autoUpdate && (await setAccountDetails());
+          //avoid await on callbacks passed to library as there is no guarantee how long they will take to resolve
+          onLogin && onLogin();
         }
-      });
+      } catch (e) {
+        !skipUpdate && setIsLoggingIn(false);
+        throw e;
+      }
+      !skipUpdate && setIsLoggingIn(false);
     },
-    // isLoggingIn will update frequently, login() should not trigger/change on those updates
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]
   );
 
   const logout = useCallback(
-    // eslint-disable-next-line prettier/prettier
     async (
       { onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }
     ): Promise<void> => {
@@ -517,8 +499,26 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, [AccountsSDK, enableLogs, getToken, login]);
 
   const refreshConfiguration = useCallback(
-    // eslint-disable-next-line prettier/prettier, @typescript-eslint/no-shadow
-    async ({ apiKey, clientName, primaryColor, environment, region, marketDomain, eventHeaderType, skipAutoLogin, skipUpdate, onSuccess, onLoginSuccess }: RefreshConfigParams = { apiKey: '', skipAutoLogin: false, skipUpdate: false, onLoginSuccess: () => {} }) => {
+    async (
+      {
+        apiKey,
+        clientName,
+        primaryColor,
+        environment,
+        region,
+        marketDomain,
+        eventHeaderType,
+        skipAutoLogin,
+        skipUpdate,
+        onSuccess,
+        onLoginSuccess,
+      }: RefreshConfigParams = {
+        apiKey: '',
+        skipAutoLogin: false,
+        skipUpdate: false,
+        onLoginSuccess: () => {},
+      }
+    ) => {
       try {
         Config.setConfig('apiKey', apiKey);
         clientName && Config.setConfig('clientName', clientName);
