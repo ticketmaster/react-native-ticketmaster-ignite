@@ -3550,31 +3550,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rnx-kit/react-native-host@npm:^0.5.11":
-  version: 0.5.13
-  resolution: "@rnx-kit/react-native-host@npm:0.5.13"
-  peerDependencies:
-    react-native: ">=0.66"
-  checksum: bfa24b38b5d75bb6977c9758221e4c70a12bef794fd3de0849f1251533505911e62ea29019dfc1569097789ca2f40d063b5891b826e68167131fd5abb1746af3
-  languageName: node
-  linkType: hard
-
-"@rnx-kit/tools-node@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@rnx-kit/tools-node@npm:3.0.0"
-  checksum: fecf7d94e1d1eed1e06ac9e172591011ed24c8babe435492c8b8cecc1a6ab5c4445630bc14468990345e8e3804ee4a1f4ad59b5ef3ae9dd0827572a5378d642b
-  languageName: node
-  linkType: hard
-
-"@rnx-kit/tools-react-native@npm:^2.1.0":
-  version: 2.3.0
-  resolution: "@rnx-kit/tools-react-native@npm:2.3.0"
-  dependencies:
-    "@rnx-kit/tools-node": ^3.0.0
-  checksum: 91795e3029684e2c33fb63ff04600be98a9a25c1be914267888a2b750423af3f1fbd79f9b421201f84d07f8b0f2ffef3b74e64fdb416542f2d1faaba45275eea
-  languageName: node
-  linkType: hard
-
 "@sideway/address@npm:^4.1.5":
   version: 4.1.5
   resolution: "@sideway/address@npm:4.1.5"
@@ -4194,7 +4169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv@npm:^8.0.0, ajv@npm:^8.11.0":
+"ajv@npm:^8.11.0":
   version: 8.17.1
   resolution: "ajv@npm:8.17.1"
   dependencies:
@@ -5037,7 +5012,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cliui@npm:^8.0.0, cliui@npm:^8.0.1":
+"cliui@npm:^8.0.1":
   version: 8.0.1
   resolution: "cliui@npm:8.0.1"
   dependencies:
@@ -6804,7 +6779,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-parser@npm:^4.0.0, fast-xml-parser@npm:^4.4.1":
+"fast-xml-parser@npm:^4.4.1":
   version: 4.5.0
   resolution: "fast-xml-parser@npm:4.5.0"
   dependencies:
@@ -10696,7 +10671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prompts@npm:^2.0.1, prompts@npm:^2.4.0, prompts@npm:^2.4.2":
+"prompts@npm:^2.0.1, prompts@npm:^2.4.2":
   version: 2.4.2
   resolution: "prompts@npm:2.4.2"
   dependencies:
@@ -10990,43 +10965,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-test-app@npm:^4.4.12":
-  version: 4.4.12
-  resolution: "react-native-test-app@npm:4.4.12"
-  dependencies:
-    "@rnx-kit/react-native-host": ^0.5.11
-    "@rnx-kit/tools-react-native": ^2.1.0
-    ajv: ^8.0.0
-    cliui: ^8.0.0
-    fast-xml-parser: ^4.0.0
-    prompts: ^2.4.0
-    semver: ^7.3.5
-    uuid: ^11.0.0
-  peerDependencies:
-    "@callstack/react-native-visionos": 0.73 - 0.79
-    "@expo/config-plugins": ">=5.0"
-    react: 18.1 - 19.1
-    react-native: 0.70 - 0.82 || >=0.83.0-0 <0.83.0
-    react-native-macos: ^0.0.0-0 || 0.71 - 0.79
-    react-native-windows: ^0.0.0-0 || 0.70 - 0.79
-  peerDependenciesMeta:
-    "@callstack/react-native-visionos":
-      optional: true
-    "@expo/config-plugins":
-      optional: true
-    react-native-macos:
-      optional: true
-    react-native-windows:
-      optional: true
-  bin:
-    configure-test-app: scripts/configure.mjs
-    init: scripts/init.mjs
-    init-test-app: scripts/init.mjs
-    install-windows-test-app: windows/app.mjs
-  checksum: 5e9e9fb525d3cb9d3594ce82319ba29fd98d232a99f71c7038c333f40ef548dec08de26b43fc59a03d6ec655c9a22f31e6150dbb6c32c2cdd64985daf3f99706
-  languageName: node
-  linkType: hard
-
 "react-native-ticketmaster-ignite-example@workspace:example":
   version: 0.0.0-use.local
   resolution: "react-native-ticketmaster-ignite-example@workspace:example"
@@ -11061,7 +10999,6 @@ __metadata:
     react-native-safe-area-context: 5.5.2
     react-native-screens: ^4.13.1
     react-native-svg: ^15.12.0
-    react-native-test-app: ^4.4.12
     react-test-renderer: 19.1.0
     typescript: 5.0.4
   languageName: unknown
@@ -12801,15 +12738,6 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: c81095493225ecfc28add49c106ca4f09cdf56bc66731aa8dabc2edbbccb1e1bfe2de6a115e5c6a380d3ea166d1636410b62ef216bb07b3feb1cfde1d95d5080
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^11.0.0":
-  version: 11.1.0
-  resolution: "uuid@npm:11.1.0"
-  bin:
-    uuid: dist/esm/bin/uuid
-  checksum: 840f19758543c4631e58a29439e51b5b669d5f34b4dd2700b6a1d15c5708c7a6e0c3e2c8c4a2eae761a3a7caa7e9884d00c86c02622ba91137bd3deade6b4b4a
   languageName: node
   linkType: hard
 
