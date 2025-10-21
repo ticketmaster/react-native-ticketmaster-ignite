@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 import Config from 'react-native-config';
 import Root from './navigators/Root';

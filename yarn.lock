@@ -10917,16 +10917,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-safe-area-context@npm:5.5.2":
-  version: 5.5.2
-  resolution: "react-native-safe-area-context@npm:5.5.2"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 694e293b474b0738899c6e09da9f001d8087b382b5a40b8b227765c861a8137f0ff0209f1c9d8ae94337bc9c170eb114a9b897a8661b8181f48759a21baeb265
-  languageName: node
-  linkType: hard
-
 "react-native-screens@npm:^4.17.1":
   version: 4.17.1
   resolution: "react-native-screens@npm:4.17.1"
@@ -10985,7 +10975,6 @@ __metadata:
     react-native: 0.81.1
     react-native-builder-bob: ^0.40.13
     react-native-config: ^1.5.5
-    react-native-safe-area-context: 5.5.2
     react-native-screens: ^4.17.1
     react-native-svg: ^15.12.0
     react-test-renderer: 19.1.0
