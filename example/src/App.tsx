@@ -20,51 +20,49 @@ const App = () => {
   };
 
   return (
-    <SafeAreaProvider>
-      <NavigationContainer theme={navTheme}>
-        <IgniteProvider
-          analytics={igniteAnalytics}
-          enableLogs={true}
-          options={{
-            apiKey: Config.API_KEY || '',
-            clientName: Config.CLIENT_NAME || '',
-            primaryColor: Config.PRIMARY_COLOR || '',
-            eventHeaderType: 'EVENT_INFO_SHARE',
-            marketDomain: 'US',
-          }}
-          prebuiltModules={{
-            moreTicketActionsModule: {
-              enabled: true,
-            },
-            venueDirectionsModule: {
-              enabled: true,
-            },
-            seatUpgradesModule: {
-              enabled: true,
-              image: require('../assets/seatUpgradesOverride.png'),
-              topLabelText: 'Custom Top Level Text',
-              bottomLabelText: 'Custom Bottom Level Text',
-            },
-            venueConcessionsModule: {
-              image: require('../assets/venueConcessionsOverride.png'),
-              topLabelText: 'Custom Top Level Text',
-              bottomLabelText: 'Custom Bottom Level Text',
-              enabled: true,
-              orderButtonCallback: () => {},
-              walletButtonCallback: () => {},
-            },
-            invoiceModule: {
-              enabled: true,
-            },
-          }}
-        >
-          <AppProvider>
-            <Logger />
-            <Root />
-          </AppProvider>
-        </IgniteProvider>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <NavigationContainer theme={navTheme}>
+      <IgniteProvider
+        analytics={igniteAnalytics}
+        enableLogs={true}
+        options={{
+          apiKey: Config.API_KEY || '',
+          clientName: Config.CLIENT_NAME || '',
+          primaryColor: Config.PRIMARY_COLOR || '',
+          eventHeaderType: 'EVENT_INFO_SHARE',
+          marketDomain: 'US',
+        }}
+        prebuiltModules={{
+          moreTicketActionsModule: {
+            enabled: true,
+          },
+          venueDirectionsModule: {
+            enabled: true,
+          },
+          seatUpgradesModule: {
+            enabled: true,
+            image: require('../assets/seatUpgradesOverride.png'),
+            topLabelText: 'Custom Top Level Text',
+            bottomLabelText: 'Custom Bottom Level Text',
+          },
+          venueConcessionsModule: {
+            image: require('../assets/venueConcessionsOverride.png'),
+            topLabelText: 'Custom Top Level Text',
+            bottomLabelText: 'Custom Bottom Level Text',
+            enabled: true,
+            orderButtonCallback: () => {},
+            walletButtonCallback: () => {},
+          },
+          invoiceModule: {
+            enabled: true,
+          },
+        }}
+      >
+        <AppProvider>
+          <Logger />
+          <Root />
+        </AppProvider>
+      </IgniteProvider>
+    </NavigationContainer>
   );
 };
 export default App;
