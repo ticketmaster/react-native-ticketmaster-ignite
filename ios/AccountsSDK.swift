@@ -71,35 +71,19 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     }
   }
   
-  @objc public func refreshToken(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    
-    TMAuthentication.shared.validToken { authToken in
-      print("Token Refreshed (if needed)")
-      print(" - AuthToken: \(authToken.accessToken.prefix(20))...")
-      let data = ["accessToken": authToken.accessToken, "sportXRIdToken": authToken.idToken ?? ""]
-      resolve(data)
+  @objc public func isLoggedIn(_ resolve: @escaping ([String: Bool]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
+    TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
+      let hasToken = TMAuthentication.shared.hasToken()
+      resolve(["result": hasToken])
     } aborted: { oldAuthToken, backend in
-      print("Refresh Login Aborted by User")
-      let data = ["accessToken": ""]
-      resolve(data)
+      resolve(["result": false])
     } failure: { oldAuthToken, error, backend in
-      print("Refresh Error: \(error.localizedDescription)")
-      reject( "Accounts SDK Refresh Token Error", error.localizedDescription, error as NSError)
-    }
-  }
-  
-  @objc public func getMemberInfo(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    
-    TMAuthentication.shared.memberInfo { memberInfo in
-      print("MemberInfo Completed")
-      print(" - UserID: \(memberInfo.localID ?? "<nil>")")
-      print(" - Email: \(memberInfo.email ?? "<nil>")")
-      print(memberInfo)
-      let data = ["globalUserId": memberInfo.globalID, "memberId": memberInfo.localID,  "hmacId": memberInfo.hmacID, "firstName": memberInfo.firstName, "lastName": memberInfo.lastName, "email": memberInfo.email, "phone": memberInfo.phone, "preferredLang": memberInfo.language]
-      resolve(data as [String : Any])
-    } failure: { oldMemberInfo, error, backend in
-      print("MemberInfo Error: \(error.localizedDescription)")
-      reject( "Accounts SDK Member Info Error", error.localizedDescription, error as NSError)
+      if(TMAuthentication.shared.hasToken()){
+        let hasToken = TMAuthentication.shared.hasToken()
+        resolve(["result": hasToken])
+      } else {
+        reject("Accounts SDK Is Logged In Error", error.localizedDescription, error as NSError)
+      }
     }
   }
   
@@ -118,6 +102,38 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     }
   }
   
+  @objc public func getMemberInfo(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
+    
+    TMAuthentication.shared.memberInfo { memberInfo in
+      print("MemberInfo Completed")
+      print(" - UserID: \(memberInfo.localID ?? "<nil>")")
+      print(" - Email: \(memberInfo.email ?? "<nil>")")
+      print(memberInfo)
+      let data = ["globalUserId": memberInfo.globalID, "memberId": memberInfo.localID,  "hmacId": memberInfo.hmacID, "firstName": memberInfo.firstName, "lastName": memberInfo.lastName, "email": memberInfo.email, "phone": memberInfo.phone, "preferredLang": memberInfo.language]
+      resolve(data as [String : Any])
+    } failure: { oldMemberInfo, error, backend in
+      print("MemberInfo Error: \(error.localizedDescription)")
+      reject( "Accounts SDK Member Info Error", error.localizedDescription, error as NSError)
+    }
+  }
+  
+  @objc public func refreshToken(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
+    
+    TMAuthentication.shared.validToken { authToken in
+      print("Token Refreshed (if needed)")
+      print(" - AuthToken: \(authToken.accessToken.prefix(20))...")
+      let data = ["accessToken": authToken.accessToken, "sportXRIdToken": authToken.idToken ?? ""]
+      resolve(data)
+    } aborted: { oldAuthToken, backend in
+      print("Refresh Login Aborted by User")
+      let data = ["accessToken": ""]
+      resolve(data)
+    } failure: { oldAuthToken, error, backend in
+      print("Refresh Error: \(error.localizedDescription)")
+      reject( "Accounts SDK Refresh Token Error", error.localizedDescription, error as NSError)
+    }
+  }
+  
   @objc public func getSportXRData (_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     TMAuthentication.shared.apigeeConfig { config in
       print("SportXR Data Retrieved")
@@ -129,21 +145,7 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     }
   }
   
-  @objc public func isLoggedIn(_ resolve: @escaping ([String: Bool]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
-      let hasToken = TMAuthentication.shared.hasToken()
-      resolve(["result": hasToken])
-    } aborted: { oldAuthToken, backend in
-      resolve(["result": false])
-    } failure: { oldAuthToken, error, backend in
-      if(TMAuthentication.shared.hasToken()){
-        let hasToken = TMAuthentication.shared.hasToken()
-        resolve(["result": hasToken])
-      } else {
-        reject("Accounts SDK Is Logged In Error", error.localizedDescription, error as NSError)
-      }
-    }
-  }
+  
   
   
   func sendEvent(_ name: String, body: [String : Any]) {

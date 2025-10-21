@@ -22,11 +22,9 @@ import com.google.gson.Gson
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
 import com.ticketmaster.tickets.ticketssdk.TicketsColors
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 
 class AccountsSDKModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
@@ -34,6 +32,56 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   private val CODE = 1
   private var loginPromise: Promise? = null
 
+  @ReactMethod
+  fun configureAccountsSDK(promise: Promise) {
+    CoroutineScope(Dispatchers.Main).launch {
+      val configurationStartedParams: WritableMap = Arguments.createMap().apply {
+        putString(
+          "accountsSdkServiceConfigurationStarted",
+          "accountsSdkServiceConfigurationStarted"
+        )
+      }
+      GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
+
+      try {
+        val currentFragmentActivity = reactApplicationContext.currentActivity as? FragmentActivity
+        if (currentFragmentActivity == null) {
+          promise.reject(
+            "Accounts SDK Configuration Error",
+            "Current activity is not a FragmentActivity."
+          )
+          return@launch
+        }
+
+        val authenticationResult = TMAuthentication.Builder(
+          Config.get("apiKey"),
+          Config.get("clientName")
+        )
+          .colors(createTMAuthenticationColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
+          .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment")))
+          .region(Region.getRegion())
+          .build(currentFragmentActivity)
+
+        val authentication = authenticationResult.getOrThrow()
+        IgniteSDKSingleton.setAuthenticationSDK(authentication)
+
+        GlobalEventEmitter.sendEvent("igniteAnalytics", Arguments.createMap().apply {
+          putString("accountsSdkServiceConfigured", "accountsSdkServiceConfigured")
+        })
+
+        GlobalEventEmitter.sendEvent("igniteAnalytics", Arguments.createMap().apply {
+          putString(
+            "accountsSdkServiceConfigurationCompleted",
+            "accountsSdkServiceConfigurationCompleted"
+          )
+        })
+
+        promise.resolve("Accounts SDK configuration successful")
+      } catch (e: Exception) {
+        promise.reject("Accounts SDK Configuration Error", e)
+      }
+    }
+  }
 
   private val loginActivityEventListener: ActivityEventListener =
     object : BaseActivityEventListener() {
@@ -106,6 +154,40 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  @ReactMethod
+  fun logout(promise: Promise) {
+    val authentication = IgniteSDKSingleton.getAuthenticationSDK()
+    if (authentication == null) {
+      promise.resolve(false)
+      return
+    }
+
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val logoutStartedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkLogoutStarted", "accountsSdkLogoutStarted")
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutStartedParams)
+
+        authentication.logout()
+
+        val loggedOutParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
+
+        val logoutCompletedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
+
+        promise.resolve(true)
+      } catch (e: Exception) {
+        promise.reject("Accounts SDK Logout Error", e)
+      }
+    }
+  }
+
 
   @ReactMethod
   fun isLoggedIn(promise: Promise) {
@@ -115,94 +197,14 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       return
     }
 
-    runBlocking {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
-        val response = withContext(Dispatchers.IO) {
-          AuthSource.values().any { source ->
-            authenticationSDK.getToken(source)?.isNotBlank() == true
-          }
+        val response = AuthSource.values().any { source ->
+          authenticationSDK.getToken(source)?.isNotBlank() == true
         }
         promise.resolve(response)
       } catch (e: Exception) {
-        promise.reject("Accounts SDK isLoggedIn Error: ", e)
-      }
-    }
-  }
-
-  @ReactMethod
-  fun configureAccountsSDK(promise: Promise) {
-    runBlocking(Dispatchers.Main) {
-      val configurationStartedParams: WritableMap = Arguments.createMap().apply {
-        putString(
-          "accountsSdkServiceConfigurationStarted",
-          "accountsSdkServiceConfigurationStarted"
-        )
-      }
-      GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
-
-      try {
-        val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
-
-        // Pass the required arguments (API key and client name) to the Builder
-        val authenticationResult = TMAuthentication.Builder(
-          Config.get("apiKey"), // API key
-          Config.get("clientName") // Client name
-        )
-          .colors(createTMAuthenticationColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
-          .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment")))
-          .region(Region.getRegion())
-          .build(currentFragmentActivity)
-
-        // Unwrap the Result<TMAuthentication> to get the TMAuthentication instance
-        val authentication = authenticationResult.getOrThrow()
-
-        // Set the authentication instance in the IgniteSDKSingleton
-        IgniteSDKSingleton.setAuthenticationSDK(authentication)
-
-        val serviceConfiguredParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkServiceConfigured", "accountsSdkServiceConfigured")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", serviceConfiguredParams)
-
-        val configuredCompletedParams: WritableMap = Arguments.createMap().apply {
-          putString(
-            "accountsSdkServiceConfigurationCompleted",
-            "accountsSdkServiceConfigurationCompleted"
-          )
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", configuredCompletedParams)
-
-        promise.resolve("Accounts SDK configuration successful")
-      } catch (e: Exception) {
-        promise.reject("Accounts SDK Configuration Error: ", e)
-      }
-    }
-  }
-
-  @ReactMethod
-  fun logout(promise: Promise) {
-    IgniteSDKSingleton.getAuthenticationSDK()?.let { authentication ->
-      runBlocking() {
-        val logoutStartedParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkLogoutStarted", "accountsSdkLogoutStarted")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutStartedParams)
-        withContext(context = Dispatchers.IO) {
-          try {
-            authentication.logout()
-            val loggedOutParams: WritableMap = Arguments.createMap().apply {
-              putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
-            }
-            GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
-            val logoutCompletedParams: WritableMap = Arguments.createMap().apply {
-              putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
-            }
-            GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
-            promise.resolve(true)
-          } catch (e: Exception) {
-            promise.reject("Accounts SDK Logout Error: ", e)
-          }
-        }
+        promise.reject("Accounts SDK isLoggedIn Error", e)
       }
     }
   }
@@ -215,21 +217,18 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       return
     }
 
-    runBlocking {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
-        val archticsAccessToken = async { authenticationSDK.getToken(AuthSource.ARCHTICS) }
-        val hostAccessToken = async { authenticationSDK.getToken(AuthSource.HOST) }
-        val mfxAccessToken = async { authenticationSDK.getToken(AuthSource.MFX) }
-        val sportXRAccessToken = async { authenticationSDK.getToken(AuthSource.SPORTXR) }
-        val (resArchticsAccessToken, resHostAccessToken, resMfxAccessToken, resSportXRAccessToken) = awaitAll(
-          archticsAccessToken,
-          hostAccessToken,
-          mfxAccessToken,
-          sportXRAccessToken
-        )
+        val hostAccessToken = authenticationSDK.getToken(AuthSource.HOST)
+        val archticsAccessToken = authenticationSDK.getToken(AuthSource.ARCHTICS)
+        val mfxAccessToken = authenticationSDK.getToken(AuthSource.MFX)
+        val sportXRTokenData = authenticationSDK.getTMAuthToken(AuthSource.SPORTXR)
+        val sportXRAccessToken = sportXRTokenData?.accessToken
 
-        if (resArchticsAccessToken.isNullOrEmpty() && resHostAccessToken.isNullOrEmpty() &&
-          resMfxAccessToken.isNullOrEmpty() && resSportXRAccessToken.isNullOrEmpty()
+        if (archticsAccessToken.isNullOrEmpty() &&
+          hostAccessToken.isNullOrEmpty() &&
+          mfxAccessToken.isNullOrEmpty() &&
+          sportXRAccessToken.isNullOrEmpty()
         ) {
           promise.resolve(null)
         } else {
@@ -237,7 +236,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           promise.resolve(memberInfoJson)
         }
       } catch (e: Exception) {
-        promise.reject("Accounts SDK getMemberInfo Error: ", e)
+        promise.reject("Accounts SDK getMemberInfo Error", e)
       }
     }
   }
@@ -250,7 +249,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       return
     }
 
-    runBlocking {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val hostAccessToken = authenticationSDK.getToken(AuthSource.HOST)
         val archticsAccessToken = authenticationSDK.getToken(AuthSource.ARCHTICS)
@@ -258,7 +257,6 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         val sportXRTokenData = authenticationSDK.getTMAuthToken(AuthSource.SPORTXR)
         val sportXRAccessToken = sportXRTokenData?.accessToken
         val sportXRIdToken = sportXRTokenData?.idToken
-
 
         val combinedTokens: WritableMap = Arguments.createMap().apply {
           if (!hostAccessToken.isNullOrEmpty()) {
@@ -278,8 +276,10 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
           }
         }
 
-        if (archticsAccessToken.isNullOrEmpty() && hostAccessToken.isNullOrEmpty() &&
-          mfxAccessToken.isNullOrEmpty() && sportXRAccessToken.isNullOrEmpty()
+        if (archticsAccessToken.isNullOrEmpty() &&
+          hostAccessToken.isNullOrEmpty() &&
+          mfxAccessToken.isNullOrEmpty() &&
+          sportXRAccessToken.isNullOrEmpty()
         ) {
           promise.resolve(null)
         } else {
@@ -303,20 +303,20 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       return
     }
 
-    runBlocking {
+    CoroutineScope(Dispatchers.IO).launch {
       try {
         val sportXRcookieName = authenticationSDK.configuration.sportXR?.cookieName
-        // Not available on Android Accounts SDK yet, manually prefix URL scheme to cookieName for now
-        // val sportXRTeamDomain = authenticationSDK.configuration.sportXR?.teamDomain
+        // val sportXRTeamDomain = authenticationSDK.configuration.sportXR?.teamDomain // not yet available on Android
 
         val sportXRdata: WritableMap = Arguments.createMap().apply {
           if (!sportXRcookieName.isNullOrEmpty()) {
             putString("sportXRcookieName", sportXRcookieName)
           }
-          //  if (!sportXRTeamDomain.isNullOrEmpty()) {
+          // if (!sportXRTeamDomain.isNullOrEmpty()) {
           //   putString("sportXRTeamDomain", sportXRTeamDomain)
-          //  }
+          // }
         }
+
         promise.resolve(sportXRdata)
       } catch (e: Exception) {
         promise.reject("Accounts SDK SportXR Data Error", e)
