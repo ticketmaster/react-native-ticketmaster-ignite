@@ -1,4 +1,4 @@
-package com.ticketmasterigniteexample
+package ticketmasterignite.example
 
 import android.app.Application
 import com.facebook.react.PackageList

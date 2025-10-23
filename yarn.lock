@@ -11144,43 +11144,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-is-edge-to-edge@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "react-native-is-edge-to-edge@npm:1.2.1"
+"react-native-safe-area-context@npm:^5.5.2":
+  version: 5.6.1
+  resolution: "react-native-safe-area-context@npm:5.6.1"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 8fb6d8ab7b953c7d7cec8c987cef24f1c5348a293a85cb49c7c53b54ef110c0ca746736ae730e297603c8c76020df912e93915fb17518c4f2f91143757177aba
+  checksum: f346615d5f8f26c0c8459d29c149ea3f66684b8ae79cea6fd48d118d039851a69a92955d67b455d0e7ab46639155c4357ebf58ec1859b2377ee459e2a04b602b
   languageName: node
   linkType: hard
 
-"react-native-safe-area-context@npm:5.5.2":
-  version: 5.5.2
-  resolution: "react-native-safe-area-context@npm:5.5.2"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 694e293b474b0738899c6e09da9f001d8087b382b5a40b8b227765c861a8137f0ff0209f1c9d8ae94337bc9c170eb114a9b897a8661b8181f48759a21baeb265
-  languageName: node
-  linkType: hard
-
-"react-native-screens@npm:^4.13.1":
-  version: 4.13.1
-  resolution: "react-native-screens@npm:4.13.1"
+"react-native-screens@npm:^4.16.0":
+  version: 4.18.0
+  resolution: "react-native-screens@npm:4.18.0"
   dependencies:
     react-freeze: ^1.0.0
-    react-native-is-edge-to-edge: ^1.2.1
     warn-once: ^0.1.0
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 1beafec354c3a6bccfde1f9058961d5c9218492f1c68cf5b2bd454d157d4cf1e9047992570927dbcd97893e1e1c990563e4d034fe0d8700479ce2d37e037fe58
+  checksum: b7942efe7bf316ad66aabf6e3b8b999268d3b88b3d23affb0f90f627d8dd980172f79b48abf476d10c3466ba5123240ee3f18f8d0ff7db5b79b9772cb520afa0
   languageName: node
   linkType: hard
 
-"react-native-svg@npm:^15.12.0":
-  version: 15.12.0
-  resolution: "react-native-svg@npm:15.12.0"
+"react-native-svg@npm:^15.14.0":
+  version: 15.14.0
+  resolution: "react-native-svg@npm:15.14.0"
   dependencies:
     css-select: ^5.1.0
     css-tree: ^1.1.3
@@ -11188,7 +11177,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 0a78333ab4fb1aae38f190a22a1afcbfa2ae9192ccd2ac7a989f3108bd32afe1b84800b4dce0f92c68ad4eca6809046b5f997fbfcb072b872dd34ea04c8f44aa
+  checksum: fc583e05fcabf346d92fb6ce725ceb076b51c54636352325c2c770b454f91316366a712a12bcd261da0f8ce8c44ebf039c9fc5a1ca508a54a54d048c4f58ede5
   languageName: node
   linkType: hard
 
@@ -11260,9 +11249,9 @@ __metadata:
     react-native: 0.81.5
     react-native-builder-bob: ^0.32.1
     react-native-config: ^1.5.5
-    react-native-safe-area-context: 5.5.2
-    react-native-screens: ^4.13.1
-    react-native-svg: ^15.12.0
+    react-native-safe-area-context: ^5.5.2
+    react-native-screens: ^4.16.0
+    react-native-svg: ^15.14.0
     react-native-test-app: ^4.0.1
     react-test-renderer: 19.1.0
     typescript: 5.8.3
@@ -12937,7 +12926,7 @@ __metadata:
 
 "typescript@patch:typescript@5.8.3#~builtin<compat/typescript>":
   version: 5.8.3
-  resolution: "typescript@patch:typescript@npm%3A5.8.3#~builtin<compat/typescript>::version=5.8.3&hash=14eedb"
+  resolution: "typescript@patch:typescript@npm%3A5.8.3#~builtin<compat/typescript>::version=5.8.3&hash=29ae49"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -12947,7 +12936,7 @@ __metadata:
 
 "typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
   version: 5.6.3
-  resolution: "typescript@patch:typescript@npm%3A5.6.3#~builtin<compat/typescript>::version=5.6.3&hash=14eedb"
+  resolution: "typescript@patch:typescript@npm%3A5.6.3#~builtin<compat/typescript>::version=5.6.3&hash=29ae49"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
