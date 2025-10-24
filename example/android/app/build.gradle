@@ -85,14 +85,14 @@ android {
       coreLibraryDesugaringEnabled true
     }
 
-    namespace "com.ticketmasterigniteexample"
+    namespace "ticketmasterignite.example"
     defaultConfig {
-        applicationId "com.ticketmasterigniteexample"
+        applicationId "ticketmasterignite.example"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        resValue "string", "build_config_package", "com.ticketmasterigniteexample"
+        resValue "string", "build_config_package", "ticketmasterignite.example"
     }
     signingConfigs {
         debug {

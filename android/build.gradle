@@ -49,6 +49,16 @@ android {
     sourceSets {
       main {
         manifest.srcFile "src/main/AndroidManifest.xml"
+        // Exclude codegen files to avoid duplicates
+        java {
+          exclude '**/com/facebook/react/viewmanagers/*SafeArea*'
+          exclude '**/com/facebook/react/viewmanagers/*Screen*'
+          exclude '**/com/facebook/react/viewmanagers/RNS*'
+          exclude '**/com/facebook/react/viewmanagers/RNGesture*'
+          exclude '**/com/facebook/fbreact/specs/*SafeArea*'
+          exclude '**/com/facebook/fbreact/specs/*Screen*'
+          exclude '**/com/facebook/fbreact/specs/*Gesture*'
+        }
       }
     }
   }
