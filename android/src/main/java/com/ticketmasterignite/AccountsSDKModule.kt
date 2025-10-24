@@ -44,14 +44,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
 
       try {
-        val currentFragmentActivity = reactApplicationContext.currentActivity as? FragmentActivity
-        if (currentFragmentActivity == null) {
-          promise.reject(
-            "Accounts SDK Configuration Error",
-            "Current activity is not a FragmentActivity."
-          )
-          return@launch
-        }
+        val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
 
         val authenticationResult = TMAuthentication.Builder(
           Config.get("apiKey"),
