@@ -344,7 +344,7 @@ Exposes the following functions:
 - `logoutAll` - iOS only
 - `refreshToken`
 - `getMemberInfo`
-- `getToken`
+- `getToken` - iOS only
 - `isLoggedIn`
 
 If you use AccountsSDK you will need to handle the data return type differences between Swift and Kotlin yourself. It is advised you use auth methods from `useIgnite()` above instead of using the AccountsSDK module directly.
@@ -357,13 +357,13 @@ The Accounts SDK only returns an access token, not a refresh token. If the user 
 
 On recent versions of the iOS Accounts SDK, it has been observed that on backend server errors `getToken()` and `getMemberInfo()` methods are returning `TicketmasterFoundation.ConnectionError error...` instead of `null`. In these situations, if the user has previously logged in `isLoggedIn` from `useIgnite()` will be `true`, so `isLoggedIn` is a good variable to use to control the logged in UI state of the whole application, it also works well in useEffect dep arrays. `await getIsLoggedIn()` is good to call directly after methods like `await login()` or `await refreshToken()` to check/retrieve a boolean which states if the user is logged in which can be used for your own custom variables or conditions in your business logic.
 
-As a fail safe, it may be beneficial to call `refreshToken()` **once** on the first log occurrence of `TicketmasterFoundation.ConnectionError error...` being logged a catch block, in case the user just needs to reauthenticate, but a backend server error should resolve itself after a short period of time (within 5 mins) so a "something went wrong, please try again later" error message to the user should suffice on an occurrence of this error.
+As a fail safe, it may be beneficial to call `refreshToken()` **once** on the first log occurrence of `TicketmasterFoundation.ConnectionError error...` being logged a catch block, in case the user just needs to reauthenticate, but a backend server error should resolve itself after a short period of time (within 5 mins) so a "something went wrong, please try again later" error message to the user may suffice on an occurrence of this error.
 
 To catch `TicketmasterFoundation.ConnectionError error 0` logs on app launch see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#reconfigure-accounts-sdk)
 
 #### Reconfigure Accounts SDK
 
-If you want to switch between different API keys within one app session/during runtime, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them.
+If you want to switch between different API keys within one app session/during runtime, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them. When a user switches API key, they must login once, on newer version of the Ignite SDK's the login screen pops up and the user will SSO into the new configuration, but login always has to be called once. This method automatically calls login after reconfiguration of a new key, see below params on how to skip auto login in case you want to call login yourself.
 
 `refreshConfiguration()` calls `configureAccountsSDK()` so it can also be used for general Accounts SDK configuration/if the initial `configureAccountsSDK()` done by `<IgniteProvider/>` ever fails in your app.
 
@@ -852,7 +852,7 @@ const onConfigurationSuccess = () =>
 As the initial Accounts SDK configuration is done for your app via `IgniteProvider`, any failures in this process will still be logged, as if the Accounts SDK configuration fails then none of the Ignite SDK's will work in your application.
 
 
-On any logs of `TicketmasterFoundation.ConnectionError error 0` see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
+On any logs of `TicketmasterFoundation.ConnectionError error` see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
 
 
 ## Running the example app  
