@@ -54,11 +54,12 @@ const styles = StyleSheet.create({
   textInput: {
     color: '#000000',
     width: '100%',
-    height: 36,
-    paddingLeft: 5,
+    paddingVertical: 6,
+    paddingHorizontal: 5,
     borderColor: 'lightgrey',
     borderWidth: 1,
     borderRadius: 6,
+    textAlignVertical: 'center',
   },
   topItem: {
     borderTopLeftRadius: 16,

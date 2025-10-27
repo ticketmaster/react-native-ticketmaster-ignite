@@ -1,4 +1,4 @@
-package com.ticketmasterigniteexample
+package ticketmasterignite.example
 
 import android.os.Bundle
 import com.facebook.react.ReactActivity
