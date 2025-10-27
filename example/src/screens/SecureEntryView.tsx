@@ -14,6 +14,7 @@ const SecureEntryView = () => {
         style={styles.barcode}
         token={Config.SECURE_ENTRY_TOKEN || ''}
         renderTimeDelay={100}
+        offsetTop={100}
       />
     </ImageBackground>
   );

@@ -10,7 +10,7 @@ const MyEvents = () => {
     return null;
   }
 
-  return <TicketsSdkEmbedded style={styles.ticketsContainer} />;
+  return <TicketsSdkEmbedded style={styles.ticketsContainer} offsetTop={100} />;
 };
 
 const styles = StyleSheet.create({

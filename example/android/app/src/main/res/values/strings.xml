@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">TicketmasterIgniteExample</string>
     <string name="app_tm_modern_accounts_scheme">psdktm</string>
+    <string name="app_tm_sportxr_scheme">psdk.za.stormers.com</string>
+    <string name="app_tm_modern_accounts_scheme_2">psdkschemenhlseattle</string>
 </resources>
