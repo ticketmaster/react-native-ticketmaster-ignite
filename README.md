@@ -138,7 +138,7 @@ dependencies {
 
 #### Set the minSdkVersion
 
-In `android/build.gradle` set the `minSdkVersion` to `28` and set the `compileSdkVersion` to `35`.
+In `android/build.gradle` set the `minSdkVersion` to `28` and set the `compileSdkVersion` to `36`.
 
 ## Setting up Expo
 
@@ -855,7 +855,7 @@ As the initial Accounts SDK configuration is done for your app via `IgniteProvid
 On any logs of `TicketmasterFoundation.ConnectionError error` see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
 
 
-## Running the example app  
+## Running the example app
 
 To run the demo/example app:
 
