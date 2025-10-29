@@ -6,8 +6,8 @@ import Region
 import android.app.Activity
 import android.content.Intent
 import android.annotation.SuppressLint
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.FragmentActivity
 import com.facebook.react.bridge.ActivityEventListener
@@ -317,33 +317,17 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
-  private fun createTicketsColors(color: Int): TicketsColors =
-    TicketsColors(
-      lightColors(
-        primary = Color(color),
-        primaryVariant = Color(color),
-        secondary = Color(color)
-      ),
-      darkColors(
-        primary = Color(color),
-        primaryVariant = Color(color),
-        secondary = Color(color)
-      )
-    )
-
   @SuppressLint("ConflictingOnColor")
   private fun createTMAuthenticationColors(color: Int): TMAuthentication.ColorTheme =
     TMAuthentication.ColorTheme(
       // The Color class is part of the Compose library
-      lightColors(
+      lightColorScheme(
         primary = Color(color),
-        primaryVariant = Color(color),
         secondary = Color(color),
         onPrimary = Color.White // Color used for text and icons displayed on top of the primary color.
       ),
-      darkColors(
+      darkColorScheme(
         primary = Color(color),
-        primaryVariant = Color(color),
         secondary = Color(color),
         onPrimary = Color.White // Color used for text and icons displayed on top of the primary color.
       )

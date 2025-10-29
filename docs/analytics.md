@@ -18,7 +18,6 @@
 | accountsSdkLogoutStarted | accountsSdkLogoutStarted |
 | accountsSdkLoggedOut | accountsSdkLoggedOut |
 | accountsSdkLogoutCompleted | accountsSdkLogoutCompleted |
-| accountsSdkLoginExchanging (iOS only) | accountsSdkLoginExchanging |
 
 More information about the flow of these state change analytics can be found here https://ignite.ticketmaster.com/v1/docs/analytics-ios
 

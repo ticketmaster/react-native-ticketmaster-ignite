@@ -42,7 +42,6 @@ class PurchaseActivity : AppCompatActivity() {
       val tmPurchaseWebsiteConfiguration = TMPurchaseWebsiteConfiguration(
         intent.getStringExtra("eventId").orEmpty(),
         MarketDomain.getMarketDomain(marketDomain),
-        showInfoToolbarButton = EventHeader.getShowInfoToolbarButtonValue(eventHeaderType),
         showShareToolbarButton = EventHeader.getShowShareToolbarButtonValue(eventHeaderType),
       )
 

@@ -9,7 +9,7 @@ object Environment {
 
   fun getTMEnvironment(environment: String): TMEnvironment {
     return when (environment) {
-      "PreProduction" -> TMEnvironment.PreProd
+      "PreProduction" -> TMEnvironment.Beta
       "Staging" -> TMEnvironment.Alpha
       else -> TMEnvironment.Production
     }

@@ -129,6 +129,9 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
+    // Ticketmaster SDK dependencies
+    implementation 'com.ticketmaster.tickets:tickets:3.14.2'
+
     // Flag to enable support for the new language APIs
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.3'
 
