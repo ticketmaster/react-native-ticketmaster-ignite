@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -37,25 +37,26 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import androidx.core.graphics.toColorInt
 
 class TicketsFragment() : Fragment() {
   private lateinit var customView: TicketsView
 
   private fun createTicketsColors(color: Int): TicketsColors =
     TicketsColors(
-      lightColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color)),
-      darkColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color))
+      lightColorScheme(primary = Color(color), secondary = Color(color)),
+      darkColorScheme(primary = Color(color), secondary = Color(color))
     )
 
   private fun createAuthColors(color: Int): TMAuthentication.ColorTheme =
     TMAuthentication.ColorTheme(
-      lightColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color)),
-      darkColors(primary = Color(color), primaryVariant = Color(color), secondary = Color(color))
+      lightColorScheme(primary = Color(color), secondary = Color(color)),
+      darkColorScheme(primary = Color(color), secondary = Color(color))
     )
 
   private suspend fun validateAuthToken(authentication: TMAuthentication): Map<AuthSource, String> {
     val tokenMap = mutableMapOf<AuthSource, String>()
-    AuthSource.values().forEach {
+    AuthSource.entries.forEach {
       authentication.getToken(it)?.let { token ->
         tokenMap[it] = token
       }
@@ -161,7 +162,7 @@ class TicketsFragment() : Fragment() {
         val venueConcessionsModuleTextOverride = VenueNextModule.VenueNextTextOverride(
           food = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
             ModuleBase.TextOverride(it)
-          } ?: null,
+          },
           // POTENTIAL REFACTOR
 //          merch = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
 //            ModuleBase.TextOverride(it)
@@ -174,15 +175,14 @@ class TicketsFragment() : Fragment() {
             "" -> ModuleBase.TextOverride("")
             else -> ModuleBase.TextOverride("")
           },
-          experiences = when (val text =
-            Config.optionalString("venueConcessionsModuleTopLabelText")) {
+          experiences = when (Config.optionalString("venueConcessionsModuleTopLabelText")) {
             null -> null
             "" -> ModuleBase.TextOverride("")
             else -> ModuleBase.TextOverride("")
           },
           fingertips = Config.optionalString("venueConcessionsModuleBottomLabelText")?.let {
             ModuleBase.TextOverride(it)
-          } ?: null
+          }
         )
 
         if (Config.get("venueConcessionsModule") == "true") {
@@ -242,7 +242,7 @@ class TicketsFragment() : Fragment() {
     coroutineScope.launch(Dispatchers.Main) {
       val authenticationResult =
         TMAuthentication.Builder(Config.get("apiKey"), Config.get("clientName"))
-          .colors(createAuthColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
+          .colors(createAuthColors(Config.get("primaryColor").toColorInt()))
           .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment")))
           .region(Region.getRegion())
           .build(requireContext())
@@ -253,7 +253,7 @@ class TicketsFragment() : Fragment() {
       TicketsSDKClient
         .Builder()
         .authenticationSDKClient(authentication)
-        .colors(createTicketsColors(android.graphics.Color.parseColor(Config.get("primaryColor"))))
+        .colors(createTicketsColors(Config.get("primaryColor").toColorInt()))
         .build(requireContext())
         .apply {
           TicketsSDKSingleton.setTicketsSdkClient(this)

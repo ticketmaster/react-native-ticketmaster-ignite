@@ -73,7 +73,6 @@ export type IgniteAnalytics = {
   accountsSdkLogoutStarted: 'accountsSdkLogoutStarted';
   accountsSdkLoggedOut: 'accountsSdkLoggedOut';
   accountsSdkLogoutCompleted: 'accountsSdkLogoutCompleted';
-  accountsSdkLoginExchanging: 'accountsSdkLoginExchanging';
   /**
    * The ticket selection portion of the purchase process begun
    */
@@ -106,7 +105,6 @@ export enum IgniteAnalyticName {
   ACCOUNTS_SDK_LOGOUT_STARTED = 'accountsSdkLogoutStarted',
   ACCOUNTS_SDK_LOGGED_OUT = 'accountsSdkLoggedOut',
   ACCOUNTS_SDK_LOGOUT_COMPLETED = 'accountsSdkLogoutCompleted',
-  ACCOUNTS_SDK_LOGIN_EXCHANGING = 'accountsSdkLoginExchanging',
   PURCHASE_SDK_DID_BEGIN_TICKET_SELECTION_FOR = 'purchaseSdkDidBeginTicketSelectionFor',
   PURCHASE_SDK_DID_END_TICKET_SELECTION_FOR = 'purchaseSdkDidEndTicketSelectionFor',
   PURCHASE_SDK_DID_BEGIN_CHECKOUT_FOR = 'purchaseSdkDidBeginCheckoutFor',

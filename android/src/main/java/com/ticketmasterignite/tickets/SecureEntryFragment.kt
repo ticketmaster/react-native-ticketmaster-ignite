@@ -25,3 +25,5 @@ class SecureEntryFragment : Fragment() {
     secureEntryView?.setToken(token)
   }
 }
+
+private fun SecureEntryView?.setToken(token: String) {}

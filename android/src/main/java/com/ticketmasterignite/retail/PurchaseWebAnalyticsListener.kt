@@ -1,5 +1,6 @@
 package com.ticketmasterignite.retail
 
+import com.ticketmaster.foundation.entity.UALViewItem
 import com.ticketmaster.purchase.entity.UALCommerceEvent
 import com.ticketmaster.purchase.entity.UALPageView
 import com.ticketmaster.purchase.entity.UALUserAction
@@ -19,6 +20,10 @@ class PurchaseWebAnalyticsListener : TMPurchaseWebAnalyticsListener {
 
   override fun onWebpageReportedUALCommerceEvent(commerceEvent: UALCommerceEvent) {
 //    GlobalEventEmitter.sendEvent("igniteAnalytics", "purchaseSdkWebPageDidReportUALCommerceEvent")
+  }
+
+  override fun onWebReportedViewItem(viewItem: UALViewItem) {
+    TODO("Not yet implemented")
   }
 
   override fun onWebpageReportedUALPageView(pageView: UALPageView) {
