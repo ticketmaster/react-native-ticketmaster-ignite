@@ -15,6 +15,26 @@ This library serves as a wrapper for the three Ticketmaster Ignite SDK's: [Accou
 
 In order to use the library, setup a developer account with Ticketmaster by contacting nexus_sdk@ticketmaster.com. When your account is activated you will receive an **API key** and **scheme** that you'll need to use to finish the setup.
 
+---
+
+## 📚 Documentation Assistant
+
+Need help getting started? Our AI-powered documentation assistant can answer your questions instantly!
+
+[![Ask AI Assistant](https://img.shields.io/badge/🎫_Ask-AI_Documentation_Assistant-667eea?style=for-the-badge)](https://ticketmaster.github.io/react-native-ticketmaster-ignite/)
+
+**What can the assistant help with?**
+- 🚀 Installation and setup for iOS, Android, and Expo
+- ⚙️ Configuration and API keys
+- 🔐 Authentication and user management
+- 🎟️ Retail, Tickets, and Accounts SDK usage
+- 🔧 Troubleshooting common issues
+- 📱 Deep linking and multiple schemes
+
+**[→ Open Chat Assistant](https://ticketmaster.github.io/react-native-ticketmaster-ignite/)**
+
+---
+
 ## Installation
 
 #### NPM
