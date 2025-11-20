@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from 'pg';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
 
