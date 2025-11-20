@@ -132,7 +132,32 @@ export class AIService {
   async generateAnswer(systemPrompt: string, userPrompt: string): Promise<string> {
     try {
       if (this.provider === 'ollama' && this.ollama) {
-        return await this.ollama.generateAnswer(systemPrompt, userPrompt);
+        try {
+          return await this.ollama.generateAnswer(systemPrompt, userPrompt);
+        } catch (ollamaError: unknown) {
+          const errorMessage = ollamaError instanceof Error ? ollamaError.message : 'Unknown error';
+          console.warn('Ollama chat failed, attempting OpenAI fallback:', errorMessage);
+
+          // Fall back to OpenAI if configured
+          if (process.env.OPENAI_API_KEY) {
+            if (!this.openai) {
+              this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+            }
+            console.log('Using OpenAI fallback for chat generation');
+            const response = await this.openai.chat.completions.create({
+              model: this.chatModel,
+              messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userPrompt },
+              ],
+              temperature: 0.3,
+              max_tokens: 2000,
+            });
+            return response.choices[0]?.message?.content || 'No response generated';
+          }
+
+          throw ollamaError;
+        }
       } else if (this.provider === 'openai' && this.openai) {
         const response = await this.openai.chat.completions.create({
           model: this.chatModel,
