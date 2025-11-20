@@ -44,7 +44,7 @@ interface ErrorWithStatus extends Error {
 /**
  * Health check endpoint
  */
-app.get('/health', async (req: Request, res: Response) => {
+app.get('/health', async (_req: Request, res: Response) => {
   try {
     const stats = await vectorStore.getStats();
 
@@ -68,7 +68,7 @@ app.get('/health', async (req: Request, res: Response) => {
 /**
  * Get vector store statistics
  */
-app.get('/api/ignite-docs/stats', async (req: Request, res: Response, next: NextFunction) => {
+app.get('/api/ignite-docs/stats', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const stats = await vectorStore.getStats();
 
@@ -156,7 +156,7 @@ app.post(
 /**
  * Root endpoint with API documentation
  */
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({
     name: 'Ignite Documentation RAG API',
     version: '1.0.0',
@@ -185,7 +185,7 @@ app.use((req: Request, res: Response) => {
 /**
  * Global error handler
  */
-app.use((err: ErrorWithStatus, req: Request, res: Response, next: NextFunction) => {
+app.use((err: ErrorWithStatus, _req: Request, res: Response, _next: NextFunction) => {
   console.error('Error:', err);
 
   const status = err.status || 500;

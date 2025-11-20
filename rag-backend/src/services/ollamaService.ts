@@ -70,9 +70,10 @@ export class OllamaService {
 
       const data: OllamaEmbedResponse = await response.json();
       return data.embedding;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       console.error('Error generating Ollama embedding:', error);
-      throw new Error(`Failed to generate embedding: ${error.message}`);
+      throw new Error(`Failed to generate embedding: ${errorMessage}`);
     }
   }
 
@@ -119,9 +120,10 @@ export class OllamaService {
 
       const data: OllamaGenerateResponse = await response.json();
       return data.message.content;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       console.error('Error generating answer with Ollama:', error);
-      throw new Error(`Failed to generate answer: ${error.message}`);
+      throw new Error(`Failed to generate answer: ${errorMessage}`);
     }
   }
 
