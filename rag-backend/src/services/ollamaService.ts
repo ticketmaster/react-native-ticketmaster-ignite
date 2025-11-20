@@ -68,7 +68,7 @@ export class OllamaService {
         throw new Error(`Ollama embedding failed: ${response.status} ${response.statusText}`);
       }
 
-      const data: OllamaEmbedResponse = await response.json();
+      const data = await response.json() as OllamaEmbedResponse;
       return data.embedding;
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -118,7 +118,7 @@ export class OllamaService {
         throw new Error(`Ollama generation failed: ${response.status} ${response.statusText}`);
       }
 
-      const data: OllamaGenerateResponse = await response.json();
+      const data = await response.json() as OllamaGenerateResponse;
       return data.message.content;
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
