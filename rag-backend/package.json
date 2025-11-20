@@ -7,7 +7,7 @@
     "build": "tsc",
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
-    "start:prod": "node dist/server.js",
+    "start:prod": "node dist/src/server.js",
     "ingest": "tsx scripts/ingestDocs.ts",
     "ingest:demo": "tsx scripts/ingestDemo.ts",
     "test:retrieval": "tsx scripts/testRetrieval.ts",
