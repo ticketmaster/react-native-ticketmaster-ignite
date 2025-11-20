@@ -27,7 +27,8 @@ app.use(cors({
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:5173',
-      /^https:\/\/ticketmaster\.github\.io/,
+      /^https?:\/\/ticketmaster\.github\.io/,
+      /^https?:\/\/code\.ticketmaster\.com/,
       /^https:\/\/.*\.railway\.app$/,
       /^https:\/\/.*\.vercel\.app$/,
     ];
