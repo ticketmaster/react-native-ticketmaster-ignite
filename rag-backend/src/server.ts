@@ -23,7 +23,7 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:5173', // Vite dev server
-    'https://ticketmaster.github.io',
+    /^https:\/\/ticketmaster\.github\.io/, // GitHub Pages (any path)
     /^https:\/\/.*\.railway\.app$/, // Railway preview URLs
     /^https:\/\/.*\.vercel\.app$/, // Vercel preview URLs
   ],
@@ -57,10 +57,13 @@ app.get('/health', async (_req: Request, res: Response) => {
       },
     });
   } catch (error) {
+    console.error('Health check failed:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     res.status(503).json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
       error: 'Database connection failed',
+      details: errorMessage,
     });
   }
 });
