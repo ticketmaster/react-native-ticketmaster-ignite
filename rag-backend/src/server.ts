@@ -20,14 +20,36 @@ app.use(helmet({
 
 // CORS configuration - Allow GitHub Pages and localhost
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5173', // Vite dev server
-    /^https:\/\/ticketmaster\.github\.io/, // GitHub Pages (any path)
-    /^https:\/\/.*\.railway\.app$/, // Railway preview URLs
-    /^https:\/\/.*\.vercel\.app$/, // Vercel preview URLs
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, postman)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      /^https:\/\/ticketmaster\.github\.io/,
+      /^https:\/\/.*\.railway\.app$/,
+      /^https:\/\/.*\.vercel\.app$/,
+    ];
+
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (typeof allowed === 'string') {
+        return origin === allowed;
+      }
+      return allowed.test(origin);
+    });
+
+    if (isAllowed) {
+      console.log(`CORS: Allowed origin: ${origin}`);
+      callback(null, true);
+    } else {
+      console.log(`CORS: Blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use(express.json()); // Parse JSON bodies
