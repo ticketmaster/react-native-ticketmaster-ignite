@@ -183,8 +183,6 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
       sendEvent("igniteAnalytics", body: ["accountsSdkLoggedOut": "accountsSdkLoggedOut"])
     case .logoutCompleted:
       sendEvent("igniteAnalytics", body: ["accountsSdkLogoutCompleted": "accountsSdkLogoutCompleted"])
-    case .loginExchanging:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLoginExchanging": "accountsSdkLoginExchanging"])
     @unknown default:
       return
     }

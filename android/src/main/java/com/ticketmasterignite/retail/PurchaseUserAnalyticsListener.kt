@@ -9,6 +9,7 @@ import com.ticketmaster.purchase.action.TMPurchaseMenuItem
 import com.ticketmaster.purchase.action.TMPurchaseSubPage
 import com.ticketmaster.purchase.action.TMTicketSelectionEndReason
 import com.ticketmaster.purchase.entity.TMPurchaseOrder
+import com.ticketmaster.purchase.internal.ui.webview.TMGEDPPanelItem
 import com.ticketmaster.purchase.listener.TMPurchaseUserAnalyticsListener
 import com.ticketmasterignite.GlobalEventEmitter
 
@@ -91,21 +92,6 @@ class PurchaseUserAnalyticsListener(private val closeScreen: () -> Unit): TMPurc
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
-  override fun onMenuItemSelected(event: DiscoveryEvent, menuItemSelected: TMPurchaseMenuItem) {
-    val params: WritableMap = Arguments.createMap()
-    val paramValues: WritableMap = Arguments.createMap().apply {
-      putString("eventId", event.discoveryID)
-      putString("legacyId", event.hostID)
-      putString("eventName", event.name)
-      putString("date", event.startDate)
-      putString("timeZone", event.timeZone)
-      putString("button", menuItemSelected.name)
-    }
-    params.putMap("purchaseSdkDidPressNavBarButtonFor", paramValues)
-
-    GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-  }
-
   override fun onTicketPurchased(event: DiscoveryEvent, order: TMPurchaseOrder) {
     val params: WritableMap = Arguments.createMap()
     val paramValues: WritableMap = Arguments.createMap().apply {
@@ -118,6 +104,24 @@ class PurchaseUserAnalyticsListener(private val closeScreen: () -> Unit): TMPurc
       putString("orderName", order.eventName)
     }
     params.putMap("purchaseSdkDidMakePurchaseFor", paramValues)
+
+    GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+  }
+
+  override fun onMenuItemSelected(
+    event: DiscoveryEvent,
+    menuItemSelected: TMGEDPPanelItem
+  ) {
+    val params: WritableMap = Arguments.createMap()
+    val paramValues: WritableMap = Arguments.createMap().apply {
+      putString("eventId", event.discoveryID)
+      putString("legacyId", event.hostID)
+      putString("eventName", event.name)
+      putString("date", event.startDate)
+      putString("timeZone", event.timeZone)
+      putString("button", menuItemSelected.name)
+    }
+    params.putMap("purchaseSdkDidPressNavBarButtonFor", paramValues)
 
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
