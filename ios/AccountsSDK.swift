@@ -87,21 +87,6 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     }
   }
   
-  @objc public func getToken(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
-      print("Token Retrieved")
-      let data = ["accessToken": authToken.accessToken, "sportXRIdToken": authToken.idToken ?? ""]
-      resolve(data)
-    } aborted: { oldAuthToken, backend in
-      print("Token Retrieval Aborted ")
-      let data = ["accessToken": ""]
-      resolve(data)
-    } failure: { oldAuthToken, error, backend in
-      print("Token Retrieval Error: \(error.localizedDescription)")
-      reject( "Accounts SDK Token Retrieval Error", error.localizedDescription, error as NSError)
-    }
-  }
-  
   @objc public func getMemberInfo(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     
     TMAuthentication.shared.memberInfo { memberInfo in
@@ -109,11 +94,37 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
       print(" - UserID: \(memberInfo.localID ?? "<nil>")")
       print(" - Email: \(memberInfo.email ?? "<nil>")")
       print(memberInfo)
-      let data = ["globalUserId": memberInfo.globalID, "memberId": memberInfo.localID,  "hmacId": memberInfo.hmacID, "firstName": memberInfo.firstName, "lastName": memberInfo.lastName, "email": memberInfo.email, "phone": memberInfo.phone, "preferredLang": memberInfo.language]
-      resolve(data as [String : Any])
+      let mirror = Mirror(reflecting: memberInfo)
+          var data: [String: Any] = [:]
+
+          for child in mirror.children {
+              guard let key = child.label else { continue }
+              let value = child.value
+
+              // Only store non-nil optionals
+            if let unwrapped = self.unwrap(value) {
+                  data[key] = unwrapped
+              }
+          }
+      resolve(data)
     } failure: { oldMemberInfo, error, backend in
       print("MemberInfo Error: \(error.localizedDescription)")
       reject( "Accounts SDK Member Info Error", error.localizedDescription, error as NSError)
+    }
+  }
+  
+  @objc public func getToken(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
+    TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
+      print("Token Retrieved")
+      let data = ["accessToken": authToken.accessToken, "sportXRIdToken": authToken.idToken ?? ""]
+      resolve(data)
+    } aborted: { oldAuthToken, backend in
+      print("Token Retrieval Aborted")
+      let data = ["accessToken": ""]
+      resolve(data)
+    } failure: { oldAuthToken, error, backend in
+      print("Token Retrieval Error: \(error.localizedDescription)")
+      reject( "Accounts SDK Token Retrieval Error", error.localizedDescription, error as NSError)
     }
   }
   
@@ -146,6 +157,19 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   }
   
   
+  func unwrap(_ value: Any) -> Any? {
+      let mirrored = Mirror(reflecting: value)
+
+      if mirrored.displayStyle != .optional {
+          return value
+      }
+
+      if let child = mirrored.children.first {
+          return child.value
+      }
+
+      return nil
+  }
   
   
   func sendEvent(_ name: String, body: [String : Any]) {

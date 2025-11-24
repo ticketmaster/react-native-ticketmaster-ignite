@@ -183,10 +183,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       setAuthState({
         isConfigured: true,
         isLoggedIn: !!isLoggedInParsed,
-        memberInfo:
-          Platform.OS === 'ios'
-            ? memberInfoResult
-            : JSON.parse(memberInfoResult),
+        memberInfo: memberInfoResult,
       });
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
@@ -383,9 +380,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       { onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }
     ): Promise<void> => {
       try {
-        Platform.OS === 'ios'
-          ? await AccountsSDK.logoutAll()
-          : await AccountsSDK.logout();
+        await AccountsSDK.logoutAll();
         enableLogs && console.log('Accounts SDK logoutAll successful');
         !skipUpdate && autoUpdate && (await setAccountDetails());
         onLogout && onLogout();
@@ -415,15 +410,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, [AccountsSDK, enableLogs]);
 
   const getToken = useCallback(async (): Promise<AccessToken> => {
-    let accessToken;
     try {
-      if (Platform.OS === 'ios') {
-        // iOS getToken has the exact same Native logic as refreshToken, but will not display the login UI if a user is not logged in or has an invalidated token
-        const result = await AccountsSDK.getToken();
-        accessToken = result.accessToken === '' ? null : result;
-      } else if (Platform.OS === 'android') {
-        accessToken = await AccountsSDK.refreshToken();
-      }
+      // iOS getToken() has the exact same Native logic as refreshToken, but will not display the login UI if a user is not logged in or has an invalidated token
+      // Android getToken() never shows the login UI if a user is not logged in or has an invalidated token, so showing login is done manually in JS refreshToken()
+      const result = await AccountsSDK.getToken();
+      const accessToken = result.accessToken === '' ? null : result;
       enableLogs &&
         console.log(
           `Accounts SDK access token: ${JSON.stringify(accessToken)}`
@@ -458,7 +449,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       result = await AccountsSDK.getMemberInfo();
       enableLogs &&
         console.log(`Accounts SDK memberInfo: ${JSON.stringify(result)}`);
-      return Platform.OS === 'ios' ? result : JSON.parse(result);
+      return result;
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
         enableLogs && console.log('Accounts SDK memberInfo: null');
@@ -480,7 +471,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       } else {
         if (result === null) {
           await login();
-          // iOS has its own refresh method AccountsSDK.refreshToken(), Android only has one token method AccountsSDK.refreshToken() which the JS getToken() already calls
+          // The JS getToken() method already returns the destructured access token
           return await getToken();
         } else {
           enableLogs &&
