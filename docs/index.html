@@ -40,6 +40,15 @@
         .header h1 {
             font-size: 28px;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header h1 img {
+            height: 40px;
+            width: auto;
         }
 
         .header p {
@@ -258,7 +267,10 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎫 Ignite Docs Assistant</h1>
+            <h1>
+                <img src="https://www.ticketmaster.com/tm/en-us/dam/jcr:e59273e9-e9bf-4a3b-bb49-14e19c89b8a2/tm-logo-white.svg" alt="Ticketmaster">
+                React Native Ignite Docs Assistant
+            </h1>
             <p>Ask me anything about react-native-ticketmaster-ignite</p>
         </div>
 
