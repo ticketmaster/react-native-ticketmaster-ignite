@@ -337,7 +337,15 @@
             messageDiv.innerHTML = html;
 
             chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Scroll to show the start of the new message
+            // For user messages, scroll to bottom as they're short
+            // For assistant messages, scroll to the top of the message to start reading
+            if (isUser) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            } else {
+                messageDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         function addLoadingMessage() {
