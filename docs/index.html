@@ -352,11 +352,13 @@
 
             // Scroll to show the start of the new message
             // For user messages, scroll to bottom as they're short
-            // For assistant messages, scroll to the top of the message to start reading
+            // For assistant messages, scroll to show both question and answer start
             if (isUser) {
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             } else {
-                messageDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Use 'nearest' to avoid scrolling if already visible,
+                // or scroll to show the message without hiding the question
+                messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
 
