@@ -150,6 +150,11 @@ export type PrebuiltModules = {
   };
 };
 
+export type AccessToken = {
+  accessToken: string;
+  sportXRIdToken: string;
+} | null;
+
 export type Region = 'US' | 'UK';
 
 // eslint-disable-next-line prettier/prettier

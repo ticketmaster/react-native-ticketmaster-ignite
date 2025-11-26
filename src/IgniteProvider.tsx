@@ -1,19 +1,14 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
+import { toCapitalise } from './utils/utils';
 import {
+  AccessToken,
+  MarketDomain,
+  Region,
+  EventHeaderType,
   IgniteAnalytics,
   PrebuiltModules,
-} from 'react-native-ticketmaster-ignite';
-import { toCapitalise } from './utils/utils';
-import { EventHeaderType, MarketDomain, Region } from './types';
-
-type AuthSource = {
-  hostAccessToken?: string;
-  archticsAccessToken?: string;
-  mfxAccessToken?: string;
-  sportXRAccessToken?: string;
-  sportXRIdToken?: string;
-};
+} from './types';
 
 type SportXrData = {
   sportXRcookieName?: string;
@@ -35,12 +30,6 @@ type AuthStateParams = {
   isLoggedIn: boolean;
   memberInfo: Record<string, any> | null;
 };
-
-type iosTokenData = { accessToken: string; sportXRIdToken: string };
-
-type androidTokenData = AuthSource;
-
-type AccessToken = iosTokenData | androidTokenData | null;
 
 interface IgniteProviderProps {
   children: React.ReactNode;

@@ -89,6 +89,14 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   
   @objc public func getMemberInfo(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     
+    // Map of iOS (key) to Android (value) memberInfo key name equivalents, iOS getMemberInfo() will use the android name as the key for the object returned to JS as camel case is preferred
+    let keyMap: [String: String] = [
+        "localID": "memberId",
+        "globalID": "globalUserId",
+        "hmacID": "hmacId",
+        "language": "preferredLang"
+    ]
+    
     TMAuthentication.shared.memberInfo { memberInfo in
       print("MemberInfo Completed")
       print(" - UserID: \(memberInfo.localID ?? "<nil>")")
@@ -98,13 +106,10 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
           var data: [String: Any] = [:]
 
           for child in mirror.children {
-              guard let key = child.label else { continue }
-              let value = child.value
+              guard let originalKey = child.label else { continue }
 
-              // Only store non-nil optionals
-            if let unwrapped = self.unwrap(value) {
-                  data[key] = unwrapped
-              }
+              let finalKey = keyMap[originalKey] ?? originalKey
+            data[finalKey] = self.convertToDictionary(child.value)
           }
       resolve(data)
     } failure: { oldMemberInfo, error, backend in
@@ -157,18 +162,41 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   }
   
   
-  func unwrap(_ value: Any) -> Any? {
-      let mirrored = Mirror(reflecting: value)
+  func convertToDictionary(_ value: Any) -> Any {
+      let mirror = Mirror(reflecting: value)
 
-      if mirrored.displayStyle != .optional {
+      // Convert Swift Optionals to correct bridging value for JavaScript
+      if mirror.displayStyle == .optional {
+          if let child = mirror.children.first {
+              return convertToDictionary(child.value)
+          }
+          return NSNull()
+      }
+
+      // return primitive types as is
+      if value is String || value is Int || value is Bool || value is Double || value is Float {
           return value
       }
 
-      if let child = mirrored.children.first {
-          return child.value
+      // Convert values in an Array to correct bridging value fpr JavaScript
+      if let array = value as? [Any] {
+          return array.map { convertToDictionary($0) }
       }
 
-      return nil
+      // Convert Struct/Class to correct bridging value for JavaScript i.e. an object
+      if mirror.displayStyle == .struct || mirror.displayStyle == .class {
+          var dict: [String: Any] = [:]
+
+          for child in mirror.children {
+              guard let key = child.label else { continue }
+              dict[key] = convertToDictionary(child.value)
+          }
+
+          return dict
+      }
+
+      // Default fallback
+      return value
   }
   
   
