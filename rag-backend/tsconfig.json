@@ -24,6 +24,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*", "scripts/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*", "scripts/migrate.ts", "scripts/ingestDocsImproved.ts"],
+  "exclude": ["node_modules", "dist", "scripts/recreateEmbeddings.ts"]
 }
