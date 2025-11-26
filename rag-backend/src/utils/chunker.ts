@@ -72,6 +72,15 @@ export function extractMetadata(text: string, path: string): {
     'configuration',
     'migration',
     'troubleshooting',
+    'runtime',
+    'switch',
+    'api key',
+    'reconfigure',
+    'refreshConfiguration',
+    'dynamic',
+    'change',
+    'multiple teams',
+    'team switching',
   ];
 
   for (const keyword of conceptKeywords) {

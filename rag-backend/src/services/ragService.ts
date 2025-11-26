@@ -1,6 +1,5 @@
 import { aiService } from './aiService';
 import { vectorStore, SearchOptions } from './vectorStore';
-import { generateMockEmbedding } from './mockEmbeddings';
 
 export interface RAGResponse {
   answer: string;
@@ -78,6 +77,15 @@ export class RAGService {
       'setup',
       'migration',
       'troubleshooting',
+      'runtime',
+      'switch',
+      'api key',
+      'reconfigure',
+      'refreshConfiguration',
+      'dynamic',
+      'change',
+      'multiple teams',
+      'team switching',
     ];
 
     for (const keyword of conceptKeywords) {
@@ -97,7 +105,7 @@ export class RAGService {
 
     const searchOptions: SearchOptions = {
       topK,
-      minSimilarity: 0.5, // Filter out low-relevance results
+      minSimilarity: 0.3, // Filter out low-relevance results (lowered to improve recall)
     };
 
     // Apply filters if we have strong hints
@@ -200,14 +208,8 @@ Please provide a detailed answer based on the documentation context above. Inclu
     try {
       const topK = query.topK || this.defaultTopK;
 
-      // Step 1: Embed the question (with fallback to mock embeddings)
-      let questionEmbedding: number[];
-      try {
-        questionEmbedding = await aiService.embed(query.question);
-      } catch (embedError: any) {
-        console.warn('OpenAI embedding failed, using mock embeddings:', embedError.message);
-        questionEmbedding = generateMockEmbedding(query.question);
-      }
+      // Step 1: Embed the question
+      const questionEmbedding = await aiService.embed(query.question);
 
       // Step 2: Retrieve relevant documents with smart filtering
       const searchOptions = this.buildSearchOptions(query.question, topK);
@@ -260,7 +262,7 @@ Please provide a detailed answer based on the documentation context above. Inclu
           answer += `---\n\n`;
         });
 
-        answer += `\n💡 **To enable AI-generated answers**, add OpenAI credits to your account or configure Ollama for free local LLM.`;
+        answer += `\n💡 **To enable AI-generated answers**, add OpenAI credits to your account.`;
       }
 
       // Step 6: Extract sources
