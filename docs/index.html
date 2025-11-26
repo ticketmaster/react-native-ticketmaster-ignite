@@ -360,9 +360,16 @@
             if (isUser) {
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             } else {
-                // Use 'nearest' to avoid scrolling if already visible,
-                // or scroll to show the message without hiding the question
-                messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                // Find the previous message (the user's question) and scroll to show it
+                const messages = chatContainer.querySelectorAll('.message');
+                const previousMessage = messages[messages.length - 2]; // -2 because we just added the assistant message
+
+                if (previousMessage) {
+                    previousMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    // Fallback if no previous message
+                    messageDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             }
         }
 
