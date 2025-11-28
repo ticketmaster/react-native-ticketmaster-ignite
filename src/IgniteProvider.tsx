@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
+import NativeAccountsSdk from '../specs/NativeAccountsSdk';
 import { toCapitalise } from './utils/utils';
 import {
   AccessToken,
@@ -8,12 +9,8 @@ import {
   EventHeaderType,
   IgniteAnalytics,
   PrebuiltModules,
+  SportXrData,
 } from './types';
-
-type SportXrData = {
-  sportXRcookieName?: string;
-  sportXRTeamDomain?: string;
-} | null;
 
 type LoginParams = {
   onLogin?: () => void | Promise<void>;
@@ -126,7 +123,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   prebuiltModules = defaultPrebuiltModules,
   analytics,
 }) => {
-  const { Config, AccountsSDK } = NativeModules;
+  const { Config } = NativeModules;
   const {
     apiKey,
     clientName,
@@ -150,7 +147,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     let memberInfoResult;
     try {
       try {
-        isLoggedInResult = await AccountsSDK.isLoggedIn();
+        isLoggedInResult = await NativeAccountsSdk.isLoggedIn();
       } catch (e) {
         if ((e as Error).message.includes('User not logged in'))
           throw new Error(`User not logged in`);
@@ -162,7 +159,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       _isLoggedIn = isLoggedInParsed;
 
       try {
-        memberInfoResult = await AccountsSDK.getMemberInfo();
+        memberInfoResult = await NativeAccountsSdk.getMemberInfo();
       } catch (e) {
         if ((e as Error).message.includes('User not logged in'))
           throw new Error(`User not logged in`);
@@ -190,11 +187,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK]);
+  }, []);
 
   const configureAccountsSDK = useCallback(async () => {
     try {
-      const result = await AccountsSDK.configureAccountsSDK();
+      const result = await NativeAccountsSdk.configureAccountsSDK();
       enableLogs && console.log(result);
     } catch (e) {
       throw new Error(
@@ -206,7 +203,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     } catch (e) {
       throw e;
     }
-  }, [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]);
+  }, [autoUpdate, enableLogs, setAccountDetails]);
 
   const setNativeConfigValues = useCallback(() => {
     Config.setConfig('apiKey', apiKey);
@@ -328,10 +325,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     ): Promise<void> => {
       !skipUpdate && setIsLoggingIn(true);
       try {
-        const result = await AccountsSDK.login();
+        const result = await NativeAccountsSdk.login();
         if (
-          (Platform.OS === 'ios' && result.accessToken) ||
-          (Platform.OS === 'android' && result.resultCode === -1)
+          (Platform.OS === 'ios' && result?.accessToken) ||
+          (Platform.OS === 'android' && result?.resultCode === -1)
         ) {
           enableLogs && console.log('Accounts SDK login successful');
           !skipUpdate && autoUpdate && (await setAccountDetails());
@@ -344,7 +341,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       }
       !skipUpdate && setIsLoggingIn(false);
     },
-    [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]
+    [autoUpdate, enableLogs, setAccountDetails]
   );
 
   const logout = useCallback(
@@ -352,7 +349,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       { onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }
     ): Promise<void> => {
       try {
-        await AccountsSDK.logout();
+        await NativeAccountsSdk.logout();
         enableLogs && console.log('Accounts SDK logout successful');
         !skipUpdate && autoUpdate && (await setAccountDetails());
         onLogout && onLogout();
@@ -360,7 +357,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     },
-    [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]
+    [autoUpdate, enableLogs, setAccountDetails]
   );
 
   const logoutAll = useCallback(
@@ -369,7 +366,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       { onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }
     ): Promise<void> => {
       try {
-        await AccountsSDK.logoutAll();
+        await NativeAccountsSdk.logoutAll();
         enableLogs && console.log('Accounts SDK logoutAll successful');
         !skipUpdate && autoUpdate && (await setAccountDetails());
         onLogout && onLogout();
@@ -377,12 +374,12 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     },
-    [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]
+    [autoUpdate, enableLogs, setAccountDetails]
   );
 
   const getIsLoggedIn = useCallback(async (): Promise<boolean> => {
     try {
-      const result = await AccountsSDK.isLoggedIn();
+      const result = await NativeAccountsSdk.isLoggedIn();
       enableLogs &&
         console.log(
           `Accounts SDK isLoggedIn: ${Platform.OS === 'ios' ? !!result.result : result}`
@@ -396,14 +393,14 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK, enableLogs]);
+  }, [enableLogs]);
 
   const getToken = useCallback(async (): Promise<AccessToken> => {
     try {
       // iOS getToken() has the exact same Native logic as refreshToken, but will not display the login UI if a user is not logged in or has an invalidated token
       // Android getToken() never shows the login UI if a user is not logged in or has an invalidated token, so showing login is done manually in JS refreshToken()
-      const result = await AccountsSDK.getToken();
-      const accessToken = result.accessToken === '' ? null : result;
+      const result = await NativeAccountsSdk.getToken();
+      const accessToken = result?.accessToken === '' ? null : result;
       enableLogs &&
         console.log(
           `Accounts SDK access token: ${JSON.stringify(accessToken)}`
@@ -417,11 +414,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK, enableLogs]);
+  }, [enableLogs]);
 
   const getSportXrData = useCallback(async (): Promise<SportXrData> => {
     try {
-      const result = await AccountsSDK.getSportXRData();
+      const result = await NativeAccountsSdk.getSportXRData();
       enableLogs &&
         console.log(
           `Accounts SDK SportXr Data retrieved: ${JSON.stringify(result)}`
@@ -430,12 +427,12 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     } catch (e) {
       throw e;
     }
-  }, [AccountsSDK, enableLogs]);
+  }, [enableLogs]);
 
   const getMemberInfo = useCallback(async () => {
     let result;
     try {
-      result = await AccountsSDK.getMemberInfo();
+      result = await NativeAccountsSdk.getMemberInfo();
       enableLogs &&
         console.log(`Accounts SDK memberInfo: ${JSON.stringify(result)}`);
       return result;
@@ -447,16 +444,16 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK, enableLogs]);
+  }, [enableLogs]);
 
   const refreshToken = useCallback(async (): Promise<AccessToken> => {
     try {
-      const result = await AccountsSDK.refreshToken();
+      const result = await NativeAccountsSdk.refreshToken();
       if (Platform.OS === 'ios') {
         // login() is automatically triggered in the iOS Accounts SDK refreshToken() method via TMAuthentication.shared.validToken()
         enableLogs &&
           console.log(`Accounts SDK access token: ${JSON.stringify(result)}`);
-        return result.accessToken === '' ? null : result;
+        return result?.accessToken === '' ? null : result;
       } else {
         if (result === null) {
           await login();
@@ -476,7 +473,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK, enableLogs, getToken, login]);
+  }, [enableLogs, getToken, login]);
 
   const refreshConfiguration = useCallback(
     async (

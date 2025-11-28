@@ -89,7 +89,7 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
   
   @objc public func getMemberInfo(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
     
-    // Map of iOS (key) to Android (value) memberInfo key name equivalents, iOS getMemberInfo() will use the android name as the key for the object returned to JS as camel case is preferred
+    // Map of iOS (key) to Android (value) memberInfo key name equivalents, iOS getMemberInfo() will use the android names as the key for the object returned to JS as camel case is preferred
     let keyMap: [String: String] = [
         "localID": "memberId",
         "globalID": "globalUserId",

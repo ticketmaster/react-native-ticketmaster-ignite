@@ -4,6 +4,7 @@ import Config
 import IgniteSDKSingleton
 import Region
 import android.app.Activity
+import com.nativeaccountssdk.NativeAccountsSdkSpec
 import android.content.Intent
 import android.annotation.SuppressLint
 import androidx.compose.material3.darkColorScheme
@@ -15,27 +16,24 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.BaseActivityEventListener
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
-import com.ticketmaster.tickets.ticketssdk.TicketsColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class AccountsSDKModule(reactContext: ReactApplicationContext) :
-  ReactContextBaseJavaModule(reactContext) {
-  override fun getName() = "AccountsSDK"
+class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsSdkSpec(reactContext) {
+  override fun getName() = NAME
   private val CODE = 1
   private var loginPromise: Promise? = null
+  private var currentActivity = reactContext.currentActivity as FragmentActivity
 
-  @ReactMethod
-  fun configureAccountsSDK(promise: Promise) {
+
+  override fun configureAccountsSDK(promise: Promise) {
     CoroutineScope(Dispatchers.Main).launch {
       val configurationStartedParams: WritableMap = Arguments.createMap().apply {
         putString(
@@ -46,8 +44,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
 
       try {
-        val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
-
+        val currentFragmentActivity = currentActivity
         val authenticationResult = TMAuthentication.Builder(
           Config.get("apiKey"),
           Config.get("clientName")
@@ -126,8 +123,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     reactContext.addActivityEventListener(loginActivityEventListener)
   }
 
-  @ReactMethod
-  fun login(promise: Promise) {
+  override fun login(promise: Promise) {
     val loginStartedParams: WritableMap = Arguments.createMap().apply {
       putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
     }
@@ -141,16 +137,15 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       }
 
       loginPromise = promise
-      val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
+      val currentFragmentActivity = currentActivity
       val intent = authentication.getLoginIntent(currentFragmentActivity)
-      reactApplicationContext.currentActivity?.startActivityForResult(intent, CODE)
+      currentActivity.startActivityForResult(intent, CODE)
     } catch (e: Exception) {
       promise.reject("Accounts SDK Login Error", e)
     }
   }
 
-  @ReactMethod
-  fun logout(promise: Promise) {
+  override fun logout(promise: Promise) {
     val authentication = IgniteSDKSingleton.getAuthenticationSDK()
     if (authentication == null) {
       promise.resolve(false)
@@ -183,8 +178,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
-  @ReactMethod
-  fun logoutAll(promise: Promise) {
+  override fun logoutAll(promise: Promise) {
     val authentication = IgniteSDKSingleton.getAuthenticationSDK()
     if (authentication == null) {
       promise.resolve(false)
@@ -218,8 +212,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   }
 
 
-  @ReactMethod
-  fun isLoggedIn(promise: Promise) {
+  override fun isLoggedIn(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
       promise.resolve(false)
@@ -238,8 +231,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
-  @ReactMethod
-  fun getMemberInfo(promise: Promise) {
+  override fun getMemberInfo(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
       ?: return promise.resolve(null)
 
@@ -286,8 +278,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
-  @ReactMethod
-  fun getToken(promise: Promise) {
+  override fun getToken(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
       promise.resolve(null)
@@ -338,8 +329,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
   }
 
 
-  @ReactMethod
-  fun refreshToken(promise: Promise) {
+  override fun refreshToken(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
       promise.resolve(null)
@@ -389,8 +379,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
-  @ReactMethod
-  fun getSportXRData(promise: Promise) {
+  override fun getSportXRData(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
       promise.resolve(null)
@@ -473,4 +462,8 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         onPrimary = Color.White // Color used for text and icons displayed on top of the primary color.
       )
     )
+
+  companion object {
+    const val NAME = "NativeAccountsSdk"
+  }
 }

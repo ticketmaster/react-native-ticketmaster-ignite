@@ -155,6 +155,11 @@ export type AccessToken = {
   sportXRIdToken: string;
 } | null;
 
+export type SportXrData = {
+  sportXRcookieName?: string;
+  sportXRTeamDomain?: string;
+} | null;
+
 export type Region = 'US' | 'UK';
 
 // eslint-disable-next-line prettier/prettier

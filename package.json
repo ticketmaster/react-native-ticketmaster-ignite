@@ -179,5 +179,13 @@
         }
       ]
     ]
+  },
+  "codegenConfig": {
+    "name": "NativeAccountsSdkSpec",
+    "type": "all",
+    "jsSrcsDir": "specs",
+    "android": {
+      "javaPackageName": "com.nativeaccountssdk"
+    }
   }
 }
