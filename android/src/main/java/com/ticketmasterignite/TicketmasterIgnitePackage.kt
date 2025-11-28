@@ -14,7 +14,15 @@ import com.ticketmasterignite.tickets.TicketsViewManager
 
 class TicketmasterIgnitePackage : BaseReactPackage() {
 
+  private var initialized = false
+
   override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
+    // Run initialization ONCE
+    if (!initialized) {
+      initialized = true
+      GlobalEventEmitter.initialize(reactContext)
+    }
+
     return when (name) {
       AccountsSDKModule.NAME -> AccountsSDKModule(reactContext)
       else -> null
