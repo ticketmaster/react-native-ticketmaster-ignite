@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
 import NativeAccountsSdk from '../specs/NativeAccountsSdk';
+import NativeConfig from '../specs/NativeConfig';
 import { toCapitalise } from './utils/utils';
 import {
   AccessToken,
@@ -123,7 +124,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   prebuiltModules = defaultPrebuiltModules,
   analytics,
 }) => {
-  const { Config } = NativeModules;
   const {
     apiKey,
     clientName,
@@ -206,42 +206,44 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   }, [autoUpdate, enableLogs, setAccountDetails]);
 
   const setNativeConfigValues = useCallback(() => {
-    Config.setConfig('apiKey', apiKey);
-    Config.setConfig('clientName', clientName);
-    Config.setConfig('primaryColor', primaryColor);
-    Config.setConfig('region', region || 'US');
-    Config.setConfig('marketDomain', marketDomain || 'US');
-    Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
+    NativeConfig.setConfig('apiKey', apiKey);
+    NativeConfig.setConfig('clientName', clientName);
+    NativeConfig.setConfig('primaryColor', primaryColor);
+    NativeConfig.setConfig('region', region || 'US');
+    NativeConfig.setConfig('marketDomain', marketDomain || 'US');
+    NativeConfig.setConfig(
+      'eventHeaderType',
+      eventHeaderType || 'EVENT_INFO_SHARE'
+    );
 
     if (
       environment === 'Production' ||
       environment === 'PreProduction' ||
       environment === 'Staging'
     )
-      Config.setConfig('environment', environment);
+      NativeConfig.setConfig('environment', environment);
 
     const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
 
     Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
       // Crash on iOS when boolean sent to bridge module
       const isEnabled = moduleOptions.enabled ? 'true' : 'false';
-      Config.setConfig(moduleName, isEnabled);
+      NativeConfig.setConfig(moduleName, isEnabled);
 
       Object.entries(moduleOptions).forEach(([optionName, optionValue]) => {
         if (optionName.includes('Label')) {
-          Config.setConfig(
+          NativeConfig.setConfig(
             `${moduleName}${toCapitalise(optionName)}`,
             optionValue
           );
         }
         if (optionName.includes('image')) {
           const resolvedImage = resolveAssetSource(optionValue);
-          Config.setImage(moduleName + 'Image', resolvedImage);
+          NativeConfig.setImage(moduleName + 'Image', resolvedImage);
         }
       });
     });
   }, [
-    Config,
     apiKey,
     clientName,
     primaryColor,
@@ -252,12 +254,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     prebuiltModules,
   ]);
 
-  const setTicketDeepLink = useCallback(
-    (id: string) => {
-      Config.setConfig('orderIdDeepLink', id);
-    },
-    [Config]
-  );
+  const setTicketDeepLink = useCallback((id: string) => {
+    NativeConfig.setConfig('orderIdDeepLink', id);
+  }, []);
 
   useEffect(() => {
     const onConfigureAccountsSdk = async () => {
@@ -497,18 +496,19 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       }
     ) => {
       try {
-        Config.setConfig('apiKey', apiKey);
-        clientName && Config.setConfig('clientName', clientName);
-        primaryColor && Config.setConfig('primaryColor', primaryColor);
-        region && Config.setConfig('region', region);
-        marketDomain && Config.setConfig('marketDomain', marketDomain);
-        eventHeaderType && Config.setConfig('eventHeaderType', eventHeaderType);
+        NativeConfig.setConfig('apiKey', apiKey);
+        clientName && NativeConfig.setConfig('clientName', clientName);
+        primaryColor && NativeConfig.setConfig('primaryColor', primaryColor);
+        region && NativeConfig.setConfig('region', region);
+        marketDomain && NativeConfig.setConfig('marketDomain', marketDomain);
+        eventHeaderType &&
+          NativeConfig.setConfig('eventHeaderType', eventHeaderType);
         if (
           environment === 'Production' ||
           environment === 'PreProduction' ||
           environment === 'Staging'
         )
-          Config.setConfig('environment', environment);
+          NativeConfig.setConfig('environment', environment);
         await configureAccountsSDK();
         onSuccess && onSuccess();
         !skipAutoLogin &&
@@ -517,7 +517,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     },
-    [Config, configureAccountsSDK, login]
+    [configureAccountsSDK, login]
   );
 
   return (

@@ -25,6 +25,7 @@ class TicketmasterIgnitePackage : BaseReactPackage() {
 
     return when (name) {
       AccountsSDKModule.NAME -> AccountsSDKModule(reactContext)
+      ConfigModule.NAME -> ConfigModule(reactContext)
       else -> null
     }
   }
@@ -35,6 +36,14 @@ class TicketmasterIgnitePackage : BaseReactPackage() {
         AccountsSDKModule.NAME to ReactModuleInfo(
           name = AccountsSDKModule.NAME,
           className = AccountsSDKModule.NAME,
+          canOverrideExistingModule = false,
+          needsEagerInit = false,
+          isCxxModule = false,
+          isTurboModule = true
+        ),
+        ConfigModule.NAME to ReactModuleInfo(
+          name = ConfigModule.NAME,
+          className = ConfigModule.NAME,
           canOverrideExistingModule = false,
           needsEagerInit = false,
           isCxxModule = false,

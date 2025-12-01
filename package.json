@@ -181,11 +181,11 @@
     ]
   },
   "codegenConfig": {
-    "name": "NativeAccountsSdkSpec",
+    "name": "TicketmasterIgniteSpecs",
     "type": "all",
     "jsSrcsDir": "specs",
     "android": {
-      "javaPackageName": "com.nativeaccountssdk"
+      "javaPackageName": "com.ticketmasterignitespecs"
     }
   }
 }

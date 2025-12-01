@@ -4,7 +4,6 @@ import Config
 import IgniteSDKSingleton
 import Region
 import android.app.Activity
-import com.nativeaccountssdk.NativeAccountsSdkSpec
 import android.content.Intent
 import android.annotation.SuppressLint
 import androidx.compose.material3.darkColorScheme
@@ -20,6 +19,7 @@ import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.ticketmasterignitespecs.NativeAccountsSdkSpec
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
 import kotlinx.coroutines.CoroutineScope
