@@ -55,7 +55,7 @@ type MakeDecisionData = {
   decision: string;
 };
 
-type TicketsSdkVenueConcessionsData = {
+type TicketsSdkEventData = {
   eventOrderInfo: string;
 };
 
@@ -87,8 +87,11 @@ export type IgniteAnalytics = {
   purchaseSdkDidMakeDecisionFor: MakeDecisionData;
   purchaseSdkManageMyTickets: 'purchaseSdkManageMyTickets';
   ticketsSdkDidViewEvents: 'ticketsSdkDidViewEvents';
-  ticketsSdkVenueConcessionsOrderFor: TicketsSdkVenueConcessionsData;
-  ticketsSdkVenueConcessionsWalletFor: TicketsSdkVenueConcessionsData;
+  ticketsSdkVenueConcessionsOrderFor: TicketsSdkEventData;
+  ticketsSdkVenueConcessionsWalletFor: TicketsSdkEventData;
+  ticketsSdkCustomModuleButton1: TicketsSdkEventData;
+  ticketsSdkCustomModuleButton2: TicketsSdkEventData;
+  ticketsSdkCustomModuleButton3: TicketsSdkEventData;
 };
 
 export enum IgniteAnalyticName {
@@ -118,6 +121,9 @@ export enum IgniteAnalyticName {
   TICKETS_SDK_DID_VIEW_EVENTS = 'ticketsSdkDidViewEvents',
   TICKETS_SDK_VENUE_CONCESSIONS_ORDER_FOR = 'ticketsSdkVenueConcessionsOrderFor',
   TICKETS_SDK_VENUE_CONCESSIONS_WALLET_FOR = 'ticketsSdkVenueConcessionsWalletFor',
+  TICKETS_SDK_CUSTOM_MODULE_BUTTON_1 = 'ticketsSdkCustomModuleButton1',
+  TICKETS_SDK_CUSTOM_MODULE_BUTTON_2 = 'ticketsSdkCustomModuleButton2',
+  TICKETS_SDK_CUSTOM_MODULE_BUTTON_3 = 'ticketsSdkCustomModuleButton3',
 }
 
 export type PrebuiltModules = {
@@ -138,15 +144,34 @@ export type PrebuiltModules = {
     enabled: boolean;
     topLabelText?: string;
     bottomLabelText?: string;
-    orderButtonCallback: (
-      data: TicketsSdkVenueConcessionsData
-    ) => void | Promise<void>;
-    walletButtonCallback: (
-      data: TicketsSdkVenueConcessionsData
-    ) => void | Promise<void>;
+    closeTicketViewOrderIos?: boolean;
+    closeTicketViewWalletIos?: boolean;
+    orderButtonCallback: (data: TicketsSdkEventData) => void | Promise<void>;
+    walletButtonCallback: (data: TicketsSdkEventData) => void | Promise<void>;
   };
   invoiceModule?: {
     enabled: boolean;
+  };
+};
+
+export type CustomModules = {
+  button1?: {
+    enabled: boolean;
+    title: string;
+    closeTicketViewIos?: boolean;
+    callback: (data: TicketsSdkEventData) => void | Promise<void>;
+  };
+  button2?: {
+    enabled: boolean;
+    title: string;
+    closeTicketViewIos?: boolean;
+    callback: (data: TicketsSdkEventData) => void | Promise<void>;
+  };
+  button3?: {
+    enabled: boolean;
+    title: string;
+    closeTicketViewIos?: boolean;
+    callback: (data: TicketsSdkEventData) => void | Promise<void>;
   };
 };
 
