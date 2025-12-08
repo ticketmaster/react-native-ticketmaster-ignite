@@ -134,7 +134,9 @@ class TicketsFragment() : Fragment() {
         }
 
         if (Config.get("venueDirectionsModule") == "true") {
-          modules.add(getDirectionsModule(order.orderInfo.latLng))
+          getDirectionsModule(order.orderInfo.latLng)?.let { module ->
+            modules.add(module)
+          }
         }
 
         val seatUpgradesModuleTextOverride = ModuleBase.TextOverride(
@@ -230,10 +232,11 @@ class TicketsFragment() : Fragment() {
     }
   }
 
-  private fun getDirectionsModule(latLng: TicketsModuleDelegate.LatLng?): ModuleBase {
-    return DirectionsModule(
-      requireActivity(), latLng?.latitude!!, latLng.longitude
-    ).build()
+  private fun getDirectionsModule(latLng: TicketsModuleDelegate.LatLng?): ModuleBase? {
+    val latitude = latLng?.latitude ?: return null
+    val longitude = latLng.longitude ?: return null
+
+    return DirectionsModule(requireActivity(), latitude, longitude).build()
   }
 
   override fun onAttach(context: Context) {
