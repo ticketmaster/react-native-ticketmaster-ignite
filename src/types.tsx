@@ -144,8 +144,8 @@ export type PrebuiltModules = {
     enabled: boolean;
     topLabelText?: string;
     bottomLabelText?: string;
-    closeTicketViewOrderIos?: boolean;
-    closeTicketViewWalletIos?: boolean;
+    dismissTicketViewOrderIos?: boolean;
+    dismissTicketViewWalletIos?: boolean;
     orderButtonCallback: (data: TicketsSdkEventData) => void | Promise<void>;
     walletButtonCallback: (data: TicketsSdkEventData) => void | Promise<void>;
   };
@@ -158,19 +158,19 @@ export type CustomModules = {
   button1?: {
     enabled: boolean;
     title: string;
-    closeTicketViewIos?: boolean;
+    dismissTicketViewIos?: boolean;
     callback: (data: TicketsSdkEventData) => void | Promise<void>;
   };
   button2?: {
     enabled: boolean;
     title: string;
-    closeTicketViewIos?: boolean;
+    dismissTicketViewIos?: boolean;
     callback: (data: TicketsSdkEventData) => void | Promise<void>;
   };
   button3?: {
     enabled: boolean;
     title: string;
-    closeTicketViewIos?: boolean;
+    dismissTicketViewIos?: boolean;
     callback: (data: TicketsSdkEventData) => void | Promise<void>;
   };
 };

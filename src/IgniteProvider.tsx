@@ -127,8 +127,8 @@ const defaultPrebuiltModules: PrebuiltModules = {
   },
   venueConcessionsModule: {
     enabled: false,
-    closeTicketViewOrderIos: true,
-    closeTicketViewWalletIos: true,
+    dismissTicketViewOrderIos: true,
+    dismissTicketViewWalletIos: true,
     orderButtonCallback: async () => {},
     walletButtonCallback: async () => {},
   },
@@ -141,19 +141,19 @@ const defaultCustomModules: CustomModules = {
   button1: {
     enabled: false,
     title: '',
-    closeTicketViewIos: true,
+    dismissTicketViewIos: true,
     callback: async () => {},
   },
   button2: {
     enabled: false,
     title: '',
-    closeTicketViewIos: true,
+    dismissTicketViewIos: true,
     callback: async () => {},
   },
   button3: {
     enabled: false,
     title: '',
-    closeTicketViewIos: true,
+    dismissTicketViewIos: true,
     callback: async () => {},
   },
 };
@@ -285,6 +285,27 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       const isEnabled = moduleOptions.enabled ? 'true' : 'false';
       Config.setConfig(moduleName, isEnabled);
 
+      if (moduleName === 'venueConcessionsModule') {
+        const dismissTicketViewOrder =
+          moduleOptions.dismissTicketViewOrderIos === undefined
+            ? 'true'
+            : `${moduleOptions.dismissTicketViewOrderIos}`;
+        const dismissTicketViewWallet =
+          moduleOptions.dismissTicketViewWalletIos === undefined
+            ? 'true'
+            : `${moduleOptions.dismissTicketViewWalletIos}`;
+
+        Config.setConfig(
+          `${moduleName}DismissTicketViewOrder`,
+          dismissTicketViewOrder
+        );
+
+        Config.setConfig(
+          `${moduleName}DismissTicketViewWallet`,
+          dismissTicketViewWallet
+        );
+      }
+
       Object.entries(moduleOptions).forEach(
         ([optionName, optionValue]: [string, any]) => {
           if (optionName.includes('Label')) {
@@ -297,20 +318,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
             const resolvedImage = Image.resolveAssetSource(optionValue);
             Config.setImage(moduleName + 'Image', resolvedImage);
           }
-          if (optionName.includes('closeTicketViewOrder')) {
-            const closeTicketViewOrder = optionValue ? optionValue : 'true';
-            Config.setConfig(
-              `${moduleName}CloseTicketViewOrder`,
-              closeTicketViewOrder
-            );
-          }
-          if (optionName.includes('closeTicketViewWallet')) {
-            const closeTicketViewWallet = optionValue ? optionValue : 'true';
-            Config.setConfig(
-              `${moduleName}CloseTicketViewWallet`,
-              closeTicketViewWallet
-            );
-          }
         }
       );
     });
@@ -320,15 +327,16 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       const isEnabled = moduleOptions.enabled ? 'true' : 'false';
       console.log(
         'moduleOptions.closeTicketViewIos',
-        moduleOptions.closeTicketViewIos
+        moduleOptions.dismissTicketViewIos
       );
-
-      const closeTicketView = moduleOptions.closeTicketViewIos
-        ? moduleOptions.closeTicketViewIos
-        : 'true';
+      // Crash on iOS when boolean sent to bridge module so strings sent instead `${moduleOptions.dismissTicketViewIos}`
+      const dismissTicketView =
+        moduleOptions.dismissTicketViewIos === undefined
+          ? 'true'
+          : `${moduleOptions.dismissTicketViewIos}`;
       Config.setConfig(moduleName, isEnabled);
       Config.setConfig(`${moduleName}Title`, moduleOptions.title);
-      Config.setConfig(`${moduleName}CloseTicketView`, closeTicketView);
+      Config.setConfig(`${moduleName}DismissTicketView`, dismissTicketView);
     });
   }, [Config, customModules, prebuiltModules]);
 

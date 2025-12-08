@@ -163,21 +163,21 @@ extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate 
     if (module.identifier == "com.\(Config.shared.get(for: "clientName"))") {
       if button.callbackValue == Config.shared.get(for: "button1Title") {
         print("handleModuleActionButton: Custom Module Button 1")
-        if (Config.shared.get(for: "button1CloseTicketView") == "true") {
+        if (Config.shared.get(for: "button1DismissTicketView") == "true") {
             completion(nil)
         }
         sendEvent("igniteAnalytics", body: ["ticketsSdkCustomModuleButton1": ["eventOrderInfo": "\(event)"]])
       }
       if button.callbackValue == Config.shared.get(for: "button2Title") {
         print("handleModuleActionButton: Custom Module Button 2")
-        if (Config.shared.get(for: "button2CloseTicketView") == "true") {
+        if (Config.shared.get(for: "button2DismissTicketView") == "true") {
             completion(nil)
         }
         sendEvent("igniteAnalytics", body: ["ticketsSdkCustomModuleButton2": ["eventOrderInfo": "\(event)"]])
       }
       if button.callbackValue == Config.shared.get(for: "button3Title") {
         print("handleModuleActionButton: Custom Module Button 3")
-        if (Config.shared.get(for: "button3CloseTicketView") == "true") {
+        if (Config.shared.get(for: "button3DismissTicketView") == "true") {
             completion(nil)
         }
         sendEvent("igniteAnalytics", body: ["ticketsSdkCustomModuleButton3": ["eventOrderInfo": "\(event)"]])
@@ -185,14 +185,14 @@ extension UIViewController: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate 
     }
     if module.identifier == TMTicketsPrebuiltModule.ModuleName.venueConcessions.rawValue {
       if button.callbackValue == TMTicketsPrebuiltModule.ButtonCallbackName.order.rawValue {
-        if (Config.shared.get(for: "venueConcessionsModuleCloseTicketViewOrder") == "true") {
+        print("handleModuleActionButton: Present Venue Concessions: Order")
+        if (Config.shared.get(for: "venueConcessionsModuleDismissTicketViewOrder") == "true") {
             completion(nil)
         }
         sendEvent("igniteAnalytics", body: ["ticketsSdkVenueConcessionsOrderFor": ["eventOrderInfo": "\(event)"]])
-        print("handleModuleActionButton: Present Venue Concessions: Order")
       } else if button.callbackValue == TMTicketsPrebuiltModule.ButtonCallbackName.wallet.rawValue {
         print("handleModuleActionButton: Present Venue Concessions: Wallet")
-        if (Config.shared.get(for: "venueConcessionsModuleCloseTicketViewWallet") == "true") {
+        if (Config.shared.get(for: "venueConcessionsModuleDismissTicketViewWallet") == "true") {
             completion(nil)
         }
         sendEvent("igniteAnalytics", body: ["ticketsSdkVenueConcessionsWalletFor": ["eventOrderInfo": "\(event)"]])

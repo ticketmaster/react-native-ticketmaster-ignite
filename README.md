@@ -96,7 +96,7 @@ You can set up to 10 Archtics or 10 SportXR schemes in total
 Open the `AndroidManifest.xml` file and:
 
 - make sure that the `manifest` contains `xmlns:tools="http://schemas.android.com/tools"`
-- add `tools:replace="android:allowBackup"` to the `application`
+- add `tools:replace="android:allowBackup"` to the `application` tag
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -110,6 +110,8 @@ Open the `AndroidManifest.xml` file and:
     </application>
 </manifest>
 ```
+
+If you notice login issues on Android, such as the login UI hanging once the sign in button has been pressed or `Couldn't generated a ModernAccounts object` seen in the logs in Android studio add `tools:remove="android:taskAffinity"` to the `application` tag, rebuild the app and try logging in again.
 
 #### Set dataBinding and coreLibraryDesugaringEnabled to true
 
@@ -738,6 +740,44 @@ You can select custom images for `seatUpgradesModule` and `venueConcessionsModul
 |----------|----------|----------|----------|
 | ios    | <img src="docs/assets/prebuilt_modules_customisation/ios_default.png" width="150">   | <img src="docs/assets/prebuilt_modules_customisation/ios_custom.png" width="150">   |<img src="docs/assets/prebuilt_modules_customisation/ios_empty_strings.png" width="150">   |
 | android    | <img src="docs/assets/prebuilt_modules_customisation/android_default.png" width="150">   | <img src="docs/assets/prebuilt_modules_customisation/android_custom.png" width="150">   |<img src="docs/assets/prebuilt_modules_customisation/android_empty_strings.png" width="150">   |
+
+### Custom Modules
+
+You can configure up to 3 buttons as a custom module. Each button accepts a callback function. Currently a header view above the buttons is not available for configuration in this library.
+
+```typescript
+<IgniteProvider
+  options={{
+    apiKey: API_KEY,
+    clientName: CLIENT_NAME,
+    primaryColor: PRIMARY_COLOR
+  }}
+  customModules={{
+    button1: {
+      enabled: true,
+      title: 'My Button 1',
+      callback: () => console.log('Button 1 called!'),
+    },
+    button2: {
+      enabled: true,
+      title: 'My Button 2',
+      callback: () => console.log('Button 2 called!'),
+    },
+    button3: {
+      enabled: true,
+      title: 'My Button 3',
+      callback: () => console.log('Button 3 called!'),
+    },
+  }}
+>
+  <App />
+</IgniteProvider>
+```
+
+| iOS    | Android|
+| ------ | ------ |
+|   <img src="docs/assets/custom-modules/ios-single-button.png" width="150">     |   <img src="docs/assets/custom-modules/android-single-button.png" width="150">     |
+|   <img src="docs/assets/custom-modules/ios-multi-buttons.png" width="150">     |    <img src="docs/assets/custom-modules/android-multi-buttons.png" width="150">    |
 
 ### Analytics
 
