@@ -10,7 +10,13 @@ import {
   PrebuiltModules,
 } from 'react-native-ticketmaster-ignite';
 import { toCapitalise } from './utils/utils';
-import { CustomModules, EventHeaderType, MarketDomain, Region } from './types';
+import {
+  CustomModules,
+  EventHeaderType,
+  MarketDomain,
+  Region,
+  venueConcessionsModule,
+} from './types';
 
 type AuthSource = {
   hostAccessToken?: string;
@@ -287,13 +293,15 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
       if (moduleName === 'venueConcessionsModule') {
         const dismissTicketViewOrder =
-          moduleOptions.dismissTicketViewOrderIos === undefined
+          (moduleOptions as venueConcessionsModule)
+            .dismissTicketViewOrderIos === undefined
             ? 'true'
-            : `${moduleOptions.dismissTicketViewOrderIos}`;
+            : `${(moduleOptions as venueConcessionsModule).dismissTicketViewOrderIos}`;
         const dismissTicketViewWallet =
-          moduleOptions.dismissTicketViewWalletIos === undefined
+          (moduleOptions as venueConcessionsModule)
+            .dismissTicketViewWalletIos === undefined
             ? 'true'
-            : `${moduleOptions.dismissTicketViewWalletIos}`;
+            : `${(moduleOptions as venueConcessionsModule).dismissTicketViewWalletIos}`;
 
         Config.setConfig(
           `${moduleName}DismissTicketViewOrder`,

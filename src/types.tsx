@@ -126,6 +126,17 @@ export enum IgniteAnalyticName {
   TICKETS_SDK_CUSTOM_MODULE_BUTTON_3 = 'ticketsSdkCustomModuleButton3',
 }
 
+export type venueConcessionsModule = {
+  image?: any;
+  enabled: boolean;
+  topLabelText?: string;
+  bottomLabelText?: string;
+  dismissTicketViewOrderIos?: boolean;
+  dismissTicketViewWalletIos?: boolean;
+  orderButtonCallback: (data: TicketsSdkEventData) => void | Promise<void>;
+  walletButtonCallback: (data: TicketsSdkEventData) => void | Promise<void>;
+};
+
 export type PrebuiltModules = {
   moreTicketActionsModule?: {
     enabled: boolean;
@@ -139,16 +150,7 @@ export type PrebuiltModules = {
     topLabelText?: string;
     bottomLabelText?: string;
   };
-  venueConcessionsModule?: {
-    image?: any;
-    enabled: boolean;
-    topLabelText?: string;
-    bottomLabelText?: string;
-    dismissTicketViewOrderIos?: boolean;
-    dismissTicketViewWalletIos?: boolean;
-    orderButtonCallback: (data: TicketsSdkEventData) => void | Promise<void>;
-    walletButtonCallback: (data: TicketsSdkEventData) => void | Promise<void>;
-  };
+  venueConcessionsModule?: venueConcessionsModule;
   invoiceModule?: {
     enabled: boolean;
   };
