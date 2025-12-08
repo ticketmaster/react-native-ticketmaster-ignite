@@ -111,7 +111,7 @@ Open the `AndroidManifest.xml` file and:
 </manifest>
 ```
 
-If you notice login issues on Android, such as the login UI hanging once the sign in button has been pressed or `Couldn't generated a ModernAccounts object` seen in the logs in Android studio add `tools:remove="android:taskAffinity"` to the `application` tag, rebuild the app and try logging in again.
+If you notice login issues on Android, such as the login UI hanging once the sign in button has been pressed or `Couldn't generated a ModernAccounts object` seen in the logs in Android Studio add `tools:remove="android:taskAffinity"` to the `application` tag, rebuild the app and try logging in again.
 
 #### Set dataBinding and coreLibraryDesugaringEnabled to true
 
