@@ -774,6 +774,27 @@ You can configure up to 3 buttons as a custom module. Each button accepts a call
 </IgniteProvider>
 ```
 
+Single button example:
+
+```typescript
+<IgniteProvider
+  options={{
+    apiKey: API_KEY,
+    clientName: CLIENT_NAME,
+    primaryColor: PRIMARY_COLOR
+  }}
+  customModules={{
+    button1: {
+      enabled: true,
+      title: 'My Button 1',
+      callback: () => console.log('Button 1 called!'),
+    },
+  }}
+>
+  <App />
+</IgniteProvider>
+```
+
 | iOS    | Android|
 | ------ | ------ |
 |   <img src="docs/assets/custom-modules/ios-single-button.png" width="150">     |   <img src="docs/assets/custom-modules/android-single-button.png" width="150">     |
