@@ -15,7 +15,7 @@ import {
   EventHeaderType,
   MarketDomain,
   Region,
-  venueConcessionsModuleType,
+  VenueConcessionsModule,
 } from './types';
 
 type AuthSource = {
@@ -293,15 +293,15 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
       if (moduleName === 'venueConcessionsModule') {
         const dismissTicketViewOrder =
-          (moduleOptions as venueConcessionsModuleType)
+          (moduleOptions as VenueConcessionsModule)
             .dismissTicketViewOrderIos === undefined
             ? 'true'
-            : `${(moduleOptions as venueConcessionsModuleType).dismissTicketViewOrderIos}`;
+            : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewOrderIos}`;
         const dismissTicketViewWallet =
-          (moduleOptions as venueConcessionsModuleType)
+          (moduleOptions as VenueConcessionsModule)
             .dismissTicketViewWalletIos === undefined
             ? 'true'
-            : `${(moduleOptions as venueConcessionsModuleType).dismissTicketViewWalletIos}`;
+            : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewWalletIos}`;
 
         Config.setConfig(
           `${moduleName}DismissTicketViewOrder`,
