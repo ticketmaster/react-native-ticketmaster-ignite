@@ -124,17 +124,41 @@ class TicketsFragment() : Fragment() {
     }
   }
 
+  private fun getCustomModule(context: Context): ModuleBase {
+    val moduleBase = ModuleBase(context)
+
+    if (Config.get("button1") == "true") {
+      moduleBase.setLeftButtonText(Config.get("button1Title"))
+    }
+    if (Config.get("button2") == "true") {
+      moduleBase.setMiddleButtonText(Config.get("button2Title"))
+    }
+    if (Config.get("button3") == "true") {
+      moduleBase.setRightButtonText(Config.get("button3Title"))
+    }
+
+    // Empty listeners needed for button clicks to trigger userDidPressActionButton callbacks
+    moduleBase.setLeftClickListener {}
+    moduleBase.setMiddleClickListener {}
+    moduleBase.setRightClickListener {}
+
+    return moduleBase
+  }
+
   private fun setCustomModules() {
     TicketsSDKSingleton.moduleDelegate = object : TicketsModuleDelegate {
       override fun getCustomModulesLiveData(order: TicketsModuleDelegate.Order): LiveData<List<TicketsSDKModule>> {
         val modules: ArrayList<TicketsSDKModule> = ArrayList()
+        modules.add(getCustomModule(requireContext()))
 
         if (Config.get("moreTicketActionsModule") == "true") {
           modules.add(MoreTicketActionsModule(order.eventId))
         }
 
         if (Config.get("venueDirectionsModule") == "true") {
-          modules.add(getDirectionsModule(order.orderInfo.latLng))
+          getDirectionsModule(order.orderInfo.latLng)?.let { module ->
+            modules.add(module)
+          }
         }
 
         val seatUpgradesModuleTextOverride = ModuleBase.TextOverride(
@@ -163,14 +187,7 @@ class TicketsFragment() : Fragment() {
           food = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
             ModuleBase.TextOverride(it)
           },
-          // POTENTIAL REFACTOR
-//          merch = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
-//            ModuleBase.TextOverride(it)
-//          } ?: null,
-//          experiences = Config.optionalString("venueConcessionsModuleTopLabelText")?.let {
-//            ModuleBase.TextOverride(it)
-//          } ?: null,
-          merch = when (val text = Config.optionalString("venueConcessionsModuleTopLabelText")) {
+          merch = when (Config.optionalString("venueConcessionsModuleTopLabelText")) {
             null -> null
             "" -> ModuleBase.TextOverride("")
             else -> ModuleBase.TextOverride("")
@@ -208,6 +225,35 @@ class TicketsFragment() : Fragment() {
         callbackValue: String?,
         eventOrders: EventOrders?
       ) {
+        if (buttonTitle == Config.get("button1Title")) {
+          val params: WritableMap = Arguments.createMap()
+          val paramValues: WritableMap = Arguments.createMap().apply {
+            putString("eventOrderInfo", eventOrders.toString())
+          }
+          params.putMap("ticketsSdkCustomModuleButton1", paramValues)
+
+          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+        }
+        if (buttonTitle == Config.get("button2Title")) {
+          val params: WritableMap = Arguments.createMap()
+          val paramValues: WritableMap = Arguments.createMap().apply {
+            putString("eventOrderInfo", eventOrders.toString())
+          }
+          params.putMap("ticketsSdkCustomModuleButton2", paramValues)
+
+          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+
+        }
+        if (buttonTitle == Config.get("button3Title")) {
+          val params: WritableMap = Arguments.createMap()
+          val paramValues: WritableMap = Arguments.createMap().apply {
+            putString("eventOrderInfo", eventOrders.toString())
+          }
+          params.putMap("ticketsSdkCustomModuleButton3", paramValues)
+
+          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+
+        }
         if (buttonTitle == "Order") {
           val params: WritableMap = Arguments.createMap()
           val paramValues: WritableMap = Arguments.createMap().apply {
@@ -230,10 +276,11 @@ class TicketsFragment() : Fragment() {
     }
   }
 
-  private fun getDirectionsModule(latLng: TicketsModuleDelegate.LatLng?): ModuleBase {
-    return DirectionsModule(
-      requireActivity(), latLng?.latitude!!, latLng.longitude
-    ).build()
+  private fun getDirectionsModule(latLng: TicketsModuleDelegate.LatLng?): ModuleBase? {
+    val latitude = latLng?.latitude ?: return null
+    val longitude = latLng.longitude ?: return null
+
+    return DirectionsModule(requireActivity(), latitude, longitude).build()
   }
 
   override fun onAttach(context: Context) {

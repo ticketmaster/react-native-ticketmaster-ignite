@@ -55,7 +55,7 @@ type MakeDecisionData = {
   decision: string;
 };
 
-type TicketsSdkVenueConcessionsData = {
+type TicketsSdkEventData = {
   eventOrderInfo: string;
 };
 
@@ -87,8 +87,11 @@ export type IgniteAnalytics = {
   purchaseSdkDidMakeDecisionFor: MakeDecisionData;
   purchaseSdkManageMyTickets: 'purchaseSdkManageMyTickets';
   ticketsSdkDidViewEvents: 'ticketsSdkDidViewEvents';
-  ticketsSdkVenueConcessionsOrderFor: TicketsSdkVenueConcessionsData;
-  ticketsSdkVenueConcessionsWalletFor: TicketsSdkVenueConcessionsData;
+  ticketsSdkVenueConcessionsOrderFor: TicketsSdkEventData;
+  ticketsSdkVenueConcessionsWalletFor: TicketsSdkEventData;
+  ticketsSdkCustomModuleButton1: TicketsSdkEventData;
+  ticketsSdkCustomModuleButton2: TicketsSdkEventData;
+  ticketsSdkCustomModuleButton3: TicketsSdkEventData;
 };
 
 export enum IgniteAnalyticName {
@@ -118,7 +121,21 @@ export enum IgniteAnalyticName {
   TICKETS_SDK_DID_VIEW_EVENTS = 'ticketsSdkDidViewEvents',
   TICKETS_SDK_VENUE_CONCESSIONS_ORDER_FOR = 'ticketsSdkVenueConcessionsOrderFor',
   TICKETS_SDK_VENUE_CONCESSIONS_WALLET_FOR = 'ticketsSdkVenueConcessionsWalletFor',
+  TICKETS_SDK_CUSTOM_MODULE_BUTTON_1 = 'ticketsSdkCustomModuleButton1',
+  TICKETS_SDK_CUSTOM_MODULE_BUTTON_2 = 'ticketsSdkCustomModuleButton2',
+  TICKETS_SDK_CUSTOM_MODULE_BUTTON_3 = 'ticketsSdkCustomModuleButton3',
 }
+
+export type venueConcessionsModuleType = {
+  image?: any;
+  enabled: boolean;
+  topLabelText?: string;
+  bottomLabelText?: string;
+  dismissTicketViewOrderIos?: boolean;
+  dismissTicketViewWalletIos?: boolean;
+  orderButtonCallback: (data: TicketsSdkEventData) => void | Promise<void>;
+  walletButtonCallback: (data: TicketsSdkEventData) => void | Promise<void>;
+};
 
 export type PrebuiltModules = {
   moreTicketActionsModule?: {
@@ -133,18 +150,7 @@ export type PrebuiltModules = {
     topLabelText?: string;
     bottomLabelText?: string;
   };
-  venueConcessionsModule?: {
-    image?: any;
-    enabled: boolean;
-    topLabelText?: string;
-    bottomLabelText?: string;
-    orderButtonCallback: (
-      data: TicketsSdkVenueConcessionsData
-    ) => void | Promise<void>;
-    walletButtonCallback: (
-      data: TicketsSdkVenueConcessionsData
-    ) => void | Promise<void>;
-  };
+  venueConcessionsModule?: venueConcessionsModuleType;
   invoiceModule?: {
     enabled: boolean;
   };
@@ -159,6 +165,26 @@ export type SportXrData = {
   sportXRcookieName?: string;
   sportXRTeamDomain?: string;
 } | null;
+export type CustomModules = {
+  button1?: {
+    enabled: boolean;
+    title: string;
+    dismissTicketViewIos?: boolean;
+    callback: (data: TicketsSdkEventData) => void | Promise<void>;
+  };
+  button2?: {
+    enabled: boolean;
+    title: string;
+    dismissTicketViewIos?: boolean;
+    callback: (data: TicketsSdkEventData) => void | Promise<void>;
+  };
+  button3?: {
+    enabled: boolean;
+    title: string;
+    dismissTicketViewIos?: boolean;
+    callback: (data: TicketsSdkEventData) => void | Promise<void>;
+  };
+};
 
 export type Region = 'US' | 'UK';
 

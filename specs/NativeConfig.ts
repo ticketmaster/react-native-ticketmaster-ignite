@@ -6,7 +6,6 @@ type imageAsset = {
   width: number;
   height: number;
   scale: number;
-  __packager_asset: boolean;
   fileSystemLocation?: string;
   httpServerLocation?: string;
   path?: string[];

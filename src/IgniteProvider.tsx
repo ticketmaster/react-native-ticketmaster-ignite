@@ -1,5 +1,10 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
-import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
+import {
+  NativeModules,
+  NativeEventEmitter,
+  Platform,
+  Image,
+} from 'react-native';
 import NativeAccountsSdk from '../specs/NativeAccountsSdk';
 import NativeConfig from '../specs/NativeConfig';
 import { toCapitalise } from './utils/utils';
@@ -10,7 +15,9 @@ import {
   EventHeaderType,
   IgniteAnalytics,
   PrebuiltModules,
+  CustomModules,
   SportXrData,
+  venueConcessionsModuleType,
 } from './types';
 
 type LoginParams = {
@@ -33,6 +40,7 @@ interface IgniteProviderProps {
   children: React.ReactNode;
   autoUpdate?: boolean;
   prebuiltModules?: PrebuiltModules;
+  customModules?: CustomModules;
   enableLogs?: boolean;
   analytics?: (data: IgniteAnalytics) => void | Promise<void>;
   options: {
@@ -108,11 +116,34 @@ const defaultPrebuiltModules: PrebuiltModules = {
   },
   venueConcessionsModule: {
     enabled: false,
+    dismissTicketViewOrderIos: true,
+    dismissTicketViewWalletIos: true,
     orderButtonCallback: async () => {},
     walletButtonCallback: async () => {},
   },
   invoiceModule: {
     enabled: false,
+  },
+};
+
+const defaultCustomModules: CustomModules = {
+  button1: {
+    enabled: false,
+    title: '',
+    dismissTicketViewIos: true,
+    callback: async () => {},
+  },
+  button2: {
+    enabled: false,
+    title: '',
+    dismissTicketViewIos: true,
+    callback: async () => {},
+  },
+  button3: {
+    enabled: false,
+    title: '',
+    dismissTicketViewIos: true,
+    callback: async () => {},
   },
 };
 
@@ -122,6 +153,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   autoUpdate = true,
   enableLogs = false,
   prebuiltModules = defaultPrebuiltModules,
+  customModules = defaultCustomModules,
   analytics,
 }) => {
   const {
@@ -134,6 +166,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     marketDomain,
   } = options;
   const { venueConcessionsModule } = prebuiltModules;
+  const { button1, button2, button3 } = customModules;
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
     isConfigured: false,
@@ -222,27 +255,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       environment === 'Staging'
     )
       NativeConfig.setConfig('environment', environment);
-
-    const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSource');
-
-    Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
-      // Crash on iOS when boolean sent to bridge module
-      const isEnabled = moduleOptions.enabled ? 'true' : 'false';
-      NativeConfig.setConfig(moduleName, isEnabled);
-
-      Object.entries(moduleOptions).forEach(([optionName, optionValue]) => {
-        if (optionName.includes('Label')) {
-          NativeConfig.setConfig(
-            `${moduleName}${toCapitalise(optionName)}`,
-            optionValue
-          );
-        }
-        if (optionName.includes('image')) {
-          const resolvedImage = resolveAssetSource(optionValue);
-          NativeConfig.setImage(moduleName + 'Image', resolvedImage);
-        }
-      });
-    });
   }, [
     apiKey,
     clientName,
@@ -251,8 +263,70 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     marketDomain,
     eventHeaderType,
     environment,
-    prebuiltModules,
   ]);
+
+  const setTicketSdkModules = useCallback(() => {
+    // Prebuilt Modules
+    Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
+      // Crash on iOS when boolean sent to bridge module
+      const isEnabled = moduleOptions.enabled ? 'true' : 'false';
+      NativeConfig.setConfig(moduleName, isEnabled);
+
+      if (moduleName === 'venueConcessionsModule') {
+        const dismissTicketViewOrder =
+          (moduleOptions as venueConcessionsModuleType)
+            .dismissTicketViewOrderIos === undefined
+            ? 'true'
+            : `${(moduleOptions as venueConcessionsModuleType).dismissTicketViewOrderIos}`;
+        const dismissTicketViewWallet =
+          (moduleOptions as venueConcessionsModuleType)
+            .dismissTicketViewWalletIos === undefined
+            ? 'true'
+            : `${(moduleOptions as venueConcessionsModuleType).dismissTicketViewWalletIos}`;
+
+        NativeConfig.setConfig(
+          `${moduleName}DismissTicketViewOrder`,
+          dismissTicketViewOrder
+        );
+
+        NativeConfig.setConfig(
+          `${moduleName}DismissTicketViewWallet`,
+          dismissTicketViewWallet
+        );
+      }
+
+      Object.entries(moduleOptions).forEach(
+        ([optionName, optionValue]: [string, any]) => {
+          if (optionName.includes('Label')) {
+            NativeConfig.setConfig(
+              `${moduleName}${toCapitalise(optionName)}`,
+              optionValue
+            );
+          }
+          if (optionName.includes('image')) {
+            const resolvedImage = Image.resolveAssetSource(optionValue);
+            NativeConfig.setImage(moduleName + 'Image', resolvedImage);
+          }
+        }
+      );
+    });
+
+    // Custom Modules
+    Object.entries(customModules).forEach(([moduleName, moduleOptions]) => {
+      const isEnabled = moduleOptions.enabled ? 'true' : 'false';
+      // Crash on iOS when boolean sent to bridge module so strings sent instead `${moduleOptions.dismissTicketViewIos}`
+      const dismissTicketView =
+        moduleOptions.dismissTicketViewIos === undefined
+          ? 'true'
+          : `${moduleOptions.dismissTicketViewIos}`;
+      NativeConfig.setConfig(moduleName, isEnabled);
+      NativeConfig.setConfig(`${moduleName}Title`, moduleOptions.title);
+      NativeConfig.setConfig(
+        `${moduleName}DismissTicketView`,
+        dismissTicketView
+      );
+    });
+  }, [customModules, prebuiltModules]);
 
   const setTicketDeepLink = useCallback((id: string) => {
     NativeConfig.setConfig('orderIdDeepLink', id);
@@ -261,6 +335,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   useEffect(() => {
     const onConfigureAccountsSdk = async () => {
       setNativeConfigValues();
+      setTicketSdkModules();
       try {
         await configureAccountsSDK();
       } catch (e) {
@@ -274,6 +349,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       }
     };
     onConfigureAccountsSdk();
+
     // Only run initial configuration once in an apps lifecycle
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -306,6 +382,15 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           venueConcessionsModule?.walletButtonCallback(
             result.ticketsSdkVenueConcessionsWalletFor
           );
+        }
+        if (result.ticketsSdkCustomModuleButton1) {
+          button1?.callback(result.ticketsSdkCustomModuleButton1);
+        }
+        if (result.ticketsSdkCustomModuleButton2) {
+          button2?.callback(result.ticketsSdkCustomModuleButton2);
+        }
+        if (result.ticketsSdkCustomModuleButton3) {
+          button3?.callback(result.ticketsSdkCustomModuleButton3);
         }
       }
     );
