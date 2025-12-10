@@ -17,7 +17,7 @@ import {
   PrebuiltModules,
   CustomModules,
   SportXrData,
-  venueConcessionsModuleType,
+  VenueConcessionsModule,
 } from './types';
 
 type LoginParams = {
@@ -274,15 +274,15 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
       if (moduleName === 'venueConcessionsModule') {
         const dismissTicketViewOrder =
-          (moduleOptions as venueConcessionsModuleType)
+          (moduleOptions as VenueConcessionsModule)
             .dismissTicketViewOrderIos === undefined
             ? 'true'
-            : `${(moduleOptions as venueConcessionsModuleType).dismissTicketViewOrderIos}`;
+            : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewOrderIos}`;
         const dismissTicketViewWallet =
-          (moduleOptions as venueConcessionsModuleType)
+          (moduleOptions as VenueConcessionsModule)
             .dismissTicketViewWalletIos === undefined
             ? 'true'
-            : `${(moduleOptions as venueConcessionsModuleType).dismissTicketViewWalletIos}`;
+            : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewWalletIos}`;
 
         NativeConfig.setConfig(
           `${moduleName}DismissTicketViewOrder`,

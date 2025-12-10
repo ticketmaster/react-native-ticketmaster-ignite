@@ -126,7 +126,7 @@ export enum IgniteAnalyticName {
   TICKETS_SDK_CUSTOM_MODULE_BUTTON_3 = 'ticketsSdkCustomModuleButton3',
 }
 
-export type venueConcessionsModuleType = {
+export type VenueConcessionsModule = {
   image?: any;
   enabled: boolean;
   topLabelText?: string;
@@ -150,7 +150,7 @@ export type PrebuiltModules = {
     topLabelText?: string;
     bottomLabelText?: string;
   };
-  venueConcessionsModule?: venueConcessionsModuleType;
+  venueConcessionsModule?: VenueConcessionsModule;
   invoiceModule?: {
     enabled: boolean;
   };
