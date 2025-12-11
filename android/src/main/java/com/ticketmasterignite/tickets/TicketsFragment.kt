@@ -97,7 +97,6 @@ class TicketsFragment() : Fragment() {
     return Config.getImage(imageName)?.let { imageJsonString ->
       val resolvedImage = JSONObject(imageJsonString)
       val uri = resolvedImage.optString("uri")
-      val isPackagerAsset = resolvedImage.optBoolean("__packager_asset", false)
 
       when {
         uri.contains("10.0.") -> {
@@ -105,7 +104,7 @@ class TicketsFragment() : Fragment() {
           ModuleBase.ImageOverride(url = uri)
         }
 
-        isPackagerAsset && uri.isNotEmpty() -> {
+        uri.isNotEmpty() -> {
           println("Loading image in the release mode")
           val resourceName = uri.substringAfterLast('/').substringBeforeLast('.')
           val resourceId =
