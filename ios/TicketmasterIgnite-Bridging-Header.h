@@ -1,4 +1,5 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 #import <React/RCTViewManager.h>
-#import "ConfigModule.h"
+#import "RCTNativeConfig.h"
+// #import "RCTNativeAccountsSdk.h"

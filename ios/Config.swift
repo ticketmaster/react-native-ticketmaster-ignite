@@ -1,27 +1,32 @@
+import Foundation
 import React
 
-class Config {
+@objc
+final class Config: NSObject {
 
-    static let shared = Config()
+  static let shared = Config()
 
-    private var configModule: ConfigModule? {
-        return RCTBridge.current()?.module(forName: "Config") as? ConfigModule
-    }
+  private let nativeConfig: RCTNativeConfig
 
-    func get(for key: String) -> String {
-        return configModule?.getConfig(key) ?? ""
-    }
+  private override init() {
+    self.nativeConfig = RCTNativeConfig()
+    super.init()
+  }
 
-    func set(for key: String, value: String) {
-        configModule?.setConfig(key, value: value)
-    }
+  func get(for key: String) -> String {
+      return nativeConfig.getConfig(key) ?? ""
+  }
 
-    func optionalString(for key: String) -> String? {
-        let value = configModule?.getConfig(key)
-        return value == nil ? nil : value
-    }
+  func set(for key: String, value: String) {
+    nativeConfig.setConfig(key, value: value)
+  }
 
-    func getImage(for key: String) -> UIImage? {
-        return configModule?.getImage(key)
-    }
+  func optionalString(for key: String) -> String? {
+      let value = nativeConfig.getConfig(key)
+      return value == nil ? nil : value
+  }
+
+  func getImage(for key: String) -> UIImage? {
+      return nativeConfig.getImage(key)
+  }
 }
