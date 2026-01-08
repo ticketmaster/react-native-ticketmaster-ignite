@@ -187,8 +187,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw new Error(`Accounts SDK isLoggedIn error: ${e}`);
       }
 
-      const isLoggedInParsed =
-        Platform.OS === 'ios' ? isLoggedInResult.result : isLoggedInResult;
+      const isLoggedInParsed = isLoggedInResult;
       _isLoggedIn = isLoggedInParsed;
 
       try {
@@ -266,66 +265,66 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   ]);
 
   const setTicketSdkModules = useCallback(() => {
-    // Prebuilt Modules
-    Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
-      // Crash on iOS when boolean sent to bridge module
-      const isEnabled = moduleOptions.enabled ? 'true' : 'false';
-      NativeConfig.setConfig(moduleName, isEnabled);
+    // // Prebuilt Modules
+    // Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
+    //   // Crash on iOS when boolean sent to bridge module
+    //   const isEnabled = moduleOptions.enabled ? 'true' : 'false';
+    //   NativeConfig.setConfig(moduleName, isEnabled);
 
-      if (moduleName === 'venueConcessionsModule') {
-        const dismissTicketViewOrder =
-          (moduleOptions as VenueConcessionsModule)
-            .dismissTicketViewOrderIos === undefined
-            ? 'true'
-            : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewOrderIos}`;
-        const dismissTicketViewWallet =
-          (moduleOptions as VenueConcessionsModule)
-            .dismissTicketViewWalletIos === undefined
-            ? 'true'
-            : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewWalletIos}`;
+    //   if (moduleName === 'venueConcessionsModule') {
+    //     const dismissTicketViewOrder =
+    //       (moduleOptions as VenueConcessionsModule)
+    //         .dismissTicketViewOrderIos === undefined
+    //         ? 'true'
+    //         : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewOrderIos}`;
+    //     const dismissTicketViewWallet =
+    //       (moduleOptions as VenueConcessionsModule)
+    //         .dismissTicketViewWalletIos === undefined
+    //         ? 'true'
+    //         : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewWalletIos}`;
 
-        NativeConfig.setConfig(
-          `${moduleName}DismissTicketViewOrder`,
-          dismissTicketViewOrder
-        );
+    //     NativeConfig.setConfig(
+    //       `${moduleName}DismissTicketViewOrder`,
+    //       dismissTicketViewOrder
+    //     );
 
-        NativeConfig.setConfig(
-          `${moduleName}DismissTicketViewWallet`,
-          dismissTicketViewWallet
-        );
-      }
+    //     NativeConfig.setConfig(
+    //       `${moduleName}DismissTicketViewWallet`,
+    //       dismissTicketViewWallet
+    //     );
+    //   }
 
-      Object.entries(moduleOptions).forEach(
-        ([optionName, optionValue]: [string, any]) => {
-          if (optionName.includes('Label')) {
-            NativeConfig.setConfig(
-              `${moduleName}${toCapitalise(optionName)}`,
-              optionValue
-            );
-          }
-          if (optionName.includes('image')) {
-            const resolvedImage = Image.resolveAssetSource(optionValue);
-            NativeConfig.setImage(moduleName + 'Image', resolvedImage);
-          }
-        }
-      );
-    });
+    //   Object.entries(moduleOptions).forEach(
+    //     ([optionName, optionValue]: [string, any]) => {
+    //       if (optionName.includes('Label')) {
+    //         NativeConfig.setConfig(
+    //           `${moduleName}${toCapitalise(optionName)}`,
+    //           optionValue
+    //         );
+    //       }
+    //       if (optionName.includes('image')) {
+    //         const resolvedImage = Image.resolveAssetSource(optionValue);
+    //         NativeConfig.setImage(moduleName + 'Image', resolvedImage);
+    //       }
+    //     }
+    //   );
+    // });
 
-    // Custom Modules
-    Object.entries(customModules).forEach(([moduleName, moduleOptions]) => {
-      const isEnabled = moduleOptions.enabled ? 'true' : 'false';
-      // Crash on iOS when boolean sent to bridge module so strings sent instead `${moduleOptions.dismissTicketViewIos}`
-      const dismissTicketView =
-        moduleOptions.dismissTicketViewIos === undefined
-          ? 'true'
-          : `${moduleOptions.dismissTicketViewIos}`;
-      NativeConfig.setConfig(moduleName, isEnabled);
-      NativeConfig.setConfig(`${moduleName}Title`, moduleOptions.title);
-      NativeConfig.setConfig(
-        `${moduleName}DismissTicketView`,
-        dismissTicketView
-      );
-    });
+    // // Custom Modules
+    // Object.entries(customModules).forEach(([moduleName, moduleOptions]) => {
+    //   const isEnabled = moduleOptions.enabled ? 'true' : 'false';
+    //   // Crash on iOS when boolean sent to bridge module so strings sent instead `${moduleOptions.dismissTicketViewIos}`
+    //   const dismissTicketView =
+    //     moduleOptions.dismissTicketViewIos === undefined
+    //       ? 'true'
+    //       : `${moduleOptions.dismissTicketViewIos}`;
+    //   NativeConfig.setConfig(moduleName, isEnabled);
+    //   NativeConfig.setConfig(`${moduleName}Title`, moduleOptions.title);
+    //   NativeConfig.setConfig(
+    //     `${moduleName}DismissTicketView`,
+    //     dismissTicketView
+    //   );
+    // });
   }, [customModules, prebuiltModules]);
 
   const setTicketDeepLink = useCallback((id: string) => {
@@ -354,54 +353,54 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const igniteEventEmitter = new NativeEventEmitter(
-      NativeModules.GlobalEventEmitter
-    );
-    igniteEventEmitter.addListener(
-      'igniteAnalytics',
-      async (result: IgniteAnalytics) => {
-        if (result && analytics) analytics(result);
-        if (
-          (result.purchaseSdkDidEndCheckoutFor ||
-            result.ticketsSdkDidViewEvents ||
-            // iOS TMAuthentication.shared.validToken() successful login
-            ((result.accountsSdkLoggedIn || result.accountsSdkLoggedOut) &&
-              !isLoggingIn &&
-              Platform.OS === 'ios')) &&
-          autoUpdate
-        ) {
-          await setAccountDetails();
-        }
-        if (result.ticketsSdkVenueConcessionsOrderFor) {
-          venueConcessionsModule?.orderButtonCallback(
-            result.ticketsSdkVenueConcessionsOrderFor
-          );
-        }
-        if (result.ticketsSdkVenueConcessionsWalletFor) {
-          venueConcessionsModule?.walletButtonCallback(
-            result.ticketsSdkVenueConcessionsWalletFor
-          );
-        }
-        if (result.ticketsSdkCustomModuleButton1) {
-          button1?.callback(result.ticketsSdkCustomModuleButton1);
-        }
-        if (result.ticketsSdkCustomModuleButton2) {
-          button2?.callback(result.ticketsSdkCustomModuleButton2);
-        }
-        if (result.ticketsSdkCustomModuleButton3) {
-          button3?.callback(result.ticketsSdkCustomModuleButton3);
-        }
-      }
-    );
+  // useEffect(() => {
+  //   const igniteEventEmitter = new NativeEventEmitter(
+  //     NativeModules.GlobalEventEmitter
+  //   );
+  //   igniteEventEmitter.addListener(
+  //     'igniteAnalytics',
+  //     async (result: IgniteAnalytics) => {
+  //       if (result && analytics) analytics(result);
+  //       if (
+  //         (result.purchaseSdkDidEndCheckoutFor ||
+  //           result.ticketsSdkDidViewEvents ||
+  //           // iOS TMAuthentication.shared.validToken() successful login
+  //           ((result.accountsSdkLoggedIn || result.accountsSdkLoggedOut) &&
+  //             !isLoggingIn &&
+  //             Platform.OS === 'ios')) &&
+  //         autoUpdate
+  //       ) {
+  //         await setAccountDetails();
+  //       }
+  //       if (result.ticketsSdkVenueConcessionsOrderFor) {
+  //         venueConcessionsModule?.orderButtonCallback(
+  //           result.ticketsSdkVenueConcessionsOrderFor
+  //         );
+  //       }
+  //       if (result.ticketsSdkVenueConcessionsWalletFor) {
+  //         venueConcessionsModule?.walletButtonCallback(
+  //           result.ticketsSdkVenueConcessionsWalletFor
+  //         );
+  //       }
+  //       if (result.ticketsSdkCustomModuleButton1) {
+  //         button1?.callback(result.ticketsSdkCustomModuleButton1);
+  //       }
+  //       if (result.ticketsSdkCustomModuleButton2) {
+  //         button2?.callback(result.ticketsSdkCustomModuleButton2);
+  //       }
+  //       if (result.ticketsSdkCustomModuleButton3) {
+  //         button3?.callback(result.ticketsSdkCustomModuleButton3);
+  //       }
+  //     }
+  //   );
 
-    // Removes the listener once unmounted
-    return () => {
-      igniteEventEmitter.removeAllListeners('igniteAnalytics');
-    };
-    // Only create native listener once in an apps lifecycle
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   // Removes the listener once unmounted
+  //   return () => {
+  //     igniteEventEmitter.removeAllListeners('igniteAnalytics');
+  //   };
+  //   // Only create native listener once in an apps lifecycle
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const login = useCallback(
     async (
@@ -464,11 +463,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   const getIsLoggedIn = useCallback(async (): Promise<boolean> => {
     try {
       const result = await NativeAccountsSdk.isLoggedIn();
-      enableLogs &&
-        console.log(
-          `Accounts SDK isLoggedIn: ${Platform.OS === 'ios' ? !!result.result : result}`
-        );
-      return Platform.OS === 'ios' ? !!result.result : result;
+      enableLogs && console.log(`Accounts SDK isLoggedIn: ${result}`);
+      return result;
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
         enableLogs && console.log('Accounts SDK isLoggedIn: false');

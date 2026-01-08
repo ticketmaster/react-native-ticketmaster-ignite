@@ -6,12 +6,6 @@ type imageAsset = {
   width: number;
   height: number;
   scale: number;
-  fileSystemLocation?: string;
-  httpServerLocation?: string;
-  path?: string[];
-  name?: string;
-  type?: string;
-  hash?: string;
 };
 
 export interface Spec extends TurboModule {

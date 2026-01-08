@@ -1,11 +1,17 @@
-#import <React/RCTBridgeModule.h>
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-@interface ConfigModule : NSObject <RCTBridgeModule>
+@protocol NativeConfigSpec;
 
-// Declare any public properties or methods you want other classes to access.
+NS_ASSUME_NONNULL_BEGIN
+
+@interface RCTNativeConfig : NSObject <NativeConfigSpec>
+
 - (NSString *)getConfig:(NSString *)key;
 - (UIImage *)getImage:(NSString *)key;
 - (void)setConfig:(NSString *)key value:(NSString *)value;
 - (void)setImage:(NSString *)key value:(NSDictionary *)value;
 
 @end
+
+NS_ASSUME_NONNULL_END
