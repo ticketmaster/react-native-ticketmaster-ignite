@@ -11,7 +11,6 @@ final class Config: NSObject {
   }
   
   func get(for key: String) -> String {
-    print("Swift get key=\(key) value=\(nativeConfig?.getConfig(key) ?? "")")
     return nativeConfig?.getConfig(key) ?? ""
   }
   

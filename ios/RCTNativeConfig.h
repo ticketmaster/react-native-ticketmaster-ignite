@@ -10,7 +10,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)getConfig:(NSString *)key;
 - (UIImage *)getImage:(NSString *)key;
 - (void)setConfig:(NSString *)key value:(NSString *)value;
-- (void)setImage:(NSString *)key value:(NSDictionary *)value;
+- (void)setImage:(NSString *)key uri:(NSString *)uri;
 
 @end
 

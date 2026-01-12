@@ -27,8 +27,8 @@
   _configValues[key] = value;
 }
 
-- (void)setImage:(NSString *)key value:(NSDictionary *)value {
-  _configValues[key] = value[@"uri"];
+- (void)setImage:(NSString *)key uri:(NSString *)uri {
+  _configValues[key] = uri;
 }
 
 

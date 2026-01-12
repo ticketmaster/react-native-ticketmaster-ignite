@@ -265,66 +265,66 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   ]);
 
   const setTicketSdkModules = useCallback(() => {
-    // // Prebuilt Modules
-    // Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
-    //   // Crash on iOS when boolean sent to bridge module
-    //   const isEnabled = moduleOptions.enabled ? 'true' : 'false';
-    //   NativeConfig.setConfig(moduleName, isEnabled);
+    // Prebuilt Modules
+    Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
+      // Crash on iOS when boolean sent to bridge module
+      const isEnabled = moduleOptions.enabled ? 'true' : 'false';
+      NativeConfig.setConfig(moduleName, isEnabled);
 
-    //   if (moduleName === 'venueConcessionsModule') {
-    //     const dismissTicketViewOrder =
-    //       (moduleOptions as VenueConcessionsModule)
-    //         .dismissTicketViewOrderIos === undefined
-    //         ? 'true'
-    //         : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewOrderIos}`;
-    //     const dismissTicketViewWallet =
-    //       (moduleOptions as VenueConcessionsModule)
-    //         .dismissTicketViewWalletIos === undefined
-    //         ? 'true'
-    //         : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewWalletIos}`;
+      if (moduleName === 'venueConcessionsModule') {
+        const dismissTicketViewOrder =
+          (moduleOptions as VenueConcessionsModule)
+            .dismissTicketViewOrderIos === undefined
+            ? 'true'
+            : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewOrderIos}`;
+        const dismissTicketViewWallet =
+          (moduleOptions as VenueConcessionsModule)
+            .dismissTicketViewWalletIos === undefined
+            ? 'true'
+            : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewWalletIos}`;
 
-    //     NativeConfig.setConfig(
-    //       `${moduleName}DismissTicketViewOrder`,
-    //       dismissTicketViewOrder
-    //     );
+        NativeConfig.setConfig(
+          `${moduleName}DismissTicketViewOrder`,
+          dismissTicketViewOrder
+        );
 
-    //     NativeConfig.setConfig(
-    //       `${moduleName}DismissTicketViewWallet`,
-    //       dismissTicketViewWallet
-    //     );
-    //   }
+        NativeConfig.setConfig(
+          `${moduleName}DismissTicketViewWallet`,
+          dismissTicketViewWallet
+        );
+      }
 
-    //   Object.entries(moduleOptions).forEach(
-    //     ([optionName, optionValue]: [string, any]) => {
-    //       if (optionName.includes('Label')) {
-    //         NativeConfig.setConfig(
-    //           `${moduleName}${toCapitalise(optionName)}`,
-    //           optionValue
-    //         );
-    //       }
-    //       if (optionName.includes('image')) {
-    //         const resolvedImage = Image.resolveAssetSource(optionValue);
-    //         NativeConfig.setImage(moduleName + 'Image', resolvedImage);
-    //       }
-    //     }
-    //   );
-    // });
+      Object.entries(moduleOptions).forEach(
+        ([optionName, optionValue]: [string, any]) => {
+          if (optionName.includes('Label')) {
+            NativeConfig.setConfig(
+              `${moduleName}${toCapitalise(optionName)}`,
+              optionValue
+            );
+          }
+          if (optionName.includes('image')) {
+            const resolvedImage = Image.resolveAssetSource(optionValue);
+            NativeConfig.setImage(moduleName + 'Image', resolvedImage.uri);
+          }
+        }
+      );
+    });
 
-    // // Custom Modules
-    // Object.entries(customModules).forEach(([moduleName, moduleOptions]) => {
-    //   const isEnabled = moduleOptions.enabled ? 'true' : 'false';
-    //   // Crash on iOS when boolean sent to bridge module so strings sent instead `${moduleOptions.dismissTicketViewIos}`
-    //   const dismissTicketView =
-    //     moduleOptions.dismissTicketViewIos === undefined
-    //       ? 'true'
-    //       : `${moduleOptions.dismissTicketViewIos}`;
-    //   NativeConfig.setConfig(moduleName, isEnabled);
-    //   NativeConfig.setConfig(`${moduleName}Title`, moduleOptions.title);
-    //   NativeConfig.setConfig(
-    //     `${moduleName}DismissTicketView`,
-    //     dismissTicketView
-    //   );
-    // });
+    // Custom Modules
+    Object.entries(customModules).forEach(([moduleName, moduleOptions]) => {
+      const isEnabled = moduleOptions.enabled ? 'true' : 'false';
+      // Crash on iOS when boolean sent to bridge module so strings sent instead `${moduleOptions.dismissTicketViewIos}`
+      const dismissTicketView =
+        moduleOptions.dismissTicketViewIos === undefined
+          ? 'true'
+          : `${moduleOptions.dismissTicketViewIos}`;
+      NativeConfig.setConfig(moduleName, isEnabled);
+      NativeConfig.setConfig(`${moduleName}Title`, moduleOptions.title);
+      NativeConfig.setConfig(
+        `${moduleName}DismissTicketView`,
+        dismissTicketView
+      );
+    });
   }, [customModules, prebuiltModules]);
 
   const setTicketDeepLink = useCallback((id: string) => {
