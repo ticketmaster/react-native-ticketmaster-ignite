@@ -250,35 +250,79 @@ import React
     
     print("Backend TicketmasterAuthentication \(state.rawValue)")
     
+    let eventName = "igniteAnalytics"
+    
     switch state {
     case .serviceConfigurationStarted:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkServiceConfigurationStarted": "accountsSdkServiceConfigurationStarted"]
+      )
     case .serviceConfigured:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkServiceConfigured": "accountsSdkServiceConfigured"]
+      )
     case .serviceConfigurationCompleted:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkServiceConfigurationCompleted": "accountsSdkServiceConfigurationCompleted"]
+      )
     case .loginStarted:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginStarted": "accountsSdkLoginStarted"]
+      )
     case .loginPresented:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginPresented": "accountsSdkLoginPresented"]
+      )
     case .loggedIn:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoggedIn": "accountsSdkLoggedIn"]
+      )
     case .loginAborted:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginAborted": "accountsSdkLoginAborted"]
+      )
     case .loginFailed:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginFailed": "accountsSdkLoginFailed"]
+      )
     case .loginLinkAccountPresented:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginAccountPresented": "accountsSdkLoginAccountPresented"]
+      )
     case .loginCompleted:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginAccountCompleted": "accountsSdkLoginAccountCompleted"]
+      )
     case .tokenRefreshed:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkTokenRefreshed": "accountsSdkTokenRefreshed"]
+      )
     case .logoutStarted:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLogoutStarted": "accountsSdkLogoutStarted"]
+      )
     case .loggedOut:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoggedOut": "accountsSdkLoggedOut"]
+      )
     case .logoutCompleted:
-      return
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLogoutCompleted": "accountsSdkLogoutCompleted"]
+      )
     @unknown default:
       return
     }

@@ -353,54 +353,54 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // useEffect(() => {
-  //   const igniteEventEmitter = new NativeEventEmitter(
-  //     NativeModules.GlobalEventEmitter
-  //   );
-  //   igniteEventEmitter.addListener(
-  //     'igniteAnalytics',
-  //     async (result: IgniteAnalytics) => {
-  //       if (result && analytics) analytics(result);
-  //       if (
-  //         (result.purchaseSdkDidEndCheckoutFor ||
-  //           result.ticketsSdkDidViewEvents ||
-  //           // iOS TMAuthentication.shared.validToken() successful login
-  //           ((result.accountsSdkLoggedIn || result.accountsSdkLoggedOut) &&
-  //             !isLoggingIn &&
-  //             Platform.OS === 'ios')) &&
-  //         autoUpdate
-  //       ) {
-  //         await setAccountDetails();
-  //       }
-  //       if (result.ticketsSdkVenueConcessionsOrderFor) {
-  //         venueConcessionsModule?.orderButtonCallback(
-  //           result.ticketsSdkVenueConcessionsOrderFor
-  //         );
-  //       }
-  //       if (result.ticketsSdkVenueConcessionsWalletFor) {
-  //         venueConcessionsModule?.walletButtonCallback(
-  //           result.ticketsSdkVenueConcessionsWalletFor
-  //         );
-  //       }
-  //       if (result.ticketsSdkCustomModuleButton1) {
-  //         button1?.callback(result.ticketsSdkCustomModuleButton1);
-  //       }
-  //       if (result.ticketsSdkCustomModuleButton2) {
-  //         button2?.callback(result.ticketsSdkCustomModuleButton2);
-  //       }
-  //       if (result.ticketsSdkCustomModuleButton3) {
-  //         button3?.callback(result.ticketsSdkCustomModuleButton3);
-  //       }
-  //     }
-  //   );
+  useEffect(() => {
+    const igniteEventEmitter = new NativeEventEmitter(
+      NativeModules.GlobalEventEmitter
+    );
+    igniteEventEmitter.addListener(
+      'igniteAnalytics',
+      async (result: IgniteAnalytics) => {
+        if (result && analytics) analytics(result);
+        if (
+          (result.purchaseSdkDidEndCheckoutFor ||
+            result.ticketsSdkDidViewEvents ||
+            // iOS TMAuthentication.shared.validToken() successful login
+            ((result.accountsSdkLoggedIn || result.accountsSdkLoggedOut) &&
+              !isLoggingIn &&
+              Platform.OS === 'ios')) &&
+          autoUpdate
+        ) {
+          await setAccountDetails();
+        }
+        if (result.ticketsSdkVenueConcessionsOrderFor) {
+          venueConcessionsModule?.orderButtonCallback(
+            result.ticketsSdkVenueConcessionsOrderFor
+          );
+        }
+        if (result.ticketsSdkVenueConcessionsWalletFor) {
+          venueConcessionsModule?.walletButtonCallback(
+            result.ticketsSdkVenueConcessionsWalletFor
+          );
+        }
+        if (result.ticketsSdkCustomModuleButton1) {
+          button1?.callback(result.ticketsSdkCustomModuleButton1);
+        }
+        if (result.ticketsSdkCustomModuleButton2) {
+          button2?.callback(result.ticketsSdkCustomModuleButton2);
+        }
+        if (result.ticketsSdkCustomModuleButton3) {
+          button3?.callback(result.ticketsSdkCustomModuleButton3);
+        }
+      }
+    );
 
-  //   // Removes the listener once unmounted
-  //   return () => {
-  //     igniteEventEmitter.removeAllListeners('igniteAnalytics');
-  //   };
-  //   // Only create native listener once in an apps lifecycle
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+    // Removes the listener once unmounted
+    return () => {
+      igniteEventEmitter.removeAllListeners('igniteAnalytics');
+    };
+    // Only create native listener once in an apps lifecycle
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const login = useCallback(
     async (
