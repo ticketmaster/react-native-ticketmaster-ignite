@@ -94,19 +94,16 @@ class TicketsFragment() : Fragment() {
   }
 
   private fun getImageOverride(imageName: String): ModuleBase.ImageOverride? {
-    return Config.getImage(imageName)?.let { imageJsonString ->
-      val resolvedImage = JSONObject(imageJsonString)
-      val uri = resolvedImage.optString("uri")
-
+    return Config.getImage(imageName)?.let { imageUri ->
       when {
-        uri.contains("10.0.") -> {
+        imageUri.contains("10.0.") -> {
           println("Loading image in the debug mode")
-          ModuleBase.ImageOverride(url = uri)
+          ModuleBase.ImageOverride(url = imageUri)
         }
 
-        uri.isNotEmpty() -> {
+        imageUri.isNotEmpty() -> {
           println("Loading image in the release mode")
-          val resourceName = uri.substringAfterLast('/').substringBeforeLast('.')
+          val resourceName = imageUri.substringAfterLast('/').substringBeforeLast('.')
           val resourceId =
             context?.resources?.getIdentifier(resourceName, "drawable", context?.packageName)
 

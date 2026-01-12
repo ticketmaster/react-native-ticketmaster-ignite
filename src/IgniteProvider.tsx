@@ -5,31 +5,20 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import {
-  IgniteAnalytics,
-  PrebuiltModules,
-} from 'react-native-ticketmaster-ignite';
+import NativeAccountsSdk from '../specs/NativeAccountsSdk';
+import NativeConfig from '../specs/NativeConfig';
 import { toCapitalise } from './utils/utils';
 import {
-  CustomModules,
-  EventHeaderType,
+  AccessToken,
   MarketDomain,
   Region,
+  EventHeaderType,
+  IgniteAnalytics,
+  PrebuiltModules,
+  CustomModules,
+  SportXrData,
   VenueConcessionsModule,
 } from './types';
-
-type AuthSource = {
-  hostAccessToken?: string;
-  archticsAccessToken?: string;
-  mfxAccessToken?: string;
-  sportXRAccessToken?: string;
-  sportXRIdToken?: string;
-};
-
-type SportXrData = {
-  sportXRcookieName?: string;
-  sportXRTeamDomain?: string;
-} | null;
 
 type LoginParams = {
   onLogin?: () => void | Promise<void>;
@@ -46,12 +35,6 @@ type AuthStateParams = {
   isLoggedIn: boolean;
   memberInfo: Record<string, any> | null;
 };
-
-type iosTokenData = { accessToken: string; sportXRIdToken: string };
-
-type androidTokenData = AuthSource;
-
-type AccessToken = iosTokenData | androidTokenData | null;
 
 interface IgniteProviderProps {
   children: React.ReactNode;
@@ -173,7 +156,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   customModules = defaultCustomModules,
   analytics,
 }) => {
-  const { Config, AccountsSDK } = NativeModules;
   const {
     apiKey,
     clientName,
@@ -198,19 +180,18 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     let memberInfoResult;
     try {
       try {
-        isLoggedInResult = await AccountsSDK.isLoggedIn();
+        isLoggedInResult = await NativeAccountsSdk.isLoggedIn();
       } catch (e) {
         if ((e as Error).message.includes('User not logged in'))
           throw new Error(`User not logged in`);
         throw new Error(`Accounts SDK isLoggedIn error: ${e}`);
       }
 
-      const isLoggedInParsed =
-        Platform.OS === 'ios' ? isLoggedInResult.result : isLoggedInResult;
+      const isLoggedInParsed = isLoggedInResult;
       _isLoggedIn = isLoggedInParsed;
 
       try {
-        memberInfoResult = await AccountsSDK.getMemberInfo();
+        memberInfoResult = await NativeAccountsSdk.getMemberInfo();
       } catch (e) {
         if ((e as Error).message.includes('User not logged in'))
           throw new Error(`User not logged in`);
@@ -220,10 +201,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       setAuthState({
         isConfigured: true,
         isLoggedIn: !!isLoggedInParsed,
-        memberInfo:
-          Platform.OS === 'ios'
-            ? memberInfoResult
-            : JSON.parse(memberInfoResult),
+        memberInfo: memberInfoResult,
       });
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
@@ -241,11 +219,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK]);
+  }, []);
 
   const configureAccountsSDK = useCallback(async () => {
     try {
-      const result = await AccountsSDK.configureAccountsSDK();
+      const result = await NativeAccountsSdk.configureAccountsSDK();
       enableLogs && console.log(result);
     } catch (e) {
       throw new Error(
@@ -257,24 +235,26 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     } catch (e) {
       throw e;
     }
-  }, [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]);
+  }, [autoUpdate, enableLogs, setAccountDetails]);
 
   const setNativeConfigValues = useCallback(() => {
-    Config.setConfig('apiKey', apiKey);
-    Config.setConfig('clientName', clientName);
-    Config.setConfig('primaryColor', primaryColor);
-    Config.setConfig('region', region || 'US');
-    Config.setConfig('marketDomain', marketDomain || 'US');
-    Config.setConfig('eventHeaderType', eventHeaderType || 'EVENT_INFO_SHARE');
+    NativeConfig.setConfig('apiKey', apiKey);
+    NativeConfig.setConfig('clientName', clientName);
+    NativeConfig.setConfig('primaryColor', primaryColor);
+    NativeConfig.setConfig('region', region || 'US');
+    NativeConfig.setConfig('marketDomain', marketDomain || 'US');
+    NativeConfig.setConfig(
+      'eventHeaderType',
+      eventHeaderType || 'EVENT_INFO_SHARE'
+    );
 
     if (
       environment === 'Production' ||
       environment === 'PreProduction' ||
       environment === 'Staging'
     )
-      Config.setConfig('environment', environment);
+      NativeConfig.setConfig('environment', environment);
   }, [
-    Config,
     apiKey,
     clientName,
     primaryColor,
@@ -289,7 +269,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
       // Crash on iOS when boolean sent to bridge module
       const isEnabled = moduleOptions.enabled ? 'true' : 'false';
-      Config.setConfig(moduleName, isEnabled);
+      NativeConfig.setConfig(moduleName, isEnabled);
 
       if (moduleName === 'venueConcessionsModule') {
         const dismissTicketViewOrder =
@@ -303,12 +283,12 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
             ? 'true'
             : `${(moduleOptions as VenueConcessionsModule).dismissTicketViewWalletIos}`;
 
-        Config.setConfig(
+        NativeConfig.setConfig(
           `${moduleName}DismissTicketViewOrder`,
           dismissTicketViewOrder
         );
 
-        Config.setConfig(
+        NativeConfig.setConfig(
           `${moduleName}DismissTicketViewWallet`,
           dismissTicketViewWallet
         );
@@ -317,14 +297,14 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       Object.entries(moduleOptions).forEach(
         ([optionName, optionValue]: [string, any]) => {
           if (optionName.includes('Label')) {
-            Config.setConfig(
+            NativeConfig.setConfig(
               `${moduleName}${toCapitalise(optionName)}`,
               optionValue
             );
           }
           if (optionName.includes('image')) {
             const resolvedImage = Image.resolveAssetSource(optionValue);
-            Config.setImage(moduleName + 'Image', resolvedImage);
+            NativeConfig.setImage(moduleName + 'Image', resolvedImage.uri);
           }
         }
       );
@@ -338,18 +318,18 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         moduleOptions.dismissTicketViewIos === undefined
           ? 'true'
           : `${moduleOptions.dismissTicketViewIos}`;
-      Config.setConfig(moduleName, isEnabled);
-      Config.setConfig(`${moduleName}Title`, moduleOptions.title);
-      Config.setConfig(`${moduleName}DismissTicketView`, dismissTicketView);
+      NativeConfig.setConfig(moduleName, isEnabled);
+      NativeConfig.setConfig(`${moduleName}Title`, moduleOptions.title);
+      NativeConfig.setConfig(
+        `${moduleName}DismissTicketView`,
+        dismissTicketView
+      );
     });
-  }, [Config, customModules, prebuiltModules]);
+  }, [customModules, prebuiltModules]);
 
-  const setTicketDeepLink = useCallback(
-    (id: string) => {
-      Config.setConfig('orderIdDeepLink', id);
-    },
-    [Config]
-  );
+  const setTicketDeepLink = useCallback((id: string) => {
+    NativeConfig.setConfig('orderIdDeepLink', id);
+  }, []);
 
   useEffect(() => {
     const onConfigureAccountsSdk = async () => {
@@ -428,10 +408,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     ): Promise<void> => {
       !skipUpdate && setIsLoggingIn(true);
       try {
-        const result = await AccountsSDK.login();
+        const result = await NativeAccountsSdk.login();
         if (
-          (Platform.OS === 'ios' && result.accessToken) ||
-          (Platform.OS === 'android' && result.resultCode === -1)
+          (Platform.OS === 'ios' && result?.accessToken) ||
+          (Platform.OS === 'android' && result?.resultCode === -1)
         ) {
           enableLogs && console.log('Accounts SDK login successful');
           !skipUpdate && autoUpdate && (await setAccountDetails());
@@ -444,7 +424,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       }
       !skipUpdate && setIsLoggingIn(false);
     },
-    [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]
+    [autoUpdate, enableLogs, setAccountDetails]
   );
 
   const logout = useCallback(
@@ -452,7 +432,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       { onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }
     ): Promise<void> => {
       try {
-        await AccountsSDK.logout();
+        await NativeAccountsSdk.logout();
         enableLogs && console.log('Accounts SDK logout successful');
         !skipUpdate && autoUpdate && (await setAccountDetails());
         onLogout && onLogout();
@@ -460,7 +440,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     },
-    [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]
+    [autoUpdate, enableLogs, setAccountDetails]
   );
 
   const logoutAll = useCallback(
@@ -469,9 +449,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       { onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }
     ): Promise<void> => {
       try {
-        Platform.OS === 'ios'
-          ? await AccountsSDK.logoutAll()
-          : await AccountsSDK.logout();
+        await NativeAccountsSdk.logoutAll();
         enableLogs && console.log('Accounts SDK logoutAll successful');
         !skipUpdate && autoUpdate && (await setAccountDetails());
         onLogout && onLogout();
@@ -479,17 +457,14 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     },
-    [AccountsSDK, autoUpdate, enableLogs, setAccountDetails]
+    [autoUpdate, enableLogs, setAccountDetails]
   );
 
   const getIsLoggedIn = useCallback(async (): Promise<boolean> => {
     try {
-      const result = await AccountsSDK.isLoggedIn();
-      enableLogs &&
-        console.log(
-          `Accounts SDK isLoggedIn: ${Platform.OS === 'ios' ? !!result.result : result}`
-        );
-      return Platform.OS === 'ios' ? !!result.result : result;
+      const result = await NativeAccountsSdk.isLoggedIn();
+      enableLogs && console.log(`Accounts SDK isLoggedIn: ${result}`);
+      return result;
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
         enableLogs && console.log('Accounts SDK isLoggedIn: false');
@@ -498,18 +473,14 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK, enableLogs]);
+  }, [enableLogs]);
 
   const getToken = useCallback(async (): Promise<AccessToken> => {
-    let accessToken;
     try {
-      if (Platform.OS === 'ios') {
-        // iOS getToken has the exact same Native logic as refreshToken, but will not display the login UI if a user is not logged in or has an invalidated token
-        const result = await AccountsSDK.getToken();
-        accessToken = result.accessToken === '' ? null : result;
-      } else if (Platform.OS === 'android') {
-        accessToken = await AccountsSDK.refreshToken();
-      }
+      // iOS getToken() has the exact same Native logic as refreshToken, but will not display the login UI if a user is not logged in or has an invalidated token
+      // Android getToken() never shows the login UI if a user is not logged in or has an invalidated token, so showing login is done manually in JS refreshToken()
+      const result = await NativeAccountsSdk.getToken();
+      const accessToken = result?.accessToken === '' ? null : result;
       enableLogs &&
         console.log(
           `Accounts SDK access token: ${JSON.stringify(accessToken)}`
@@ -523,11 +494,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK, enableLogs]);
+  }, [enableLogs]);
 
   const getSportXrData = useCallback(async (): Promise<SportXrData> => {
     try {
-      const result = await AccountsSDK.getSportXRData();
+      const result = await NativeAccountsSdk.getSportXRData();
       enableLogs &&
         console.log(
           `Accounts SDK SportXr Data retrieved: ${JSON.stringify(result)}`
@@ -536,15 +507,15 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     } catch (e) {
       throw e;
     }
-  }, [AccountsSDK, enableLogs]);
+  }, [enableLogs]);
 
   const getMemberInfo = useCallback(async () => {
     let result;
     try {
-      result = await AccountsSDK.getMemberInfo();
+      result = await NativeAccountsSdk.getMemberInfo();
       enableLogs &&
         console.log(`Accounts SDK memberInfo: ${JSON.stringify(result)}`);
-      return Platform.OS === 'ios' ? result : JSON.parse(result);
+      return result;
     } catch (e) {
       if ((e as Error).message.includes('User not logged in')) {
         enableLogs && console.log('Accounts SDK memberInfo: null');
@@ -553,20 +524,20 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK, enableLogs]);
+  }, [enableLogs]);
 
   const refreshToken = useCallback(async (): Promise<AccessToken> => {
     try {
-      const result = await AccountsSDK.refreshToken();
+      const result = await NativeAccountsSdk.refreshToken();
       if (Platform.OS === 'ios') {
         // login() is automatically triggered in the iOS Accounts SDK refreshToken() method via TMAuthentication.shared.validToken()
         enableLogs &&
           console.log(`Accounts SDK access token: ${JSON.stringify(result)}`);
-        return result.accessToken === '' ? null : result;
+        return result?.accessToken === '' ? null : result;
       } else {
         if (result === null) {
           await login();
-          // iOS has its own refresh method AccountsSDK.refreshToken(), Android only has one token method AccountsSDK.refreshToken() which the JS getToken() already calls
+          // The JS getToken() method already returns the destructured access token
           return await getToken();
         } else {
           enableLogs &&
@@ -582,7 +553,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     }
-  }, [AccountsSDK, enableLogs, getToken, login]);
+  }, [enableLogs, getToken, login]);
 
   const refreshConfiguration = useCallback(
     async (
@@ -606,18 +577,19 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       }
     ) => {
       try {
-        Config.setConfig('apiKey', apiKey);
-        clientName && Config.setConfig('clientName', clientName);
-        primaryColor && Config.setConfig('primaryColor', primaryColor);
-        region && Config.setConfig('region', region);
-        marketDomain && Config.setConfig('marketDomain', marketDomain);
-        eventHeaderType && Config.setConfig('eventHeaderType', eventHeaderType);
+        NativeConfig.setConfig('apiKey', apiKey);
+        clientName && NativeConfig.setConfig('clientName', clientName);
+        primaryColor && NativeConfig.setConfig('primaryColor', primaryColor);
+        region && NativeConfig.setConfig('region', region);
+        marketDomain && NativeConfig.setConfig('marketDomain', marketDomain);
+        eventHeaderType &&
+          NativeConfig.setConfig('eventHeaderType', eventHeaderType);
         if (
           environment === 'Production' ||
           environment === 'PreProduction' ||
           environment === 'Staging'
         )
-          Config.setConfig('environment', environment);
+          NativeConfig.setConfig('environment', environment);
         await configureAccountsSDK();
         onSuccess && onSuccess();
         !skipAutoLogin &&
@@ -626,7 +598,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     },
-    [Config, configureAccountsSDK, login]
+    [configureAccountsSDK, login]
   );
 
   return (

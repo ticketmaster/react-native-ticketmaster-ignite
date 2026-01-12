@@ -15,25 +15,25 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.BaseActivityEventListener
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.ticketmasterignitespecs.NativeAccountsSdkSpec
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
-import com.ticketmaster.tickets.ticketssdk.TicketsColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class AccountsSDKModule(reactContext: ReactApplicationContext) :
-  ReactContextBaseJavaModule(reactContext) {
-  override fun getName() = "AccountsSDK"
+class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsSdkSpec(reactContext) {
+  override fun getName() = NAME
   private val CODE = 1
   private var loginPromise: Promise? = null
+  private var currentActivity = reactContext.currentActivity as FragmentActivity
 
-  @ReactMethod
-  fun configureAccountsSDK(promise: Promise) {
+
+  override fun configureAccountsSDK(promise: Promise) {
     CoroutineScope(Dispatchers.Main).launch {
       val configurationStartedParams: WritableMap = Arguments.createMap().apply {
         putString(
@@ -44,8 +44,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
 
       try {
-        val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
-
+        val currentFragmentActivity = currentActivity
         val authenticationResult = TMAuthentication.Builder(
           Config.get("apiKey"),
           Config.get("clientName")
@@ -124,8 +123,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     reactContext.addActivityEventListener(loginActivityEventListener)
   }
 
-  @ReactMethod
-  fun login(promise: Promise) {
+  override fun login(promise: Promise) {
     val loginStartedParams: WritableMap = Arguments.createMap().apply {
       putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
     }
@@ -139,16 +137,15 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
       }
 
       loginPromise = promise
-      val currentFragmentActivity = reactApplicationContext.currentActivity as FragmentActivity
+      val currentFragmentActivity = currentActivity
       val intent = authentication.getLoginIntent(currentFragmentActivity)
-      reactApplicationContext.currentActivity?.startActivityForResult(intent, CODE)
+      currentActivity.startActivityForResult(intent, CODE)
     } catch (e: Exception) {
       promise.reject("Accounts SDK Login Error", e)
     }
   }
 
-  @ReactMethod
-  fun logout(promise: Promise) {
+  override fun logout(promise: Promise) {
     val authentication = IgniteSDKSingleton.getAuthenticationSDK()
     if (authentication == null) {
       promise.resolve(false)
@@ -181,9 +178,41 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  override fun logoutAll(promise: Promise) {
+    val authentication = IgniteSDKSingleton.getAuthenticationSDK()
+    if (authentication == null) {
+      promise.resolve(false)
+      return
+    }
 
-  @ReactMethod
-  fun isLoggedIn(promise: Promise) {
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val logoutStartedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkLogoutStarted", "accountsSdkLogoutStarted")
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutStartedParams)
+
+        authentication.logout()
+
+        val loggedOutParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
+
+        val logoutCompletedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
+        }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
+
+        promise.resolve(true)
+      } catch (e: Exception) {
+        promise.reject("Accounts SDK LogoutAll Error", e)
+      }
+    }
+  }
+
+
+  override fun isLoggedIn(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
       promise.resolve(false)
@@ -202,40 +231,54 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
-  @ReactMethod
-  fun getMemberInfo(promise: Promise) {
+  override fun getMemberInfo(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
-    if (authenticationSDK == null) {
-      promise.resolve(null)
-      return
-    }
+      ?: return promise.resolve(null)
 
     CoroutineScope(Dispatchers.IO).launch {
       try {
-        val hostAccessToken = authenticationSDK.getToken(AuthSource.HOST)
-        val archticsAccessToken = authenticationSDK.getToken(AuthSource.ARCHTICS)
-        val mfxAccessToken = authenticationSDK.getToken(AuthSource.MFX)
-        val sportXRTokenData = authenticationSDK.getTMAuthToken(AuthSource.SPORTXR)
-        val sportXRAccessToken = sportXRTokenData?.accessToken
+        val tokens = listOf(
+          authenticationSDK.getToken(AuthSource.HOST),
+          authenticationSDK.getToken(AuthSource.ARCHTICS),
+          authenticationSDK.getToken(AuthSource.MFX),
+          authenticationSDK.getTMAuthToken(AuthSource.SPORTXR)?.accessToken
+        )
 
-        if (archticsAccessToken.isNullOrEmpty() &&
-          hostAccessToken.isNullOrEmpty() &&
-          mfxAccessToken.isNullOrEmpty() &&
-          sportXRAccessToken.isNullOrEmpty()
-        ) {
+        if (tokens.all { it.isNullOrEmpty() }) {
           promise.resolve(null)
-        } else {
-          val memberInfoJson = Gson().toJson(authenticationSDK.fetchUserDetails().getOrNull())
-          promise.resolve(memberInfoJson)
+          // return@launch exits the CoroutineScope, code outside the CoroutineScope will still run
+          return@launch
         }
+
+        val memberInfo = authenticationSDK.fetchUserDetails().getOrNull()
+          ?: return@launch promise.resolve(null)
+
+        val memberInfoData = Arguments.createMap()
+
+        // Choose first non-null member with an email
+        val selectedMember = listOfNotNull(
+          memberInfo.archticsMember?.takeIf { !it.email.isNullOrEmpty() },
+          memberInfo.sportXRMember?.takeIf { !it.email.isNullOrEmpty() },
+          memberInfo.mfxMember?.takeIf { !it.email.isNullOrEmpty() },
+          memberInfo.hostMember?.takeIf { !it.email.isNullOrEmpty() }
+        ).firstOrNull()
+
+        if (selectedMember != null) {
+          val json = Gson().toJson(selectedMember)
+          val memberMap: Map<String, Any> = Gson().fromJson(
+            json, object : TypeToken<Map<String, Any>>() {}.type
+          )
+          fillWritableMap(memberInfoData, memberMap)
+        }
+
+        promise.resolve(memberInfoData)
       } catch (e: Exception) {
         promise.reject("Accounts SDK getMemberInfo Error", e)
       }
     }
   }
 
-  @ReactMethod
-  fun refreshToken(promise: Promise) {
+  override fun getToken(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
       promise.resolve(null)
@@ -252,17 +295,65 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         val sportXRIdToken = sportXRTokenData?.idToken
 
         val combinedTokens: WritableMap = Arguments.createMap().apply {
-          if (!hostAccessToken.isNullOrEmpty()) {
-            putString("hostAccessToken", hostAccessToken)
-          }
           if (!archticsAccessToken.isNullOrEmpty()) {
-            putString("archticsAccessToken", archticsAccessToken)
+            putString("accessToken", archticsAccessToken)
+          } else if (!sportXRAccessToken.isNullOrEmpty()) {
+            putString("accessToken", sportXRAccessToken)
+          } else if (!mfxAccessToken.isNullOrEmpty()) {
+            putString("accessToken", mfxAccessToken)
+          } else if (!hostAccessToken.isNullOrEmpty()) {
+            putString("accessToken", hostAccessToken)
           }
-          if (!mfxAccessToken.isNullOrEmpty()) {
-            putString("mfxAccessToken", mfxAccessToken)
+          if (!sportXRIdToken.isNullOrEmpty()) {
+            putString("sportXRIdToken", sportXRIdToken)
           }
-          if (!sportXRAccessToken.isNullOrEmpty()) {
-            putString("sportXRAccessToken", sportXRAccessToken)
+        }
+
+        if (archticsAccessToken.isNullOrEmpty() &&
+          hostAccessToken.isNullOrEmpty() &&
+          mfxAccessToken.isNullOrEmpty() &&
+          sportXRAccessToken.isNullOrEmpty()
+        ) {
+          promise.resolve(null)
+        } else {
+          val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
+            putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
+          }
+          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
+          promise.resolve(combinedTokens)
+        }
+      } catch (e: Exception) {
+        promise.reject("Accounts SDK getToken Error", e)
+      }
+    }
+  }
+
+
+  override fun refreshToken(promise: Promise) {
+    val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
+    if (authenticationSDK == null) {
+      promise.resolve(null)
+      return
+    }
+
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val hostAccessToken = authenticationSDK.getToken(AuthSource.HOST)
+        val archticsAccessToken = authenticationSDK.getToken(AuthSource.ARCHTICS)
+        val mfxAccessToken = authenticationSDK.getToken(AuthSource.MFX)
+        val sportXRTokenData = authenticationSDK.getTMAuthToken(AuthSource.SPORTXR)
+        val sportXRAccessToken = sportXRTokenData?.accessToken
+        val sportXRIdToken = sportXRTokenData?.idToken
+
+        val combinedTokens: WritableMap = Arguments.createMap().apply {
+          if (!archticsAccessToken.isNullOrEmpty()) {
+            putString("accessToken", archticsAccessToken)
+          } else if (!sportXRAccessToken.isNullOrEmpty()) {
+            putString("accessToken", sportXRAccessToken)
+          } else if (!mfxAccessToken.isNullOrEmpty()) {
+            putString("accessToken", mfxAccessToken)
+          } else if (!hostAccessToken.isNullOrEmpty()) {
+            putString("accessToken", hostAccessToken)
           }
           if (!sportXRIdToken.isNullOrEmpty()) {
             putString("sportXRIdToken", sportXRIdToken)
@@ -288,8 +379,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
-  @ReactMethod
-  fun getSportXRData(promise: Promise) {
+  override fun getSportXRData(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
       promise.resolve(null)
@@ -317,6 +407,46 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  private fun fillWritableMap(dest: WritableMap, src: Map<String, Any>) {
+    src.forEach { (key, value) -> putValue(dest, key, value) }
+  }
+
+  private fun convertMap(map: Map<*, *>): WritableMap =
+    Arguments.createMap().apply {
+      map.forEach { (key, value) ->
+        if (key is String) putValue(this, key, value)
+      }
+    }
+
+  private fun convertArray(list: List<*>): WritableArray =
+    Arguments.createArray().apply {
+      list.forEach { value -> pushValue(this, value) }
+    }
+
+  private fun putValue(dest: WritableMap, key: String, value: Any?) {
+    when (value) {
+      null -> dest.putNull(key)
+      is String -> dest.putString(key, value)
+      is Number -> dest.putDouble(key, value.toDouble())
+      is Boolean -> dest.putBoolean(key, value)
+      is Map<*, *> -> dest.putMap(key, convertMap(value))
+      is List<*> -> dest.putArray(key, convertArray(value))
+      else -> dest.putString(key, value.toString())
+    }
+  }
+
+  private fun pushValue(dest: WritableArray, value: Any?) {
+    when (value) {
+      null -> dest.pushNull()
+      is String -> dest.pushString(value)
+      is Number -> dest.pushDouble(value.toDouble())
+      is Boolean -> dest.pushBoolean(value)
+      is Map<*, *> -> dest.pushMap(convertMap(value))
+      is List<*> -> dest.pushArray(convertArray(value))
+      else -> dest.pushString(value.toString())
+    }
+  }
+
   @SuppressLint("ConflictingOnColor")
   private fun createTMAuthenticationColors(color: Int): TMAuthentication.ColorTheme =
     TMAuthentication.ColorTheme(
@@ -332,4 +462,8 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) :
         onPrimary = Color.White // Color used for text and icons displayed on top of the primary color.
       )
     )
+
+  companion object {
+    const val NAME = "NativeAccountsSdk"
+  }
 }

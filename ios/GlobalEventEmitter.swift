@@ -2,16 +2,25 @@ import Foundation
 import React
 
 @objc(GlobalEventEmitter)
-class GlobalEventEmitter: RCTEventEmitter {
+final class GlobalEventEmitter: RCTEventEmitter {
 
-  public static var emitter: RCTEventEmitter!
+  private static var shared: GlobalEventEmitter?
 
   override init() {
     super.init()
-    GlobalEventEmitter.emitter = self
+    GlobalEventEmitter.shared = self
   }
 
- override func supportedEvents() -> [String] {
-    ["igniteAnalytics"]
+  @objc
+  static func sendEvent(name: String, body: [String: Any]) {
+    shared?.sendEvent(withName: name, body: body)
+  }
+
+  override func supportedEvents() -> [String] {
+    return ["igniteAnalytics"]
+  }
+
+  override static func requiresMainQueueSetup() -> Bool {
+    return true
   }
 }

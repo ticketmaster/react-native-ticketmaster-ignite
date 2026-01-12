@@ -179,5 +179,13 @@
         }
       ]
     ]
+  },
+  "codegenConfig": {
+    "name": "TicketmasterIgniteSpecs",
+    "type": "all",
+    "jsSrcsDir": "specs",
+    "android": {
+      "javaPackageName": "com.ticketmasterignitespecs"
+    }
   }
 }

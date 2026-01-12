@@ -156,6 +156,15 @@ export type PrebuiltModules = {
   };
 };
 
+export type AccessToken = {
+  accessToken: string;
+  sportXRIdToken: string;
+} | null;
+
+export type SportXrData = {
+  sportXRcookieName?: string;
+  sportXRTeamDomain?: string;
+} | null;
 export type CustomModules = {
   button1?: {
     enabled: boolean;

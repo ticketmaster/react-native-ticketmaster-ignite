@@ -4,7 +4,6 @@ import {
   View,
   ActivityIndicator,
   ScrollView,
-  Platform,
   Text,
 } from 'react-native';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
@@ -24,18 +23,7 @@ const Home = ({ route }: HomeProps) => {
     authState: { memberInfo, isLoggedIn, isConfigured },
   } = useIgnite();
 
-  const email =
-    Platform.OS === 'ios'
-      ? memberInfo?.email
-      : memberInfo?.hostMember
-        ? memberInfo?.hostMember.email
-        : memberInfo?.sportXRMember
-          ? memberInfo?.sportXRMember.email
-          : memberInfo?.archticsMember
-            ? memberInfo?.archticsMember.email
-            : memberInfo?.mfxMember
-              ? memberInfo?.archticsMember.email
-              : '';
+  const email = memberInfo?.email;
 
   return (
     <ScrollView style={styles.scrollViewContainer}>
