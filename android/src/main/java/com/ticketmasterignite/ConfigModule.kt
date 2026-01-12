@@ -1,7 +1,6 @@
 package com.ticketmasterignite
 
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReadableMap
 import com.ticketmasterignitespecs.NativeConfigSpec
 
 class ConfigModule(reactContext: ReactApplicationContext) : NativeConfigSpec(reactContext) {
@@ -13,10 +12,8 @@ class ConfigModule(reactContext: ReactApplicationContext) : NativeConfigSpec(rea
     Config.set(key, value)
   }
 
-  override fun setImage(key: String, resolvedImage: ReadableMap) {
-    val gson = com.google.gson.Gson()
-    val imageJsonString = gson.toJson(resolvedImage.toHashMap())
-    Config.setImage(key, imageJsonString)
+  override fun setImage(key: String, uri: String) {
+    Config.setImage(key, uri)
   }
 
   companion object {
