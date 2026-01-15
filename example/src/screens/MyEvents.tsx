@@ -14,7 +14,10 @@ const MyEvents = () => {
 };
 
 const styles = StyleSheet.create({
-  ticketsContainer: { height: Platform.OS === 'ios' ? '90%' : '95%' },
+  ticketsContainer: {
+    height: Platform.OS === 'ios' ? '90%' : '95%',
+    width: '100%',
+  },
 });
 
 export default MyEvents;
