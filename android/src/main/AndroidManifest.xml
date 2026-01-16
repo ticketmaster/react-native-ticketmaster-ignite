@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application android:theme="@style/AppTheme" tools:replace="android:theme">
+      <provider
+        android:name=".TicketmasterInitProvider"
+        android:authorities="${applicationId}.ticketmasterinitprovider"
+        android:exported="false" />
       <activity
         android:name="com.ticketmaster.authenticationsdk.internal.modernaccounts.presentation.ModernAccountsLoginScreen"
         android:exported="true"
