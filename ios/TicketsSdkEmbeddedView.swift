@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import TicketmasterTickets
 
-@objc public class TicketsSdkEmbeddedView: UIView {
+@objc public class TicketsSdkEmbeddedView: UIView, TicketsSdkViewProtocol, TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate {
   
   private var ticketsView: TMTicketsView?
   
@@ -17,8 +17,8 @@ import TicketmasterTickets
   }
   
   private func setupView() {
-//    TMTickets.shared.analyticsDelegate = self
-//    TMTickets.shared.moduleDelegate = self
+    TMTickets.shared.analyticsDelegate = self
+    TMTickets.shared.moduleDelegate = self
     print("Tickets SDK Configuring...")
     
     TMTickets.shared.configure {
@@ -28,7 +28,7 @@ import TicketmasterTickets
       self.ticketsView = ticketsView
       TMTickets.shared.start(ticketsView: ticketsView)
       if(!Config.shared.get(for: "orderIdDeepLink").isEmpty) {
-//        self.deepLinkToOrder(Config.shared.get(for: "orderIdDeepLink"))
+        self.deepLinkToOrder(Config.shared.get(for: "orderIdDeepLink"))
       }
     } failure: { error in
       print(" - Tickets SDK Configuration Error: \(error.localizedDescription)")
@@ -40,8 +40,3 @@ import TicketmasterTickets
     ticketsView?.frame = self.bounds
   }
 }
-
-//// Delegate conformance in a separate extension
-//extension TicketsSdkEmbeddedView: TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate {
-//  // Add your delegate method implementations here
-//}
