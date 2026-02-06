@@ -1,3 +1,3 @@
-import { NativeModules } from 'react-native';
+import NativeRetailSdk from '../specs/NativeRetailSdk';
 
-export const RetailSDK = NativeModules.RetailSDK;
+export const RetailSDK = NativeRetailSdk;
