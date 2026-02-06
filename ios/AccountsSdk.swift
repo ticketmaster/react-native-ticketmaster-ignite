@@ -1,7 +1,7 @@
 import TicketmasterAuthentication
 import React
 
-@objcMembers public class NativeAccountsSdk: NSObject, TMAuthenticationDelegate {
+@objcMembers public class AccountsSdk: NSObject, TMAuthenticationDelegate {
   
   public func configureAccountsSDK(
     resolve: @escaping RCTPromiseResolveBlock,

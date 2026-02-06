@@ -31,7 +31,7 @@ class TicketmasterIgnitePackage : BaseReactPackage() {
     }
 
     return when (name) {
-      AccountsSDKModule.NAME -> AccountsSDKModule(reactContext)
+      AccountsSdkModule.NAME -> AccountsSdkModule(reactContext)
       ConfigModule.NAME -> ConfigModule(reactContext)
       else -> null
     }
@@ -40,9 +40,9 @@ class TicketmasterIgnitePackage : BaseReactPackage() {
   override fun getReactModuleInfoProvider() =
     ReactModuleInfoProvider {
       mapOf(
-        AccountsSDKModule.NAME to ReactModuleInfo(
-          name = AccountsSDKModule.NAME,
-          className = AccountsSDKModule.NAME,
+        AccountsSdkModule.NAME to ReactModuleInfo(
+          name = AccountsSdkModule.NAME,
+          className = AccountsSdkModule.NAME,
           canOverrideExistingModule = false,
           needsEagerInit = false,
           isCxxModule = false,
