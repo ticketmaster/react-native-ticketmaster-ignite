@@ -313,7 +313,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     // Custom Modules
     Object.entries(customModules).forEach(([moduleName, moduleOptions]) => {
       const isEnabled = moduleOptions.enabled ? 'true' : 'false';
-      // Crash on iOS when boolean sent to bridge module so strings sent instead `${moduleOptions.dismissTicketViewIos}`
       const dismissTicketView =
         moduleOptions.dismissTicketViewIos === undefined
           ? 'true'

@@ -186,6 +186,12 @@
     "jsSrcsDir": "specs",
     "android": {
       "javaPackageName": "com.ticketmasterignitespecs"
+    },
+    "ios": {
+      "componentProvider": {
+        "TicketsSdkEmbeddedView": "RCTTicketsSdkEmbeddedView",
+        "TicketsSdkModalView": "RCTTicketsSdkModalView"
+      }
     }
   }
 }

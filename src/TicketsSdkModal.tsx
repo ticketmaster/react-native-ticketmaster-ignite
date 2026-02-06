@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { requireNativeComponent, View } from 'react-native';
-
-const TicketsSdk = requireNativeComponent('RNTTicketsSdkView');
+import { View } from 'react-native';
+import TicketsSdkModalNativeComponent from '../specs/TicketsSdkModalNativeComponent';
 
 type TicketsSdkModalProps = {
   showTicketsModal: boolean;
@@ -23,7 +22,7 @@ export const TicketsSdkModal = ({
     <>
       {showTicketsModal && (
         <View testID="ticketsSDKWrapper">
-          <TicketsSdk />
+          <TicketsSdkModalNativeComponent />
         </View>
       )}
     </>

@@ -14,13 +14,13 @@
 #endif
 
 @implementation RCTNativeAccountsSdk {
-  NativeAccountsSdk *accountsSdk;
+  AccountsSdk *accountsSdk;
 }
 
 
 - (instancetype)init {
   if (self = [super init]) {
-    accountsSdk = [NativeAccountsSdk new];
+    accountsSdk = [AccountsSdk new];
   }
   return self;
 }
