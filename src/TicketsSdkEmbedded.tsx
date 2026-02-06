@@ -5,7 +5,7 @@ import TicketsSdkEmbeddedNativeComponent from '../specs/TicketsSdkEmbeddedNative
 
 type TicketsSdkEmbeddedViewProps = {
   /**
-   * Add offset to the top of the native UI component. Useful for temporary issues that exist with UI placement within React Navigation containers when React Native’s New Architecture is turned on.
+   * Add offset to the top of the native UI component. Useful for temporary issues that exist with UI placement within React Navigation containers when React Native's New Architecture is turned on.
    *
    * Android only.
    */

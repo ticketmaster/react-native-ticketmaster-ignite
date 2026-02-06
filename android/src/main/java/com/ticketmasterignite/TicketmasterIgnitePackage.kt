@@ -8,13 +8,20 @@ import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
+import com.facebook.react.uimanager.ViewManager
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 import com.ticketmasterignite.tickets.SecureEntryViewManager
-import com.ticketmasterignite.tickets.TicketsViewManager
+import com.ticketmasterignite.tickets.TicketsSdkViewManager
 
 class TicketmasterIgnitePackage : BaseReactPackage() {
 
   private var initialized = false
+
+  override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
+    return listOf(
+      TicketsSdkViewManager()
+    )
+  }
 
   override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
     // Run initialization ONCE

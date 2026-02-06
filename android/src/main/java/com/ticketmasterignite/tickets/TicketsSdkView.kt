@@ -1,46 +1,49 @@
 package com.ticketmasterignite.tickets
 
 import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.FrameLayout
+import com.facebook.react.uimanager.ThemedReactContext
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import androidx.fragment.app.Fragment
+import androidx.core.graphics.toColorInt
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.WritableMap
-import com.ticketmasterignite.R
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
 import com.ticketmaster.tickets.EventOrders
 import com.ticketmaster.tickets.TicketsModuleDelegate
-import com.ticketmaster.tickets.event_tickets.DirectionsModule
-import com.ticketmaster.tickets.event_tickets.InvoiceModule
-import com.ticketmaster.tickets.event_tickets.ModuleBase
-import com.ticketmaster.tickets.event_tickets.SeatUpgradesModule
-import com.ticketmaster.tickets.event_tickets.MoreTicketActionsModule
-import com.ticketmaster.tickets.event_tickets.NAMWebPageSettings
-import com.ticketmaster.tickets.event_tickets.TicketsSDKModule
+import com.ticketmaster.tickets.event_tickets.*
 import com.ticketmaster.tickets.ticketssdk.TicketsColors
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKClient
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 import com.ticketmaster.tickets.venuenext.VenueNextModule
 import com.ticketmasterignite.Environment
 import com.ticketmasterignite.GlobalEventEmitter
+import com.ticketmasterignite.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
-import androidx.core.graphics.toColorInt
 
-class TicketsFragment() : Fragment() {
-  private lateinit var customView: TicketsView
+class TicketsSdkView(context: Context) : FrameLayout(context) {
+
+  private var offsetTop: Int = 0
+
+  init {
+    val container = FrameLayout(context)
+    container.id = R.id.tickets_container
+    addView(container)
+    setupTicketsSDK()
+  }
+
+  fun setOffsetTop(offset: Int) {
+    offsetTop = offset
+    // Apply offset to the view
+    this.offsetTopAndBottom(offsetTop)
+  }
 
   private fun createTicketsColors(color: Int): TicketsColors =
     TicketsColors(
@@ -64,32 +67,38 @@ class TicketsFragment() : Fragment() {
     return tokenMap
   }
 
-  private fun launchTicketsView() {
-    TicketsSDKSingleton.getEventsFragment(requireContext())?.let {
-      childFragmentManager.beginTransaction().add(R.id.tickets_container, it).commit()
-    }
-
-    if (Config.get("orderIdDeepLink").isNotBlank()) {
-      TicketsSDKSingleton.jumpToOrderOrEvent(requireContext(), Config.get("orderIdDeepLink"))
-      Config.set("orderIdDeepLink", "")
+  private fun getFragmentActivity(): FragmentActivity? {
+    return when (val ctx = context) {
+      is FragmentActivity -> ctx
+      is ThemedReactContext -> ctx.currentActivity as? FragmentActivity
+      else -> null
     }
   }
 
-  private val resultLauncher = registerForActivityResult(
-    ActivityResultContracts.StartActivityForResult()
-  ) { result ->
-    when (result.resultCode) {
-      AppCompatActivity.RESULT_OK -> {
-        val params: WritableMap = Arguments.createMap().apply {
-          putString("ticketsSdkDidViewEvents", "ticketsSdkDidViewEvents")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-        launchTicketsView()
-        setCustomModules()
-      }
+  private val measureAndLayout = Runnable {
+    measure(
+      MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+      MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+    )
+    layout(left, top, right, bottom)
+  }
 
-      AppCompatActivity.RESULT_CANCELED -> {
-      }
+  override fun requestLayout() {
+    super.requestLayout()
+    post(measureAndLayout)
+  }
+
+  private fun launchTicketsView() {
+    TicketsSDKSingleton.getEventsFragment(context)?.let { fragment ->
+      val activity = getFragmentActivity()
+      activity?.supportFragmentManager?.beginTransaction()
+        ?.add(R.id.tickets_container, fragment)
+        ?.commitAllowingStateLoss()
+    }
+
+    if (Config.get("orderIdDeepLink").isNotBlank()) {
+      TicketsSDKSingleton.jumpToOrderOrEvent(context, Config.get("orderIdDeepLink"))
+      Config.set("orderIdDeepLink", "")
     }
   }
 
@@ -97,24 +106,18 @@ class TicketsFragment() : Fragment() {
     return Config.getImage(imageName)?.let { imageUri ->
       when {
         imageUri.contains("10.0.") -> {
-          println("Loading image in the debug mode")
           ModuleBase.ImageOverride(url = imageUri)
         }
-
         imageUri.isNotEmpty() -> {
-          println("Loading image in the release mode")
           val resourceName = imageUri.substringAfterLast('/').substringBeforeLast('.')
-          val resourceId =
-            context?.resources?.getIdentifier(resourceName, "drawable", context?.packageName)
+          val resourceId = context.resources?.getIdentifier(resourceName, "drawable", context.packageName)
 
           if (resourceId != null && resourceId != 0) {
             ModuleBase.ImageOverride(src = resourceId)
           } else {
-            println("Resource not found: $resourceName")
             null
           }
         }
-
         else -> null
       }
     }
@@ -133,7 +136,7 @@ class TicketsFragment() : Fragment() {
       moduleBase.setRightButtonText(Config.get("button3Title"))
     }
 
-    // Empty listeners needed for button clicks to trigger userDidPressActionButton callbacks
+    // Empty listeners needed for button clicks to trigger callbacks
     moduleBase.setLeftClickListener {}
     moduleBase.setMiddleClickListener {}
     moduleBase.setRightClickListener {}
@@ -145,7 +148,7 @@ class TicketsFragment() : Fragment() {
     TicketsSDKSingleton.moduleDelegate = object : TicketsModuleDelegate {
       override fun getCustomModulesLiveData(order: TicketsModuleDelegate.Order): LiveData<List<TicketsSDKModule>> {
         val modules: ArrayList<TicketsSDKModule> = ArrayList()
-        modules.add(getCustomModule(requireContext()))
+        modules.add(getCustomModule(context))
 
         if (Config.get("moreTicketActionsModule") == "true") {
           modules.add(MoreTicketActionsModule(order.eventId))
@@ -167,14 +170,11 @@ class TicketsFragment() : Fragment() {
           if (firstTicketSource != null) {
             modules.add(
               SeatUpgradesModule(
-                webPageSettings = NAMWebPageSettings(
-                  requireContext(),
-                  firstTicketSource
-                ),
+                webPageSettings = NAMWebPageSettings(context, firstTicketSource),
                 imageOverride = getImageOverride("seatUpgradesModuleImage"),
                 textOverride = seatUpgradesModuleTextOverride,
                 eventId = order.eventId,
-              ).build(requireContext())
+              ).build(context)
             )
           }
         }
@@ -202,7 +202,7 @@ class TicketsFragment() : Fragment() {
           val venueNextModule = VenueNextModule.Builder(order.venueId).build()
           modules.add(
             venueNextModule.createVenueNextView(
-              requireContext(),
+              context,
               textOverride = venueConcessionsModuleTextOverride,
               imageOverride = getImageOverride("venueConcessionsModuleImage")
             ) {}
@@ -221,52 +221,47 @@ class TicketsFragment() : Fragment() {
         callbackValue: String?,
         eventOrders: EventOrders?
       ) {
-        if (buttonTitle == Config.get("button1Title")) {
-          val params: WritableMap = Arguments.createMap()
-          val paramValues: WritableMap = Arguments.createMap().apply {
-            putString("eventOrderInfo", eventOrders.toString())
+        when (buttonTitle) {
+          Config.get("button1Title") -> {
+            val params: WritableMap = Arguments.createMap()
+            val paramValues: WritableMap = Arguments.createMap().apply {
+              putString("eventOrderInfo", eventOrders.toString())
+            }
+            params.putMap("ticketsSdkCustomModuleButton1", paramValues)
+            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
           }
-          params.putMap("ticketsSdkCustomModuleButton1", paramValues)
-
-          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-        }
-        if (buttonTitle == Config.get("button2Title")) {
-          val params: WritableMap = Arguments.createMap()
-          val paramValues: WritableMap = Arguments.createMap().apply {
-            putString("eventOrderInfo", eventOrders.toString())
+          Config.get("button2Title") -> {
+            val params: WritableMap = Arguments.createMap()
+            val paramValues: WritableMap = Arguments.createMap().apply {
+              putString("eventOrderInfo", eventOrders.toString())
+            }
+            params.putMap("ticketsSdkCustomModuleButton2", paramValues)
+            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
           }
-          params.putMap("ticketsSdkCustomModuleButton2", paramValues)
-
-          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-
-        }
-        if (buttonTitle == Config.get("button3Title")) {
-          val params: WritableMap = Arguments.createMap()
-          val paramValues: WritableMap = Arguments.createMap().apply {
-            putString("eventOrderInfo", eventOrders.toString())
+          Config.get("button3Title") -> {
+            val params: WritableMap = Arguments.createMap()
+            val paramValues: WritableMap = Arguments.createMap().apply {
+              putString("eventOrderInfo", eventOrders.toString())
+            }
+            params.putMap("ticketsSdkCustomModuleButton3", paramValues)
+            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
           }
-          params.putMap("ticketsSdkCustomModuleButton3", paramValues)
-
-          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-
-        }
-        if (buttonTitle == "Order") {
-          val params: WritableMap = Arguments.createMap()
-          val paramValues: WritableMap = Arguments.createMap().apply {
-            putString("eventOrderInfo", eventOrders.toString())
+          "Order" -> {
+            val params: WritableMap = Arguments.createMap()
+            val paramValues: WritableMap = Arguments.createMap().apply {
+              putString("eventOrderInfo", eventOrders.toString())
+            }
+            params.putMap("ticketsSdkVenueConcessionsOrderFor", paramValues)
+            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
           }
-          params.putMap("ticketsSdkVenueConcessionsOrderFor", paramValues)
-
-          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-        }
-        if (buttonTitle == "Wallet") {
-          val params: WritableMap = Arguments.createMap()
-          val paramValues: WritableMap = Arguments.createMap().apply {
-            putString("eventOrderInfo", eventOrders.toString())
+          "Wallet" -> {
+            val params: WritableMap = Arguments.createMap()
+            val paramValues: WritableMap = Arguments.createMap().apply {
+              putString("eventOrderInfo", eventOrders.toString())
+            }
+            params.putMap("ticketsSdkVenueConcessionsWalletFor", paramValues)
+            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
           }
-          params.putMap("ticketsSdkVenueConcessionsWalletFor", paramValues)
-
-          GlobalEventEmitter.sendEvent("igniteAnalytics", params)
         }
       }
     }
@@ -275,12 +270,11 @@ class TicketsFragment() : Fragment() {
   private fun getDirectionsModule(latLng: TicketsModuleDelegate.LatLng?): ModuleBase? {
     val latitude = latLng?.latitude ?: return null
     val longitude = latLng.longitude ?: return null
-
-    return DirectionsModule(requireActivity(), latitude, longitude).build()
+    val activity = getFragmentActivity() ?: return null
+    return DirectionsModule(activity, latitude, longitude).build()
   }
 
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
+  private fun setupTicketsSDK() {
     val coroutineScope = CoroutineScope(Dispatchers.IO)
     coroutineScope.launch(Dispatchers.Main) {
       val authenticationResult =
@@ -288,7 +282,7 @@ class TicketsFragment() : Fragment() {
           .colors(createAuthColors(Config.get("primaryColor").toColorInt()))
           .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment")))
           .region(Region.getRegion())
-          .build(requireContext())
+          .build(context)
 
       val authentication = authenticationResult.getOrThrow()
       val tokenMap = validateAuthToken(authentication)
@@ -297,11 +291,11 @@ class TicketsFragment() : Fragment() {
         .Builder()
         .authenticationSDKClient(authentication)
         .colors(createTicketsColors(Config.get("primaryColor").toColorInt()))
-        .build(requireContext())
+        .build(context)
         .apply {
           TicketsSDKSingleton.setTicketsSdkClient(this)
           TicketsSDKSingleton.setEnvironment(
-            requireContext(),
+            context,
             Environment.getTicketsSDKSingletonEnvironment(Config.get("environment")),
             Region.getTicketsSDKRegion()
           )
@@ -313,17 +307,10 @@ class TicketsFragment() : Fragment() {
             launchTicketsView()
             setCustomModules()
           } else {
-            resultLauncher.launch(TicketsSDKSingleton.getLoginIntent(requireActivity()))
+            launchTicketsView()
+            setCustomModules()
           }
         }
     }
-  }
-
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    customView = TicketsView(requireNotNull(context))
-    return customView
   }
 }
