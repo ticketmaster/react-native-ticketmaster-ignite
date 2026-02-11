@@ -7,9 +7,6 @@ public class SecureEntryViewController: UIViewController {
     
     // Instantiate UIView to enable @objc(setToken:) to be called when RN UI component receives token prop
     self.view = SecureEntryUIView()
-    
-    // Pre-sync time, for Rotating Entry
-    SecureEntryView.syncTime()
   }
 
   public override func viewDidAppear(_ animated: Bool) {
@@ -21,3 +18,4 @@ public class SecureEntryViewController: UIViewController {
     self.view.addSubview(secureEntryView)
   }
 }
+

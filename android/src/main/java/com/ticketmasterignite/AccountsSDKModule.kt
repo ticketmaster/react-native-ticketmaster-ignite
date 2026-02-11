@@ -21,7 +21,6 @@ import com.facebook.react.bridge.WritableMap
 import com.google.gson.Gson
 import com.ticketmaster.authenticationsdk.AuthSource
 import com.ticketmaster.authenticationsdk.TMAuthentication
-import com.ticketmaster.tickets.ticketssdk.TicketsColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
