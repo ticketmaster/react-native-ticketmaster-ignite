@@ -468,6 +468,9 @@ iOS `logout()` only logs out of the currently configured API key. If you have mu
 
 ### TicketsSdkModal (iOS only)
 
+**TODO**
+Make an example and note that new arch needs to platform condition this call
+
 Example:
 
 ```typescript
