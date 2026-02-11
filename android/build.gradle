@@ -108,12 +108,12 @@ dependencies {
   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
   implementation 'com.google.code.gson:gson:2.11.0'
 
-  implementation 'com.ticketmaster.tickets:tickets:3.14.2'
-  implementation 'com.ticketmaster.tickets:secure-entry:1.5.1'
-  implementation 'com.ticketmaster.retail:purchase:3.8.3'
-  implementation 'com.ticketmaster.retail:prepurchase:3.8.3'
-  implementation 'com.ticketmaster.retail:discoveryapi:3.8.3'
-  implementation 'com.ticketmaster.retail:foundation:3.8.3'
+  implementation 'com.ticketmaster.tickets:tickets:3.16.0'
+  implementation 'com.ticketmaster.tickets:secure-entry:1.7.0'
+  implementation 'com.ticketmaster.retail:purchase:3.8.14'
+  implementation 'com.ticketmaster.retail:prepurchase:3.8.14'
+  implementation 'com.ticketmaster.retail:discoveryapi:3.8.14'
+  implementation 'com.ticketmaster.retail:foundation:3.8.14'
   implementation 'androidx.compose.material3:material3:1.4.0'
 
   testImplementation 'junit:junit:4.13.2'

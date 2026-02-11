@@ -27,7 +27,8 @@ import com.ticketmaster.tickets.event_tickets.SeatUpgradesModule
 import com.ticketmaster.tickets.event_tickets.MoreTicketActionsModule
 import com.ticketmaster.tickets.event_tickets.NAMWebPageSettings
 import com.ticketmaster.tickets.event_tickets.TicketsSDKModule
-import com.ticketmaster.tickets.ticketssdk.TicketsColors
+import com.ticketmaster.tickets.ticketssdk.TicketsColor
+import com.ticketmaster.tickets.ticketssdk.TicketsColorScheme
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKClient
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 import com.ticketmaster.tickets.venuenext.VenueNextModule
@@ -42,11 +43,13 @@ import androidx.core.graphics.toColorInt
 class TicketsFragment() : Fragment() {
   private lateinit var customView: TicketsView
 
-  private fun createTicketsColors(color: Int): TicketsColors =
-    TicketsColors(
-      lightColorScheme(primary = Color(color), secondary = Color(color)),
-      darkColorScheme(primary = Color(color), secondary = Color(color))
+  private fun createTicketsColorScheme(color: Int): TicketsColorScheme {
+    val ticketsColor = TicketsColor(color.toLong() and 0xFFFFFFFFL)
+    return TicketsColorScheme(
+      primary = ticketsColor,
+      eventsTopBar = ticketsColor
     )
+  }
 
   private fun createAuthColors(color: Int): TMAuthentication.ColorTheme =
     TMAuthentication.ColorTheme(
@@ -166,7 +169,7 @@ class TicketsFragment() : Fragment() {
         )
 
         if (Config.get("seatUpgradesModule") == "true") {
-          val firstTicketSource = order.tickets.firstOrNull()?.source
+          val firstTicketSource = order.source
           if (firstTicketSource != null) {
             modules.add(
               SeatUpgradesModule(
@@ -297,9 +300,8 @@ class TicketsFragment() : Fragment() {
       val tokenMap = validateAuthToken(authentication)
 
       TicketsSDKClient
-        .Builder()
+        .Builder(createTicketsColorScheme(Config.get("primaryColor").toColorInt()))
         .authenticationSDKClient(authentication)
-        .colors(createTicketsColors(Config.get("primaryColor").toColorInt()))
         .build(requireContext())
         .apply {
           TicketsSDKSingleton.setTicketsSdkClient(this)
