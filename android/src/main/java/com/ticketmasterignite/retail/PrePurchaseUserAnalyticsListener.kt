@@ -5,6 +5,7 @@ import com.ticketmaster.discoveryapi.models.DiscoveryEvent
 import com.ticketmaster.prepurchase.action.TMPageType
 import com.ticketmaster.prepurchase.action.TMPrePurchaseMenuItem
 import com.ticketmaster.prepurchase.listener.TMPrePurchaseUserAnalyticsListener
+import com.ticketmaster.discoveryapi.models.category.Category
 import com.ticketmasterignite.GlobalEventEmitter
 
 class PrePurchaseUserAnalyticsListener : TMPrePurchaseUserAnalyticsListener {
@@ -21,14 +22,16 @@ class PrePurchaseUserAnalyticsListener : TMPrePurchaseUserAnalyticsListener {
     menuItem: TMPrePurchaseMenuItem,
     type: TMPageType,
     entity: DiscoveryAbstractEntity?,
-    data: String?
+    data: String?,
+    category: Category?
   ) {
     TODO("Not yet implemented")
   }
 
   override fun onPageLoaded(
     type: TMPageType,
-    data: String?
+    data: String?,
+    category: Category?
   ) {
     return
   }

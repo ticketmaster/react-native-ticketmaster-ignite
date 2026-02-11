@@ -17,7 +17,8 @@ import com.ticketmaster.authenticationsdk.TMAuthentication
 import com.ticketmaster.tickets.EventOrders
 import com.ticketmaster.tickets.TicketsModuleDelegate
 import com.ticketmaster.tickets.event_tickets.*
-import com.ticketmaster.tickets.ticketssdk.TicketsColors
+import com.ticketmaster.tickets.ticketssdk.TicketsColor
+import com.ticketmaster.tickets.ticketssdk.TicketsColorScheme
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKClient
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 import com.ticketmaster.tickets.venuenext.VenueNextModule
@@ -45,11 +46,13 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
     this.offsetTopAndBottom(offsetTop)
   }
 
-  private fun createTicketsColors(color: Int): TicketsColors =
-    TicketsColors(
-      lightColorScheme(primary = Color(color), secondary = Color(color)),
-      darkColorScheme(primary = Color(color), secondary = Color(color))
+  private fun createTicketsColorScheme(color: Int): TicketsColorScheme {
+    val ticketsColor = TicketsColor(color.toLong() and 0xFFFFFFFFL)
+    return TicketsColorScheme(
+      primary = ticketsColor,
+      eventsTopBar = ticketsColor
     )
+  }
 
   private fun createAuthColors(color: Int): TMAuthentication.ColorTheme =
     TMAuthentication.ColorTheme(
@@ -166,7 +169,7 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
         )
 
         if (Config.get("seatUpgradesModule") == "true") {
-          val firstTicketSource = order.tickets.firstOrNull()?.source
+          val firstTicketSource = order.source
           if (firstTicketSource != null) {
             modules.add(
               SeatUpgradesModule(
@@ -290,7 +293,6 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
       TicketsSDKClient
         .Builder()
         .authenticationSDKClient(authentication)
-        .colors(createTicketsColors(Config.get("primaryColor").toColorInt()))
         .build(context)
         .apply {
           TicketsSDKSingleton.setTicketsSdkClient(this)
