@@ -291,7 +291,7 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
       val tokenMap = validateAuthToken(authentication)
 
       TicketsSDKClient
-        .Builder()
+        .Builder(createTicketsColorScheme(Config.get("primaryColor").toColorInt()))
         .authenticationSDKClient(authentication)
         .build(context)
         .apply {
