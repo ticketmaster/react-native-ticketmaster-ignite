@@ -199,6 +199,9 @@ See [here](./docs/marketDomains.md) for the list of supported market domains.
 
 ##### The `eventHeaderType` property 
 
+**TODO** 
+Add not that the info button `EVENT_INFO` is no longer confgiurable in the navigation headers for Android 
+
 The `eventHeaderType` property accepts one of the following values - `NO_TOOLBARS`, `EVENT_INFO`, `EVENT_SHARE` and `EVENT_INFO_SHARE`. When the property has not been passed, the `IgniteProvider` will default to `EVENT_INFO_SHARE`. 
 
 The `eventHeaderType` property specifies what tools will be available in the header of the event screen:
@@ -467,6 +470,9 @@ iOS `logout()` only logs out of the currently configured API key. If you have mu
 
 
 ### TicketsSdkModal (iOS only)
+
+**TODO**
+Make an example and note that new arch needs to platform condition this call
 
 Example:
 

@@ -189,8 +189,7 @@
     },
     "ios": {
       "componentProvider": {
-        "TicketsSdkEmbeddedView": "RCTTicketsSdkEmbeddedView",
-        "TicketsSdkModalView": "RCTTicketsSdkModalView"
+        "TicketsSdkEmbeddedView": "RCTTicketsSdkEmbeddedView"
       }
     }
   }

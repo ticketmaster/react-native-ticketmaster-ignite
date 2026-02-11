@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
 import { Platform, View } from 'react-native';
 import SDKButton from './SDKButton';
 import SectionHeader from './SectionHeader';
 
 const TicketsSDKOptions = () => {
-  const [showTicketsSdk, setShowTicketsSdk] = useState(false);
-
   const onShowTicketsSDK = () => {
-    setShowTicketsSdk(true);
+    TicketsSdkModal.showTicketsSdkModal();
   };
 
   const DATA = [
@@ -31,10 +29,6 @@ const TicketsSDKOptions = () => {
           )
         );
       })}
-      <TicketsSdkModal
-        showTicketsModal={showTicketsSdk}
-        setShowTicketsModal={setShowTicketsSdk}
-      />
     </View>
   );
 };

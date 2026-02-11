@@ -26,7 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class AccountsSdkModule(reactContext: ReactApplicationContext) : NativeAccountsSdkSpec(reactContext) {
+class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsSdkSpec(reactContext) {
   override fun getName() = NAME
   private val CODE = 1
   private var loginPromise: Promise? = null
