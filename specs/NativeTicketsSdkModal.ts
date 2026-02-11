@@ -5,4 +5,4 @@ export interface Spec extends TurboModule {
   showTicketsSdkModal(): void;
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>('NativeTicketsSdkModal');
+export default TurboModuleRegistry.get<Spec>('NativeTicketsSdkModal');
