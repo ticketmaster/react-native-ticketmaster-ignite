@@ -1,15 +1,11 @@
 package com.ticketmasterignite
 
-import android.app.Application
 import com.facebook.react.BaseReactPackage
-import com.facebook.react.ReactPackage
-import com.facebook.react.TurboReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
 import com.facebook.react.uimanager.ViewManager
-import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 import com.ticketmasterignite.tickets.SecureEntryViewManager
 import com.ticketmasterignite.tickets.TicketsSdkViewManager
 
@@ -19,7 +15,8 @@ class TicketmasterIgnitePackage : BaseReactPackage() {
 
   override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
     return listOf(
-      TicketsSdkViewManager()
+      TicketsSdkViewManager(),
+      SecureEntryViewManager()
     )
   }
 
