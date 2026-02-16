@@ -13,7 +13,6 @@ const SecureEntryView = () => {
       <SecureEntry
         style={styles.barcode}
         token={Config.SECURE_ENTRY_TOKEN || ''}
-        offsetTop={100}
       />
     </ImageBackground>
   );

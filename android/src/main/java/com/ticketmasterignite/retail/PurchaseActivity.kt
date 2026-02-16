@@ -28,7 +28,7 @@ class PurchaseActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.venue_layout)
+    setContentView(R.layout.purchase_layout)
     val eventHeaderType = Config.get("eventHeaderType")
 
     if (savedInstanceState == null) {
@@ -74,7 +74,7 @@ class PurchaseActivity : AppCompatActivity() {
           arguments = bundle
         }
       supportFragmentManager.beginTransaction()
-        .add(R.id.venue_container, purchaseEDPFragment)
+        .add(R.id.purchase_container, purchaseEDPFragment)
         .commit()
     }
   }
