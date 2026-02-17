@@ -6,7 +6,7 @@ import SectionHeader from './SectionHeader';
 
 const TicketsSdkOptions = () => {
   const onShowTicketsSdk = () => {
-    TicketsSdkModal.showTicketsSdkModal();
+    TicketsSdkModal?.showTicketsSdkModal();
   };
 
   const DATA = [

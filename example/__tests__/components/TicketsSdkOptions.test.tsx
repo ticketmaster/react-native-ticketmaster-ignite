@@ -34,6 +34,6 @@ describe('TicketsSdkOptions', () => {
 
     fireEvent(getByText('Tickets SDK (Modal)'), 'press');
 
-    expect(TicketsSdkModal.showTicketsSdkModal).toHaveBeenCalled();
+    expect(TicketsSdkModal!.showTicketsSdkModal).toHaveBeenCalled();
   });
 });
