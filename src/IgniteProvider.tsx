@@ -221,7 +221,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     }
   }, []);
 
-  const configureAccountsSDK = useCallback(async () => {
+  const configureAccountsSdk = useCallback(async () => {
     try {
       const result = await NativeAccountsSdk.configureAccountsSDK();
       enableLogs && console.log(result);
@@ -335,7 +335,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       setNativeConfigValues();
       setTicketSdkModules();
       try {
-        await configureAccountsSDK();
+        await configureAccountsSdk();
       } catch (e) {
         if (
           (e as Error).message.includes('Accounts SDK configuration error:')
@@ -408,10 +408,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       !skipUpdate && setIsLoggingIn(true);
       try {
         const result = await NativeAccountsSdk.login();
-        if (
-          (Platform.OS === 'ios' && result?.accessToken) ||
-          (Platform.OS === 'android' && result?.resultCode === -1)
-        ) {
+        if (result?.accessToken) {
           enableLogs && console.log('Accounts SDK login successful');
           !skipUpdate && autoUpdate && (await setAccountDetails());
           //avoid await on callbacks passed to library as there is no guarantee how long they will take to resolve
@@ -443,7 +440,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   );
 
   const logoutAll = useCallback(
-    // eslint-disable-next-line prettier/prettier
     async (
       { onLogout, skipUpdate }: LogoutParams = { skipUpdate: false }
     ): Promise<void> => {
@@ -589,7 +585,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           environment === 'Staging'
         )
           NativeConfig.setConfig('environment', environment);
-        await configureAccountsSDK();
+        await configureAccountsSdk();
         onSuccess && onSuccess();
         !skipAutoLogin &&
           (await login({ onLogin: onLoginSuccess, skipUpdate }));
@@ -597,7 +593,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         throw e;
       }
     },
-    [configureAccountsSDK, login]
+    [configureAccountsSdk, login]
   );
 
   return (

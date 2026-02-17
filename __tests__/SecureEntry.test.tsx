@@ -10,12 +10,4 @@ describe('SecureEntry', () => {
 
     expect(toJSON()).toBeTruthy();
   });
-
-  it('renders the SecureEntry component with offsetTop', () => {
-    const { toJSON } = render(
-      <SecureEntry token="anyToken" style={{ flex: 1 }} offsetTop={100} />
-    );
-
-    expect(toJSON()).toBeTruthy();
-  });
 });

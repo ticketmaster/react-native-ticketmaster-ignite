@@ -6,7 +6,6 @@ export interface Spec extends TurboModule {
   configureAccountsSDK(): Promise<void>;
   login(): Promise<{
     accessToken?: string;
-    resultCode?: number;
   }>;
   logout(): Promise<void>;
   logoutAll(): Promise<void>;
