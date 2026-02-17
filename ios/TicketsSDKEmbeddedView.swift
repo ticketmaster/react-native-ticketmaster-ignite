@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import TicketmasterTickets
 
-@objc public class TicketsSdkEmbeddedView: UIView, TicketsSdkViewProtocol, TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate {
+@objc public class TicketsSDKEmbeddedView: UIView, TicketsSDKViewProtocol, TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate {
   
   private var ticketsView: TMTicketsView?
   

@@ -3,7 +3,7 @@ import UIKit
 import TicketmasterAuthentication
 import TicketmasterPurchase
 
-class PurchaseSdk: UIViewController {
+class PurchaseSDK: UIViewController {
 
   var eventId: String = ""
 

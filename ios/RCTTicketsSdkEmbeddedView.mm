@@ -22,7 +22,7 @@ using namespace facebook::react;
 @end
 
 @implementation RCTTicketsSdkEmbeddedView {
-  TicketsSdkEmbeddedView *_view;
+  TicketsSDKEmbeddedView *_view;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
@@ -36,7 +36,7 @@ using namespace facebook::react;
     static const auto defaultProps = std::make_shared<const TicketsSdkEmbeddedViewProps>();
     _props = defaultProps;
 
-    _view = [[TicketsSdkEmbeddedView alloc] init];
+    _view = [[TicketsSDKEmbeddedView alloc] init];
     self.contentView = _view;
   }
 

@@ -3,18 +3,18 @@ import UIKit
 import TicketmasterTickets
 
 
-protocol TicketsSdkViewProtocol {
+protocol TicketsSDKViewProtocol {
   // Protocol doesn't need to define anything - just marks types that can use these delegates
 }
 
-extension TicketsSdkViewProtocol {
+extension TicketsSDKViewProtocol {
   func deepLinkToOrder(_ orderId: String) {
     TMTickets.shared.display(orderOrEventId: orderId)
     Config.shared.set(for: "orderIdDeepLink", value: "")
   }
 }
 
-extension TicketsSdkViewProtocol {
+extension TicketsSDKViewProtocol {
   
   public func userDidView(
     page: TMTickets.Analytics.Page,

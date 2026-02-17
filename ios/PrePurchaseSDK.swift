@@ -3,7 +3,7 @@ import UIKit
 import TicketmasterAuthentication
 import TicketmasterPrePurchase
 
-class PrePurchaseSdk: UIViewController {
+class PrePurchaseSDK: UIViewController {
 
   var venueId: String = ""
   var attractionId: String = ""

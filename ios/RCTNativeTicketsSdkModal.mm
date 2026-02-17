@@ -11,12 +11,12 @@
 #endif
 
 @implementation RCTNativeTicketsSdkModal {
-  TicketsSdkModal *ticketsSdkModal;
+  TicketsSDKModal *ticketsSDKModal;
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    ticketsSdkModal = [TicketsSdkModal new];
+    ticketsSDKModal = [TicketsSDKModal new];
   }
   return self;
 }
@@ -29,7 +29,7 @@
 
 - (void)showTicketsSdkModal
 {
-  [ticketsSdkModal showTicketsSdkModal];
+  [ticketsSDKModal showTicketsSdkModal];
 }
 
 + (NSString *)moduleName

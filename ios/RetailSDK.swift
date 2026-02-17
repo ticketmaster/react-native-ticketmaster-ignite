@@ -1,11 +1,11 @@
 import Foundation
 import UIKit
 
-@objcMembers public class RetailSdk: NSObject {
+@objcMembers public class RetailSDK: NSObject {
 
   public func presentPrePurchaseVenue(venueId: String) {
     DispatchQueue.main.async {
-      let viewController = PrePurchaseSdk()
+      let viewController = PrePurchaseSDK()
       viewController.setVenueId(venueId)
       viewController.modalPresentationStyle = .custom
       self.getRootViewController()?.present(viewController, animated: true)
@@ -14,7 +14,7 @@ import UIKit
 
   public func presentPrePurchaseAttraction(attractionId: String) {
     DispatchQueue.main.async {
-      let viewController = PrePurchaseSdk()
+      let viewController = PrePurchaseSDK()
       viewController.setAttractionId(attractionId)
       viewController.modalPresentationStyle = .custom
       self.getRootViewController()?.present(viewController, animated: true)
@@ -23,7 +23,7 @@ import UIKit
 
   public func presentPurchase(eventId: String) {
     DispatchQueue.main.async {
-      let viewController = PurchaseSdk()
+      let viewController = PurchaseSDK()
       viewController.setEventId(eventId)
       viewController.modalPresentationStyle = .custom
       self.getRootViewController()?.present(viewController, animated: true)

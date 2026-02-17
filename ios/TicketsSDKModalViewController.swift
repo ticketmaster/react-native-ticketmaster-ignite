@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import TicketmasterTickets
 
-class TicketsSdkModalViewController: UIViewController, TicketsSdkViewProtocol, TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate {
+class TicketsSDKModalViewController: UIViewController, TicketsSDKViewProtocol, TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate {
 
   var firstRender: Bool = true
 

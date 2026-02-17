@@ -14,13 +14,13 @@
 #endif
 
 @implementation RCTNativeAccountsSdk {
-  AccountsSdk *accountsSdk;
+  AccountsSDK *accountsSDK;
 }
 
 
 - (instancetype)init {
   if (self = [super init]) {
-    accountsSdk = [AccountsSdk new];
+    accountsSDK = [AccountsSDK new];
   }
   return self;
 }
@@ -34,55 +34,55 @@
 - (void)configureAccountsSDK:(RCTPromiseResolveBlock)resolve
                       reject:(RCTPromiseRejectBlock)reject
 {
-  [accountsSdk configureAccountsSDKWithResolve:resolve reject:reject];
+  [accountsSDK configureAccountsSDKWithResolve:resolve reject:reject];
 }
 
 - (void)login:(RCTPromiseResolveBlock)resolve
        reject:(RCTPromiseRejectBlock)reject
 {
-  [accountsSdk loginWithResolve:resolve reject:reject];
+  [accountsSDK loginWithResolve:resolve reject:reject];
 }
 
 - (void)logout:(RCTPromiseResolveBlock)resolve
         reject:(RCTPromiseRejectBlock)reject
 {
-  [accountsSdk logoutWithResolve:resolve reject:reject];
+  [accountsSDK logoutWithResolve:resolve reject:reject];
 }
 
 - (void)logoutAll:(RCTPromiseResolveBlock)resolve
            reject:(RCTPromiseRejectBlock)reject
 {
-  [accountsSdk logoutAllWithResolve:resolve reject:reject];
+  [accountsSDK logoutAllWithResolve:resolve reject:reject];
 }
 
 - (void)isLoggedIn:(RCTPromiseResolveBlock)resolve
             reject:(RCTPromiseRejectBlock)reject
 {
-  [accountsSdk isLoggedInWithResolve:resolve reject:reject];
+  [accountsSDK isLoggedInWithResolve:resolve reject:reject];
 }
 
 - (void)getMemberInfo:(RCTPromiseResolveBlock)resolve
                reject:(RCTPromiseRejectBlock)reject
 {
-  [accountsSdk getMemberInfoWithResolve:resolve reject:reject];
+  [accountsSDK getMemberInfoWithResolve:resolve reject:reject];
 }
 
 - (void)getToken:(RCTPromiseResolveBlock)resolve
           reject:(RCTPromiseRejectBlock)reject
 {
-  [accountsSdk getTokenWithResolve:resolve reject:reject];
+  [accountsSDK getTokenWithResolve:resolve reject:reject];
 }
 
 - (void)refreshToken:(RCTPromiseResolveBlock)resolve
               reject:(RCTPromiseRejectBlock)reject
 {
-  [accountsSdk refreshTokenWithResolve:resolve reject:reject];
+  [accountsSDK refreshTokenWithResolve:resolve reject:reject];
 }
 
 - (void)getSportXRData:(RCTPromiseResolveBlock)resolve
                 reject:(RCTPromiseRejectBlock)reject
 {
-  [accountsSdk getSportXRDataWithResolve:resolve reject:reject];
+  [accountsSDK getSportXRDataWithResolve:resolve reject:reject];
 }
 
 + (NSString *)moduleName

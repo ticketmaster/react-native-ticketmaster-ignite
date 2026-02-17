@@ -1,11 +1,11 @@
 import Foundation
 import UIKit
 
-@objcMembers public class TicketsSdkModal: NSObject {
+@objcMembers public class TicketsSDKModal: NSObject {
 
   public func showTicketsSdkModal() {
     DispatchQueue.main.async {
-      let viewController = TicketsSdkModalViewController()
+      let viewController = TicketsSDKModalViewController()
       viewController.modalPresentationStyle = .custom
       self.getRootViewController()?.present(viewController, animated: true)
     }

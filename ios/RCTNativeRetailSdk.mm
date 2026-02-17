@@ -14,13 +14,13 @@
 #endif
 
 @implementation RCTNativeRetailSdk {
-  RetailSdk *retailSdk;
+  RetailSDK *retailSDK;
 }
 
 
 - (instancetype)init {
   if (self = [super init]) {
-    retailSdk = [RetailSdk new];
+    retailSDK = [RetailSDK new];
   }
   return self;
 }
@@ -33,17 +33,17 @@
 
 - (void)presentPrePurchaseAttraction:(NSString *)attractionId
 {
-  [retailSdk presentPrePurchaseAttractionWithAttractionId:attractionId];
+  [retailSDK presentPrePurchaseAttractionWithAttractionId:attractionId];
 }
 
 - (void)presentPrePurchaseVenue:(NSString *)venueId
 {
-  [retailSdk presentPrePurchaseVenueWithVenueId:venueId];
+  [retailSDK presentPrePurchaseVenueWithVenueId:venueId];
 }
 
 - (void)presentPurchase:(NSString *)eventId
 {
-  [retailSdk presentPurchaseWithEventId:eventId];
+  [retailSDK presentPurchaseWithEventId:eventId];
 }
 
 + (NSString *)moduleName

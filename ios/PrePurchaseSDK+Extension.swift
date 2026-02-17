@@ -4,7 +4,7 @@ import TicketmasterDiscoveryAPI
 import TicketmasterPrePurchase
 import TicketmasterPurchase
 
-extension PrePurchaseSdk: TMPrePurchaseNavigationDelegate, TMPrePurchaseAnalyticsDelegate {
+extension PrePurchaseSDK: TMPrePurchaseNavigationDelegate, TMPrePurchaseAnalyticsDelegate {
 
   public func prePurchaseViewController(
     _ viewController: TMPrePurchaseViewController,
