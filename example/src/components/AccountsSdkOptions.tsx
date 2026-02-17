@@ -1,7 +1,7 @@
 import React from 'react';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 import { View, Platform } from 'react-native';
-import SDKButton from './SDKButton';
+import SdkButton from './SdkButton';
 import SectionHeader from './SectionHeader';
 
 const AccountsSdkOptions = () => {
@@ -104,7 +104,7 @@ const AccountsSdkOptions = () => {
       {DATA.map((item) => {
         return (
           item.platforms.includes(Platform.OS) && (
-            <SDKButton item={item} key={item.title} />
+            <SdkButton item={item} key={item.title} />
           )
         );
       })}

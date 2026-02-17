@@ -1,18 +1,18 @@
-import { AccountsSDK } from './AccountsSdk';
+import { AccountsSdk } from './AccountsSdk';
 import { TicketsSdkModal } from './TicketsSdkModal';
 import { TicketsSdkEmbedded } from './TicketsSdkEmbedded';
 import { SecureEntry } from './SecureEntry';
-import { RetailSDK } from './RetailSdk';
+import { RetailSdk } from './RetailSdk';
 import { IgniteProvider } from './IgniteProvider';
 import { useIgnite } from './useIgnite';
 
 export {
-  AccountsSDK,
+  AccountsSdk,
   IgniteProvider,
   TicketsSdkModal, // Tickets SDK modal is only available for iOS
   TicketsSdkEmbedded,
   SecureEntry,
-  RetailSDK,
+  RetailSdk,
   useIgnite,
 };
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
 import { Platform, View } from 'react-native';
-import SDKButton from './SDKButton';
+import SdkButton from './SdkButton';
 import SectionHeader from './SectionHeader';
 
-const TicketsSDKOptions = () => {
-  const onShowTicketsSDK = () => {
+const TicketsSdkOptions = () => {
+  const onShowTicketsSdk = () => {
     TicketsSdkModal.showTicketsSdkModal();
   };
 
@@ -13,7 +13,7 @@ const TicketsSDKOptions = () => {
     {
       title: 'Tickets SDK (Modal)',
       platforms: ['ios'],
-      onPress: () => onShowTicketsSDK(),
+      onPress: () => onShowTicketsSdk(),
       first: true,
       last: true,
     },
@@ -25,7 +25,7 @@ const TicketsSDKOptions = () => {
       {DATA.map((item) => {
         return (
           item.platforms.includes(Platform.OS) && (
-            <SDKButton item={item} key={item.title} />
+            <SdkButton item={item} key={item.title} />
           )
         );
       })}
@@ -33,4 +33,4 @@ const TicketsSDKOptions = () => {
   );
 };
 
-export default TicketsSDKOptions;
+export default TicketsSdkOptions;

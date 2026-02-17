@@ -1,13 +1,13 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import AccountsSDKOptions from '../../src/components/AccountsSDKOptions';
+import AccountsSdkOptions from '../../src/components/AccountsSdkOptions';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 
 jest.mock('react-native-ticketmaster-ignite', () => ({
   useIgnite: jest.fn(),
 }));
 
-describe('AccountsSDKOptions', () => {
+describe('AccountsSdkOptions', () => {
   const loginMock = jest.fn();
   const logoutMock = jest.fn();
   const getTokenMock = jest.fn();
@@ -30,10 +30,10 @@ describe('AccountsSDKOptions', () => {
     });
   });
 
-  describe('AccountsSDKOptions', () => {
+  describe('AccountsSdkOptions', () => {
     describe('when button is clicked, calls the library function', () => {
       it('calls login func for Login button', () => {
-        const { getByText } = render(<AccountsSDKOptions />);
+        const { getByText } = render(<AccountsSdkOptions />);
 
         fireEvent(getByText('Login'), 'press');
 
@@ -41,7 +41,7 @@ describe('AccountsSDKOptions', () => {
       });
 
       it('calls logout func for Logout button', () => {
-        const { getByText } = render(<AccountsSDKOptions />);
+        const { getByText } = render(<AccountsSdkOptions />);
 
         fireEvent(getByText('Logout'), 'press');
 
@@ -49,7 +49,7 @@ describe('AccountsSDKOptions', () => {
       });
 
       it('calls getToken func for Get Token button', () => {
-        const { getByText } = render(<AccountsSDKOptions />);
+        const { getByText } = render(<AccountsSdkOptions />);
 
         fireEvent(getByText('Get Token'), 'press');
 
@@ -57,7 +57,7 @@ describe('AccountsSDKOptions', () => {
       });
 
       it('calls refreshToken func for Refresh Token button', () => {
-        const { getByText } = render(<AccountsSDKOptions />);
+        const { getByText } = render(<AccountsSdkOptions />);
 
         fireEvent(getByText('Refresh Token'), 'press');
 
@@ -65,7 +65,7 @@ describe('AccountsSDKOptions', () => {
       });
 
       it('calls getMemberInfo func for Get Member button', () => {
-        const { getByText } = render(<AccountsSDKOptions />);
+        const { getByText } = render(<AccountsSdkOptions />);
 
         fireEvent(getByText('Get Member Info'), 'press');
 
@@ -73,7 +73,7 @@ describe('AccountsSDKOptions', () => {
       });
 
       it('calls getIsLoggedIn for isLoggedIn button', () => {
-        const { getByText } = render(<AccountsSDKOptions />);
+        const { getByText } = render(<AccountsSdkOptions />);
 
         fireEvent(getByText(`Get isLoggedIn: ${false}`), 'press');
         expect(getIsLoggedInMock).toHaveBeenCalled();

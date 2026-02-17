@@ -95,9 +95,23 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
                 putString("accountsSdkLoginAccountCompleted", "accountsSdkLoginAccountCompleted")
               }
               GlobalEventEmitter.sendEvent("igniteAnalytics", completedParams)
-              val result = Arguments.createMap()
-              result.putInt("resultCode", Activity.RESULT_OK)
-              promise.resolve(result)
+
+              CoroutineScope(Dispatchers.IO).launch {
+                try {
+                  val tokenData = fetchTokenData()
+                  val result = Arguments.createMap()
+                  if (tokenData.accessToken != null) {
+                    result.putString("accessToken", tokenData.accessToken)
+                  } else {
+                    result.putString("accessToken", Activity.RESULT_OK.toString())
+                  }
+                  promise.resolve(result)
+                } catch (e: Exception) {
+                  val result = Arguments.createMap()
+                  result.putString("accessToken", Activity.RESULT_OK.toString())
+                  promise.resolve(result)
+                }
+              }
             }
 
             Activity.RESULT_CANCELED -> {
@@ -106,7 +120,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
               }
               GlobalEventEmitter.sendEvent("igniteAnalytics", canceledParams)
               val result = Arguments.createMap()
-              result.putInt("resultCode", Activity.RESULT_CANCELED)
+              result.putString("accessToken", "")
               promise.resolve(result)
             }
 
@@ -278,6 +292,36 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
     }
   }
 
+  private data class TokenData(
+    val accessToken: String?,
+    val sportXRIdToken: String?
+  )
+
+  private suspend fun fetchTokenData(): TokenData {
+    val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
+      ?: return TokenData(accessToken = null, sportXRIdToken = null)
+
+    val archticsAccessToken = authenticationSDK.getToken(AuthSource.ARCHTICS)
+    val sportXRTokenData = authenticationSDK.getTMAuthToken(AuthSource.SPORTXR)
+    val sportXRAccessToken = sportXRTokenData?.accessToken
+    val sportXRIdToken = sportXRTokenData?.idToken
+    val mfxAccessToken = authenticationSDK.getToken(AuthSource.MFX)
+    val hostAccessToken = authenticationSDK.getToken(AuthSource.HOST)
+
+    val accessToken = when {
+      !archticsAccessToken.isNullOrEmpty() -> archticsAccessToken
+      !sportXRAccessToken.isNullOrEmpty() -> sportXRAccessToken
+      !mfxAccessToken.isNullOrEmpty() -> mfxAccessToken
+      !hostAccessToken.isNullOrEmpty() -> hostAccessToken
+      else -> null
+    }
+
+    return TokenData(
+      accessToken = accessToken,
+      sportXRIdToken = sportXRIdToken?.takeIf { it.isNotEmpty() }
+    )
+  }
+
   override fun getToken(promise: Promise) {
     val authenticationSDK = IgniteSDKSingleton.getAuthenticationSDK()
     if (authenticationSDK == null) {
@@ -287,41 +331,23 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
 
     CoroutineScope(Dispatchers.IO).launch {
       try {
-        val hostAccessToken = authenticationSDK.getToken(AuthSource.HOST)
-        val archticsAccessToken = authenticationSDK.getToken(AuthSource.ARCHTICS)
-        val mfxAccessToken = authenticationSDK.getToken(AuthSource.MFX)
-        val sportXRTokenData = authenticationSDK.getTMAuthToken(AuthSource.SPORTXR)
-        val sportXRAccessToken = sportXRTokenData?.accessToken
-        val sportXRIdToken = sportXRTokenData?.idToken
+        val tokenData = fetchTokenData()
+
+        if (tokenData.accessToken == null) {
+          promise.resolve(null)
+          return@launch
+        }
 
         val combinedTokens: WritableMap = Arguments.createMap().apply {
-          if (!archticsAccessToken.isNullOrEmpty()) {
-            putString("accessToken", archticsAccessToken)
-          } else if (!sportXRAccessToken.isNullOrEmpty()) {
-            putString("accessToken", sportXRAccessToken)
-          } else if (!mfxAccessToken.isNullOrEmpty()) {
-            putString("accessToken", mfxAccessToken)
-          } else if (!hostAccessToken.isNullOrEmpty()) {
-            putString("accessToken", hostAccessToken)
-          }
-          if (!sportXRIdToken.isNullOrEmpty()) {
-            putString("sportXRIdToken", sportXRIdToken)
-          }
+          putString("accessToken", tokenData.accessToken)
+          tokenData.sportXRIdToken?.let { putString("sportXRIdToken", it) }
         }
 
-        if (archticsAccessToken.isNullOrEmpty() &&
-          hostAccessToken.isNullOrEmpty() &&
-          mfxAccessToken.isNullOrEmpty() &&
-          sportXRAccessToken.isNullOrEmpty()
-        ) {
-          promise.resolve(null)
-        } else {
-          val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
-            putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
-          }
-          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
-          promise.resolve(combinedTokens)
+        val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
         }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
+        promise.resolve(combinedTokens)
       } catch (e: Exception) {
         promise.reject("Accounts SDK getToken Error", e)
       }
@@ -338,41 +364,23 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
 
     CoroutineScope(Dispatchers.IO).launch {
       try {
-        val hostAccessToken = authenticationSDK.getToken(AuthSource.HOST)
-        val archticsAccessToken = authenticationSDK.getToken(AuthSource.ARCHTICS)
-        val mfxAccessToken = authenticationSDK.getToken(AuthSource.MFX)
-        val sportXRTokenData = authenticationSDK.getTMAuthToken(AuthSource.SPORTXR)
-        val sportXRAccessToken = sportXRTokenData?.accessToken
-        val sportXRIdToken = sportXRTokenData?.idToken
+        val tokenData = fetchTokenData()
+
+        if (tokenData.accessToken == null) {
+          promise.resolve(null)
+          return@launch
+        }
 
         val combinedTokens: WritableMap = Arguments.createMap().apply {
-          if (!archticsAccessToken.isNullOrEmpty()) {
-            putString("accessToken", archticsAccessToken)
-          } else if (!sportXRAccessToken.isNullOrEmpty()) {
-            putString("accessToken", sportXRAccessToken)
-          } else if (!mfxAccessToken.isNullOrEmpty()) {
-            putString("accessToken", mfxAccessToken)
-          } else if (!hostAccessToken.isNullOrEmpty()) {
-            putString("accessToken", hostAccessToken)
-          }
-          if (!sportXRIdToken.isNullOrEmpty()) {
-            putString("sportXRIdToken", sportXRIdToken)
-          }
+          putString("accessToken", tokenData.accessToken)
+          tokenData.sportXRIdToken?.let { putString("sportXRIdToken", it) }
         }
 
-        if (archticsAccessToken.isNullOrEmpty() &&
-          hostAccessToken.isNullOrEmpty() &&
-          mfxAccessToken.isNullOrEmpty() &&
-          sportXRAccessToken.isNullOrEmpty()
-        ) {
-          promise.resolve(null)
-        } else {
-          val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
-            putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
-          }
-          GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
-          promise.resolve(combinedTokens)
+        val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
+          putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
         }
+        GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
+        promise.resolve(combinedTokens)
       } catch (e: Exception) {
         promise.reject("Accounts SDK refreshToken Error", e)
       }

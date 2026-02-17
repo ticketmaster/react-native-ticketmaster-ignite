@@ -1,21 +1,21 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import RetailSDKOptions from '../../src/components/RetailSDKOptions';
-import { RetailSDK } from 'react-native-ticketmaster-ignite';
+import RetailSdkOptions from '../../src/components/RetailSdkOptions';
+import { RetailSdk } from 'react-native-ticketmaster-ignite';
 
 jest.mock('react-native-ticketmaster-ignite', () => ({
-  RetailSDK: {
+  RetailSdk: {
     presentPrePurchaseVenue: jest.fn(),
     presentPrePurchaseAttraction: jest.fn(),
     presentPurchase: jest.fn(),
   },
 }));
 
-describe('RetailSDKOptions', () => {
+describe('RetailSdkOptions', () => {
   it('calls presentPrePurchaseVenue with venue ID when Show Retail PrePurchase Venue is clicked', () => {
-    const fakePresentPrePurchaseVenue = RetailSDK.presentPrePurchaseVenue;
+    const fakePresentPrePurchaseVenue = RetailSdk.presentPrePurchaseVenue;
     const { getByText } = render(
-      <RetailSDKOptions
+      <RetailSdkOptions
         attractionId={''}
         eventId={''}
         venueId={'testVenueID'}
@@ -29,9 +29,9 @@ describe('RetailSDKOptions', () => {
 
   it('calls presentPrePurchaseAttraction with attraction ID when Show Retail PrePurchase Attraction is clicked', () => {
     const fakePresentPrePurchaseAttraction =
-      RetailSDK.presentPrePurchaseAttraction;
+      RetailSdk.presentPrePurchaseAttraction;
     const { getByText } = render(
-      <RetailSDKOptions
+      <RetailSdkOptions
         attractionId={'testAttractionID'}
         eventId={''}
         venueId={''}
@@ -46,9 +46,9 @@ describe('RetailSDKOptions', () => {
   });
 
   it('calls presentPurchase with event ID when Show Retail Purchase is clicked', () => {
-    const fakePresentPurchase = RetailSDK.presentPurchase;
+    const fakePresentPurchase = RetailSdk.presentPurchase;
     const { getByText } = render(
-      <RetailSDKOptions
+      <RetailSdkOptions
         attractionId={''}
         eventId={'testEventID'}
         venueId={''}

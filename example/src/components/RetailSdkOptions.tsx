@@ -1,7 +1,7 @@
 import React from 'react';
-import { RetailSDK } from 'react-native-ticketmaster-ignite';
+import { RetailSdk } from 'react-native-ticketmaster-ignite';
 import { View, Platform } from 'react-native';
-import SDKButton from './SDKButton';
+import SdkButton from './SdkButton';
 import SectionHeader from './SectionHeader';
 
 type RetailSdkOptionsProps = {
@@ -10,14 +10,14 @@ type RetailSdkOptionsProps = {
   venueId: string;
 };
 
-const RetailSDKOptions = ({
+const RetailSdkOptions = ({
   attractionId,
   eventId,
   venueId,
 }: RetailSdkOptionsProps) => {
   const onShowPurchase = async () => {
     try {
-      RetailSDK.presentPurchase(eventId);
+      RetailSdk.presentPurchase(eventId);
     } catch (e) {
       console.log('Retail SDK error - Purchase:', (e as Error).message);
     }
@@ -25,7 +25,7 @@ const RetailSDKOptions = ({
 
   const onShowPrePurchaseVenue = async () => {
     try {
-      RetailSDK.presentPrePurchaseVenue(venueId);
+      RetailSdk.presentPrePurchaseVenue(venueId);
     } catch (e) {
       console.log(
         'Retail SDK error - PrePurchase venue:',
@@ -36,7 +36,7 @@ const RetailSDKOptions = ({
 
   const onShowPrePurchaseAttraction = async () => {
     try {
-      RetailSDK.presentPrePurchaseAttraction(attractionId);
+      RetailSdk.presentPrePurchaseAttraction(attractionId);
     } catch (e) {
       console.log(
         'Retail SDK error - PrePurchase attraction:',
@@ -71,7 +71,7 @@ const RetailSDKOptions = ({
       {DATA.map((item) => {
         return (
           item.platforms.includes(Platform.OS) && (
-            <SDKButton item={item} key={item.title} />
+            <SdkButton item={item} key={item.title} />
           )
         );
       })}
@@ -79,4 +79,4 @@ const RetailSDKOptions = ({
   );
 };
 
-export default RetailSDKOptions;
+export default RetailSdkOptions;
