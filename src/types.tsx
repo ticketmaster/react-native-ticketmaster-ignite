@@ -188,7 +188,6 @@ export type CustomModules = {
 
 export type Region = 'US' | 'UK';
 
-// eslint-disable-next-line prettier/prettier
 export type MarketDomain =
   | 'AE'
   | 'AT'

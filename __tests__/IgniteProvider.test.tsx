@@ -125,19 +125,13 @@ describe('IgniteProvider', () => {
           </IgniteProvider>
         );
 
-        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
-          'region',
-          'UK'
-        );
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith('region', 'UK');
       });
 
       it('calls with US when no custom region is provided', () => {
         render(component);
 
-        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
-          'region',
-          'US'
-        );
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith('region', 'US');
       });
     });
 
@@ -1036,7 +1030,6 @@ describe('IgniteProvider', () => {
           expect(mockNativeAccountsSdk.isLoggedIn).not.toHaveBeenCalled();
         });
       });
-
     });
 
     describe('logout', () => {
@@ -1314,9 +1307,7 @@ describe('IgniteProvider', () => {
             </Wrapper>
           );
 
-          mockNativeAccountsSdk.refreshToken.mockResolvedValue(
-            iosAccessToken
-          );
+          mockNativeAccountsSdk.refreshToken.mockResolvedValue(iosAccessToken);
 
           const tokenButton = getByTestId('token-button');
 
