@@ -3415,9 +3415,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@release-it/conventional-changelog@npm:^10.0.1":
-  version: 10.0.5
-  resolution: "@release-it/conventional-changelog@npm:10.0.5"
+"@release-it/conventional-changelog@npm:10.0.4":
+  version: 10.0.4
+  resolution: "@release-it/conventional-changelog@npm:10.0.4"
   dependencies:
     "@conventional-changelog/git-client": ^2.5.1
     concat-stream: ^2.0.0
@@ -3428,7 +3428,7 @@ __metadata:
     semver: ^7.7.3
   peerDependencies:
     release-it: ^18.0.0 || ^19.0.0
-  checksum: d9e40b3db2eb31c9a17811e2c8404829c3effa7e1d5430dbdc31c06399d0dc79424448d9120e2b5d51ca07302f1213aa1615df5716860d86a0cc158dc8f2b80d
+  checksum: 16fe278af2000d2a018fd71f1505a734d4aef6f9e79030d31103d25f46f842ee46ebf28b7daf8c9d96e1175c90f1cd8fa4888735d0eeb3ceac62745414e44f41
   languageName: node
   linkType: hard
 
@@ -11048,7 +11048,7 @@ __metadata:
     "@evilmartians/lefthook": ^1.5.0
     "@react-native-community/cli": 15.0.1
     "@react-native/eslint-config": ^0.73.1
-    "@release-it/conventional-changelog": ^10.0.1
+    "@release-it/conventional-changelog": 10.0.4
     "@testing-library/jest-native": ^5.4.3
     "@testing-library/react-hooks": ^8.0.1
     "@testing-library/react-native": ^13.2.1
