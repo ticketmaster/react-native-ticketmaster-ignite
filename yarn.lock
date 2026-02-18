@@ -5281,16 +5281,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"conventional-changelog-angular@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "conventional-changelog-angular@npm:7.0.0"
-  dependencies:
-    compare-func: ^2.0.0
-  checksum: 2478962ad7ce42878449ba3568347d704f22c5c9af1cd36916b5600734bd7f82c09712a338c649195c44e907f1b0372ce52d6cb51df643f495c89af05ad4bc48
-  languageName: node
-  linkType: hard
-
-"conventional-changelog-angular@npm:^8.1.0":
+"conventional-changelog-angular@npm:^8.0.0":
   version: 8.1.0
   resolution: "conventional-changelog-angular@npm:8.1.0"
   dependencies:
