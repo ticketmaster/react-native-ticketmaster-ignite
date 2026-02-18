@@ -17,6 +17,8 @@ In order to use the library, setup a developer account with Ticketmaster by cont
 
 ## Installation
 
+Depending on your package manager you can install with one of the below commands:
+
 #### NPM
 
 ```bash
@@ -151,10 +153,10 @@ If you are using an expo managed workflow you should ignore the iOS and Android 
 `react-native-ticketmaster-ignite` exports the following modules:
 
 - `IgniteProvider`
-- `AccountsSDK`
+- `AccountsSdk`
 - `TicketsSdkModal` (iOS only)
 - `TicketsSdkEmbedded`
-- `RetailSDK`
+- `RetailSdk`
 - `useIgnite`
 
 #### IgniteProvider
@@ -204,7 +206,7 @@ Add not that the info button `EVENT_INFO` is no longer confgiurable in the navig
 
 The `eventHeaderType` property accepts one of the following values - `NO_TOOLBARS`, `EVENT_INFO`, `EVENT_SHARE` and `EVENT_INFO_SHARE`. When the property has not been passed, the `IgniteProvider` will default to `EVENT_INFO_SHARE`. 
 
-The `eventHeaderType` property specifies what tools will be available in the header of the event screen:
+The `eventHeaderType` property specifies what tools will be available in the navigation header of the Purchase SDK:
 
 | Property | Explanation | Demo |
 |----------|----------|----------|
@@ -212,6 +214,8 @@ The `eventHeaderType` property specifies what tools will be available in the hea
 | `EVENT_INFO`    | Show only the event info button |<img src="docs/assets/EVENT_INFO.png" width="400">|
 | `EVENT_SHARE`   | Show only the event share button   |<img src="docs/assets/EVENT_SHARE.png" width="400">|
 | `EVENT_INFO_SHARE`    | Show both the info and share buttons   |<img src="docs/assets/EVENT_INFO_SHARE.png" width="400">|
+
+The info button enabled with `EVENT_INFO` and `EVENT_INFO_SHARE`  is currently not configurable on Android and will show within the WebView in the appropriate web pages instead of in the navigation header of the Purchase SDK.
 
 ##### The `autoUpdate` prop 
 
@@ -234,7 +238,7 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 
 #### useIgnite
 
-To handle authentication in a React Native app you can either use the AccountsSDK module mentioned in the below section or you can use the `useIgnite` hook.
+To handle authentication in a React Native app you can either use the `AccountsSdk` module detailed in the next section or you can use the `useIgnite` hook.
 
 The `useIgnite` hook implements all of the native Accounts SDK methods for easy out of the box use in a React Native apps. It also provides `isLoggingIn` and an `authState` object with properties `isLoggedIn`, `memberInfo` and `isConfigured`, these properties update themselves during and after authenticaion.
 
@@ -278,26 +282,6 @@ try {
 {isLoggedIn && <Text>You are logged in<Text/>}
 ```
 
-`getToken()` and `refreshToken()` return different properties per native platform. iOS always returns the currently configured API key's access token inside `accessToken`. See object types below: 
-
-Android: 
-```typescript
-type AuthSource = {
-  hostAccessToken?: string;
-  archticsAccessToken?: string;
-  mfxAccessToken?: string;
-  sportXRAccessToken?: string;
-  sportXRIdToken?: string;
-};
-```
-
-iOS
-```typescript
-type iosTokenData = { accessToken: string; sportXRIdToken: string };
-```
-
-You can see the results of `getToken()`, `getMemberInfo()` and `getIsLoggedIn()` in the console when running the example app.
-
 ##### Login/Logout Callbacks
 
 The `login()` method from the `useIgnite` hook accepts an object with properties `onLogin` and `skipUpdate`:
@@ -339,30 +323,29 @@ type LogoutParams = {
 };
 ```
 
-#### AccountsSDK
+#### AccountsSdk
 
 Exposes the following functions:
 
 - `configureAccountsSDK` - Called in `IgniteProvider` before `<App />` is mounted, generally no need to implement this method manually. 
 - `login`
 - `logout`
-- `logoutAll` - iOS only
+- `logoutAll`
 - `refreshToken`
 - `getMemberInfo`
-- `getToken` - iOS only
+- `getToken`
 - `isLoggedIn`
 
-If you use AccountsSDK you will need to handle the data return type differences between Swift and Kotlin yourself. It is advised you use auth methods from `useIgnite()` above instead of using the AccountsSDK module directly.
+It is advised you use auth methods from `useIgnite()` in the above section instead of using the AccountsSdk module directly, as all hook variables like `isLoggedIn` and `memberInfo` will be updated automatically, re-render your application and methods and variables from the hook are dependency array safe for React hooks. 
 
-If you are using the `AccountsSDK` module and not `useIgnite()` then `getToken()` is only for iOS. In your JavaScript methods, to receive an access token or refresh the refresh token always call `refreshToken()` for Android. For iOS the get token and refresh token logic are seperate.
 
 #### Refresh Token
 
-The Accounts SDK only returns an access token, not a refresh token. If the user is logged in and `getToken()` ever returns `null`, the refresh token may have expired. In this situation you can either call `logout()` so the user can manually login again to refresh the refresh token and receive a new access token or you can call `refreshToken()` which will automatically present the login UI to the user (you must use `useIgnite`'s `refreshToken()` method to trigger this behaviour). If you do not need to use an OAuth access token from the Accounts SDK, you typically do not need to worry about this and can rely on `isLoggedIn` from `useIgnite()` to control your login UI state.
+The Accounts SDK only returns an access token, not a refresh token. If the user is logged in and `getToken()` ever returns `null`, the refresh token may have expired. In this situation you can either call `logout()` so the user can manually login again to refresh the refresh token and receive a new access token or you can call `refreshToken()` which will automatically present the login UI to the user (you must use `useIgnite`'s `refreshToken()` method to trigger this behaviour on Android). If you do not need to use an OAuth access token from the Accounts SDK, you typically do not need to worry about this and can rely on `isLoggedIn` from `useIgnite()` to control your login UI state.
 
 On recent versions of the iOS Accounts SDK, it has been observed that on backend server errors `getToken()` and `getMemberInfo()` methods are returning `TicketmasterFoundation.ConnectionError error...` instead of `null`. In these situations, if the user has previously logged in `isLoggedIn` from `useIgnite()` will be `true`, so `isLoggedIn` is a good variable to use to control the logged in UI state of the whole application, it also works well in useEffect dep arrays. `await getIsLoggedIn()` is good to call directly after methods like `await login()` or `await refreshToken()` to check/retrieve a boolean which states if the user is logged in which can be used for your own custom variables or conditions in your business logic.
 
-As a fail safe, it may be beneficial to call `refreshToken()` **once** on the first log occurrence of `TicketmasterFoundation.ConnectionError error...` being logged a catch block, in case the user just needs to reauthenticate, but a backend server error should resolve itself after a short period of time (within 5 mins) so a "something went wrong, please try again later" error message to the user may suffice on an occurrence of this error.
+As a fail safe, it may be beneficial to call `refreshToken()` **once** on the first log occurrence of `TicketmasterFoundation.ConnectionError error...` being logged a catch block, in case the user just needs to re-authenticate, but a backend server error should resolve itself after a short period of time (within 5 mins) so a "something went wrong, please try again later" error message to the user may suffice on an occurrence of this error.
 
 To catch `TicketmasterFoundation.ConnectionError error 0` logs on app launch see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#reconfigure-accounts-sdk)
 
@@ -395,7 +378,7 @@ The `refreshConfiguration()` method from the `useIgnite` accepts the below list 
 - `primaryColor` - Company brand color
 - `region` - Server deployment region
 - `marketDomain` - Country for Retail SDK configuration
-- `eventHeaderType` - Tools that will be available in the header of the event screen
+- `eventHeaderType` - Tools that will be available in the navigation header of the Purchase SDK
 - `onSuccess` - a callback that fires after successful Accounts SDK configuration
 - `onLoginSuccess` - a callback that fires after successful login. `login()` is called automatically by `refreshConfiguration()` after it configures the SDK's.
 - `skipAutoLogin` - Set value to `true` to prevent automatic login after Account SDK configuration, users will need to enter their username and password the first time they login after switching to a new API key configuration. The default value is false. See [here](https://ignite.ticketmaster.com/v1/docs/switching-teams-without-logging-out) for more information about switching between multiple API keys within one app session.
@@ -464,39 +447,32 @@ You can switch teams using the `refreshConfiguration()` method mentioned above.
 
 ##### Logout All
 
-iOS `logout()` only logs out of the currently configured API key. If you have multiple teams in your app and you would like to logout of all teams at once, you can **replace** `logout()` with `logoutAll()` in your code. Android's `logout()` always logs out of all teams so `logoutAll()` will behave in the exact same way for Android.
+iOS `logout()` only logs out of the currently configured API key. If you have multiple teams in your app and you would like to logout of all teams at once, you can **replace** `logout()` with `logoutAll()` in your code. Android's `logout()` always logs out of all teams `logoutAll()` is fine to use for Android as well but there will be no difference in behaviour.
 
 `logoutAll()` is only useful if your app has multiple teams/API keys within one app.
 
 
 ### TicketsSdkModal (iOS only)
 
-**TODO**
-Make an example and note that new arch needs to platform condition this call
+TicketsSdkModal returns `null` on Android
 
 Example:
 
 ```typescript
-import { Pressable, Text } from 'react-native';
+import { Platform, Pressable, Text } from 'react-native';
 import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
 
-const [showTicketsSdk, setShowTicketsSdk] = useState(false);
-
-const onShowTicketsSDK = () => {
-  setShowTicketsSdk(true);
+const onShowTicketsSdk = () => {
+    Platform.OS === 'ios' && TicketsSdkModal?.showTicketsSdkModal();
 };
 
 return (
   <>
-    <Pressable
-      onPress={() => onShowTicketsSDK()}
-    >
-      <Text>Show Tickets SDK Modal</Text>
-    </Pressable>
-    <TicketsSdkModal
-      showTicketsModal={showTicketsSdk}
-      setShowTicketsModal={setShowTicketsSdk}
-    />
+    {Platform.OS === 'ios' && (
+      <Pressable onPress={() => onShowTicketsSdk()}>
+        <Text>Show Tickets SDK Modal</Text>
+      </Pressable>
+    )}
   </>
 );
 
@@ -508,29 +484,29 @@ return (
 
 import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 
-return <TicketsSdkEmbedded style={{ flex: 1 }} />;
+return <TicketsSdkEmbedded style={{ width: '100%', height: '100%' }} />;
 ```
 
-React Navigation note: Initially, the altered RN Bottom Tabs View frame height is not available to Native code on iOS, if you notice the embedded SDK view is not fitting inside your RN view with Bottom Tabs on the first render, try adding a 500ms delay to the SDK view:
-
-```typescript
-
-import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
-
-return <TicketsSdkEmbedded style={{ height: '100%' }} renderTimeDelay={500}/>;
-```
-
-⚠️  Please note that the `renderTimeDelay` prop only affects iOS.
 
 React Native New Architecture + React Navigation note: There is a bug with android native UI views when New Architecture mode is switched on where the native UI does not take into account the header height from React Navigation. If this happens in your app you can use the `offsetTop` prop to add offset to the top of the native UI.
 
 ⚠️ Please note that the `offsetTop` prop only affects Android.
 
-Example: 
+You can explicitly set your navigation header height to the same value as the `offsetTop` prop.
+
+Example:
+
 ```typescript
-return <TicketsSdkEmbedded style={{height: '95%', backgroundColor: PRIMARY_COLOR, bottom: 10}} offsetTop={100}/>
+const [offSetTop, setOffSetTop] = useState(0);
+
+useEffect(() => {
+  setOffSetTop(100);
+}, []);
+
+return (
+    <TicketsSdkEmbedded style={{width: '100%', height: '95%'}} offsetTop={offSetTop} />
+  );
 ```
-`backgroundColor` & `bottom` is used to add a backdrop to the `<View/>` that contains the Tickets SDK view so that it matches your screen header colour. This will prevent any white space if you push the SDK view too far down with `offsetTop`. Alternatively you can explicitly set your header height to the same value as the `offsetTop` prop.
 
 ### Ticket Deep Links
 
@@ -571,20 +547,10 @@ Example:
 import { SecureEntry } from 'react-native-ticketmaster-ignite';
 
 <View>
-  <SecureEntry token="SECURE_ENTRY_TOKEN" style={{ flex: 1}} />
+  <SecureEntry token="SECURE_ENTRY_TOKEN" style={{ width: '100%', height: '100%'}} />
 </View>
 ```
 
-React Navigation note: Initially, the altered RN Bottom Tabs View frame height is not available to Native code on iOS, if you notice the Secure Entry view is not fitting/not rendering in your RN view with Bottom Tabs on the first render, try adding a 100ms delay to the SDK view:
-
-```typescript
-
-import { SecureEntry } from 'react-native-ticketmaster-ignite';
-
-return <SecureEntry token="SECURE_ENTRY_TOKEN" renderTimeDelay={100}/>;
-```
-
-⚠️  Please note that the `renderTimeDelay` prop only affects iOS.
 
 React Native New Architecture + React Navigation note: There is a bug with android native UI views when New Architecture mode is switched on where the native UI does not take into account the header height from React Navigation. If this happens in your app you can use the `offsetTop` prop to add offset to the top of the native UI.
 
@@ -592,64 +558,52 @@ React Native New Architecture + React Navigation note: There is a bug with andro
 
 Example: 
 ```typescript
-return <SecureEntry token="SECURE_ENTRY_TOKEN" style={{flex: 1}} offsetTop={100}/>
+return <SecureEntry token="SECURE_ENTRY_TOKEN" style={{top: '30%', height: 300, width: '70%', alignSelf: 'center',}} offsetTop={100}/>
 ```
 
-### RetailSDK
+### RetailSdk
 
-Module responsible for the purchase and prepurchase flows in the Retail SDK.
+Module responsible for the purchase and pre-purchase flows in the Retail SDK.
 
-##### Events Purchase
+##### Purchase SDK
 
-Purchase flow (also known as Events Details Page or EDP - see more [here](https://ignite.ticketmaster.com/v1/docs/events-detail-page-edp)) should be used for buying single events by their IDs.
+Purchase flow (also known as Events Details Page/EDP - see more [here](https://ignite.ticketmaster.com/v1/docs/events-detail-page-edp)) should be used for buying single events by their ID's.
 
 Example:
 
 ```typescript
-import { RetailSDK } from 'react-native-ticketmaster-ignite';
+import { RetailSdk } from 'react-native-ticketmaster-ignite';
 
 const onShowPurchase = async () => {
-  try {
-    RetailSDK.presentPurchase(DEMO_EVENT_ID);
-  } catch (e) {
-    console.log((e as Error).message);
-  }
+  RetailSdk.presentPurchase(DEMO_EVENT_ID);
 };
 ```
 
-##### Venue PrePurchase
+##### PrePurchase SDK - Venue
 
-The venue prepurchase flow (also known as Venue Details Page or VDP - see more [here](https://ignite.ticketmaster.com/v1/docs/venue-detail-page-vdp)) should be used for showing events for a particular venue. From there, the user will be able to progress with a selected event into the purchase flow.
+The venue prepurchase flow (also known as Venue Details Page/VDP - see more [here](https://ignite.ticketmaster.com/v1/docs/venue-detail-page-vdp)) should be used for showing events for a particular venue. From there, the user will be able to progress with a selected event into the purchase flow.
 
 Example:
 
 ```typescript
-import { RetailSDK } from 'react-native-ticketmaster-ignite';
+import { RetailSdk } from 'react-native-ticketmaster-ignite';
 
 const onShowPrePurchaseVenue = async () => {
-  try {
-    RetailSDK.presentPrePurchaseVenue(DEMO_VENUE_ID);
-  } catch (e) {
-    console.log((e as Error).message);
-  }
+  RetailSdk.presentPrePurchaseVenue(DEMO_VENUE_ID);
 };
 ```
 
-##### Attraction PrePurchase
+##### PrePurchase SDK - Attraction
 
-The attraction prepurchase flow (also known as Attraction Details Page or VDP - see more [here](https://ignite.ticketmaster.com/docs/attraction-detail-page-adp)) should be used for showing events for a particular attraction, eg. a sports team or musicial. From there, the user will be able to progress with a selected event into the purchase flow.
+The attraction prepurchase flow (also known as Attraction Details Page/ADP - see more [here](https://ignite.ticketmaster.com/docs/attraction-detail-page-adp)) should be used for showing events for a particular attraction, eg. a sports team or musicial. From there, the user will be able to progress with a selected event into the purchase flow.
 
 Example:
 
 ```typescript
-import { RetailSDK } from 'react-native-ticketmaster-ignite';
+import { RetailSdk } from 'react-native-ticketmaster-ignite';
 
 const onShowPrePurchaseAttraction = async () => {
-  try {
-    RetailSDK.presentPrePurchaseAttraction(DEMO_ATTRACTION_ID);
-  } catch (e) {
-    console.log((e as Error).message);
-  }
+  RetailSdk.presentPrePurchaseAttraction(DEMO_ATTRACTION_ID);
 };
 ```
 
@@ -954,7 +908,7 @@ If running in the `example` app you can create a `.env` with these values or upd
 API_KEY=someApiKey
 CLIENT_NAME=clientName
 PRIMARY_COLOR=#026cdf
-DEMO_EVENT_ID=1700626DC66F3CA7
+DEMO_EVENT_ID=0C00630DE7294188
 DEMO_ATTRACTION_ID=2873404
 DEMO_VENUE_ID=KovZpZAEdntA
 ```
@@ -977,4 +931,4 @@ const apiKeyJson = JSON.parse(Config.API_KEY)
 ...
 ```
 
-Note: If you change the API key in an .env for iOS you need to **Product** > **Clean Build Folder** for the change to take affect
+Note: If you change the API key in an .env for iOS you may need to **Product** > **Clean Build Folder** for the change to take affect.
