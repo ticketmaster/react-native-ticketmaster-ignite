@@ -1,6 +1,6 @@
 import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
-import { AccessToken, SportXrData } from '../src/types';
+import { AccessToken, SportXrData } from '../types';
 
 export interface Spec extends TurboModule {
   configureAccountsSDK(): Promise<void>;

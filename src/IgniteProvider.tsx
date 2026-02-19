@@ -5,8 +5,8 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import NativeAccountsSdk from '../specs/NativeAccountsSdk';
-import NativeConfig from '../specs/NativeConfig';
+import NativeAccountsSdk from './specs/NativeAccountsSdk';
+import NativeConfig from './specs/NativeConfig';
 import { toCapitalise } from './utils/utils';
 import {
   AccessToken,

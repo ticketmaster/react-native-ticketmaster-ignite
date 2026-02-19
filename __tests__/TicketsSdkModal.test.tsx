@@ -1,6 +1,6 @@
 import { TicketsSdkModal } from '../src/TicketsSdkModal';
 
-jest.mock('../specs/NativeTicketsSdkModal', () => ({
+jest.mock('../src/specs/NativeTicketsSdkModal', () => ({
   __esModule: true,
   default: {
     showTicketsSdkModal: jest.fn(),

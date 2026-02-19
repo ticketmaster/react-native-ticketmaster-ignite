@@ -1,7 +1,7 @@
 import React from 'react';
 import { ViewStyle } from 'react-native';
 import type { Double } from 'react-native/Libraries/Types/CodegenTypes';
-import TicketsSdkEmbeddedNativeComponent from '../specs/TicketsSdkEmbeddedNativeComponent';
+import TicketsSdkEmbeddedNativeComponent from './specs/TicketsSdkEmbeddedNativeComponent';
 
 type TicketsSdkEmbeddedViewProps = {
   /**

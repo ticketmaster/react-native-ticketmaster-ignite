@@ -3,11 +3,11 @@ import { render, act, waitFor } from '@testing-library/react-native';
 import { View, Platform } from 'react-native';
 import { IgniteProvider } from '../src';
 import { IgniteContext } from '../src/IgniteProvider';
-import NativeConfig from '../specs/NativeConfig';
-import NativeAccountsSdk from '../specs/NativeAccountsSdk';
+import NativeConfig from '../src/specs/NativeConfig';
+import NativeAccountsSdk from '../src/specs/NativeAccountsSdk';
 
 // Mock transitive spec imports from src/index.tsx
-jest.mock('../specs/NativeRetailSdk', () => ({
+jest.mock('../src/specs/NativeRetailSdk', () => ({
   __esModule: true,
   default: {
     presentPrePurchaseAttraction: jest.fn(),
@@ -16,7 +16,7 @@ jest.mock('../specs/NativeRetailSdk', () => ({
   },
 }));
 
-jest.mock('../specs/NativeConfig', () => ({
+jest.mock('../src/specs/NativeConfig', () => ({
   __esModule: true,
   default: {
     setConfig: jest.fn(),
@@ -24,7 +24,7 @@ jest.mock('../specs/NativeConfig', () => ({
   },
 }));
 
-jest.mock('../specs/NativeAccountsSdk', () => ({
+jest.mock('../src/specs/NativeAccountsSdk', () => ({
   __esModule: true,
   default: {
     configureAccountsSDK: jest.fn(() => Promise.resolve()),

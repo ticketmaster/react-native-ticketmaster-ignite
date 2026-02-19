@@ -1,7 +1,7 @@
 import React from 'react';
 import { ViewStyle } from 'react-native';
 import type { Double } from 'react-native/Libraries/Types/CodegenTypes';
-import SecureEntryNativeComponent from '../specs/SecureEntryNativeComponent';
+import SecureEntryNativeComponent from './specs/SecureEntryNativeComponent';
 
 type SecureEntryProps = {
   token: string;

@@ -1,3 +1,3 @@
-import NativeTicketsSdkModal from '../specs/NativeTicketsSdkModal';
+import NativeTicketsSdkModal from './specs/NativeTicketsSdkModal';
 
 export const TicketsSdkModal = NativeTicketsSdkModal;

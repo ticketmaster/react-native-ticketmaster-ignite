@@ -15,13 +15,11 @@
   },
   "files": [
     "src",
-    "specs",
     "lib",
     "android",
     "ios",
     "cpp",
     "*.podspec",
-    "react-native.config.js",
     "!ios/build",
     "!android/build",
     "!android/gradle",
@@ -187,7 +185,7 @@
   "codegenConfig": {
     "name": "TicketmasterIgniteSpecs",
     "type": "all",
-    "jsSrcsDir": "specs",
+    "jsSrcsDir": "src/specs",
     "android": {
       "javaPackageName": "com.ticketmasterignitespecs"
     },

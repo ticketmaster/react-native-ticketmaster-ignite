@@ -1,3 +1,3 @@
-import NativeRetailSdk from '../specs/NativeRetailSdk';
+import NativeRetailSdk from './specs/NativeRetailSdk';
 
 export const RetailSdk = NativeRetailSdk;
