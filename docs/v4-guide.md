@@ -1,27 +1,58 @@
 # Migration guide for version 4.0.0
 
+
 ## Token and MemberInfo object shape update
 
-Before iOS and Android object return data had different shapes
+```typescript
+const tokenData = getToken();
+const memberInfo = getMemberInfo();
+```
+
+Before iOS and Android `token` and `memberInfo` return data had different object shapes
+
+**Old:**
 
 Android
-`memberInfo.archticsMember.firstName`
-`token.archticsAccessToken`
+```typescript
+tokenData.archticsAccessToken
+memberInfo.archticsMember.firstName
+```
 
 iOS
-`memberInfo.firstName`
-`token.accessToken`
+```typescript
+memberInfo.firstName
+tokenData.accessToken
+```
 
+**New**
 But now the below is the required/correct way for both platforms:
-`memberInfo.firstName`
-`token.accessToken`
+```typescript
+memberInfo.firstName
+tokenData.accessToken
+```
 
 You can console log any of the variables to see the all of the available properties
 
-## Tickets SDk Embedded
 
-In Android, the Tickets SDK Embedded component should now correctly position itself under React Navigation headers when the new architecture is turned on in your React Native app.
-If it does not offsetTop can still be used but is now used like this:
+## Tickets SDK Embedded
+
+TicketsSdkEbdded is now a Fabric component which typically wants a width and height.
+
+As the button navigation bottoms can differ on Android and iOS, `Dimensions` from React Native can be used to calculate a dynamic height for both platforms.
+
+```typescript
+const ticketsWindowHeight = Dimensions.get('window').height - 150
+
+ <TicketsSdkEmbedded style={height: ticketsWindowHeight, width: '100%'} />
+```
+
+If you do not send a style `{width: '100%', height: '100%'}` is used by default:
+
+```typescript
+ <TicketsSdkEmbedded />
+```
+
+On Android, the `<TicketsSdkEmbedded />` component should now correctly position itself under React Navigation headers when the new architecture is turned on in your React Native app. If it does not `offsetTop` can still be used but is now used like this:
 
 ```typescript
 const [offSetTop, setOffSetTop] = useState(0);
@@ -35,11 +66,12 @@ return (
   );
 ```
 
-Once it is confirmed there are no issues with the positioning with the TicketsSdkEmbedded component in new architecture RN apps we will eventually deprecate this prop
+Once it is confirmed there are no issues with the positioning with the `TicketsSdkEmbedded` component in new architecture RN apps we will eventually deprecate this prop.
+
 
 ## Tickets SDK Modal (iOS only)
 
-The iOS Tickets full screen modal is now a function call like Retail SDK, which removes the need of creating `useState` variables.
+The iOS Tickets SDK full screen modal is now a function call like the Retail SDK views, which removes the need of creating `useState` variables.
 
 Example:
 
@@ -67,15 +99,15 @@ return (
 
 Accounts and Retail SDK modules have been renamed:
 
-AccountsSDK -> AccountsSdk
-RetailSDK -> RetailSdk
+`AccountsSDK` -> `AccountsSdk`
+`RetailSDK` -> `RetailSdk`
 
 ```typescript
 import { AccountsSdk, RetailSdk } from 'react-native-ticketmaster-ignite';
 ```
 
-It is advisable you use auth methods from useIgnite hook instead of the AccountsSdk module directly for automatic state updates and simple use within dep arrays.
+It is advisable you use auth methods from the `useIgnite` hook instead of the `AccountsSdk` module directly for automatic state updates and 
 
 ## eventHeaderType
 
-The info icon in the Purchase navigation header for Android is no longer configurable. `EVENT_INFO` and `EVENT_INFO_SHARE` will not affect it and the button shows up within the WebView of the EDP page itself on the suitable pages.
+The info icon in the Purchase SDK navigation header for Android is no longer configurable. `EVENT_INFO` and `EVENT_INFO_SHARE` will not affect it and the button shows up within the WebView of the EDP page itself on the suitable pages.

@@ -201,9 +201,6 @@ See [here](./docs/marketDomains.md) for the list of supported market domains.
 
 ##### The `eventHeaderType` property 
 
-**TODO** 
-Add not that the info button `EVENT_INFO` is no longer confgiurable in the navigation headers for Android 
-
 The `eventHeaderType` property accepts one of the following values - `NO_TOOLBARS`, `EVENT_INFO`, `EVENT_SHARE` and `EVENT_INFO_SHARE`. When the property has not been passed, the `IgniteProvider` will default to `EVENT_INFO_SHARE`. 
 
 The `eventHeaderType` property specifies what tools will be available in the navigation header of the Purchase SDK:
@@ -215,7 +212,7 @@ The `eventHeaderType` property specifies what tools will be available in the nav
 | `EVENT_SHARE`   | Show only the event share button   |<img src="docs/assets/EVENT_SHARE.png" width="400">|
 | `EVENT_INFO_SHARE`    | Show both the info and share buttons   |<img src="docs/assets/EVENT_INFO_SHARE.png" width="400">|
 
-The info button enabled with `EVENT_INFO` and `EVENT_INFO_SHARE`  is currently not configurable on Android and will show within the WebView in the appropriate web pages instead of in the navigation header of the Purchase SDK.
+The info icon in the Purchase SDK navigation header for Android is no longer configurable. `EVENT_INFO` and `EVENT_INFO_SHARE` will not affect it and the button shows up within the WebView of the EDP page itself on the suitable pages.
 
 ##### The `autoUpdate` prop 
 
@@ -612,17 +609,17 @@ const onShowPrePurchaseAttraction = async () => {
 To get data from the discovery API you can call the API directly in your app. To learn more about the Discovery API see [here](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/).
 
 ```typescript
-const entityIds = ['K8vZ9171o57', 'K8vZ91718XV'].join(',');
+const attractionIds = ['K8vZ9171o57', 'K8vZ91718XV'].join(',');
 
 useEffect(() => {
   fetch(
-    `https://app.ticketmaster.com/discovery/v2/attractions.json?id=${entityIds}&sort=relevance,desc&size=200&page=${page}&locale=en-us&apikey=${apiKey}`
+    `https://app.ticketmaster.com/discovery/v2/events.json?attractionId=${attractionIds}&sort=date,asc&page=${page}&locale=en-us&apikey=${apiKey}` 
   )
     .then((response) => response.json())
     .then((data) => {
       console.log(data._embedded.attractions);
     });
-}, [entityIds, page, apiKey]);
+}, [attractionIds, page, apiKey]);
 ```
 
 ### Prebuilt Modules
