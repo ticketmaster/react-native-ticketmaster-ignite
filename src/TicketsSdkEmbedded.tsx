@@ -1,5 +1,5 @@
 import React from 'react';
-import { ViewStyle } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import type { Double } from 'react-native/Libraries/Types/CodegenTypes';
 import TicketsSdkEmbeddedNativeComponent from './specs/TicketsSdkEmbeddedNativeComponent';
 
@@ -19,8 +19,12 @@ export const TicketsSdkEmbedded = ({
 }: TicketsSdkEmbeddedViewProps) => {
   return (
     <TicketsSdkEmbeddedNativeComponent
-      style={style || { width: '100%', height: '100%' }}
+      style={{ ...styles.ticketsSdkContainer, ...(style && style) }}
       offsetTop={offsetTop as Double}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  ticketsSdkContainer: { width: '100%', height: '100%' },
+});
