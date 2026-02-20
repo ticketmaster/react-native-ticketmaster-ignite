@@ -462,14 +462,14 @@ Example:
 import { Platform, Pressable, Text } from 'react-native';
 import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
 
-const onShowTicketsSdk = () => {
+const onShowTicketsSdkModal = () => {
     Platform.OS === 'ios' && TicketsSdkModal?.showTicketsSdkModal();
 };
 
 return (
   <>
     {Platform.OS === 'ios' && (
-      <Pressable onPress={() => onShowTicketsSdk()}>
+      <Pressable onPress={() => onShowTicketsSdkModal()}>
         <Text>Show Tickets SDK Modal</Text>
       </Pressable>
     )}
