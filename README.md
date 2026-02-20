@@ -484,6 +484,19 @@ import { TicketsSdkEmbedded } from 'react-native-ticketmaster-ignite';
 return <TicketsSdkEmbedded style={{ width: '100%', height: '100%' }} />;
 ```
 
+As the button navigation bottoms can differ on Android and iOS, `Dimensions` from React Native can be used to calculate a dynamic height for both platforms.
+
+```typescript
+const ticketsWindowHeight = Dimensions.get('window').height - 150
+
+ <TicketsSdkEmbedded style={height: ticketsWindowHeight, width: '100%'} />
+```
+
+If you do not send a style prop, `{width: '100%', height: '100%'}` is used by default:
+
+```typescript
+ <TicketsSdkEmbedded />
+```
 
 React Native New Architecture + React Navigation note: There is a bug with android native UI views when New Architecture mode is switched on where the native UI does not take into account the header height from React Navigation. If this happens in your app you can use the `offsetTop` prop to add offset to the top of the native UI.
 

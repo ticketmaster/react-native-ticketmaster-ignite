@@ -20,15 +20,16 @@ memberInfo.archticsMember.firstName
 
 iOS
 ```typescript
-memberInfo.firstName
 tokenData.accessToken
+memberInfo.firstName
 ```
 
-**New**
+**New:**
+
 But now the below is the required/correct way for both platforms:
 ```typescript
-memberInfo.firstName
 tokenData.accessToken
+memberInfo.firstName
 ```
 
 You can console log any of the variables to see the all of the available properties
@@ -46,7 +47,7 @@ const ticketsWindowHeight = Dimensions.get('window').height - 150
  <TicketsSdkEmbedded style={height: ticketsWindowHeight, width: '100%'} />
 ```
 
-If you do not send a style `{width: '100%', height: '100%'}` is used by default:
+If you do not send a style prop, `{width: '100%', height: '100%'}` is used by default:
 
 ```typescript
  <TicketsSdkEmbedded />
@@ -106,7 +107,7 @@ Accounts and Retail SDK modules have been renamed:
 import { AccountsSdk, RetailSdk } from 'react-native-ticketmaster-ignite';
 ```
 
-It is advisable you use auth methods from the `useIgnite` hook instead of the `AccountsSdk` module directly for automatic state updates and 
+It is advisable you use auth methods from the `useIgnite` hook instead of the `AccountsSdk` module directly for automatic auth state updates and simple use in dep arrays.
 
 ## eventHeaderType
 
