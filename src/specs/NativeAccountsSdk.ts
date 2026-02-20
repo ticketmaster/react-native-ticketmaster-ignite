@@ -1,6 +1,6 @@
 import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
-import { AccessToken, SportXrData } from '../types';
+import { AccessToken, MemberInfo, SportXrData } from '../types';
 
 export interface Spec extends TurboModule {
   configureAccountsSDK(): Promise<void>;
@@ -10,7 +10,7 @@ export interface Spec extends TurboModule {
   logout(): Promise<void>;
   logoutAll(): Promise<void>;
   isLoggedIn(): Promise<boolean>;
-  getMemberInfo(): Promise<Record<string, any>>;
+  getMemberInfo(): Promise<MemberInfo>;
   getToken(): Promise<AccessToken>;
   refreshToken(): Promise<AccessToken>;
   getSportXRData(): Promise<SportXrData>;

@@ -165,6 +165,9 @@ export type SportXrData = {
   sportXRcookieName?: string;
   sportXRTeamDomain?: string;
 } | null;
+
+export type MemberInfo = Record<string, any> | null;
+
 export type CustomModules = {
   button1?: {
     enabled: boolean;

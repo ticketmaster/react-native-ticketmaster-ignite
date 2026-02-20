@@ -11,6 +11,7 @@ import { toCapitalise } from './utils/utils';
 import {
   AccessToken,
   MarketDomain,
+  MemberInfo,
   Region,
   EventHeaderType,
   IgniteAnalytics,
@@ -33,7 +34,7 @@ type LogoutParams = {
 type AuthStateParams = {
   isConfigured: boolean;
   isLoggedIn: boolean;
-  memberInfo: Record<string, any> | null;
+  memberInfo: MemberInfo;
 };
 
 interface IgniteProviderProps {
@@ -75,7 +76,7 @@ type IgniteContextType = {
   getIsLoggedIn: () => Promise<boolean>;
   getToken: () => Promise<AccessToken>;
   getSportXrData: () => Promise<SportXrData>;
-  getMemberInfo: () => Promise<Record<string, any> | null>;
+  getMemberInfo: () => Promise<MemberInfo>;
   refreshToken: () => Promise<AccessToken>;
   refreshConfiguration: (
     refreshConfigParams: RefreshConfigParams
@@ -175,9 +176,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   });
 
   const setAccountDetails = useCallback(async () => {
-    let _isLoggedIn = false;
-    let isLoggedInResult;
-    let memberInfoResult;
+    let isLoggedInResult = false;
+    let memberInfoResult = null;
     try {
       try {
         isLoggedInResult = await NativeAccountsSdk.isLoggedIn();
@@ -186,9 +186,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           throw new Error(`User not logged in`);
         throw new Error(`Accounts SDK isLoggedIn error: ${e}`);
       }
-
-      const isLoggedInParsed = isLoggedInResult;
-      _isLoggedIn = isLoggedInParsed;
 
       try {
         memberInfoResult = await NativeAccountsSdk.getMemberInfo();
@@ -200,7 +197,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
       setAuthState({
         isConfigured: true,
-        isLoggedIn: !!isLoggedInParsed,
+        isLoggedIn: !!isLoggedInResult,
         memberInfo: memberInfoResult,
       });
     } catch (e) {
@@ -213,7 +210,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       } else {
         setAuthState({
           isConfigured: true,
-          isLoggedIn: !!_isLoggedIn,
+          isLoggedIn: !!isLoggedInResult,
           memberInfo: null,
         });
         throw e;
@@ -267,7 +264,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   const setTicketSdkModules = useCallback(() => {
     // Prebuilt Modules
     Object.entries(prebuiltModules).forEach(([moduleName, moduleOptions]) => {
-      // Crash on iOS when boolean sent to bridge module
       const isEnabled = moduleOptions.enabled ? 'true' : 'false';
       NativeConfig.setConfig(moduleName, isEnabled);
 
@@ -473,7 +469,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   const getToken = useCallback(async (): Promise<AccessToken> => {
     try {
       // iOS getToken() has the exact same Native logic as refreshToken, but will not display the login UI if a user is not logged in or has an invalidated token
-      // Android getToken() never shows the login UI if a user is not logged in or has an invalidated token, so showing login is done manually in JS refreshToken()
+      // Android getToken() never shows the login UI if a user is not logged in or has an invalidated token, so showing login is done manually in the JS refreshToken() method
       const result = await NativeAccountsSdk.getToken();
       const accessToken = result?.accessToken === '' ? null : result;
       enableLogs &&
@@ -504,7 +500,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     }
   }, [enableLogs]);
 
-  const getMemberInfo = useCallback(async () => {
+  const getMemberInfo = useCallback(async (): Promise<MemberInfo> => {
     let result;
     try {
       result = await NativeAccountsSdk.getMemberInfo();
