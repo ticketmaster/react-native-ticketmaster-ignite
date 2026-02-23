@@ -1,4 +1,4 @@
-Here is a config plugin created for an Expo app on Expo 52 against NPM Ignite version `2.8.5`.
+Here is a config plugin created for an Expo app on Expo 54 against NPM Ignite version `3.1.3`.
 
 Create a file called `withIgnitePlugin.js` and paste in the below code
 
@@ -13,6 +13,17 @@ const {
 
 module.exports = function withIgnitePlugin(expoConfig) {
   withAppBuildGradle(expoConfig, (config) => {
+
+    config.modResults.contents = config.modResults.contents.replace(
+      `compileSdk rootProject.ext.compileSdkVersion`,
+      `compileSdk 36`
+    );
+
+    config.modResults.contents = config.modResults.contents.replace(
+      `minSdkVersion rootProject.ext.minSdkVersion`,
+      `minSdkVersion 28`
+    );
+    
     const buildGradleUpdates1 = [`buildFeatures {`, `dataBinding = true`, `}`, `compileOptions {`, `coreLibraryDesugaringEnabled true`, `}`].join(
       "\n"
     );
@@ -77,19 +88,6 @@ module.exports = function withIgnitePlugin(expoConfig) {
     return modConfig;
   });
 
-  withProjectBuildGradle(expoConfig, (config) => {
-    config.modResults.contents = config.modResults.contents.replace(
-      `minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')`,
-      `minSdkVersion = 26`
-    );
-    config.modResults.contents = config.modResults.contents.replace(
-      `compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')`,
-      `compileSdkVersion = 35`
-    );
-
-    return config;
-  });
-
   withPodfileProperties(expoConfig, (config) => {
     config.modResults['ios.deploymentTarget'] = '15.1';
     return config;
@@ -116,24 +114,33 @@ You can update `withIgnitePlugin.js`'s values for iOS deployment target, compile
 
 ### Troubleshooting  
 
-#### Expo 53
+#### Expo 52 and lower
 
-Depending on your expo version, changing the `minSdkVersion` and `compileSdkVersion` will need to be done in `withAppBuildGradle()` instead of `withProjectBuildGradle()`, which can be done by adding the below to `withAppBuildGradle()`:
+Depending on your expo version, changing the `minSdkVersion` and `compileSdkVersion` will need to be done in `withProjectBuildGradle()` instead of `withAppBuildGradle()`, which can be done by adding the `withProjectBuildGradle` below:
 
 ```javascript
 
-config.modResults.contents = config.modResults.contents.replace(
-      `compileSdk rootProject.ext.compileSdkVersion`,
-      `compileSdk 35`
+const {
+...
+  withProjectBuildGradle,
+...
+} = require('@expo/config-plugins');
+
+  withProjectBuildGradle(expoConfig, (config) => {
+    config.modResults.contents = config.modResults.contents.replace(
+      `minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')`,
+      `minSdkVersion = 28`
+    );
+    config.modResults.contents = config.modResults.contents.replace(
+      `compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')`,
+      `compileSdkVersion = 36`
     );
 
-config.modResults.contents = config.modResults.contents.replace(
-      `minSdkVersion rootProject.ext.minSdkVersion`,
-      `minSdkVersion 28`
-    );
+    return config;
+  });
 ```
 
-The `withProjectBuildGradle()` can then be completely removed from the file.
+You can then remove the `minSdkVersion` and `compileSdkVersion` replace methods from the `withAppBuildGradle()`.
 
 
 #### Koin dependency issues 
