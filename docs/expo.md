@@ -7,7 +7,6 @@ const {
   AndroidConfig,
   withAppBuildGradle,
   withStringsXml,
-  withProjectBuildGradle,
   withPodfileProperties,
 } = require('@expo/config-plugins');
 
