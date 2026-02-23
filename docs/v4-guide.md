@@ -101,6 +101,7 @@ return (
 Accounts and Retail SDK modules have been renamed:
 
 `AccountsSDK` -> `AccountsSdk`
+
 `RetailSDK` -> `RetailSdk`
 
 ```typescript
