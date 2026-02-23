@@ -12,6 +12,15 @@ const {
 
 module.exports = function withIgnitePlugin(expoConfig) {
   withAppBuildGradle(expoConfig, (config) => {
+  
+    const buildGradleUpdates = [`buildFeatures {`, `dataBinding = true`, `}`, `compileOptions {`, `coreLibraryDesugaringEnabled true`, `}`].join(
+      "\n"
+    );
+
+    config.modResults.contents = config.modResults.contents.replace(
+      `android {`,
+      `android {\n${buildGradleUpdates}`
+    );
 
     config.modResults.contents = config.modResults.contents.replace(
       `compileSdk rootProject.ext.compileSdkVersion`,
@@ -21,15 +30,6 @@ module.exports = function withIgnitePlugin(expoConfig) {
     config.modResults.contents = config.modResults.contents.replace(
       `minSdkVersion rootProject.ext.minSdkVersion`,
       `minSdkVersion 28`
-    );
-    
-    const buildGradleUpdates1 = [`buildFeatures {`, `dataBinding = true`, `}`, `compileOptions {`, `coreLibraryDesugaringEnabled true`, `}`].join(
-      "\n"
-    );
-
-    config.modResults.contents = config.modResults.contents.replace(
-      `android {`,
-      `android {\n${buildGradleUpdates1}`
     );
 
     config.modResults.contents = config.modResults.contents.replace(
