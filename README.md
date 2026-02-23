@@ -50,9 +50,13 @@ platform :ios, '17.0'
 
 ## Setting up Android
 
-#### TM scheme
+#### Set the minSdkVersion and compileSdkVersion
 
-The scheme is used formulate a deeplink which will be used by the Ticketmaster login activity to deeplink back to your app after login.  
+In `android/build.gradle` set the `minSdkVersion` to `28` and set the `compileSdkVersion` to `36`.
+
+#### Set the login redirect scheme
+
+The scheme is used formulate a deeplink which will be used by the android Ticketmaster login activity to deeplink back to your app after login.  
 
 In your project go to `android/app/src/main/res/values/strings.xml` and if you are on Modern Accounts/Archtics add this snippet:
 
@@ -139,10 +143,6 @@ dependencies {
   ...
 }
 ```
-
-#### Set the minSdkVersion
-
-In `android/build.gradle` set the `minSdkVersion` to `28` and set the `compileSdkVersion` to `36`.
 
 ## Setting up Expo
 
