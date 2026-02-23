@@ -17,7 +17,7 @@ In order to use the library, setup a developer account with Ticketmaster by cont
 
 ## Installation
 
-Depending on your package manager you can install with one of the below commands:
+Depending on your package manager you can install this library with one of the below commands:
 
 #### NPM
 
@@ -448,33 +448,6 @@ iOS `logout()` only logs out of the currently configured API key. If you have mu
 
 `logoutAll()` is only useful if your app has multiple teams/API keys within one app.
 
-
-### TicketsSdkModal (iOS only)
-
-TicketsSdkModal returns `null` on Android
-
-Example:
-
-```typescript
-import { Platform, Pressable, Text } from 'react-native';
-import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
-
-const onShowTicketsSdkModal = () => {
-    Platform.OS === 'ios' && TicketsSdkModal?.showTicketsSdkModal();
-};
-
-return (
-  <>
-    {Platform.OS === 'ios' && (
-      <Pressable onPress={() => onShowTicketsSdkModal()}>
-        <Text>Show Tickets SDK Modal</Text>
-      </Pressable>
-    )}
-  </>
-);
-
-```
-
 ### TicketsSdkEmbedded
 
 ```typescript
@@ -516,6 +489,32 @@ useEffect(() => {
 return (
     <TicketsSdkEmbedded style={{width: '100%', height: '95%'}} offsetTop={offSetTop} />
   );
+```
+
+### TicketsSdkModal (iOS only)
+
+TicketsSdkModal returns `null` on Android
+
+Example:
+
+```typescript
+import { Platform, Pressable, Text } from 'react-native';
+import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
+
+const onShowTicketsSdkModal = () => {
+    Platform.OS === 'ios' && TicketsSdkModal?.showTicketsSdkModal();
+};
+
+return (
+  <>
+    {Platform.OS === 'ios' && (
+      <Pressable onPress={() => onShowTicketsSdkModal()}>
+        <Text>Show Tickets SDK Modal</Text>
+      </Pressable>
+    )}
+  </>
+);
+
 ```
 
 ### Ticket Deep Links

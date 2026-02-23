@@ -37,7 +37,7 @@ You can console log any of the variables to see the all of the available propert
 
 ## Tickets SDK Embedded
 
-TicketsSdkEbdded is now a Fabric component which typically wants a width and height.
+TicketsSdkEmbedded is now a Fabric component which typically wants a width and height.
 
 As the button navigation bottoms can differ on Android and iOS, `Dimensions` from React Native can be used to calculate a dynamic height for both platforms.
 
