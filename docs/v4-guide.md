@@ -32,7 +32,7 @@ tokenData.accessToken
 memberInfo.firstName
 ```
 
-You can console log any of the variables to see the all of the available properties
+You can console log any of the variables to see the all of the available properties.
 
 
 ## Tickets SDK Embedded
