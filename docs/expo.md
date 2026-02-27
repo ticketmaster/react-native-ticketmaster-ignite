@@ -88,7 +88,7 @@ module.exports = function withIgnitePlugin(expoConfig) {
   });
 
   withPodfileProperties(expoConfig, (config) => {
-    config.modResults['ios.deploymentTarget'] = '15.1';
+    config.modResults['ios.deploymentTarget'] = '17.0';
     return config;
   });
 
