@@ -156,6 +156,18 @@ export type PrebuiltModules = {
   };
 };
 
+export type AccessToken = {
+  accessToken: string;
+  sportXRIdToken: string;
+} | null;
+
+export type SportXrData = {
+  sportXRcookieName?: string;
+  sportXRTeamDomain?: string;
+} | null;
+
+export type MemberInfo = Record<string, any> | null;
+
 export type CustomModules = {
   button1?: {
     enabled: boolean;
@@ -179,7 +191,6 @@ export type CustomModules = {
 
 export type Region = 'US' | 'UK';
 
-// eslint-disable-next-line prettier/prettier
 export type MarketDomain =
   | 'AE'
   | 'AT'

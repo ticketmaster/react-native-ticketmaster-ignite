@@ -18,8 +18,8 @@ object Config {
     return configValues[key]
   }
 
-  fun setImage(key: String, imageJsonString: String) {
-    imageConfigValues[key] = imageJsonString
+  fun setImage(key: String, uri: String) {
+    imageConfigValues[key] = uri
   }
 
   fun getImage(key: String): String? {

@@ -1,19 +1,21 @@
+import Foundation
+import UIKit
 import TicketmasterAuthentication
 import TicketmasterPurchase
 
-@objc(PurchaseSDK)
 class PurchaseSDK: UIViewController {
+
   var eventId: String = ""
-  
+
   var firstRender: Bool = true
-  
+
   func setEventId(_ eventId: String) {
     self.eventId = eventId
   }
-  
+
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    if (firstRender) {
+    if firstRender {
       firstRender = false
     } else {
       self.dismiss(animated: true)
@@ -21,16 +23,15 @@ class PurchaseSDK: UIViewController {
   }
 
   enum EventHeaderType: String {
-      case noToolbars = "NO_TOOLBARS"
-      case eventInfo = "EVENT_INFO"
-      case eventShare = "EVENT_SHARE"
-      case eventInfoShare = "EVENT_INFO_SHARE"
+    case noToolbars = "NO_TOOLBARS"
+    case eventInfo = "EVENT_INFO"
+    case eventShare = "EVENT_SHARE"
+    case eventInfoShare = "EVENT_INFO_SHARE"
   }
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    // TMPurchase.shared.configure also needs to be configured in PrePurchaseSDK+Extension
+
     let apiKey = Config.shared.get(for: "apiKey")
     let region = Config.shared.get(for: "region")
     let primaryColor = Config.shared.get(for: "primaryColor")
@@ -38,10 +39,10 @@ class PurchaseSDK: UIViewController {
     let eventHeaderTypeString = Config.shared.get(for: "eventHeaderType")
     let eventHeaderType = EventHeaderType(rawValue: eventHeaderTypeString)
     let marketDomain = MarketDomainObject.shared.getMarketDomain()
-    
-    TMPurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, completion: { isPurchaseApiSet in
+
+    TMPurchase.shared.configure(apiKey: apiKey, region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US) { isPurchaseApiSet in
       print("Purchase api key set result: \(isPurchaseApiSet)")
-      
+
       TMPurchase.shared.brandColor = backgroundColor!
       TMPurchase.shared.marketDomain = marketDomain
 
@@ -51,11 +52,10 @@ class PurchaseSDK: UIViewController {
 
       let edpNav = TMPurchaseNavigationController(configuration: headerConfig)
       edpNav.modalPresentationStyle = .fullScreen
-      edpNav.userAnalyticsDelegate =  self
-      edpNav.webAnalyticsDelegate =  self
+      edpNav.userAnalyticsDelegate = PurchaseAnalyticsHandler.shared
+      edpNav.webAnalyticsDelegate = PurchaseAnalyticsHandler.shared
       self.present(edpNav, animated: false)
-    })
+    }
   }
 }
-
 

@@ -1,25 +1,36 @@
 import TicketmasterAuthentication
+import React
 
-@objc(AccountsSDK)
-class AccountsSDK: NSObject, TMAuthenticationDelegate  {
+@objcMembers public class AccountsSDK: NSObject, TMAuthenticationDelegate {
   
-  @objc public func configureAccountsSDK(_ resolve: @escaping (String) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
+  public func configureAccountsSDK(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
     
     TMAuthentication.shared.delegate = self
     
-    // build a combination of Settings and Branding
     let apiKey = Config.shared.get(for: "apiKey")
     let region = Config.shared.get(for: "region")
     let environment = Config.shared.get(for: "environment")
-    let tmxServiceSettings = TMAuthentication.TMXSettings(apiKey: apiKey,
-                                                          region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US, environment: TMAuthentication.TMXDeploymentEnvironment(rawValue: environment) ?? .Production )
+    let tmxServiceSettings = TMAuthentication.TMXSettings(
+      apiKey: apiKey,
+      region: TMAuthentication.TMXDeploymentRegion(rawValue: region) ?? .US,
+      environment: TMAuthentication.TMXDeploymentEnvironment(rawValue: environment) ?? .Production
+    )
     
     let primaryColor = Config.shared.get(for: "primaryColor")
     let backgroundColor = UIColor(hexString: primaryColor) ?? AppConstants.defaultBrandColor
-    let branding = TMAuthentication.Branding(displayName: Config.shared.get(for: "clientName"), backgroundColor: backgroundColor, theme: .light)
+    let branding = TMAuthentication.Branding(
+      displayName: Config.shared.get(for: "clientName"),
+      backgroundColor: backgroundColor,
+      theme: .light
+    )
     
-    let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(tmxSettings: tmxServiceSettings,
-                                                                         branding: branding)
+    let brandedServiceSettings = TMAuthentication.BrandedServiceSettings(
+      tmxSettings: tmxServiceSettings,
+      branding: branding
+    )
     
     // configure TMAuthentication with Settings and Branding
     print("Accounts SDK Configuring...")
@@ -32,160 +43,288 @@ class AccountsSDK: NSObject, TMAuthenticationDelegate  {
     } failure: { error in
       // something went wrong, probably the wrong apiKey+region combination
       print(" - Accounts SDK Configuration Error: \(error.localizedDescription)")
-      reject( "Accounts SDK Configuration Error:", error.localizedDescription, error as NSError)
+      reject("Accounts SDK Configuration Error", error.localizedDescription, error as NSError)
     }
   }
   
-  
-  @objc public func login(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
+  public func login(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
     
     TMAuthentication.shared.login { authToken in
       print("Login Completed")
       print(" - AuthToken: \(authToken.accessToken.prefix(20))...")
-      let data = ["accessToken": authToken.accessToken]
-      resolve(data)
-    } aborted: { oldAuthToken, backend in
-      let data = ["accessToken": ""]
-      resolve(data)
+      resolve(["accessToken": authToken.accessToken])
+    } aborted: { _, _ in
+      // Login was explicitly aborted by the user
+      resolve(["accessToken": ""])
       print("Login Aborted by User")
-    } failure: { oldAuthToken, error, backend in
+    } failure: { _, error, _ in
       print("Login Error: \(error.localizedDescription)")
-      reject( "Accounts SDK Login Error", error.localizedDescription, error as NSError)
+      reject("Accounts SDK Login Error", error.localizedDescription, error as NSError)
     }
   }
   
-  
-  @objc public func logout(_ resolve: @escaping (String) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    TMAuthentication.shared.logout {backends in
+  public func logout(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    
+    TMAuthentication.shared.logout { backends in
       resolve("Logout Successful")
       print("Logout Completed")
       print(" - Backends Count: \(backends?.count ?? 0)")
     }
   }
   
-  @objc public func logoutAll(_ resolve: @escaping (String) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    TMAuthentication.shared.logoutAll {backends in
+  public func logoutAll(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    
+    TMAuthentication.shared.logoutAll { backends in
       resolve("LogoutAll Successful")
       print("LogoutAll Completed")
       print(" - Backends Count: \(backends?.count ?? 0)")
     }
   }
   
-  @objc public func refreshToken(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
+  // This selector is needed as Swift’s Objective-C selector inference drops the "is" in variable names sent to Objective-C.
+  // React side expects a method that exactly matches "isLoggedIn", so this selector is used to tell Objective-C the "isLoggedIn" method is this method below.
+  @objc(isLoggedInWithResolve:reject:)
+  public func isLoggedIn(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
     
-    TMAuthentication.shared.validToken { authToken in
-      print("Token Refreshed (if needed)")
-      print(" - AuthToken: \(authToken.accessToken.prefix(20))...")
-      let data = ["accessToken": authToken.accessToken, "sportXRIdToken": authToken.idToken ?? ""]
-      resolve(data)
-    } aborted: { oldAuthToken, backend in
-      print("Refresh Login Aborted by User")
-      let data = ["accessToken": ""]
-      resolve(data)
-    } failure: { oldAuthToken, error, backend in
-      print("Refresh Error: \(error.localizedDescription)")
-      reject( "Accounts SDK Refresh Token Error", error.localizedDescription, error as NSError)
-    }
-  }
-  
-  @objc public func getMemberInfo(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    
-    TMAuthentication.shared.memberInfo { memberInfo in
-      print("MemberInfo Completed")
-      print(" - UserID: \(memberInfo.localID ?? "<nil>")")
-      print(" - Email: \(memberInfo.email ?? "<nil>")")
-      print(memberInfo)
-      let data = ["globalUserId": memberInfo.globalID, "memberId": memberInfo.localID,  "hmacId": memberInfo.hmacID, "firstName": memberInfo.firstName, "lastName": memberInfo.lastName, "email": memberInfo.email, "phone": memberInfo.phone, "preferredLang": memberInfo.language]
-      resolve(data as [String : Any])
-    } failure: { oldMemberInfo, error, backend in
-      print("MemberInfo Error: \(error.localizedDescription)")
-      reject( "Accounts SDK Member Info Error", error.localizedDescription, error as NSError)
-    }
-  }
-  
-  @objc public func getToken(_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
-      print("Token Retrieved")
-      let data = ["accessToken": authToken.accessToken, "sportXRIdToken": authToken.idToken ?? ""]
-      resolve(data)
-    } aborted: { oldAuthToken, backend in
-      print("Token Retrieval Aborted ")
-      let data = ["accessToken": ""]
-      resolve(data)
-    } failure: { oldAuthToken, error, backend in
-      print("Token Retrieval Error: \(error.localizedDescription)")
-      reject( "Accounts SDK Token Retrieval Error", error.localizedDescription, error as NSError)
-    }
-  }
-  
-  @objc public func getSportXRData (_ resolve: @escaping ([String: Any]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    TMAuthentication.shared.apigeeConfig { config in
-      print("SportXR Data Retrieved")
-      let data = [ "sportXRcookieName": config.sportXR?.cookieName ?? "", "sportXRTeamDomain": config.sportXR?.teamDomain ?? ""]
-      resolve(data as [String : Any])
-    } failure: { error in
-      print("SportXR Data Retrieval Error: \(error.localizedDescription)")
-      reject( "Accounts SDK SportXR Data Retrieval Error", error.localizedDescription, error as NSError)
-    }
-  }
-  
-  @objc public func isLoggedIn(_ resolve: @escaping ([String: Bool]) -> Void, reject: @escaping (_ code: String, _ message: String, _ error: NSError) -> Void) {
-    TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
+    TMAuthentication.shared.validToken(showLoginIfNeeded: false) { _ in
       let hasToken = TMAuthentication.shared.hasToken()
-      resolve(["result": hasToken])
-    } aborted: { oldAuthToken, backend in
-      resolve(["result": false])
-    } failure: { oldAuthToken, error, backend in
-      if(TMAuthentication.shared.hasToken()){
-        let hasToken = TMAuthentication.shared.hasToken()
-        resolve(["result": hasToken])
+      resolve(hasToken)
+    } aborted: { _, _ in
+      resolve(false)
+    } failure: { _, error, _ in
+      // If a token already exists, treat user as logged in
+      if TMAuthentication.shared.hasToken() {
+        resolve(true)
       } else {
         reject("Accounts SDK Is Logged In Error", error.localizedDescription, error as NSError)
       }
     }
   }
   
-  
-  func sendEvent(_ name: String, body: [String : Any]) {
-    GlobalEventEmitter.emitter.sendEvent(withName: name, body: body)
+  public func getMemberInfo(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    
+    // Map of iOS (key) to Android (value) memberInfo key name equivalents.
+    // iOS getMemberInfo() will use the Android names as the key for the object
+    // returned to JS as camelCase is preferred.
+    let keyMap: [String: String] = [
+      "localID": "memberId",
+      "globalID": "globalUserId",
+      "hmacID": "hmacId",
+      "language": "preferredLang"
+    ]
+    
+    TMAuthentication.shared.memberInfo { memberInfo in
+      print("MemberInfo Completed")
+      print(" - UserID: \(memberInfo.localID ?? "<nil>")")
+      print(" - Email: \(memberInfo.email ?? "<nil>")")
+      
+      let mirror = Mirror(reflecting: memberInfo)
+      var data: [String: Any] = [:]
+      
+      for child in mirror.children {
+        guard let originalKey = child.label else { continue }
+        let finalKey = keyMap[originalKey] ?? originalKey
+        data[finalKey] = self.convertToDictionary(child.value)
+      }
+      
+      resolve(data)
+    } failure: { _, error, _ in
+      print("MemberInfo Error: \(error.localizedDescription)")
+      reject("Accounts SDK Member Info Error", error.localizedDescription, error as NSError)
+    }
   }
   
-  func onStateChanged(backend: TicketmasterAuthentication.TMAuthentication.BackendService?, state: TicketmasterAuthentication.TMAuthentication.ServiceState, error: (Error)?) {
+  public func getToken(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    
+    TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
+      print("Token Retrieved")
+      resolve([
+        "accessToken": authToken.accessToken,
+        "sportXRIdToken": authToken.idToken ?? ""
+      ])
+    } aborted: { _, _ in
+      print("Token Retrieval Aborted")
+      resolve(["accessToken": ""])
+    } failure: { _, error, _ in
+      print("Token Retrieval Error: \(error.localizedDescription)")
+      reject("Accounts SDK Token Retrieval Error", error.localizedDescription, error as NSError)
+    }
+  }
+  
+  public func refreshToken(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    
+    TMAuthentication.shared.validToken { authToken in
+      print("Token Refreshed (if needed)")
+      print(" - AuthToken: \(authToken.accessToken.prefix(20))...")
+      resolve([
+        "accessToken": authToken.accessToken,
+        "sportXRIdToken": authToken.idToken ?? ""
+      ])
+    } aborted: { _, _ in
+      print("Refresh Login Aborted by User")
+      resolve(["accessToken": ""])
+    } failure: { _, error, _ in
+      print("Refresh Error: \(error.localizedDescription)")
+      reject("Accounts SDK Refresh Token Error", error.localizedDescription, error as NSError)
+    }
+  }
+  
+  public func getSportXRData(
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    
+    TMAuthentication.shared.apigeeConfig { config in
+      print("SportXR Data Retrieved")
+      resolve([
+        "sportXRcookieName": config.sportXR?.cookieName ?? "",
+        "sportXRTeamDomain": config.sportXR?.teamDomain ?? ""
+      ])
+    } failure: { error in
+      print("SportXR Data Retrieval Error: \(error.localizedDescription)")
+      reject("Accounts SDK SportXR Data Retrieval Error", error.localizedDescription, error as NSError)
+    }
+  }
+  
+  func convertToDictionary(_ value: Any) -> Any {
+    let mirror = Mirror(reflecting: value)
+    
+    // Convert Swift Optionals to correct bridging value for JavaScript
+    if mirror.displayStyle == .optional {
+      if let child = mirror.children.first {
+        return convertToDictionary(child.value)
+      }
+      return NSNull()
+    }
+    
+    // return primitive types as is
+    if value is String || value is Int || value is Bool || value is Double || value is Float {
+      return value
+    }
+    
+    // Convert values in an Array to correct bridging value for JavaScript
+    if let array = value as? [Any] {
+      return array.map { convertToDictionary($0) }
+    }
+    
+    // Convert Struct/Class to correct bridging value for JavaScript (i.e. an object)
+    if mirror.displayStyle == .struct || mirror.displayStyle == .class {
+      var dict: [String: Any] = [:]
+      for child in mirror.children {
+        guard let key = child.label else { continue }
+        dict[key] = convertToDictionary(child.value)
+      }
+      return dict
+    }
+    
+    // Default fallback
+    return value
+  }
+  
+  public func onStateChanged(
+    backend: TMAuthentication.BackendService?,
+    state: TMAuthentication.ServiceState,
+    error: Error?
+  ) {
+    
     print("Backend TicketmasterAuthentication \(state.rawValue)")
-    switch state{
+    
+    let eventName = "igniteAnalytics"
+    
+    switch state {
     case .serviceConfigurationStarted:
-      sendEvent("igniteAnalytics", body: ["accountsSdkServiceConfigurationStarted": "accountsSdkServiceConfigurationStarted"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkServiceConfigurationStarted": "accountsSdkServiceConfigurationStarted"]
+      )
     case .serviceConfigured:
-      sendEvent("igniteAnalytics", body: ["accountsSdkServiceConfigured": "accountsSdkServiceConfigured"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkServiceConfigured": "accountsSdkServiceConfigured"]
+      )
     case .serviceConfigurationCompleted:
-      sendEvent("igniteAnalytics", body: ["accountsSdkServiceConfigurationCompleted": "accountsSdkServiceConfigurationCompleted"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkServiceConfigurationCompleted": "accountsSdkServiceConfigurationCompleted"]
+      )
     case .loginStarted:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLoginStarted": "accountsSdkLoginStarted"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginStarted": "accountsSdkLoginStarted"]
+      )
     case .loginPresented:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLoginPresented": "accountsSdkLoginPresented"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginPresented": "accountsSdkLoginPresented"]
+      )
     case .loggedIn:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLoggedIn": "accountsSdkLoggedIn"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoggedIn": "accountsSdkLoggedIn"]
+      )
     case .loginAborted:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLoginAborted": "accountsSdkLoginAborted"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginAborted": "accountsSdkLoginAborted"]
+      )
     case .loginFailed:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLoginFailed": "accountsSdkLoginFailed"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginFailed": "accountsSdkLoginFailed"]
+      )
     case .loginLinkAccountPresented:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLoginAccountPresented": "accountsSdkLoginAccountPresented"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginAccountPresented": "accountsSdkLoginAccountPresented"]
+      )
     case .loginCompleted:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLoginAccountCompleted": "accountsSdkLoginAccountCompleted"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoginAccountCompleted": "accountsSdkLoginAccountCompleted"]
+      )
     case .tokenRefreshed:
-      sendEvent("igniteAnalytics", body: ["accountsSdkTokenRefreshed": "accountsSdkTokenRefreshed"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkTokenRefreshed": "accountsSdkTokenRefreshed"]
+      )
     case .logoutStarted:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLogoutStarted": "accountsSdkLogoutStarted"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLogoutStarted": "accountsSdkLogoutStarted"]
+      )
     case .loggedOut:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLoggedOut": "accountsSdkLoggedOut"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLoggedOut": "accountsSdkLoggedOut"]
+      )
     case .logoutCompleted:
-      sendEvent("igniteAnalytics", body: ["accountsSdkLogoutCompleted": "accountsSdkLogoutCompleted"])
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: ["accountsSdkLogoutCompleted": "accountsSdkLogoutCompleted"]
+      )
     @unknown default:
       return
     }
   }
 }
-
-
-
