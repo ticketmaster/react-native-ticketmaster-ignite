@@ -87,6 +87,7 @@ export type IgniteAnalytics = {
   purchaseSdkDidMakeDecisionFor: MakeDecisionData;
   purchaseSdkManageMyTickets: 'purchaseSdkManageMyTickets';
   ticketsSdkDidViewEvents: 'ticketsSdkDidViewEvents';
+  ticketsSdkModalDidDismiss: 'ticketsSdkModalDidDismiss';
   ticketsSdkVenueConcessionsOrderFor: TicketsSdkEventData;
   ticketsSdkVenueConcessionsWalletFor: TicketsSdkEventData;
   ticketsSdkCustomModuleButton1: TicketsSdkEventData;
@@ -119,6 +120,7 @@ export enum IgniteAnalyticName {
   PURCHASE_SDK_DID_MAKE_DECISION_FOR = 'purchaseSdkDidMakeDecisionFor',
   PURCHASE_SDK_MANAGE_MY_TICKETS = 'purchaseSdkManageMyTickets',
   TICKETS_SDK_DID_VIEW_EVENTS = 'ticketsSdkDidViewEvents',
+  TICKETS_SDK_DID_DISMISS = 'ticketsSdkModalDidDismiss',
   TICKETS_SDK_VENUE_CONCESSIONS_ORDER_FOR = 'ticketsSdkVenueConcessionsOrderFor',
   TICKETS_SDK_VENUE_CONCESSIONS_WALLET_FOR = 'ticketsSdkVenueConcessionsWalletFor',
   TICKETS_SDK_CUSTOM_MODULE_BUTTON_1 = 'ticketsSdkCustomModuleButton1',

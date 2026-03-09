@@ -40,6 +40,6 @@ class TicketsSDKModalViewController: UIViewController, TicketsSDKViewProtocol, T
   override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
     GlobalEventEmitter.sendEvent(
-      name: "igniteAnalytics", body: ["ticketsSdkDidViewEvents": "ticketsSdkDidViewEvents"])
+      name: "igniteAnalytics", body: ["ticketsSdkModalDidDismiss": "ticketsSdkModalDidDismiss"])
   }
 }

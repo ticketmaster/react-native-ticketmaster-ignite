@@ -60,6 +60,7 @@ More information about the flow of these state change analytics can be found her
 | Name | Values | Description |
 | ----- | ---- | -----   |
 | ticketsSdkDidViewEvents | ticketsSdkDidViewEvents | The user has sucessfully authenticated and been shown their purchased events |
+| ticketsSdkModalDidDismiss | ticketsSdkModalDidDismiss | The Tickets SDK modal has closed |
 | ticketsSdkVenueConcessionsOrderFor | eventOrderInfo | The user has pressed the order button on the Venue Concessions module | 
 | ticketsSdkVenueConcessionsWalletFor | eventOrderInfo | The user has pressed the wallet button on the Venue Concessions module |
 

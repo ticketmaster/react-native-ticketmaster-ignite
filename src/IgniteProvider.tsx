@@ -359,6 +359,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         if (
           (result.purchaseSdkDidEndCheckoutFor ||
             result.ticketsSdkDidViewEvents ||
+            result.ticketsSdkModalDidDismiss ||
             // iOS TMAuthentication.shared.validToken() successful login
             ((result.accountsSdkLoggedIn || result.accountsSdkLoggedOut) &&
               !isLoggingIn &&
