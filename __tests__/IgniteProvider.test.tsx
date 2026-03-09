@@ -1,21 +1,86 @@
 import React from 'react';
 import { render, act, waitFor } from '@testing-library/react-native';
-import { NativeModules, View, Platform } from 'react-native';
+import { View, Platform } from 'react-native';
 import { IgniteProvider } from '../src';
 import { IgniteContext } from '../src/IgniteProvider';
+import NativeConfig from '../src/specs/NativeConfig';
+import NativeAccountsSdk from '../src/specs/NativeAccountsSdk';
+
+// Mock transitive spec imports from src/index.tsx
+jest.mock('../src/specs/NativeRetailSdk', () => ({
+  __esModule: true,
+  default: {
+    presentPrePurchaseAttraction: jest.fn(),
+    presentPrePurchaseVenue: jest.fn(),
+    presentPurchase: jest.fn(),
+  },
+}));
+
+jest.mock('../src/specs/NativeConfig', () => ({
+  __esModule: true,
+  default: {
+    setConfig: jest.fn(),
+    setImage: jest.fn(),
+  },
+}));
+
+jest.mock('../src/specs/NativeAccountsSdk', () => ({
+  __esModule: true,
+  default: {
+    configureAccountsSDK: jest.fn(() => Promise.resolve()),
+    login: jest.fn(() => Promise.resolve({})),
+    logout: jest.fn(() => Promise.resolve()),
+    logoutAll: jest.fn(() => Promise.resolve()),
+    isLoggedIn: jest.fn(() => Promise.resolve(false)),
+    getMemberInfo: jest.fn(() => Promise.resolve({})),
+    getToken: jest.fn(() => Promise.resolve(null)),
+    refreshToken: jest.fn(() => Promise.resolve(null)),
+    getSportXRData: jest.fn(() => Promise.resolve(null)),
+  },
+}));
+
+const mockNativeConfig = NativeConfig as jest.Mocked<typeof NativeConfig>;
+const mockNativeAccountsSdk = NativeAccountsSdk as jest.Mocked<
+  typeof NativeAccountsSdk
+>;
+
+/**
+ * Helper function that renders a component and waits for it to finish loading.
+ * After the component is fully loaded, it resets all mock function call history
+ * so that tests only check for actions that happen after the initial setup.
+ */
+async function renderAndFlush(ui: React.ReactElement) {
+  const result = render(ui);
+  await act(async () => {});
+  jest.clearAllMocks();
+  return result;
+}
 
 describe('IgniteProvider', () => {
-  const fakeApiKey = 'AAA';
-  const fakeClientName = 'SomeName';
-  const fakePrimaryColor = '#FF0000';
+  const mockApiKey = 'AAA';
+  const mockClientName = 'SomeName';
+  const mockPrimaryColor = '#FF0000';
   const options = {
-    apiKey: fakeApiKey,
-    clientName: fakeClientName,
-    primaryColor: fakePrimaryColor,
+    apiKey: mockApiKey,
+    clientName: mockClientName,
+    primaryColor: mockPrimaryColor,
   };
 
   beforeEach(() => {
+    jest.clearAllMocks();
     jest.spyOn(console, 'log').mockImplementation(jest.fn());
+    jest.spyOn(console, 'error').mockImplementation(jest.fn());
+
+    // Re-set default implementations after clearAllMocks
+    mockNativeAccountsSdk.configureAccountsSDK.mockResolvedValue(undefined);
+    mockNativeAccountsSdk.isLoggedIn.mockResolvedValue(false);
+    mockNativeAccountsSdk.getMemberInfo.mockResolvedValue({});
+    mockNativeAccountsSdk.login.mockResolvedValue({});
+    mockNativeAccountsSdk.logout.mockResolvedValue(undefined);
+    mockNativeAccountsSdk.logoutAll.mockResolvedValue(undefined);
+    mockNativeAccountsSdk.getToken.mockResolvedValue(null);
+    mockNativeAccountsSdk.refreshToken.mockResolvedValue(null);
+    mockNativeAccountsSdk.getSportXRData.mockResolvedValue(null);
   });
 
   const component = (
@@ -24,88 +89,78 @@ describe('IgniteProvider', () => {
     </IgniteProvider>
   );
 
-  describe('Calling setConfig on the Config NativeModule on render', () => {
-    const fakeSetConfig = jest.fn();
-    const fakeSetImage = jest.fn();
-    const fakeConfigureAccountsSDK = jest.fn(() =>
-      Promise.resolve('configured')
-    );
-    const fakeIsLoggedIn = jest.fn(() => Promise.resolve());
-
-    beforeAll(() => {
-      jest.clearAllMocks();
-    });
-
-    beforeEach(() => {
-      NativeModules.Config = {
-        setConfig: fakeSetConfig,
-        setImage: fakeSetImage,
-      };
-      NativeModules.AccountsSDK = {
-        configureAccountsSDK: fakeConfigureAccountsSDK,
-        isLoggedIn: fakeIsLoggedIn,
-      };
-    });
-
-    it('with api key', () => {
+  describe('Native Config', () => {
+    it('calls with the API key when provided', () => {
       render(component);
 
-      expect(fakeSetConfig).toHaveBeenCalledWith('apiKey', fakeApiKey);
-    });
-
-    it('with client name', () => {
-      render(component);
-
-      expect(fakeSetConfig).toHaveBeenCalledWith('clientName', fakeClientName);
-    });
-
-    it('with primary color', () => {
-      render(component);
-
-      expect(fakeSetConfig).toHaveBeenCalledWith(
-        'primaryColor',
-        fakePrimaryColor
+      expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+        'apiKey',
+        mockApiKey
       );
     });
 
-    describe('with region', () => {
-      it('calls with the custom region when passed', () => {
+    it('calls with the client name when provided', () => {
+      render(component);
+
+      expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+        'clientName',
+        mockClientName
+      );
+    });
+
+    it('calls with the primary color when provided', () => {
+      render(component);
+
+      expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+        'primaryColor',
+        mockPrimaryColor
+      );
+    });
+
+    describe('region', () => {
+      it('calls with the custom region when provided', () => {
         render(
           <IgniteProvider options={{ ...options, region: 'UK' }}>
             <View />
           </IgniteProvider>
         );
 
-        expect(fakeSetConfig).toHaveBeenCalledWith('region', 'UK');
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith('region', 'UK');
       });
 
-      it('calls with the US region when no region passed', () => {
+      it('calls with US when no custom region is provided', () => {
         render(component);
 
-        expect(fakeSetConfig).toHaveBeenCalledWith('region', 'US');
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith('region', 'US');
       });
     });
 
-    describe('with marketDomain', () => {
-      it('calls with the custom marketDomain when passed', () => {
+    describe('market domain', () => {
+      it('calls with the market domain when provided', () => {
         render(
           <IgniteProvider options={{ ...options, marketDomain: 'UK' }}>
             <View />
           </IgniteProvider>
         );
 
-        expect(fakeSetConfig).toHaveBeenCalledWith('marketDomain', 'UK');
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+          'marketDomain',
+          'UK'
+        );
       });
 
-      it('calls with the US marketDomain when no marketDomain passed', () => {
+      it('calls with US when no market domain is provided', () => {
         render(component);
 
-        expect(fakeSetConfig).toHaveBeenCalledWith('marketDomain', 'US');
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+          'marketDomain',
+          'US'
+        );
       });
     });
 
-    describe('with eventHeaderType', () => {
-      it('calls with the custom eventHeaderType when passed', () => {
+    describe('eventHeaderType', () => {
+      it('calls with the custom eventHeaderType when provided', () => {
         render(
           <IgniteProvider
             options={{ ...options, eventHeaderType: 'EVENT_INFO' }}
@@ -114,25 +169,25 @@ describe('IgniteProvider', () => {
           </IgniteProvider>
         );
 
-        expect(fakeSetConfig).toHaveBeenCalledWith(
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
           'eventHeaderType',
           'EVENT_INFO'
         );
       });
 
-      it('calls with the EVENT_INFO_SHARE eventHeaderType when no eventHeaderType passed', () => {
+      it('calls with the EVENT_INFO_SHARE eventHeaderType when no eventHeaderType is provided', () => {
         render(component);
 
-        expect(fakeSetConfig).toHaveBeenCalledWith(
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
           'eventHeaderType',
           'EVENT_INFO_SHARE'
         );
       });
     });
 
-    describe('with prebuiltModules', () => {
+    describe('prebuiltModules', () => {
       describe('moreTicketActionsModule', () => {
-        it('calls with true when moreTicketActionsModule passed as true', () => {
+        it('calls with moreTicketActionsModule enabled when true is provided', () => {
           render(
             <IgniteProvider
               options={options}
@@ -142,13 +197,13 @@ describe('IgniteProvider', () => {
             </IgniteProvider>
           );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
+          expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
             'moreTicketActionsModule',
             'true'
           );
         });
 
-        it('calls with false when moreTicketActionsModule passed as false', () => {
+        it('calls with moreTicketActionsModule disabled when false is provided', () => {
           render(
             <IgniteProvider
               options={options}
@@ -158,20 +213,16 @@ describe('IgniteProvider', () => {
             </IgniteProvider>
           );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
+          expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
             'moreTicketActionsModule',
             'false'
           );
         });
 
-        it('calls with false when moreTicketActionsModule not passed', () => {
-          render(
-            <IgniteProvider options={options} prebuiltModules={{}}>
-              <View />
-            </IgniteProvider>
-          );
+        it('calls with moreTicketActionsModule disabled when moreTicketActionsModule is not provided', () => {
+          render(component);
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
+          expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
             'moreTicketActionsModule',
             'false'
           );
@@ -179,7 +230,7 @@ describe('IgniteProvider', () => {
       });
 
       describe('venueDirectionsModule', () => {
-        it('calls with true when venueDirectionsModule passed as true', () => {
+        it('calls with venueDirectionsModule enabled when true is provided', () => {
           render(
             <IgniteProvider
               options={options}
@@ -189,13 +240,13 @@ describe('IgniteProvider', () => {
             </IgniteProvider>
           );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
+          expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
             'venueDirectionsModule',
             'true'
           );
         });
 
-        it('calls with false when venueDirectionsModule passed as false', () => {
+        it('calls with venueDirectionsModule disabled when false is provided', () => {
           render(
             <IgniteProvider
               options={options}
@@ -205,20 +256,16 @@ describe('IgniteProvider', () => {
             </IgniteProvider>
           );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
+          expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
             'venueDirectionsModule',
             'false'
           );
         });
 
-        it('calls with false when venueDirectionsModule not passed', () => {
-          render(
-            <IgniteProvider options={options} prebuiltModules={{}}>
-              <View />
-            </IgniteProvider>
-          );
+        it('calls with venueDirectionsModule disabled when venueDirectionsModule is not provided', () => {
+          render(component);
 
-          expect(fakeSetConfig).toHaveBeenCalledWith(
+          expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
             'venueDirectionsModule',
             'false'
           );
@@ -227,7 +274,7 @@ describe('IgniteProvider', () => {
 
       describe('seatUpgradesModule', () => {
         describe('enabled', () => {
-          it('calls with true when seatUpgradesModule passed as true', () => {
+          it('calls with seatUpgradesModule enabled when true is provided', () => {
             render(
               <IgniteProvider
                 options={options}
@@ -237,13 +284,13 @@ describe('IgniteProvider', () => {
               </IgniteProvider>
             );
 
-            expect(fakeSetConfig).toHaveBeenCalledWith(
+            expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
               'seatUpgradesModule',
               'true'
             );
           });
 
-          it('calls with false when seatUpgradesModule passed as false', () => {
+          it('calls with seatUpgradesModule disabled when false is provided', () => {
             render(
               <IgniteProvider
                 options={options}
@@ -253,20 +300,16 @@ describe('IgniteProvider', () => {
               </IgniteProvider>
             );
 
-            expect(fakeSetConfig).toHaveBeenCalledWith(
+            expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
               'seatUpgradesModule',
               'false'
             );
           });
 
-          it('calls with false when seatUpgradesModule not passed', () => {
-            render(
-              <IgniteProvider options={options} prebuiltModules={{}}>
-                <View />
-              </IgniteProvider>
-            );
+          it('calls with seatUpgradesModule disabled when seatUpgradesModule is not provided', () => {
+            render(component);
 
-            expect(fakeSetConfig).toHaveBeenCalledWith(
+            expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
               'seatUpgradesModule',
               'false'
             );
@@ -275,7 +318,7 @@ describe('IgniteProvider', () => {
 
         describe('labels', () => {
           describe('topLabelText', () => {
-            it('calls with custom topLabelText for seatUpgradesModule when topLabelText passed', () => {
+            it('calls with custom topLabelText for seatUpgradesModule when topLabelText provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -290,7 +333,7 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
                 'seatUpgradesModuleTopLabelText',
                 'custom label'
               );
@@ -301,20 +344,23 @@ describe('IgniteProvider', () => {
                 <IgniteProvider
                   options={options}
                   prebuiltModules={{
-                    seatUpgradesModule: { enabled: false, topLabelText: '' },
+                    seatUpgradesModule: {
+                      enabled: false,
+                      topLabelText: '',
+                    },
                   }}
                 >
                   <View />
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
                 'seatUpgradesModuleTopLabelText',
                 ''
               );
             });
 
-            it('does not call when label not passed', () => {
+            it('does not call when label not provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -326,26 +372,26 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).not.toHaveBeenCalledWith(
                 'seatUpgradesModuleTopLabelText'
               );
             });
 
-            it('does not call when seatUpgradesModule not passed', () => {
+            it('does not call when seatUpgradesModule not provided', () => {
               render(
                 <IgniteProvider options={options}>
                   <View />
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).not.toHaveBeenCalledWith(
                 'seatUpgradesModuleTopLabelText'
               );
             });
           });
 
           describe('bottomLabelText', () => {
-            it('calls with custom bottomLabelText for seatUpgradesModule when bottomLabelText passed', () => {
+            it('calls with custom bottomLabelText for seatUpgradesModule when bottomLabelText provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -360,7 +406,7 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
                 'seatUpgradesModuleBottomLabelText',
                 'custom label bottom'
               );
@@ -371,20 +417,23 @@ describe('IgniteProvider', () => {
                 <IgniteProvider
                   options={options}
                   prebuiltModules={{
-                    seatUpgradesModule: { enabled: false, bottomLabelText: '' },
+                    seatUpgradesModule: {
+                      enabled: false,
+                      bottomLabelText: '',
+                    },
                   }}
                 >
                   <View />
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
                 'seatUpgradesModuleBottomLabelText',
                 ''
               );
             });
 
-            it('does not call when label not passed', () => {
+            it('does not call when label not provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -396,19 +445,19 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).not.toHaveBeenCalledWith(
                 'seatUpgradesModuleBottomLabelText'
               );
             });
 
-            it('does not call when seatUpgradesModule not passed', () => {
+            it('does not call when seatUpgradesModule not provided', () => {
               render(
                 <IgniteProvider options={options}>
                   <View />
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).not.toHaveBeenCalledWith(
                 'seatUpgradesModuleBottomLabelText'
               );
             });
@@ -417,36 +466,38 @@ describe('IgniteProvider', () => {
 
         describe('image', () => {
           describe('does not call setImage', () => {
-            it('when seatUpgradesModule not passed', () => {
+            it('when seatUpgradesModule not provided', () => {
               render(
                 <IgniteProvider options={options} prebuiltModules={{}}>
                   <View />
                 </IgniteProvider>
               );
 
-              expect(fakeSetImage).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setImage).not.toHaveBeenCalledWith(
                 'seatUpgradesModuleImage'
               );
             });
 
-            it('when seatUpgradesModule is passed but no image passed', () => {
+            it('when seatUpgradesModule is provided but no image provided', () => {
               render(
                 <IgniteProvider
                   options={options}
-                  prebuiltModules={{ seatUpgradesModule: { enabled: true } }}
+                  prebuiltModules={{
+                    seatUpgradesModule: { enabled: true },
+                  }}
                 >
                   <View />
                 </IgniteProvider>
               );
 
-              expect(fakeSetImage).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setImage).not.toHaveBeenCalledWith(
                 'seatUpgradesModuleImage'
               );
             });
           });
 
           describe.skip('calls setImage', () => {
-            it('when image passed', () => {
+            it('when image provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -461,9 +512,9 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetImage).toHaveBeenCalledWith(
+              expect(mockNativeConfig.setImage).toHaveBeenCalledWith(
                 'seatUpgradesModuleImage',
-                { testUri: '../../../__tests__/testImage.png' }
+                expect.any(String)
               );
             });
           });
@@ -471,7 +522,7 @@ describe('IgniteProvider', () => {
       });
 
       describe('invoiceModule', () => {
-        it('calls with true when invoiceModule passed as true', () => {
+        it('calls with invoiceModule enabled when true is provided', () => {
           render(
             <IgniteProvider
               options={options}
@@ -481,10 +532,13 @@ describe('IgniteProvider', () => {
             </IgniteProvider>
           );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith('invoiceModule', 'true');
+          expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+            'invoiceModule',
+            'true'
+          );
         });
 
-        it('calls with false when invoiceModule passed as false', () => {
+        it('calls with invoiceModule disabled when false is provided', () => {
           render(
             <IgniteProvider
               options={options}
@@ -494,23 +548,25 @@ describe('IgniteProvider', () => {
             </IgniteProvider>
           );
 
-          expect(fakeSetConfig).toHaveBeenCalledWith('invoiceModule', 'false');
+          expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+            'invoiceModule',
+            'false'
+          );
         });
 
-        it('calls with false when invoiceModule not passed', () => {
-          render(
-            <IgniteProvider options={options} prebuiltModules={{}}>
-              <View />
-            </IgniteProvider>
-          );
+        it('calls with invoiceModule disabled when invoiceModule is not provided', () => {
+          render(component);
 
-          expect(fakeSetConfig).toHaveBeenCalledWith('invoiceModule', 'false');
+          expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+            'invoiceModule',
+            'false'
+          );
         });
       });
 
       describe('venueConcessionsModule', () => {
         describe('enabled', () => {
-          it('calls with true when venueConcessionsModule passed as true', () => {
+          it('calls with venueConcessionsModule enabled when true is provided', () => {
             render(
               <IgniteProvider
                 options={options}
@@ -526,13 +582,13 @@ describe('IgniteProvider', () => {
               </IgniteProvider>
             );
 
-            expect(fakeSetConfig).toHaveBeenCalledWith(
+            expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
               'venueConcessionsModule',
               'true'
             );
           });
 
-          it('calls with false when venueConcessionsModule passed as false', () => {
+          it('calls with venueConcessionsModule disabled when false is provided', () => {
             render(
               <IgniteProvider
                 options={options}
@@ -548,20 +604,16 @@ describe('IgniteProvider', () => {
               </IgniteProvider>
             );
 
-            expect(fakeSetConfig).toHaveBeenCalledWith(
+            expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
               'venueConcessionsModule',
               'false'
             );
           });
 
-          it('calls with false when venueConcessionsModule not passed', () => {
-            render(
-              <IgniteProvider options={options} prebuiltModules={{}}>
-                <View />
-              </IgniteProvider>
-            );
+          it('calls with venueConcessionsModule disabled when venueConcessionsModule is not provided', () => {
+            render(component);
 
-            expect(fakeSetConfig).toHaveBeenCalledWith(
+            expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
               'venueConcessionsModule',
               'false'
             );
@@ -570,7 +622,7 @@ describe('IgniteProvider', () => {
 
         describe('labels', () => {
           describe('topLabelText', () => {
-            it('calls with custom topLabelText for venueConcessionsModule when topLabelText passed', () => {
+            it('calls with custom topLabelText for venueConcessionsModule when topLabelText provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -587,7 +639,7 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
                 'venueConcessionsModuleTopLabelText',
                 'custom label venue'
               );
@@ -610,13 +662,13 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
                 'venueConcessionsModuleTopLabelText',
                 ''
               );
             });
 
-            it('does not call when label not passed', () => {
+            it('does not call when label not provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -632,26 +684,26 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).not.toHaveBeenCalledWith(
                 'venueConcessionsModuleTopLabelText'
               );
             });
 
-            it('does not call when venueConcessionsModule not passed', () => {
+            it('does not call when venueConcessionsModule not provided', () => {
               render(
                 <IgniteProvider options={options}>
                   <View />
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).not.toHaveBeenCalledWith(
                 'venueConcessionsModuleTopLabelText'
               );
             });
           });
 
           describe('bottomLabelText', () => {
-            it('calls with custom bottomLabelText for venueConcessionsModule when bottomLabelText passed', () => {
+            it('calls with custom bottomLabelText for venueConcessionsModule when bottomLabelText provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -668,7 +720,7 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
                 'venueConcessionsModuleBottomLabelText',
                 'custom label venue bottom'
               );
@@ -691,13 +743,13 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
                 'venueConcessionsModuleBottomLabelText',
                 ''
               );
             });
 
-            it('does not call when label not passed', () => {
+            it('does not call when label not provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -713,19 +765,19 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).not.toHaveBeenCalledWith(
                 'venueConcessionsModuleBottomLabelText'
               );
             });
 
-            it('does not call when venueConcessionsModule not passed', () => {
+            it('does not call when venueConcessionsModule not provided', () => {
               render(
                 <IgniteProvider options={options}>
                   <View />
                 </IgniteProvider>
               );
 
-              expect(fakeSetConfig).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setConfig).not.toHaveBeenCalledWith(
                 'venueConcessionsModuleBottomLabelText'
               );
             });
@@ -734,19 +786,19 @@ describe('IgniteProvider', () => {
 
         describe('image', () => {
           describe('does not call setImage', () => {
-            it('when venueConcessionsModule not passed', () => {
+            it('when venueConcessionsModule not provided', () => {
               render(
                 <IgniteProvider options={options} prebuiltModules={{}}>
                   <View />
                 </IgniteProvider>
               );
 
-              expect(fakeSetImage).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setImage).not.toHaveBeenCalledWith(
                 'venueConcessionsModuleImage'
               );
             });
 
-            it('when venueConcessionsModule is passed but no image passed', () => {
+            it('when venueConcessionsModule is provided but no image provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -762,14 +814,14 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetImage).not.toHaveBeenCalledWith(
+              expect(mockNativeConfig.setImage).not.toHaveBeenCalledWith(
                 'venueConcessionsModuleImage'
               );
             });
           });
 
           describe.skip('calls setImage', () => {
-            it('when image passed', () => {
+            it('when image provided', () => {
               render(
                 <IgniteProvider
                   options={options}
@@ -786,9 +838,9 @@ describe('IgniteProvider', () => {
                 </IgniteProvider>
               );
 
-              expect(fakeSetImage).toHaveBeenCalledWith(
+              expect(mockNativeConfig.setImage).toHaveBeenCalledWith(
                 'venueConcessionsModuleImage',
-                { testUri: '../../../__tests__/testImage.png' }
+                expect.any(String)
               );
             });
           });
@@ -797,35 +849,19 @@ describe('IgniteProvider', () => {
     });
   });
 
-  describe('calls AccountsSDK methods on render', () => {
-    const fakeSetConfig = jest.fn();
-    const fakeConfigureAccountsSDK = jest.fn(() =>
-      Promise.resolve('configured')
-    );
-    const fakeIsLoggedIn = jest.fn(() => Promise.resolve());
-    const fakeGetMemberInfo = jest.fn(() => Promise.resolve());
-
-    beforeEach(() => {
-      NativeModules.Config = {
-        setConfig: fakeSetConfig,
-      };
-      NativeModules.AccountsSDK = {
-        configureAccountsSDK: fakeConfigureAccountsSDK,
-        isLoggedIn: fakeIsLoggedIn,
-        getMemberInfo: fakeGetMemberInfo,
-      };
-    });
-
-    it('calls configureAccountsSDK on render', () => {
+  describe('NativeAccountsSdk', () => {
+    it('calls configureAccountsSdk on render', () => {
       render(component);
 
-      expect(fakeConfigureAccountsSDK).toHaveBeenCalled();
+      expect(mockNativeAccountsSdk.configureAccountsSDK).toHaveBeenCalled();
     });
 
-    it('calls isLoggedIn on render', () => {
+    it('calls isLoggedIn on render', async () => {
       render(component);
 
-      expect(fakeIsLoggedIn).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockNativeAccountsSdk.isLoggedIn).toHaveBeenCalled();
+      });
     });
   });
 
@@ -835,18 +871,35 @@ describe('IgniteProvider', () => {
     );
 
     describe('login', () => {
-      describe('ios', () => {
-        beforeEach(() => {
-          Platform.OS = 'ios';
+      it('calls the login method on NativeAccountsSdk', async () => {
+        const { getByTestId } = await renderAndFlush(
+          <Wrapper>
+            <IgniteContext.Consumer>
+              {({ login }) => (
+                <button
+                  // @ts-ignore
+                  onPress={async () => {
+                    await login();
+                  }}
+                  testID="login-button"
+                />
+              )}
+            </IgniteContext.Consumer>
+          </Wrapper>
+        );
+
+        const loginButton = getByTestId('login-button');
+
+        await act(async () => {
+          loginButton.props.onPress();
         });
 
-        it('when login is triggered, it calls the login method on AccountsSDK', async () => {
-          const fakeLogin = jest.fn(() => Promise.resolve('logged in'));
-          NativeModules.AccountsSDK = {
-            login: fakeLogin,
-          };
+        expect(mockNativeAccountsSdk.login).toHaveBeenCalled();
+      });
 
-          const { getByTestId } = render(
+      describe('when login succeeds', () => {
+        it('and skipUpdate is not passed - refreshes the state', async () => {
+          const { getByTestId } = await renderAndFlush(
             <Wrapper>
               <IgniteContext.Consumer>
                 {({ login }) => (
@@ -862,164 +915,31 @@ describe('IgniteProvider', () => {
             </Wrapper>
           );
 
+          mockNativeAccountsSdk.login.mockResolvedValue({
+            accessToken: '123',
+          });
+          mockNativeAccountsSdk.isLoggedIn.mockResolvedValue(true);
+
           const loginButton = getByTestId('login-button');
 
           await act(async () => {
             loginButton.props.onPress();
           });
 
-          expect(fakeLogin).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.login).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.getMemberInfo).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.isLoggedIn).toHaveBeenCalled();
         });
 
-        describe('when AccountsSDK.login returns access token', () => {
-          it('and skipUpdate is not passed - refreshes the state', async () => {
-            const fakeLogin = jest.fn(() =>
-              Promise.resolve({ accessToken: '123' })
-            );
-            const fakeIsLoggedIn = jest.fn(() =>
-              Promise.resolve({ result: true })
-            );
-            const fakeGetMemberInfo = jest.fn(() => Promise.resolve());
-
-            NativeModules.AccountsSDK = {
-              login: fakeLogin,
-              isLoggedIn: fakeIsLoggedIn,
-              getMemberInfo: fakeGetMemberInfo,
-            };
-
-            const { getByTestId } = render(
-              <Wrapper>
-                <IgniteContext.Consumer>
-                  {({ login }) => (
-                    <button
-                      // @ts-ignore
-                      onPress={async () => {
-                        await login();
-                      }}
-                      testID="login-button"
-                    />
-                  )}
-                </IgniteContext.Consumer>
-              </Wrapper>
-            );
-
-            const loginButton = getByTestId('login-button');
-
-            await act(async () => {
-              loginButton.props.onPress();
-            });
-
-            expect(fakeLogin).toHaveBeenCalled();
-            expect(fakeGetMemberInfo).toHaveBeenCalled();
-            expect(fakeIsLoggedIn).toHaveBeenCalled();
-          });
-
-          it('and skipUpdate is false - refreshes the state', async () => {
-            const fakeLogin = jest.fn(() =>
-              Promise.resolve({ accessToken: '123' })
-            );
-            const fakeIsLoggedIn = jest.fn(() =>
-              Promise.resolve({ result: true })
-            );
-            const fakeGetMemberInfo = jest.fn(() => Promise.resolve());
-
-            NativeModules.AccountsSDK = {
-              login: fakeLogin,
-              isLoggedIn: fakeIsLoggedIn,
-              getMemberInfo: fakeGetMemberInfo,
-            };
-
-            const { getByTestId } = render(
-              <Wrapper>
-                <IgniteContext.Consumer>
-                  {({ login }) => (
-                    <button
-                      // @ts-ignore
-                      onPress={async () => {
-                        await login({ skipUpdate: false });
-                      }}
-                      testID="login-button"
-                    />
-                  )}
-                </IgniteContext.Consumer>
-              </Wrapper>
-            );
-
-            const loginButton = getByTestId('login-button');
-
-            await act(async () => {
-              loginButton.props.onPress();
-            });
-
-            expect(fakeLogin).toHaveBeenCalled();
-            expect(fakeGetMemberInfo).toHaveBeenCalled();
-            expect(fakeIsLoggedIn).toHaveBeenCalled();
-          });
-
-          it('and skipUpdate is true - does not refresh the state', async () => {
-            const fakeLogin = jest.fn(() =>
-              Promise.resolve({ accessToken: '123' })
-            );
-            const fakeIsLoggedIn = jest.fn(() =>
-              Promise.resolve({ result: true })
-            );
-            const fakeGetMemberInfo = jest.fn(() => Promise.resolve());
-
-            NativeModules.AccountsSDK = {
-              login: fakeLogin,
-              isLoggedIn: fakeIsLoggedIn,
-              getMemberInfo: fakeGetMemberInfo,
-            };
-
-            const { getByTestId } = render(
-              <Wrapper>
-                <IgniteContext.Consumer>
-                  {({ login }) => (
-                    <button
-                      // @ts-ignore
-                      onPress={async () => {
-                        await login({ skipUpdate: true });
-                      }}
-                      testID="login-button"
-                    />
-                  )}
-                </IgniteContext.Consumer>
-              </Wrapper>
-            );
-
-            const loginButton = getByTestId('login-button');
-
-            await act(async () => {
-              loginButton.props.onPress();
-            });
-
-            expect(fakeLogin).toHaveBeenCalled();
-            expect(fakeGetMemberInfo).not.toHaveBeenCalled();
-            expect(fakeIsLoggedIn).not.toHaveBeenCalled();
-          });
-        });
-
-        it('when AccountsSDK.login does not return access token, does not refresh the state', async () => {
-          const fakeLogin = jest.fn(() => Promise.resolve({ result: null }));
-          const fakeIsLoggedIn = jest.fn(() =>
-            Promise.resolve({ result: true })
-          );
-          const fakeGetMemberInfo = jest.fn(() => Promise.resolve());
-
-          NativeModules.AccountsSDK = {
-            login: fakeLogin,
-            isLoggedIn: fakeIsLoggedIn,
-            getMemberInfo: fakeGetMemberInfo,
-          };
-
-          const { getByTestId } = render(
+        it('and skipUpdate is false - refreshes the state', async () => {
+          const { getByTestId } = await renderAndFlush(
             <Wrapper>
               <IgniteContext.Consumer>
                 {({ login }) => (
                   <button
                     // @ts-ignore
                     onPress={async () => {
-                      await login();
+                      await login({ skipUpdate: false });
                     }}
                     testID="login-button"
                   />
@@ -1028,246 +948,94 @@ describe('IgniteProvider', () => {
             </Wrapper>
           );
 
+          mockNativeAccountsSdk.login.mockResolvedValue({
+            accessToken: '123',
+          });
+          mockNativeAccountsSdk.isLoggedIn.mockResolvedValue(true);
+
           const loginButton = getByTestId('login-button');
 
           await act(async () => {
             loginButton.props.onPress();
           });
 
-          expect(fakeLogin).toHaveBeenCalled();
-          await waitFor(() => {
-            expect(fakeGetMemberInfo).not.toHaveBeenCalled();
-            expect(fakeIsLoggedIn).not.toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.login).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.getMemberInfo).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.isLoggedIn).toHaveBeenCalled();
+        });
+
+        it('and skipUpdate is true - does not refresh the state', async () => {
+          const { getByTestId } = await renderAndFlush(
+            <Wrapper>
+              <IgniteContext.Consumer>
+                {({ login }) => (
+                  <button
+                    // @ts-ignore
+                    onPress={async () => {
+                      await login({ skipUpdate: true });
+                    }}
+                    testID="login-button"
+                  />
+                )}
+              </IgniteContext.Consumer>
+            </Wrapper>
+          );
+
+          mockNativeAccountsSdk.login.mockResolvedValue({
+            accessToken: '123',
           });
+          mockNativeAccountsSdk.isLoggedIn.mockResolvedValue(true);
+
+          const loginButton = getByTestId('login-button');
+
+          await act(async () => {
+            loginButton.props.onPress();
+          });
+
+          expect(mockNativeAccountsSdk.login).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.getMemberInfo).not.toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.isLoggedIn).not.toHaveBeenCalled();
         });
       });
 
-      describe('android', () => {
-        beforeEach(() => {
-          Platform.OS = 'android';
-        });
-        it('when login is triggered, it calls the login method on AccountsSDK', async () => {
-          const fakeLogin = jest.fn(() => Promise.resolve('logged in'));
-          NativeModules.AccountsSDK = {
-            login: fakeLogin,
-          };
+      it('when login fails, does not refresh the state', async () => {
+        const { getByTestId } = await renderAndFlush(
+          <Wrapper>
+            <IgniteContext.Consumer>
+              {({ login }) => (
+                <button
+                  // @ts-ignore
+                  onPress={async () => {
+                    await login();
+                  }}
+                  testID="login-button"
+                />
+              )}
+            </IgniteContext.Consumer>
+          </Wrapper>
+        );
 
-          const { getByTestId } = render(
-            <Wrapper>
-              <IgniteContext.Consumer>
-                {({ login }) => (
-                  <button
-                    // @ts-ignore
-                    onPress={async () => {
-                      await login();
-                    }}
-                    testID="login-button"
-                  />
-                )}
-              </IgniteContext.Consumer>
-            </Wrapper>
-          );
+        mockNativeAccountsSdk.login.mockResolvedValue({});
+        mockNativeAccountsSdk.isLoggedIn.mockResolvedValue(true);
 
-          const loginButton = getByTestId('login-button');
+        const loginButton = getByTestId('login-button');
 
-          await act(async () => {
-            loginButton.props.onPress();
-          });
-
-          expect(fakeLogin).toHaveBeenCalled();
+        await act(async () => {
+          loginButton.props.onPress();
         });
 
-        describe('when AccountsSDK.login returns -1', () => {
-          it('and skipUpdate is not passed - refreshes the state', async () => {
-            const fakeLogin = jest.fn(() =>
-              Promise.resolve({ resultCode: -1 })
-            );
-            const fakeIsLoggedIn = jest.fn(() =>
-              Promise.resolve({ result: true })
-            );
-            const fakeGetMemberInfo = jest.fn(() =>
-              Promise.resolve('{"name":"Some Name"}')
-            );
-
-            NativeModules.AccountsSDK = {
-              login: fakeLogin,
-              isLoggedIn: fakeIsLoggedIn,
-              getMemberInfo: fakeGetMemberInfo,
-            };
-
-            const { getByTestId } = render(
-              <Wrapper>
-                <IgniteContext.Consumer>
-                  {({ login }) => (
-                    <button
-                      // @ts-ignore
-                      onPress={async () => {
-                        await login();
-                      }}
-                      testID="login-button"
-                    />
-                  )}
-                </IgniteContext.Consumer>
-              </Wrapper>
-            );
-
-            const loginButton = getByTestId('login-button');
-
-            await act(async () => {
-              loginButton.props.onPress();
-            });
-
-            expect(fakeLogin).toHaveBeenCalled();
-            expect(fakeGetMemberInfo).toHaveBeenCalled();
-            expect(fakeIsLoggedIn).toHaveBeenCalled();
-          });
-
-          it('and skipUpdate is false - refreshes the state', async () => {
-            const fakeLogin = jest.fn(() =>
-              Promise.resolve({ resultCode: -1 })
-            );
-            const fakeIsLoggedIn = jest.fn(() =>
-              Promise.resolve({ result: true })
-            );
-            const fakeGetMemberInfo = jest.fn(() =>
-              Promise.resolve('{"name":"Some Name"}')
-            );
-
-            NativeModules.AccountsSDK = {
-              login: fakeLogin,
-              isLoggedIn: fakeIsLoggedIn,
-              getMemberInfo: fakeGetMemberInfo,
-            };
-
-            const { getByTestId } = render(
-              <Wrapper>
-                <IgniteContext.Consumer>
-                  {({ login }) => (
-                    <button
-                      // @ts-ignore
-                      onPress={async () => {
-                        await login({ skipUpdate: false });
-                      }}
-                      testID="login-button"
-                    />
-                  )}
-                </IgniteContext.Consumer>
-              </Wrapper>
-            );
-
-            const loginButton = getByTestId('login-button');
-
-            await act(async () => {
-              loginButton.props.onPress();
-            });
-
-            expect(fakeLogin).toHaveBeenCalled();
-            expect(fakeGetMemberInfo).toHaveBeenCalled();
-            expect(fakeIsLoggedIn).toHaveBeenCalled();
-          });
-
-          it('and skipUpdate is true - does not refresh the state', async () => {
-            const fakeLogin = jest.fn(() =>
-              Promise.resolve({ resultCode: -1 })
-            );
-            const fakeIsLoggedIn = jest.fn(() =>
-              Promise.resolve({ result: true })
-            );
-            const fakeGetMemberInfo = jest.fn(() => Promise.resolve());
-
-            NativeModules.AccountsSDK = {
-              login: fakeLogin,
-              isLoggedIn: fakeIsLoggedIn,
-              getMemberInfo: fakeGetMemberInfo,
-            };
-
-            const { getByTestId } = render(
-              <Wrapper>
-                <IgniteContext.Consumer>
-                  {({ login }) => (
-                    <button
-                      // @ts-ignore
-                      onPress={async () => {
-                        await login({ skipUpdate: true });
-                      }}
-                      testID="login-button"
-                    />
-                  )}
-                </IgniteContext.Consumer>
-              </Wrapper>
-            );
-
-            const loginButton = getByTestId('login-button');
-
-            await act(async () => {
-              loginButton.props.onPress();
-            });
-
-            expect(fakeLogin).toHaveBeenCalled();
-            expect(fakeGetMemberInfo).not.toHaveBeenCalled();
-            expect(fakeIsLoggedIn).not.toHaveBeenCalled();
-          });
-        });
-
-        it('when AccountsSDK.login does not return -1, does not refresh the state', async () => {
-          const fakeLogin = jest.fn(() => Promise.resolve({ resultCode: 1 }));
-          const fakeIsLoggedIn = jest.fn(() =>
-            Promise.resolve({ result: true })
-          );
-          const fakeGetMemberInfo = jest.fn(() => Promise.resolve());
-
-          NativeModules.AccountsSDK = {
-            login: fakeLogin,
-            isLoggedIn: fakeIsLoggedIn,
-            getMemberInfo: fakeGetMemberInfo,
-          };
-
-          const { getByTestId } = render(
-            <Wrapper>
-              <IgniteContext.Consumer>
-                {({ login }) => (
-                  <button
-                    // @ts-ignore
-                    onPress={async () => {
-                      await login();
-                    }}
-                    testID="login-button"
-                  />
-                )}
-              </IgniteContext.Consumer>
-            </Wrapper>
-          );
-
-          const loginButton = getByTestId('login-button');
-
-          await act(async () => {
-            loginButton.props.onPress();
-          });
-
-          expect(fakeLogin).toHaveBeenCalled();
-          await waitFor(() => {
-            expect(fakeGetMemberInfo).not.toHaveBeenCalled();
-            expect(fakeIsLoggedIn).not.toHaveBeenCalled();
-          });
+        expect(mockNativeAccountsSdk.login).toHaveBeenCalled();
+        await waitFor(() => {
+          expect(mockNativeAccountsSdk.getMemberInfo).not.toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.isLoggedIn).not.toHaveBeenCalled();
         });
       });
     });
 
     describe('logout', () => {
       describe('when logout is triggered', () => {
-        it('calls the logout method on AccountsSDK', async () => {
-          const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
-          const fakeLogout = jest.fn(() => Promise.resolve('logged out'));
-          const fakeGetMemberInfo = jest.fn(() =>
-            Promise.resolve('{"name":"Some Name"}')
-          );
-          NativeModules.AccountsSDK = {
-            logout: fakeLogout,
-            isLoggedIn: fakeIsLoggedIn,
-            getMemberInfo: fakeGetMemberInfo,
-          };
-
-          const { getByTestId } = render(
+        it('calls the logout method on NativeAccountsSdk', async () => {
+          const { getByTestId } = await renderAndFlush(
             <Wrapper>
               <IgniteContext.Consumer>
                 {({ logout }) => (
@@ -1289,22 +1057,11 @@ describe('IgniteProvider', () => {
             logoutButton.props.onPress();
           });
 
-          expect(fakeLogout).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.logout).toHaveBeenCalled();
         });
 
         it('when skipUpdate is not passed - refreshes the state', async () => {
-          const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
-          const fakeLogout = jest.fn(() => Promise.resolve('logged out'));
-          const fakeGetMemberInfo = jest.fn(() =>
-            Promise.resolve('{"name":"Some Name"}')
-          );
-          NativeModules.AccountsSDK = {
-            logout: fakeLogout,
-            isLoggedIn: fakeIsLoggedIn,
-            getMemberInfo: fakeGetMemberInfo,
-          };
-
-          const { getByTestId } = render(
+          const { getByTestId } = await renderAndFlush(
             <Wrapper>
               <IgniteContext.Consumer>
                 {({ logout }) => (
@@ -1326,24 +1083,13 @@ describe('IgniteProvider', () => {
             logoutButton.props.onPress();
           });
 
-          expect(fakeLogout).toHaveBeenCalled();
-          expect(fakeGetMemberInfo).toHaveBeenCalled();
-          expect(fakeIsLoggedIn).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.logout).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.getMemberInfo).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.isLoggedIn).toHaveBeenCalled();
         });
 
         it('when skipUpdate is false - refreshes the state', async () => {
-          const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
-          const fakeLogout = jest.fn(() => Promise.resolve('logged out'));
-          const fakeGetMemberInfo = jest.fn(() =>
-            Promise.resolve('{"name":"Some Name"}')
-          );
-          NativeModules.AccountsSDK = {
-            logout: fakeLogout,
-            isLoggedIn: fakeIsLoggedIn,
-            getMemberInfo: fakeGetMemberInfo,
-          };
-
-          const { getByTestId } = render(
+          const { getByTestId } = await renderAndFlush(
             <Wrapper>
               <IgniteContext.Consumer>
                 {({ logout }) => (
@@ -1365,24 +1111,13 @@ describe('IgniteProvider', () => {
             logoutButton.props.onPress();
           });
 
-          expect(fakeLogout).toHaveBeenCalled();
-          expect(fakeGetMemberInfo).toHaveBeenCalled();
-          expect(fakeIsLoggedIn).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.logout).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.getMemberInfo).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.isLoggedIn).toHaveBeenCalled();
         });
 
         it('when skipUpdate is true - does not refresh the state', async () => {
-          const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
-          const fakeLogout = jest.fn(() => Promise.resolve('logged out'));
-          const fakeGetMemberInfo = jest.fn(() =>
-            Promise.resolve('{"name":"Some Name"}')
-          );
-          NativeModules.AccountsSDK = {
-            logout: fakeLogout,
-            isLoggedIn: fakeIsLoggedIn,
-            getMemberInfo: fakeGetMemberInfo,
-          };
-
-          const { getByTestId } = render(
+          const { getByTestId } = await renderAndFlush(
             <Wrapper>
               <IgniteContext.Consumer>
                 {({ logout }) => (
@@ -1404,330 +1139,145 @@ describe('IgniteProvider', () => {
             logoutButton.props.onPress();
           });
 
-          expect(fakeLogout).toHaveBeenCalled();
-          expect(fakeGetMemberInfo).not.toHaveBeenCalled();
-          expect(fakeIsLoggedIn).not.toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.logout).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.getMemberInfo).not.toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.isLoggedIn).not.toHaveBeenCalled();
         });
       });
     });
 
     describe('getIsLoggedIn', () => {
-      describe('ios', () => {
-        beforeEach(() => {
-          Platform.OS = 'ios';
+      it('returns true when isLoggedIn returns true', async () => {
+        let isLoggedInStatus: boolean | undefined;
+
+        const { getByTestId } = await renderAndFlush(
+          <Wrapper>
+            <IgniteContext.Consumer>
+              {({ getIsLoggedIn }) => (
+                <button
+                  // @ts-ignore
+                  onPress={async () => {
+                    isLoggedInStatus = await getIsLoggedIn();
+                  }}
+                  testID="islogin-button"
+                />
+              )}
+            </IgniteContext.Consumer>
+          </Wrapper>
+        );
+
+        mockNativeAccountsSdk.isLoggedIn.mockResolvedValue(true);
+
+        const isLoggedInButton = getByTestId('islogin-button');
+
+        await act(async () => {
+          isLoggedInButton.props.onPress();
         });
 
-        it('returns true when isLoggedIn on AccountsSDK gives true', async () => {
-          const fakeIsLoggedIn = jest.fn(() =>
-            Promise.resolve({ result: true })
-          );
-          NativeModules.AccountsSDK = {
-            isLoggedIn: fakeIsLoggedIn,
-          };
-
-          let isLoggedInStatus;
-
-          const { getByTestId } = render(
-            <Wrapper>
-              <IgniteContext.Consumer>
-                {({ getIsLoggedIn }) => (
-                  <button
-                    // @ts-ignore
-                    onPress={async () => {
-                      isLoggedInStatus = await getIsLoggedIn();
-                    }}
-                    testID="islogin-button"
-                  />
-                )}
-              </IgniteContext.Consumer>
-            </Wrapper>
-          );
-
-          const isLoggedInButton = getByTestId('islogin-button');
-
-          await act(async () => {
-            isLoggedInButton.props.onPress();
-          });
-
-          expect(fakeIsLoggedIn).toHaveBeenCalled();
-          expect(isLoggedInStatus).toEqual(true);
-        });
-
-        it('returns false when isLoggedIn on AccountsSDK gives false', async () => {
-          const fakeIsLoggedIn = jest.fn(() =>
-            Promise.resolve({ result: false })
-          );
-          NativeModules.AccountsSDK = {
-            isLoggedIn: fakeIsLoggedIn,
-          };
-
-          let isLoggedInStatus;
-
-          const { getByTestId } = render(
-            <Wrapper>
-              <IgniteContext.Consumer>
-                {({ getIsLoggedIn }) => (
-                  <button
-                    // @ts-ignore
-                    onPress={async () => {
-                      isLoggedInStatus = await getIsLoggedIn();
-                    }}
-                    testID="islogin-button"
-                  />
-                )}
-              </IgniteContext.Consumer>
-            </Wrapper>
-          );
-
-          const isLoggedInButton = getByTestId('islogin-button');
-
-          await act(async () => {
-            isLoggedInButton.props.onPress();
-          });
-
-          expect(fakeIsLoggedIn).toHaveBeenCalled();
-          expect(isLoggedInStatus).toEqual(false);
-        });
+        expect(mockNativeAccountsSdk.isLoggedIn).toHaveBeenCalled();
+        expect(isLoggedInStatus).toEqual(true);
       });
 
-      describe('android', () => {
-        beforeEach(() => {
-          Platform.OS = 'android';
+      it('returns false when isLoggedIn returns false', async () => {
+        let isLoggedInStatus: boolean | undefined;
+
+        const { getByTestId } = await renderAndFlush(
+          <Wrapper>
+            <IgniteContext.Consumer>
+              {({ getIsLoggedIn }) => (
+                <button
+                  // @ts-ignore
+                  onPress={async () => {
+                    isLoggedInStatus = await getIsLoggedIn();
+                  }}
+                  testID="islogin-button"
+                />
+              )}
+            </IgniteContext.Consumer>
+          </Wrapper>
+        );
+
+        mockNativeAccountsSdk.isLoggedIn.mockResolvedValue(false);
+
+        const isLoggedInButton = getByTestId('islogin-button');
+
+        await act(async () => {
+          isLoggedInButton.props.onPress();
         });
 
-        it('returns true when isLoggedIn on AccountsSDK gives true', async () => {
-          const fakeIsLoggedIn = jest.fn(() => Promise.resolve(true));
-          NativeModules.AccountsSDK = {
-            isLoggedIn: fakeIsLoggedIn,
-          };
-
-          let isLoggedInStatus;
-
-          const { getByTestId } = render(
-            <Wrapper>
-              <IgniteContext.Consumer>
-                {({ getIsLoggedIn }) => (
-                  <button
-                    // @ts-ignore
-                    onPress={async () => {
-                      isLoggedInStatus = await getIsLoggedIn();
-                    }}
-                    testID="islogin-button"
-                  />
-                )}
-              </IgniteContext.Consumer>
-            </Wrapper>
-          );
-
-          const isLoggedInButton = getByTestId('islogin-button');
-
-          await act(async () => {
-            isLoggedInButton.props.onPress();
-          });
-
-          expect(fakeIsLoggedIn).toHaveBeenCalled();
-          expect(isLoggedInStatus).toEqual(true);
-        });
-
-        it('returns false when isLoggedIn on AccountsSDK gives false', async () => {
-          const fakeIsLoggedIn = jest.fn(() => Promise.resolve(false));
-          NativeModules.AccountsSDK = {
-            isLoggedIn: fakeIsLoggedIn,
-          };
-
-          let isLoggedInStatus;
-
-          const { getByTestId } = render(
-            <Wrapper>
-              <IgniteContext.Consumer>
-                {({ getIsLoggedIn }) => (
-                  <button
-                    // @ts-ignore
-                    onPress={async () => {
-                      isLoggedInStatus = await getIsLoggedIn();
-                    }}
-                    testID="islogin-button"
-                  />
-                )}
-              </IgniteContext.Consumer>
-            </Wrapper>
-          );
-
-          const isLoggedInButton = getByTestId('islogin-button');
-
-          await act(async () => {
-            isLoggedInButton.props.onPress();
-          });
-
-          expect(fakeIsLoggedIn).toHaveBeenCalled();
-          expect(isLoggedInStatus).toEqual(false);
-        });
+        expect(mockNativeAccountsSdk.isLoggedIn).toHaveBeenCalled();
+        expect(isLoggedInStatus).toEqual(false);
       });
     });
 
     describe('getToken', () => {
-      describe('ios', () => {
-        beforeEach(() => {
-          Platform.OS = 'ios';
+      it('returns the access token', async () => {
+        const accessTokenData = {
+          accessToken: '123',
+          sportXRIdToken: '',
+        };
+        let accessToken: any;
+
+        const { getByTestId } = await renderAndFlush(
+          <Wrapper>
+            <IgniteContext.Consumer>
+              {({ getToken }) => (
+                <button
+                  // @ts-ignore
+                  onPress={async () => {
+                    accessToken = await getToken();
+                  }}
+                  testID="token-button"
+                />
+              )}
+            </IgniteContext.Consumer>
+          </Wrapper>
+        );
+
+        mockNativeAccountsSdk.getToken.mockResolvedValue(accessTokenData);
+
+        const tokenButton = getByTestId('token-button');
+
+        await act(async () => {
+          tokenButton.props.onPress();
         });
 
-        it('returns the access token', async () => {
-          const iosAccessToken = { accessToken: '123' };
-          const fakeGetToken = jest.fn(() => Promise.resolve(iosAccessToken));
-          NativeModules.AccountsSDK = {
-            getToken: fakeGetToken,
-          };
-
-          let accessToken;
-
-          const { getByTestId } = render(
-            <Wrapper>
-              <IgniteContext.Consumer>
-                {({ getToken }) => (
-                  <button
-                    // @ts-ignore
-                    onPress={async () => {
-                      accessToken = await getToken();
-                    }}
-                    testID="token-button"
-                  />
-                )}
-              </IgniteContext.Consumer>
-            </Wrapper>
-          );
-
-          const tokenButton = getByTestId('token-button');
-
-          await act(async () => {
-            tokenButton.props.onPress();
-          });
-
-          expect(fakeGetToken).toHaveBeenCalled();
-          expect(accessToken).toEqual(iosAccessToken);
-        });
-      });
-
-      describe('android', () => {
-        beforeEach(() => {
-          Platform.OS = 'android';
-        });
-
-        it('returns the access token', async () => {
-          const androidAccessToken = { accessToken: '123' };
-          const fakeRefreshToken = jest.fn(() =>
-            Promise.resolve(androidAccessToken)
-          );
-          NativeModules.AccountsSDK = {
-            refreshToken: fakeRefreshToken,
-          };
-
-          let accessToken;
-
-          const { getByTestId } = render(
-            <Wrapper>
-              <IgniteContext.Consumer>
-                {({ refreshToken }) => (
-                  <button
-                    // @ts-ignore
-                    onPress={async () => {
-                      accessToken = await refreshToken();
-                    }}
-                    testID="token-button"
-                  />
-                )}
-              </IgniteContext.Consumer>
-            </Wrapper>
-          );
-
-          const tokenButton = getByTestId('token-button');
-
-          await act(async () => {
-            tokenButton.props.onPress();
-          });
-
-          expect(fakeRefreshToken).toHaveBeenCalled();
-          expect(accessToken).toEqual(androidAccessToken);
-        });
+        expect(mockNativeAccountsSdk.getToken).toHaveBeenCalled();
+        expect(accessToken).toEqual(accessTokenData);
       });
     });
 
     describe('getMemberInfo', () => {
-      describe('ios', () => {
-        it('returns member info', async () => {
-          Platform.OS = 'ios';
+      it('returns member info', async () => {
+        const memberInfoData = { name: 'Some Name' };
+        let memberInfo: any;
 
-          const fakeGetMemberInfo = jest.fn(() => Promise.resolve('info'));
-          NativeModules.AccountsSDK = {
-            getMemberInfo: fakeGetMemberInfo,
-          };
+        const { getByTestId } = await renderAndFlush(
+          <Wrapper>
+            <IgniteContext.Consumer>
+              {({ getMemberInfo }) => (
+                <button
+                  // @ts-ignore
+                  onPress={async () => {
+                    memberInfo = await getMemberInfo();
+                  }}
+                  testID="memberInfo-button"
+                />
+              )}
+            </IgniteContext.Consumer>
+          </Wrapper>
+        );
 
-          let memberInfo;
+        mockNativeAccountsSdk.getMemberInfo.mockResolvedValue(memberInfoData);
 
-          const { getByTestId } = render(
-            <Wrapper>
-              <IgniteContext.Consumer>
-                {({ getMemberInfo }) => (
-                  <button
-                    // @ts-ignore
-                    onPress={async () => {
-                      memberInfo = await getMemberInfo();
-                    }}
-                    testID="memberInfo-button"
-                  />
-                )}
-              </IgniteContext.Consumer>
-            </Wrapper>
-          );
+        const memberInfoButton = getByTestId('memberInfo-button');
 
-          const isLoggedInButton = getByTestId('memberInfo-button');
-
-          await act(async () => {
-            isLoggedInButton.props.onPress();
-          });
-
-          expect(fakeGetMemberInfo).toHaveBeenCalled();
-          expect(memberInfo).toEqual('info');
+        await act(async () => {
+          memberInfoButton.props.onPress();
         });
-      });
 
-      describe('android', () => {
-        it('returns member info', async () => {
-          Platform.OS = 'android';
-
-          const fakeGetMemberInfo = jest.fn(() =>
-            Promise.resolve('{"name":"Some Name"}')
-          );
-          NativeModules.AccountsSDK = {
-            getMemberInfo: fakeGetMemberInfo,
-          };
-
-          let memberInfo;
-
-          const { getByTestId } = render(
-            <Wrapper>
-              <IgniteContext.Consumer>
-                {({ getMemberInfo }) => (
-                  <button
-                    // @ts-ignore
-                    onPress={async () => {
-                      memberInfo = await getMemberInfo();
-                    }}
-                    testID="memberInfo-button"
-                  />
-                )}
-              </IgniteContext.Consumer>
-            </Wrapper>
-          );
-
-          const isLoggedInButton = getByTestId('memberInfo-button');
-
-          await act(async () => {
-            isLoggedInButton.props.onPress();
-          });
-
-          expect(fakeGetMemberInfo).toHaveBeenCalled();
-          expect(memberInfo).toEqual({ name: 'Some Name' });
-        });
+        expect(mockNativeAccountsSdk.getMemberInfo).toHaveBeenCalled();
+        expect(memberInfo).toEqual(memberInfoData);
       });
     });
 
@@ -1735,17 +1285,13 @@ describe('IgniteProvider', () => {
       describe('ios', () => {
         it('returns a token', async () => {
           Platform.OS = 'ios';
-          const iosAccessToken = { accessToken: '123' };
-          const fakeRefreshToken = jest.fn(() =>
-            Promise.resolve(iosAccessToken)
-          );
-          NativeModules.AccountsSDK = {
-            refreshToken: fakeRefreshToken,
+          const iosAccessToken = {
+            accessToken: '123',
+            sportXRIdToken: '',
           };
+          let token: any;
 
-          let token;
-
-          const { getByTestId } = render(
+          const { getByTestId } = await renderAndFlush(
             <Wrapper>
               <IgniteContext.Consumer>
                 {({ refreshToken }) => (
@@ -1761,13 +1307,15 @@ describe('IgniteProvider', () => {
             </Wrapper>
           );
 
+          mockNativeAccountsSdk.refreshToken.mockResolvedValue(iosAccessToken);
+
           const tokenButton = getByTestId('token-button');
 
           await act(async () => {
             tokenButton.props.onPress();
           });
 
-          expect(fakeRefreshToken).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.refreshToken).toHaveBeenCalled();
           expect(token).toEqual(iosAccessToken);
         });
       });
@@ -1775,17 +1323,13 @@ describe('IgniteProvider', () => {
       describe('android', () => {
         it('returns a token', async () => {
           Platform.OS = 'android';
-          const androidAccessToken = { accessToken: '123' };
-          const fakeRefreshToken = jest.fn(() =>
-            Promise.resolve(androidAccessToken)
-          );
-          NativeModules.AccountsSDK = {
-            refreshToken: fakeRefreshToken,
+          const androidAccessToken = {
+            accessToken: '123',
+            sportXRIdToken: '',
           };
+          let token: any;
 
-          let token;
-
-          const { getByTestId } = render(
+          const { getByTestId } = await renderAndFlush(
             <Wrapper>
               <IgniteContext.Consumer>
                 {({ refreshToken }) => (
@@ -1801,13 +1345,17 @@ describe('IgniteProvider', () => {
             </Wrapper>
           );
 
+          mockNativeAccountsSdk.refreshToken.mockResolvedValue(
+            androidAccessToken
+          );
+
           const tokenButton = getByTestId('token-button');
 
           await act(async () => {
             tokenButton.props.onPress();
           });
 
-          expect(fakeRefreshToken).toHaveBeenCalled();
+          expect(mockNativeAccountsSdk.refreshToken).toHaveBeenCalled();
           expect(token).toEqual(androidAccessToken);
         });
       });

@@ -54,8 +54,8 @@ const RetailConfiguration = ({
         onChangeText={onAttractionIdTextChange}
       />
       <SectionTextInput
-        title="Purchase ID"
-        placeholder="Enter Purchase ID"
+        title="Purchase Event ID"
+        placeholder="Enter Purchase Event ID"
         defaultValue={Config.DEMO_EVENT_ID || ''}
         value={eventIdValue}
         onChangeText={onEventIdTextChange}

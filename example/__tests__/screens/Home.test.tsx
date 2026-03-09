@@ -5,7 +5,9 @@ import { useIgnite } from 'react-native-ticketmaster-ignite';
 import { ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 
-jest.mock('react-native-ticketmaster-ignite');
+jest.mock('react-native-ticketmaster-ignite', () => ({
+  useIgnite: jest.fn(),
+}));
 
 const mockedUseIgnite = useIgnite as jest.MockedFunction<typeof useIgnite>;
 

@@ -48,12 +48,12 @@ class ConfigTest {
     @Test
     fun `setImage and getImage for existing image`() {
         val key = "seats_config"
-        val imageJson = "{\"uri\": \"https://example.com/image.png\", \"width\": 100, \"height\": 200}"
+        val uri =  "https://example.com/image.png"
 
-        Config.setImage(key, imageJson)
+        Config.setImage(key, uri)
         val result = Config.getImage(key)
 
-        assertEquals("The getImage() should return the correct image JSON string", imageJson, result)
+        assertEquals("The getImage() should return the correct image JSON string", uri, result)
     }
 
     @Test

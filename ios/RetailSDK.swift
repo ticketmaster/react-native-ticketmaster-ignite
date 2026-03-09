@@ -1,25 +1,38 @@
-import TicketmasterAuthentication
+import Foundation
+import UIKit
 
-@objc(RetailSDK)
-class RetailSDK: NSObject {
-  @objc public func presentPrePurchaseVenue(_ venueId: String) {
-    let viewController = PrePurchaseSDK()
-    viewController.setVenueId(venueId)
-    viewController.modalPresentationStyle = .custom
-    UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first?.keyWindow?.rootViewController?.present(viewController, animated: true)
+@objcMembers public class RetailSDK: NSObject {
+
+  public func presentPrePurchaseVenue(venueId: String) {
+    DispatchQueue.main.async {
+      let viewController = PrePurchaseSDK()
+      viewController.setVenueId(venueId)
+      viewController.modalPresentationStyle = .custom
+      self.getRootViewController()?.present(viewController, animated: true)
+    }
   }
 
-    @objc public func presentPrePurchaseAttraction(_ attractionId: String) {
-    let viewController = PrePurchaseSDK()
-    viewController.setAttractionId(attractionId)
-    viewController.modalPresentationStyle = .custom
-    UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first?.keyWindow?.rootViewController?.present(viewController, animated: true)
+  public func presentPrePurchaseAttraction(attractionId: String) {
+    DispatchQueue.main.async {
+      let viewController = PrePurchaseSDK()
+      viewController.setAttractionId(attractionId)
+      viewController.modalPresentationStyle = .custom
+      self.getRootViewController()?.present(viewController, animated: true)
+    }
   }
 
-  @objc public func presentPurchase(_ eventId: String) {
+  public func presentPurchase(eventId: String) {
+    DispatchQueue.main.async {
       let viewController = PurchaseSDK()
       viewController.setEventId(eventId)
       viewController.modalPresentationStyle = .custom
-      UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first?.keyWindow?.rootViewController?.present(viewController, animated: true)
+      self.getRootViewController()?.present(viewController, animated: true)
+    }
+  }
+
+  private func getRootViewController() -> UIViewController? {
+    return UIApplication.shared.connectedScenes
+      .compactMap { $0 as? UIWindowScene }
+      .first?.keyWindow?.rootViewController
   }
 }

@@ -1,3 +1,3 @@
-import { NativeModules } from 'react-native';
+import NativeAccountsSdk from './specs/NativeAccountsSdk';
 
-export const AccountsSDK = NativeModules.AccountsSDK;
+export const AccountsSdk = NativeAccountsSdk;

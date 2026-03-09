@@ -39,7 +39,6 @@
 		5709B34CF0A7D63546082F79 /* Pods-TicketmasterIgniteExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicketmasterIgniteExample.release.xcconfig"; path = "Target Support Files/Pods-TicketmasterIgniteExample/Pods-TicketmasterIgniteExample.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests.debug.xcconfig"; path = "Target Support Files/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-TicketmasterIgniteExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicketmasterIgniteExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		816FE7B52E3BBF2B00506753 /* TicketmasterIgniteExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TicketmasterIgniteExample-Bridging-Header.h"; sourceTree = "<group>"; };
 		816FE7B62E3BBF2B00506753 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TicketmasterIgniteExample/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests.release.xcconfig"; path = "Target Support Files/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -93,7 +92,6 @@
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				D966270155D6480FC5C8EF7C /* PrivacyInfo.xcprivacy */,
 				816FE7B62E3BBF2B00506753 /* AppDelegate.swift */,
-				816FE7B52E3BBF2B00506753 /* TicketmasterIgniteExample-Bridging-Header.h */,
 			);
 			name = TicketmasterIgniteExample;
 			sourceTree = "<group>";
@@ -276,9 +274,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TicketmasterIgniteExample/Pods-TicketmasterIgniteExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TicketmasterIgniteExample/Pods-TicketmasterIgniteExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -337,9 +339,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -354,9 +360,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TicketmasterIgniteExample/Pods-TicketmasterIgniteExample-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TicketmasterIgniteExample/Pods-TicketmasterIgniteExample-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -371,9 +381,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests/Pods-TicketmasterIgniteExample-TicketmasterIgniteExampleTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -482,7 +496,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = TicketmasterIgniteExample;
-				SWIFT_OBJC_BRIDGING_HEADER = "TicketmasterIgniteExample-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -509,7 +522,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = TicketmasterIgniteExample;
-				SWIFT_OBJC_BRIDGING_HEADER = "TicketmasterIgniteExample-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -589,10 +601,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -666,10 +675,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

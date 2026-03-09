@@ -1,29 +1,19 @@
-import React from 'react';
-import { render } from '@testing-library/react-native';
 import { TicketsSdkModal } from '../src/TicketsSdkModal';
 
-const mockSetShowTicketsModal = jest.fn();
+jest.mock('../src/specs/NativeTicketsSdkModal', () => ({
+  __esModule: true,
+  default: {
+    showTicketsSdkModal: jest.fn(),
+  },
+}));
 
-describe('<TicketsSdkModal />', () => {
-  it('renders TicketsSdkModal when showTicketsModal is true', async () => {
-    const { getByTestId } = render(
-      <TicketsSdkModal
-        showTicketsModal={true}
-        setShowTicketsModal={mockSetShowTicketsModal}
-      />
-    );
-
-    expect(() => getByTestId('ticketsSDKWrapper')).not.toThrow();
+describe('TicketsSdkModal', () => {
+  it('exposes the showTicketsSdkModal method', () => {
+    expect(TicketsSdkModal?.showTicketsSdkModal).toBeDefined();
   });
 
-  it('does not render TicketsSdkModal when showTicketsModal is false', async () => {
-    const { getByTestId } = render(
-      <TicketsSdkModal
-        showTicketsModal={false}
-        setShowTicketsModal={mockSetShowTicketsModal}
-      />
-    );
-
-    expect(() => getByTestId('ticketsSDKWrapper')).toThrow();
+  it('calls the native showTicketsSdkModal method', () => {
+    TicketsSdkModal?.showTicketsSdkModal();
+    expect(TicketsSdkModal?.showTicketsSdkModal).toHaveBeenCalled();
   });
 });
