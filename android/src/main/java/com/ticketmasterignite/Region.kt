@@ -2,10 +2,8 @@ import com.ticketmaster.authenticationsdk.TMXDeploymentRegion
 import com.ticketmaster.tickets.ticketssdk.TicketsSDKSingleton
 
 object Region {
-   private var region = Config.get("region")
-
   fun getRegion(): TMXDeploymentRegion {
-    return if(region == "UK") {
+    return if(Config.get("region") == "UK") {
       TMXDeploymentRegion.UK
     } else {
       TMXDeploymentRegion.US
@@ -13,7 +11,7 @@ object Region {
   }
 
   fun getTicketsSDKRegion(): TicketsSDKSingleton.HostEnvironment {
-    return if(region == "UK") {
+    return if(Config.get("region") == "UK") {
       TicketsSDKSingleton.HostEnvironment.UK
     } else {
       TicketsSDKSingleton.HostEnvironment.US
