@@ -4,13 +4,12 @@ import {
   View,
   ActivityIndicator,
   ScrollView,
-  Platform,
   Text,
 } from 'react-native';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
-import AccountsSdkOptions from '../components/AccountsSDKOptions';
-import RetailSDKOptions from '../components/RetailSDKOptions';
-import TicketsSDKOptions from '../components/TicketsSDKOptions';
+import AccountsSdkOptions from '../components/AccountsSdkOptions';
+import RetailSdkOptions from '../components/RetailSdkOptions';
+import TicketsSdkOptions from '../components/TicketsSdkOptions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomTabsParamList } from '../types/sharedTypes';
 import AnalyticsOptions from '../components/AnalyticsOptions';
@@ -24,18 +23,7 @@ const Home = ({ route }: HomeProps) => {
     authState: { memberInfo, isLoggedIn, isConfigured },
   } = useIgnite();
 
-  const email =
-    Platform.OS === 'ios'
-      ? memberInfo?.email
-      : memberInfo?.hostMember
-        ? memberInfo?.hostMember.email
-        : memberInfo?.sportXRMember
-          ? memberInfo?.sportXRMember.email
-          : memberInfo?.archticsMember
-            ? memberInfo?.archticsMember.email
-            : memberInfo?.mfxMember
-              ? memberInfo?.archticsMember.email
-              : '';
+  const email = memberInfo?.email;
 
   return (
     <ScrollView style={styles.scrollViewContainer}>
@@ -60,12 +48,12 @@ const Home = ({ route }: HomeProps) => {
         </View>
       )}
       <AccountsSdkOptions />
-      <RetailSDKOptions
+      <RetailSdkOptions
         attractionId={attractionId}
         eventId={eventId}
         venueId={venueId}
       />
-      <TicketsSDKOptions />
+      <TicketsSdkOptions />
       <AnalyticsOptions />
     </ScrollView>
   );

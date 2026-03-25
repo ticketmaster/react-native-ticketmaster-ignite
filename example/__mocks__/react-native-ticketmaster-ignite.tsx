@@ -10,7 +10,7 @@ export const useIgnite = jest.fn(() => ({
   isLoggingIn: false,
 }));
 
-export const RetailSDK = {
+export const RetailSdk = {
   presentPurchase: jest.fn(),
   presentPrePurchaseVenue: jest.fn(),
   presentPrePurchaseAttraction: jest.fn(),

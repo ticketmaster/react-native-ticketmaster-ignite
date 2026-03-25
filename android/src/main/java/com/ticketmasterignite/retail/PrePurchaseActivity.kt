@@ -34,7 +34,7 @@ class PrePurchaseActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.venue_layout)
+        setContentView(R.layout.prepurchase_layout)
 
         val tmPrePurchase = TMPrePurchase(
                 environment = Environment.getTMEnvironment(Config.get("environment")),
@@ -80,7 +80,7 @@ class PrePurchaseActivity : AppCompatActivity() {
         }
 
         supportFragmentManager.beginTransaction()
-                .add(R.id.venue_container, fragment)
+                .add(R.id.prepurchase_container, fragment)
                 .commit()
     }
 }

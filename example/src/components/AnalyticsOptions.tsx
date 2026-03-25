@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import SectionHeader from './SectionHeader';
-import SDKButton from './SDKButton';
+import SdkButton from './SdkButton';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../types/sharedTypes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -14,7 +14,7 @@ const AnalyticsOptions = ({}: AnalyticsProps) => {
   return (
     <View style={styles.wrapper}>
       <SectionHeader title="Analytics" />
-      <SDKButton
+      <SdkButton
         item={{
           title: `Analytic logs`,
           onPress: () => navigation.navigate('Analytics'),

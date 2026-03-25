@@ -87,6 +87,7 @@ export type IgniteAnalytics = {
   purchaseSdkDidMakeDecisionFor: MakeDecisionData;
   purchaseSdkManageMyTickets: 'purchaseSdkManageMyTickets';
   ticketsSdkDidViewEvents: 'ticketsSdkDidViewEvents';
+  ticketsSdkModalDidDismiss: 'ticketsSdkModalDidDismiss';
   ticketsSdkVenueConcessionsOrderFor: TicketsSdkEventData;
   ticketsSdkVenueConcessionsWalletFor: TicketsSdkEventData;
   ticketsSdkCustomModuleButton1: TicketsSdkEventData;
@@ -119,6 +120,7 @@ export enum IgniteAnalyticName {
   PURCHASE_SDK_DID_MAKE_DECISION_FOR = 'purchaseSdkDidMakeDecisionFor',
   PURCHASE_SDK_MANAGE_MY_TICKETS = 'purchaseSdkManageMyTickets',
   TICKETS_SDK_DID_VIEW_EVENTS = 'ticketsSdkDidViewEvents',
+  TICKETS_SDK_DID_DISMISS = 'ticketsSdkModalDidDismiss',
   TICKETS_SDK_VENUE_CONCESSIONS_ORDER_FOR = 'ticketsSdkVenueConcessionsOrderFor',
   TICKETS_SDK_VENUE_CONCESSIONS_WALLET_FOR = 'ticketsSdkVenueConcessionsWalletFor',
   TICKETS_SDK_CUSTOM_MODULE_BUTTON_1 = 'ticketsSdkCustomModuleButton1',
@@ -156,6 +158,18 @@ export type PrebuiltModules = {
   };
 };
 
+export type AccessToken = {
+  accessToken: string;
+  sportXRIdToken: string;
+} | null;
+
+export type SportXrData = {
+  sportXRcookieName?: string;
+  sportXRTeamDomain?: string;
+} | null;
+
+export type MemberInfo = Record<string, any> | null;
+
 export type CustomModules = {
   button1?: {
     enabled: boolean;
@@ -179,7 +193,6 @@ export type CustomModules = {
 
 export type Region = 'US' | 'UK';
 
-// eslint-disable-next-line prettier/prettier
 export type MarketDomain =
   | 'AE'
   | 'AT'
