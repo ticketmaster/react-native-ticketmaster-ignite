@@ -113,3 +113,59 @@ It is advisable you use auth methods from the `useIgnite` hook instead of the `A
 ## eventHeaderType
 
 The info icon in the Purchase SDK navigation header for Android is no longer configurable. `EVENT_INFO` and `EVENT_INFO_SHARE` will not affect it and the button shows up within the WebView of the EDP page itself on the suitable pages.
+
+## Troubleshooting
+
+### Building locally (Android):
+For Android it is adviseable `newArchEnabled=true` is in android/gradle.properties
+
+If more build issues happen on Android you can try
+
+From project root:
+```bash
+cd android && ./gradlew clean && cd ..
+```
+
+Clear all caches:
+```bash
+rm -rf android/.gradle
+rm -rf android/app/build
+rm -rf android/build
+rm -rf node_modules/react-native-ticketmaster-ignite/android/.gradle
+rm -rf node_modules/react-native-ticketmaster-ignite/android/build
+```
+
+Regenerate codegen:
+```bash
+npx react-native codegen
+```
+
+Rebuild:
+```bash
+cd android && ./gradlew generateCodegenArtifactsFromSchema && cd ..
+```
+```
+rm -rf node_modules
+yarn install
+```
+
+Then in Android Studio:
+File → Invalidate Caches → Invalidate and Restart
+After restart: Build → Rebuild Project
+
+
+
+### Building locally (iOS):
+
+If any build issues happen on iOS you can try:
+
+From project root
+```bash
+cd ios
+rm -rf Pods Podfile.lock build
+pod install
+```
+
+And try rebuilding iOS again
+
+
