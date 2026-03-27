@@ -70,6 +70,35 @@ return (
 Once it is confirmed there are no issues with the positioning with the `TicketsSdkEmbedded` component in new architecture RN apps we will eventually deprecate this prop.
 
 
+## Tickets SDK Embedded with a RN custom login screen 
+
+The Tickets SDK has it's own login screen. `isLoggedIn` from `useIgnite()` is the Accounts SDK value and on v4 of this library `isLoggedIn` can become true much quicker than the Tickets SDK default login screen dismisses. If you want to show your own custom login screen above the SDK default screen you will have to handle any delays in this UI transition yourself. You can do this with a loading screen/screen transition or a persisted custom var. Below is an example of a persisted custom var:
+
+
+```typescript
+const {
+    authState: {isLoggedIn}
+  } = useIgnite()
+const ticketsSdkLogin = useSelector(ticketsSdkLoginSelector)
+
+useEffect(() => {
+  if (isLoggedIn) {
+    setTimeout(() => dispatch(setTicketsSdkLogin(true)), 500)
+  } else {
+    dispatch(setTicketsSdkLogin(false))
+  }
+}, [dispatch, isLoggedIn])
+
+return (
+    {ticketsSdkLogin ? (
+        <TicketsSdkEmbedded
+          style={{height: ticketsWindowHeight, width: '100%'}}
+        />
+ ...
+```
+You will need to persist the custom variable using a local storage library/tool of your choice.
+
+
 ## Tickets SDK Modal (iOS only)
 
 The iOS Tickets SDK full screen modal is now a function call like the Retail SDK views, which removes the need of creating `useState` variables.
