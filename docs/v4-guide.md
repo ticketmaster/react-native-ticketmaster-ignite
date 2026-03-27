@@ -90,6 +90,7 @@ useEffect(() => {
 }, [dispatch, isLoggedIn])
 
 return (
+  <>
     {ticketsSdkLogin ? (
         <TicketsSdkEmbedded
           style={{height: ticketsWindowHeight, width: '100%'}}
