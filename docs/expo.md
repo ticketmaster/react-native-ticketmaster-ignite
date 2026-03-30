@@ -43,8 +43,8 @@ module.exports = function withIgnitePlugin(expoConfig) {
   withStringsXml(expoConfig, (modConfig) => {
     const isModernAccounts = false
     const isSportXr = false
-    const modernAccountsSchemes = ["sampleScheme"];
-    const sportXRSchemes = [""];
+    const modernAccountsSchemes = [''];
+    const sportXRSchemes = [''];
     
     if(isModernAccounts) {
       modernAccountsSchemes.forEach((value, index) => {
@@ -55,7 +55,7 @@ module.exports = function withIgnitePlugin(expoConfig) {
               $: {
                 name: `${
                   index === 0
-                    ? "app_tm_modern_accounts_scheme"
+                    ? 'app_tm_modern_accounts_scheme'
                     : `app_tm_modern_accounts_scheme_${index + 1}`
                 }`
               }
@@ -73,7 +73,7 @@ module.exports = function withIgnitePlugin(expoConfig) {
               $: {
                 name: `${
                   index === 0
-                    ? "app_tm_sportxr_scheme"
+                    ? 'app_tm_sportxr_scheme'
                     : `app_tm_sportxr_scheme_${index + 1}`
                 }`
               }
@@ -108,7 +108,21 @@ You can then add the config plugin to your array of plugins in `app.json`
 
 You will need to update one of `isModernAccounts` or `isSportXr` booleans to true and add all your schemes to the respective array of schemes in `withStringsXml()`for android.
 
-You can update `withIgnitePlugin.js`'s values for iOS deployment target, compileSdkVersion etc. to the values needed for your project.
+If you have a Modern Accounts Scheme you would have the below:
+
+```typescript
+const isModernAccounts = true
+const modernAccountsSchemes = ["myScheme"];
+```
+
+or for an Android app with multiple API keys:
+
+```typescript
+const isModernAccounts = true
+const modernAccountsSchemes = ["firstScheme", "secondScheme"];
+```
+
+You can update `withIgnitePlugin.js`'s values for iOS deployment target, `compileSdkVersion` etc. to the values needed for your project.
 
 
 ### Troubleshooting  

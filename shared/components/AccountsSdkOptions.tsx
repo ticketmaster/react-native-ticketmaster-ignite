@@ -4,7 +4,7 @@ import { View, Platform } from 'react-native';
 import SdkButton from './SdkButton';
 import SectionHeader from './SectionHeader';
 
-const AccountsSdkOptions = () => {
+const AccountsSdkOptions = (): React.ReactElement => {
   const {
     login,
     logout,
@@ -15,7 +15,7 @@ const AccountsSdkOptions = () => {
     authState: { isLoggedIn },
   } = useIgnite();
 
-  const onLogin = async () => {
+  const onLogin = async (): Promise<void> => {
     try {
       await login();
     } catch (e) {
@@ -23,7 +23,7 @@ const AccountsSdkOptions = () => {
     }
   };
 
-  const onLogout = async () => {
+  const onLogout = async (): Promise<void> => {
     try {
       await logout();
     } catch (e) {
@@ -31,7 +31,7 @@ const AccountsSdkOptions = () => {
     }
   };
 
-  const onGetIsLoggedIn = async () => {
+  const onGetIsLoggedIn = async (): Promise<void> => {
     try {
       await getIsLoggedIn();
     } catch (e) {
@@ -39,7 +39,7 @@ const AccountsSdkOptions = () => {
     }
   };
 
-  const onRefreshToken = async () => {
+  const onRefreshToken = async (): Promise<void> => {
     try {
       await refreshToken();
     } catch (e) {
@@ -47,7 +47,7 @@ const AccountsSdkOptions = () => {
     }
   };
 
-  const onGetMemberInfo = async () => {
+  const onGetMemberInfo = async (): Promise<void> => {
     try {
       await getMemberInfo();
     } catch (e) {
@@ -55,7 +55,7 @@ const AccountsSdkOptions = () => {
     }
   };
 
-  const onGetToken = async () => {
+  const onGetToken = async (): Promise<void> => {
     try {
       await getToken();
     } catch (e) {

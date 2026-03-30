@@ -5,7 +5,7 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 import Config from 'react-native-config';
 import Root from './navigators/Root';
 import { AppProvider } from './contexts/AppProvider';
-import Logger from './components/Logger';
+import Logger from '@shared/components/Logger';
 
 const App = () => {
   const navTheme = {

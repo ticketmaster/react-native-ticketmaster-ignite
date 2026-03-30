@@ -1,6 +1,7 @@
 # OSX
 #
 .DS_Store
+*.pem
 
 # XDE
 .expo/
@@ -41,6 +42,19 @@ contents.xcworkspacedata
 .settings
 local.properties
 android.iml
+.kotlin/
+
+# Native signing files
+#
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
 
 # Cocoapods
 #
@@ -52,9 +66,9 @@ example/vendor/
 # node.js
 #
 node_modules/
-npm-debug.log
-yarn-debug.log
-yarn-error.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
 
 # BUCK
 buck-out/
@@ -72,6 +86,11 @@ android/keystores/debug.keystore
 
 # Expo
 .expo/
+expo/dist/
+expo/web-build/
+expo/expo-env.d.ts
+expo/ios
+expo/android
 
 # Turborepo
 .turbo/
@@ -87,6 +106,16 @@ example/**/.xcode.env.local
 
 # example variables
 example/.env
+
+# expo variables
+expo/.env
+expo/.env*.local
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
 
 # Yarn
 example/.yarn/*

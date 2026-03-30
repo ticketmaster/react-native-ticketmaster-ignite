@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import ChevronLeft from '../assets/svg/ChevronLeft';
+import ChevronLeft from '@shared/assets/svg/ChevronLeft';
 
 type BackButtonProps = {
   text?: string;

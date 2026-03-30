@@ -20,9 +20,9 @@ const Analytics = () => {
             <View style={styles.logMessageWrapper}>
               <Text style={styles.timeStamp}>{log.timestamp}</Text>
               <Text style={styles.messageText}>
-                {JSON.stringify(log.message)
-                  .replace(/\\/g, '')
-                  .replace(/""/g, '')}
+                {typeof log.message === 'string'
+                  ? log.message
+                  : JSON.stringify(log.message)}
               </Text>
             </View>
           </View>

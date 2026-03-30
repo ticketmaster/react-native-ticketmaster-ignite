@@ -3,12 +3,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 // @ts-ignore
 import MyEvents from '../screens/MyEvents';
-import HomeIcon from '../assets/svg/HomeIcon';
-import MyEventsIcon from '../assets/svg/MyEventsIcon';
+import HomeIcon from '@shared/assets/svg/HomeIcon';
+import MyEventsIcon from '@shared/assets/svg/MyEventsIcon';
 import SecureEntryView from '../screens/SecureEntryView';
 import { AppContext } from '../contexts/AppProvider';
 import BackButton from '../components/Backbutton';
-import { BottomTabsParamList } from '../types/sharedTypes';
+import { BottomTabsParamList } from '@shared/types/sharedTypes';
 
 const Tab = createBottomTabNavigator<BottomTabsParamList>();
 

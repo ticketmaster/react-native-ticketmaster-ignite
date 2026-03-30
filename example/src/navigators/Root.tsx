@@ -5,7 +5,7 @@ import Configuration from '../screens/Configuration';
 import { AppContext } from '../contexts/AppProvider';
 import BackButton from '../components/Backbutton';
 import Analytics from '../screens/Analytics';
-import { RootStackParamList } from '../types/sharedTypes';
+import { RootStackParamList } from '@shared/types/sharedTypes';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

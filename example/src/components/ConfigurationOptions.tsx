@@ -1,9 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
 import Config from 'react-native-config';
-import SectionHeader from './SectionHeader';
-import SectionTextInput from './SectionTextInput';
-import SectionDropdown from './SectionDropdown';
+import SectionHeader from '@shared/components/SectionHeader';
+import SectionTextInput from '@shared/components/SectionTextInput';
+import SectionDropdown from '@shared/components/SectionDropdown';
 import { Region } from 'react-native-ticketmaster-ignite';
 
 type ConfigurationOptionsProps = {

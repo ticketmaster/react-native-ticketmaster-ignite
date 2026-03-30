@@ -14,8 +14,8 @@ const RetailSdkOptions = ({
   attractionId,
   eventId,
   venueId,
-}: RetailSdkOptionsProps) => {
-  const onShowPurchase = async () => {
+}: RetailSdkOptionsProps): React.ReactElement => {
+  const onShowPurchase = async (): Promise<void> => {
     try {
       RetailSdk.presentPurchase(eventId);
     } catch (e) {
@@ -23,7 +23,7 @@ const RetailSdkOptions = ({
     }
   };
 
-  const onShowPrePurchaseVenue = async () => {
+  const onShowPrePurchaseVenue = async (): Promise<void> => {
     try {
       RetailSdk.presentPrePurchaseVenue(venueId);
     } catch (e) {
@@ -34,7 +34,7 @@ const RetailSdkOptions = ({
     }
   };
 
-  const onShowPrePurchaseAttraction = async () => {
+  const onShowPrePurchaseAttraction = async (): Promise<void> => {
     try {
       RetailSdk.presentPrePurchaseAttraction(attractionId);
     } catch (e) {

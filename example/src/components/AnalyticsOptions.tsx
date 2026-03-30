@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import SectionHeader from './SectionHeader';
-import SdkButton from './SdkButton';
+import SectionHeader from '@shared/components/SectionHeader';
+import SdkButton from '@shared/components/SdkButton';
 import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../types/sharedTypes';
+import { RootStackParamList } from '@shared/types/sharedTypes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type AnalyticsProps = {};

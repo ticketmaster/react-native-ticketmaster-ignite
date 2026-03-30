@@ -4,8 +4,8 @@ import { Platform, View } from 'react-native';
 import SdkButton from './SdkButton';
 import SectionHeader from './SectionHeader';
 
-const TicketsSdkOptions = () => {
-  const onShowTicketsSdk = () => {
+const TicketsSdkOptions = (): React.ReactElement => {
+  const onShowTicketsSdk = (): void => {
     TicketsSdkModal?.showTicketsSdkModal();
   };
 
