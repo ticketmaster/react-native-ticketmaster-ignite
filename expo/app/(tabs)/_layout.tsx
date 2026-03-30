@@ -35,9 +35,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Ignite',
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="fire" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="fire" color={color} />,
           headerLeft: () => <BackButton text="Back" />,
         }}
       />
@@ -45,9 +43,7 @@ export default function TabLayout() {
         name="tickets"
         options={{
           title: 'Tickets',
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="ticket" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="ticket" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -55,9 +51,7 @@ export default function TabLayout() {
         options={{
           title: 'Secure Entry',
           headerShown: true,
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="ticket" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="ticket" color={color} />,
         }}
       />
     </Tabs>
