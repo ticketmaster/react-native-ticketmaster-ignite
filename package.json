@@ -33,7 +33,8 @@
   ],
   "scripts": {
     "example": "yarn workspace react-native-ticketmaster-ignite-example",
-    "test": "jest __tests__/* && cd example && yarn test",
+    "expo": "yarn workspace react-native-ticketmaster-ignite-expo",
+    "test": "jest __tests__/* && yarn workspace react-native-ticketmaster-ignite-example test && yarn workspace react-native-ticketmaster-ignite-expo test",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
@@ -94,13 +95,15 @@
     "react-native": "*"
   },
   "workspaces": [
-    "example"
+    "example",
+    "expo"
   ],
   "packageManager": "yarn@3.6.1",
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
+      "<rootDir>/expo/node_modules",
       "<rootDir>/lib/"
     ],
     "transformIgnorePatterns": [

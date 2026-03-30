@@ -885,9 +885,9 @@ As the initial Accounts SDK configuration is done for your app via `IgniteProvid
 On any logs of `TicketmasterFoundation.ConnectionError error` see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
 
 
-## Running the example app
+## Running the demo apps
 
-To run the demo/example app:
+To run the React Native example app:
 
 Clone the project and then
 
@@ -898,6 +898,18 @@ cd example/ios
 pod install
 yarn start
 ```
+Then run the project with either `yarn android`/`yarn ios` or building the app in Android Studio/Xcode.
+
+To run the Expo app: 
+Clone the project and then
+
+```bash
+cd react-native-ticketmaster-ignite
+yarn
+cd expo
+```
+Then run the project with either `yarn expo:android`/`yarn expo:ios`
+
 
 ## Environment variables
 
@@ -911,17 +923,26 @@ Replace "clientName" with your company name, for example "My Company Name". You 
 Replace "#026cdf" with the main color theme of your app.
 
 
-If running in the `example` app you can create a `.env` with these values or update the codebase with your desired values.
+If running in the `example` app you can create a `.env` in `/example` with the values below or update the codebase with your desired values.
 
 ```bash
 API_KEY=someApiKey
 CLIENT_NAME=clientName
-PRIMARY_COLOR=#026cdf
+PRIMARY_COLOR=#000000
 DEMO_EVENT_ID=0C00630DE7294188
 DEMO_ATTRACTION_ID=2873404
 DEMO_VENUE_ID=KovZpZAEdntA
 ```
 
+If running the `expo` app then inside `/expo` you can create a `.env` and add:
+```bash
+EXPO_PUBLIC_API_KEY=someApiKey
+EXPO_PUBLIC_CLIENT_NAME=clientName
+EXPO_PUBLIC_PRIMARY_COLOR=000000
+EXPO_PUBLIC_DEMO_EVENT_ID=0C00630DE7294188
+EXPO_PUBLIC_DEMO_ATTRACTION_ID=2873404
+EXPO_PUBLIC_DEMO_VENUE_ID=KovZpZAEdntA
+```
 
 You need to use a different key for iOS and Android, you can make the value for API_KEY and object `API_KEY={KeyName_ios: abcde, KeyName_android: abcdefg}` and in your RN code you can use `Platform.OS` to select the right KeyName to pass to the SDK. Example:
 

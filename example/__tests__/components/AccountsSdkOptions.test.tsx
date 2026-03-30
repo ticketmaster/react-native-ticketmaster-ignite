@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import AccountsSdkOptions from '../../src/components/AccountsSdkOptions';
+import AccountsSdkOptions from '@shared/components/AccountsSdkOptions';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
 
 jest.mock('react-native-ticketmaster-ignite', () => ({

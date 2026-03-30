@@ -7,11 +7,11 @@ import {
   Text,
 } from 'react-native';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
-import AccountsSdkOptions from '../components/AccountsSdkOptions';
-import RetailSdkOptions from '../components/RetailSdkOptions';
-import TicketsSdkOptions from '../components/TicketsSdkOptions';
+import AccountsSdkOptions from '@shared/components/AccountsSdkOptions';
+import RetailSdkOptions from '@shared/components/RetailSdkOptions';
+import TicketsSdkOptions from '@shared/components/TicketsSdkOptions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { BottomTabsParamList } from '../types/sharedTypes';
+import { BottomTabsParamList } from '@shared/types/sharedTypes';
 import AnalyticsOptions from '../components/AnalyticsOptions';
 
 type HomeProps = NativeStackScreenProps<BottomTabsParamList, 'Home'>;

@@ -1,0 +1,86 @@
+import { useLocalSearchParams } from 'expo-router';
+import React from 'react';
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { useIgnite } from 'react-native-ticketmaster-ignite';
+import AccountsSdkOptions from '@shared/components/AccountsSdkOptions';
+import AnalyticsOptions from '../../components/AnalyticsOptions';
+import RetailSdkOptions from '@shared/components/RetailSdkOptions';
+import TicketsSdkOptions from '@shared/components/TicketsSdkOptions';
+
+export default function Home(): React.ReactElement {
+  const { attractionId, eventId, venueId } = useLocalSearchParams<{
+    attractionId: string;
+    eventId: string;
+    venueId: string;
+  }>();
+
+  const {
+    isLoggingIn,
+    authState: { memberInfo, isLoggedIn, isConfigured },
+  } = useIgnite();
+
+  const email = memberInfo?.email;
+
+  return (
+    <ScrollView style={styles.scrollViewContainer}>
+      <View style={styles.infoWrapper}>
+        <Text numberOfLines={1} style={styles.infoText}>
+          <Text style={styles.infoLabel}>
+            Accounts SDK successfully configured:{' '}
+          </Text>
+          {`${isConfigured}`}
+        </Text>
+        {isLoggedIn && (
+          <Text numberOfLines={1} style={styles.infoText}>
+            <Text style={styles.infoLabel}>Logged in as: </Text>
+            {email}
+          </Text>
+        )}
+      </View>
+
+      {!!isLoggingIn && (
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator color={'blue'} size={'small'} />
+        </View>
+      )}
+      <AccountsSdkOptions />
+      <RetailSdkOptions
+        attractionId={attractionId || ''}
+        eventId={eventId || ''}
+        venueId={venueId || ''}
+      />
+      <TicketsSdkOptions />
+      <AnalyticsOptions />
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  scrollViewContainer: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 30,
+    backgroundColor: '#F5F5F5',
+  },
+  infoWrapper: {
+    backgroundColor: '#ffffff',
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    height: 40,
+    paddingLeft: 10,
+    borderRadius: 16,
+  },
+  infoText: { color: 'black', fontSize: 12, width: '100%' },
+  infoLabel: { fontSize: 12, fontWeight: 'bold', color: 'black' },
+  activityIndicator: {
+    paddingTop: 12,
+  },
+});

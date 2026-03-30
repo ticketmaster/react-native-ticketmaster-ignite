@@ -1,25 +1,12 @@
-import React, { createContext } from 'react';
+import React, { useState } from 'react';
 import Config from 'react-native-config';
-import { useState } from 'react';
-import { Log } from '../types/sharedTypes';
-
-type AppContextType = {
-  primaryColor: string;
-  setPrimaryColor: (arg0: string) => void;
-  logs: Log[];
-  addLog: (arg0: any) => void;
-};
+import { AppContext } from '@shared/contexts/AppContext';
 
 interface AppProviderProps {
   children: React.ReactNode;
 }
 
-export const AppContext = createContext<AppContextType>({
-  primaryColor: '',
-  setPrimaryColor: () => {},
-  logs: [],
-  addLog: () => {},
-});
+export { AppContext };
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [primaryColor, setPrimaryColor] = useState<string>(

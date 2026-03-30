@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import RetailSdkOptions from '../../src/components/RetailSdkOptions';
+import RetailSdkOptions from '@shared/components/RetailSdkOptions';
 import { RetailSdk } from 'react-native-ticketmaster-ignite';
 
 jest.mock('react-native-ticketmaster-ignite', () => ({

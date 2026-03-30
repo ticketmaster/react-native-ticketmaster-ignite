@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import TicketsSdkOptions from '../../src/components/TicketsSdkOptions';
+import TicketsSdkOptions from '@shared/components/TicketsSdkOptions';
 import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
 import { Platform } from 'react-native';
 

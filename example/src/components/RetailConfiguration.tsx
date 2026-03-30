@@ -1,10 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
 import Config from 'react-native-config';
-import SectionHeader from './SectionHeader';
-import SectionTextInput from './SectionTextInput';
-import SectionDropdown from './SectionDropdown';
-import { marketDomain as marketDomainData } from '../data/sharedData';
+import SectionHeader from '@shared/components/SectionHeader';
+import SectionTextInput from '@shared/components/SectionTextInput';
+import SectionDropdown from '@shared/components/SectionDropdown';
+import { marketDomain as marketDomainData } from '@shared/data/sharedData';
 import {
   EventHeaderType,
   MarketDomain,

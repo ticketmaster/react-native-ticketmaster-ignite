@@ -3,7 +3,7 @@ import { StyleSheet, ScrollView, Pressable, Text } from 'react-native';
 import Config from 'react-native-config';
 import ConfigurationOptions from '../components/ConfigurationOptions';
 import RetailConfiguration from '../components/RetailConfiguration';
-import TicketsConfiguration from '../components/TicketsConfiguration';
+import TicketsConfiguration from '@shared/components/TicketsConfiguration';
 import {
   EventHeaderType,
   MarketDomain,
@@ -11,7 +11,7 @@ import {
   useIgnite,
 } from 'react-native-ticketmaster-ignite';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/sharedTypes';
+import { RootStackParamList } from '@shared/types/sharedTypes';
 import { AppContext } from '../contexts/AppProvider';
 
 type ConfigurationProps = NativeStackScreenProps<

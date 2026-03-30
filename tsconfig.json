@@ -1,4 +1,5 @@
 {
+  "exclude": ["example", "expo", "shared"],
   "compilerOptions": {
     "rootDir": ".",
     "paths": {

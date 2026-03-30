@@ -9,7 +9,7 @@ export type SdkItemProps = {
   last?: boolean;
 };
 
-const SdkButton = ({ item }: { item: SdkItemProps }) => {
+const SdkButton = ({ item }: { item: SdkItemProps }): React.ReactElement => {
   return (
     <>
       <Pressable
