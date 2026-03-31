@@ -79,19 +79,19 @@ The Tickets SDK has it's own login screen. `isLoggedIn` from `useIgnite()` is th
 const {
     authState: {isLoggedIn}
   } = useIgnite()
-const ticketsSdkLogin = useSelector(ticketsSdkLoginSelector)
+const isTicketsSdkLoggedIn = useSelector(isTicketsSdkLoggedInSelector)
 
 useEffect(() => {
   if (isLoggedIn) {
-    setTimeout(() => dispatch(setTicketsSdkLogin(true)), 500)
+    setTimeout(() => dispatch(setIsTicketsSdkLoggedIn(true)), 500)
   } else {
-    dispatch(setTicketsSdkLogin(false))
+    dispatch(setIsTicketsSdkLoggedIn(false))
   }
 }, [dispatch, isLoggedIn])
 
 return (
   <>
-    {ticketsSdkLogin ? (
+    {isTicketsSdkLoggedIn ? (
         <TicketsSdkEmbedded
           style={{height: ticketsWindowHeight, width: '100%'}}
         />
