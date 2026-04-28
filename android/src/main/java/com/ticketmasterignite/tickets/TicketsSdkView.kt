@@ -1,6 +1,9 @@
 package com.ticketmasterignite.tickets
 
 import android.content.Context
+import android.util.Log
+import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import com.facebook.react.uimanager.ThemedReactContext
 import androidx.compose.material3.darkColorScheme
@@ -27,11 +30,19 @@ import com.ticketmasterignite.GlobalEventEmitter
 import com.ticketmasterignite.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class TicketsSdkView(context: Context) : FrameLayout(context) {
 
   private var offsetTop: Int = 0
+  private var lastAuthState: Boolean? = null // null = not checked yet, true = logged in, false = logged out
+
+  // Main thread scope for UI operations (fragment transactions, view updates)
+  private val mainScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+  // Background scope for auth/network operations
+  private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
   init {
     val container = FrameLayout(context)
@@ -44,6 +55,86 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
     offsetTop = offset
     // Apply offset to the view
     this.offsetTopAndBottom(offsetTop)
+  }
+
+  private fun isViewAttached(): Boolean {
+    return isAttachedToWindow
+  }
+
+  private fun isViewReady(): Boolean {
+    return isViewAttached() && width > 0 && height > 0
+  }
+
+  private fun isContainerReady(): Boolean {
+    val container = findViewById<FrameLayout>(R.id.tickets_container)
+    return container != null && container.isAttachedToWindow
+  }
+
+
+  override fun onVisibilityChanged(changedView: View, visibility: Int) {
+    super.onVisibilityChanged(changedView, visibility)
+
+    if (visibility == View.VISIBLE && changedView == this) {
+      checkAuthStateAndUpdate()
+    }
+  }
+
+  private fun checkAuthStateAndUpdate() {
+    ioScope.launch {
+      val authentication = IgniteSDKSingleton.getAuthenticationSDK()
+      if (authentication != null) {
+        val tokenMap = validateAuthToken(authentication)
+        val currentAuthState = tokenMap.isNotEmpty()
+
+        if (lastAuthState != null && lastAuthState != currentAuthState) {
+          // Auth state changed (logged in → logged out OR logged out → logged in)
+          mainScope.launch {
+            reinitializeView()
+          }
+        }
+
+        // Update tracked state
+        lastAuthState = currentAuthState
+      }
+    }
+  }
+
+  private fun reinitializeView() {
+    mainScope.launch {
+      if (!isViewAttached()) {
+        return@launch
+      }
+
+      // Remove existing fragment
+      val activity = getFragmentActivity()
+      if (activity == null || activity.isFinishing || activity.isDestroyed) {
+        return@launch
+      }
+
+      activity.supportFragmentManager.findFragmentById(R.id.tickets_container)?.let { fragment ->
+        activity.supportFragmentManager.beginTransaction()
+          .remove(fragment)
+          .commitAllowingStateLoss()
+      }
+
+      // Check again before modifying view hierarchy
+      if (!isViewAttached()) {
+        return@launch
+      }
+
+      // Remove existing container
+      findViewById<FrameLayout>(R.id.tickets_container)?.let { existingContainer ->
+        removeView(existingContainer)
+      }
+
+      // Recreate container
+      val container = FrameLayout(context)
+      container.id = R.id.tickets_container
+      addView(container)
+
+      // Re-run full setup
+      setupTicketsSDK()
+    }
   }
 
   private fun createTicketsColorScheme(color: Int): TicketsColorScheme {
@@ -79,6 +170,10 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
   }
 
   private val measureAndLayout = Runnable {
+    if (!isViewReady()) {
+      return@Runnable
+    }
+
     measure(
       MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
       MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
@@ -92,11 +187,30 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
   }
 
   private fun launchTicketsView() {
+    if (!isViewAttached()) {
+      addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(v: View) {
+          removeOnAttachStateChangeListener(this)
+          launchTicketsView()
+        }
+        override fun onViewDetachedFromWindow(v: View) {}
+      })
+      return
+    }
+
+    val activity = getFragmentActivity()
+    if (activity == null || activity.isFinishing || activity.isDestroyed) {
+      return
+    }
+
+    if (!isContainerReady()) {
+      return
+    }
+
     TicketsSDKSingleton.getEventsFragment(context)?.let { fragment ->
-      val activity = getFragmentActivity()
-      activity?.supportFragmentManager?.beginTransaction()
-        ?.add(R.id.tickets_container, fragment)
-        ?.commitAllowingStateLoss()
+      activity.supportFragmentManager.beginTransaction()
+        .replace(R.id.tickets_container, fragment)
+        .commitAllowingStateLoss()
     }
 
     if (Config.get("orderIdDeepLink").isNotBlank()) {
@@ -278,41 +392,61 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
   }
 
   private fun setupTicketsSDK() {
-    val coroutineScope = CoroutineScope(Dispatchers.IO)
-    coroutineScope.launch(Dispatchers.Main) {
-      val authenticationResult =
-        TMAuthentication.Builder(Config.get("apiKey"), Config.get("clientName"))
-          .colors(createAuthColors(Config.get("primaryColor").toColorInt()))
-          .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment")))
-          .region(Region.getRegion())
-          .build(context)
+    ioScope.launch {
+      try {
+        val authenticationResult =
+          TMAuthentication.Builder(Config.get("apiKey"), Config.get("clientName"))
+            .colors(createAuthColors(Config.get("primaryColor").toColorInt()))
+            .environment(Environment.getTMXDeploymentEnvironment(Config.get("environment")))
+            .region(Region.getRegion())
+            .build(context)
 
-      val authentication = authenticationResult.getOrThrow()
-      val tokenMap = validateAuthToken(authentication)
+        val authentication = authenticationResult.getOrThrow()
+        val tokenMap = validateAuthToken(authentication)
 
-      TicketsSDKClient
-        .Builder(createTicketsColorScheme(Config.get("primaryColor").toColorInt()))
-        .authenticationSDKClient(authentication)
-        .build(context)
-        .apply {
-          TicketsSDKSingleton.setTicketsSdkClient(this)
-          TicketsSDKSingleton.setEnvironment(
-            context,
-            Environment.getTicketsSDKSingletonEnvironment(Config.get("environment")),
-            Region.getTicketsSDKRegion()
-          )
-          if (tokenMap.isNotEmpty()) {
-            val params: WritableMap = Arguments.createMap().apply {
-              putString("ticketsSdkDidViewEvents", "ticketsSdkDidViewEvents")
+        mainScope.launch {
+          TicketsSDKClient
+            .Builder(createTicketsColorScheme(Config.get("primaryColor").toColorInt()))
+            .authenticationSDKClient(authentication)
+            .build(context)
+            .apply {
+              TicketsSDKSingleton.setTicketsSdkClient(this)
+              TicketsSDKSingleton.setEnvironment(
+                context,
+                Environment.getTicketsSDKSingletonEnvironment(Config.get("environment")),
+                Region.getTicketsSDKRegion()
+              )
+
+              // Wait for view to be measured before launching fragment
+              if (isViewReady()) {
+                launchTickets(tokenMap)
+              } else {
+                viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                  override fun onGlobalLayout() {
+                    if (isViewReady()) {
+                      viewTreeObserver.removeOnGlobalLayoutListener(this)
+                      launchTickets(tokenMap)
+                    }
+                  }
+                })
+              }
             }
-            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-            launchTicketsView()
-            setCustomModules()
-          } else {
-            launchTicketsView()
-            setCustomModules()
-          }
         }
+      } catch (e: Exception) {
+        Log.e("TicketsSdkView", "Failed to setup Tickets SDK", e)
+      }
     }
   }
+
+  private fun launchTickets(tokenMap: Map<AuthSource, String>) {
+    if (tokenMap.isNotEmpty()) {
+      val params: WritableMap = Arguments.createMap().apply {
+        putString("ticketsSdkDidViewEvents", "ticketsSdkDidViewEvents")
+      }
+      GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+    }
+    setCustomModules()
+    launchTicketsView()
+  }
+
 }
