@@ -40,8 +40,8 @@ module.exports = function withIgnitePlugin(expoConfig) {
   });
 
   withStringsXml(expoConfig, (modConfig) => {
-    const isModernAccounts = true;
-    const isSportXr = true;
+    const isModernAccounts = false;
+    const isSportXr = false;
     const modernAccountsSchemes = [''];
     const sportXRSchemes = [''];
 
