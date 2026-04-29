@@ -471,6 +471,19 @@ If you do not send a style prop, `{width: '100%', height: '100%'}` is used by de
  <TicketsSdkEmbedded />
 ```
 
+If you want to force the `<TicketsSdkEmbedded />` component to carry out a fresh call on focus or after navigation to that tab/screen, you can add the below to any screen that renders the `<TicketsSdkEmbedded />` component to perform an unmount on blur behaviour (React Navigation example):
+
+```typescript
+const isFocused = useIsFocused();
+
+if (!isFocused) {
+  return null;
+}
+
+return (<TicketsSdkEmbedded />)
+```
+
+
 React Native New Architecture + React Navigation note: There is a bug with android native UI views when New Architecture mode is switched on where the native UI does not take into account the header height from React Navigation. If this happens in your app you can use the `offsetTop` prop to add offset to the top of the native UI.
 
 ⚠️ Please note that the `offsetTop` prop only affects Android.
@@ -570,6 +583,8 @@ const isFocused = useIsFocused();
 if (!isFocused) {
   return null;
 }
+
+return (<TicketsSdkEmbedded />)
 ```
 
 You can also create your own global state variables to unmount the screen with logic similar to the above and React Navigation also provides a layout prop where you can wrap a screen with a component that contains your custom logic. See more [here](https://reactnavigation.org/docs/upgrading-from-6.x/#the-unmountonblur-option-is-removed-in-favor-of-poptotoponblur-in-bottom-tab-navigator-and-drawer-navigator)
