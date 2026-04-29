@@ -480,7 +480,7 @@ if (!isFocused) {
   return null;
 }
 
-return (<TicketsSdkEmbedded />)
+return <TicketsSdkEmbedded />;
 ```
 
 
@@ -499,9 +499,7 @@ useEffect(() => {
   setOffSetTop(100);
 }, []);
 
-return (
-    <TicketsSdkEmbedded style={{width: '100%', height: '95%'}} offsetTop={offSetTop} />
-  );
+return <TicketsSdkEmbedded style={{width: '100%', height: '95%'}} offsetTop={offSetTop} />;
 ```
 
 ## Tickets SDK Embedded with a RN custom login screen 
@@ -584,7 +582,7 @@ if (!isFocused) {
   return null;
 }
 
-return (<TicketsSdkEmbedded />)
+return <TicketsSdkEmbedded />;
 ```
 
 You can also create your own global state variables to unmount the screen with logic similar to the above and React Navigation also provides a layout prop where you can wrap a screen with a component that contains your custom logic. See more [here](https://reactnavigation.org/docs/upgrading-from-6.x/#the-unmountonblur-option-is-removed-in-favor-of-poptotoponblur-in-bottom-tab-navigator-and-drawer-navigator)
