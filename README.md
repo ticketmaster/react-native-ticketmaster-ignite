@@ -502,7 +502,7 @@ useEffect(() => {
 return <TicketsSdkEmbedded style={{width: '100%', height: '95%'}} offsetTop={offSetTop} />;
 ```
 
-## Tickets SDK Embedded with a RN custom login screen 
+## TicketsSdkEmbedded with a RN custom login screen 
 
 The Tickets SDK has it's own login screen. `isLoggedIn` from `useIgnite()` is the Accounts SDK value and on v4 of this library `isLoggedIn` can become true much quicker than the Tickets SDK default login screen dismisses. If you want to show your own custom login screen above the SDK default screen you will have to handle any delays in this UI transition yourself. You can do this with a loading screen/screen transition or a persisted custom var. Below is an example of a persisted custom var:
 
