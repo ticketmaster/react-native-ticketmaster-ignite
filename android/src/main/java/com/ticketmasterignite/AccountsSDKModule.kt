@@ -30,8 +30,6 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
   override fun getName() = NAME
   private val CODE = 1
   private var loginPromise: Promise? = null
-  private var currentActivity = reactContext.currentActivity as FragmentActivity
-
 
   override fun configureAccountsSDK(promise: Promise) {
     CoroutineScope(Dispatchers.Main).launch {
@@ -44,7 +42,12 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
       GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
 
       try {
-        val currentFragmentActivity = currentActivity
+        val currentFragmentActivity = reactApplicationContext.currentActivity as? FragmentActivity
+        if (currentFragmentActivity == null) {
+          promise.reject("Accounts SDK Configuration Error", "Activity is null")
+          return@launch
+        }
+
         val authenticationResult = TMAuthentication.Builder(
           Config.get("apiKey"),
           Config.get("clientName")
@@ -150,10 +153,15 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
         return
       }
 
+      val currentFragmentActivity = reactApplicationContext.currentActivity as? FragmentActivity
+      if (currentFragmentActivity == null) {
+        promise.reject("Accounts SDK Login Error", "Activity is null")
+        return
+      }
+
       loginPromise = promise
-      val currentFragmentActivity = currentActivity
       val intent = authentication.getLoginIntent(currentFragmentActivity)
-      currentActivity.startActivityForResult(intent, CODE)
+      currentFragmentActivity.startActivityForResult(intent, CODE)
     } catch (e: Exception) {
       promise.reject("Accounts SDK Login Error", e)
     }
