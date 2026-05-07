@@ -106,7 +106,7 @@ You can then add the config plugin to your array of plugins in `app.json`
     ],
 ```
 
-You will need to update `isModernAccounts` or `isSportXr` booleans to true and add all your schemes to the respective array in `withStringsXml()`for android.
+You will need to update `isModernAccounts` or `isSportXr` to true and add all your schemes to the respective array in `withStringsXml()`for android.
 
 If you have a Modern Accounts Scheme you would have the below:
 
