@@ -8,7 +8,7 @@
     "ios": "cd ios && pod install && cd .. && react-native run-ios",
     "start": "react-native start",
     "build:android": "rm -rf ../android/build && cd android && ./gradlew assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a",
-    "build:ios": "cd ios && xcodebuild -workspace TicketmasterIgniteExample.xcworkspace -scheme TicketmasterIgniteExample -configuration Debug -sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO"
+    "build:ios": "cd ios && xcodebuild -workspace TicketmasterIgniteExample.xcworkspace -scheme TicketmasterIgniteExample -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.4.4",
