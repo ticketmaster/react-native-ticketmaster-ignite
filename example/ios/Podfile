@@ -36,5 +36,14 @@ target 'TicketmasterIgniteExample' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Force fmt 11.0.2 to compile as C++17 to dodge an Apple clang 21 (Xcode 26)
+    # consteval evaluation bug in <format-inl.h> that surfaces under C++20.
+    installer.pods_project.targets.each do |t|
+      next unless t.name == 'fmt'
+      t.build_configurations.each do |c|
+        c.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+      end
+    end
   end
 end
