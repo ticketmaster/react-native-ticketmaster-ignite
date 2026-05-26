@@ -39,6 +39,16 @@ jest.mock('../src/specs/NativeAccountsSdk', () => ({
   },
 }));
 
+jest.mock('react-native/Libraries/Image/Image', () => {
+  const Image = () => null;
+  Image.resolveAssetSource = jest.fn();
+
+  return {
+    __esModule: true,
+    default: Image,
+  };
+});
+
 const mockNativeConfig = NativeConfig as jest.Mocked<typeof NativeConfig>;
 const mockNativeAccountsSdk = NativeAccountsSdk as jest.Mocked<
   typeof NativeAccountsSdk
@@ -845,6 +855,77 @@ describe('IgniteProvider', () => {
             });
           });
         });
+      });
+    });
+
+    describe('customModules headerView', () => {
+      it('sets a color header when color is provided', () => {
+        render(
+          <IgniteProvider
+            options={options}
+            customModules={{
+              headerView: { color: '#026cdf' },
+            }}
+          >
+            <View />
+          </IgniteProvider>
+        );
+
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+          'customModuleHeaderType',
+          'color'
+        );
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+          'customModuleHeaderColor',
+          '#026cdf'
+        );
+        expect(mockNativeConfig.setImage).not.toHaveBeenCalledWith(
+          'customModuleHeaderImage',
+          expect.any(String)
+        );
+      });
+
+      it('sets an image header when image is provided', () => {
+        const headerImageUri = 'mock-header-image-uri';
+        const mockResolveAssetSource = jest.requireMock(
+          'react-native/Libraries/Image/Image'
+        ).default.resolveAssetSource;
+        mockResolveAssetSource.mockReturnValue({
+          uri: headerImageUri,
+        } as any);
+
+        render(
+          <IgniteProvider
+            options={options}
+            customModules={{
+              headerView: { image: require('./testImage.png') },
+            }}
+          >
+            <View />
+          </IgniteProvider>
+        );
+
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+          'customModuleHeaderType',
+          'image'
+        );
+        expect(mockNativeConfig.setImage).toHaveBeenCalledWith(
+          'customModuleHeaderImage',
+          headerImageUri
+        );
+      });
+
+      it('clears the header type when no header is provided', () => {
+        render(component);
+
+        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
+          'customModuleHeaderType',
+          ''
+        );
+        expect(mockNativeConfig.setImage).not.toHaveBeenCalledWith(
+          'customModuleHeaderImage',
+          expect.any(String)
+        );
       });
     });
   });
