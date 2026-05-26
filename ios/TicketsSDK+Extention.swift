@@ -13,6 +13,12 @@ private final class FixedSizeImageView: UIImageView {
   }
 }
 
+private final class FixedSizeHeaderView: UIView {
+  override var intrinsicContentSize: CGSize {
+    return TMTicketsModule.HeaderDisplay.defaultSize
+  }
+}
+
 extension TicketsSDKViewProtocol {
   func deepLinkToOrder(_ orderId: String) {
     TMTickets.shared.display(orderOrEventId: orderId)
@@ -119,8 +125,11 @@ extension TicketsSDKViewProtocol {
     switch headerType {
     case "color":
       let hex = Config.shared.get(for: "customModuleHeaderColor")
+        .trimmingCharacters(in: CharacterSet(charactersIn: "#"))
       guard let color = UIColor(hexString: hex) else { return nil }
-      let view = UIView()
+      let view = FixedSizeHeaderView(
+        frame: CGRect(origin: .zero, size: TMTicketsModule.HeaderDisplay.defaultSize)
+      )
       view.backgroundColor = color
       return TMTicketsModule.HeaderDisplay(view: view)
     case "image":

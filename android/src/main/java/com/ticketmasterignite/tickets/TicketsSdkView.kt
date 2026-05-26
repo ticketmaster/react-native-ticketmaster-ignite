@@ -245,8 +245,12 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
     }
   }
 
+  private fun getCustomModuleId(): String {
+    return "com.${Config.get("clientName")}"
+  }
+
   private fun getCustomModule(context: Context): ModuleBase {
-    val moduleBase = ModuleBase(context)
+    val moduleBase = ModuleBase(context, getCustomModuleId())
 
     applyCustomModuleHeader(context, moduleBase)
 
@@ -314,6 +318,54 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
         target.setImageResource(resourceId)
       }
     }
+  }
+
+  private fun customModuleEventName(
+    moduleId: String?,
+    buttonTitle: String?,
+    callbackValue: String?
+  ): String? {
+    val isCustomModule = moduleId == getCustomModuleId()
+    val isLegacyModulePress = moduleId == null
+
+    if (!isCustomModule && !isLegacyModulePress) {
+      return null
+    }
+
+    return when {
+      (isCustomModule && callbackValue == "LeftClick") ||
+        buttonTitle == Config.get("button1Title") -> "ticketsSdkCustomModuleButton1"
+      (isCustomModule && callbackValue == "MiddleButton") ||
+        buttonTitle == Config.get("button2Title") -> "ticketsSdkCustomModuleButton2"
+      (isCustomModule && callbackValue == "RightClick") ||
+        buttonTitle == Config.get("button3Title") -> "ticketsSdkCustomModuleButton3"
+      else -> null
+    }
+  }
+
+  private fun emitTicketsSdkEvent(eventName: String, eventOrders: EventOrders?) {
+    val params: WritableMap = Arguments.createMap()
+    val paramValues: WritableMap = Arguments.createMap().apply {
+      putString("eventOrderInfo", eventOrders.toString())
+    }
+    params.putMap(eventName, paramValues)
+    GlobalEventEmitter.sendEvent("igniteAnalytics", params)
+  }
+
+  private fun handleActionButtonPress(
+    moduleId: String?,
+    buttonTitle: String?,
+    callbackValue: String?,
+    eventOrders: EventOrders?
+  ) {
+    val eventName = customModuleEventName(moduleId, buttonTitle, callbackValue)
+      ?: when (buttonTitle) {
+        "Order" -> "ticketsSdkVenueConcessionsOrderFor"
+        "Wallet" -> "ticketsSdkVenueConcessionsWalletFor"
+        else -> null
+      }
+
+    eventName?.let { emitTicketsSdkEvent(it, eventOrders) }
   }
 
   private fun setCustomModules() {
@@ -393,48 +445,16 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
         callbackValue: String?,
         eventOrders: EventOrders?
       ) {
-        when (buttonTitle) {
-          Config.get("button1Title") -> {
-            val params: WritableMap = Arguments.createMap()
-            val paramValues: WritableMap = Arguments.createMap().apply {
-              putString("eventOrderInfo", eventOrders.toString())
-            }
-            params.putMap("ticketsSdkCustomModuleButton1", paramValues)
-            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-          }
-          Config.get("button2Title") -> {
-            val params: WritableMap = Arguments.createMap()
-            val paramValues: WritableMap = Arguments.createMap().apply {
-              putString("eventOrderInfo", eventOrders.toString())
-            }
-            params.putMap("ticketsSdkCustomModuleButton2", paramValues)
-            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-          }
-          Config.get("button3Title") -> {
-            val params: WritableMap = Arguments.createMap()
-            val paramValues: WritableMap = Arguments.createMap().apply {
-              putString("eventOrderInfo", eventOrders.toString())
-            }
-            params.putMap("ticketsSdkCustomModuleButton3", paramValues)
-            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-          }
-          "Order" -> {
-            val params: WritableMap = Arguments.createMap()
-            val paramValues: WritableMap = Arguments.createMap().apply {
-              putString("eventOrderInfo", eventOrders.toString())
-            }
-            params.putMap("ticketsSdkVenueConcessionsOrderFor", paramValues)
-            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-          }
-          "Wallet" -> {
-            val params: WritableMap = Arguments.createMap()
-            val paramValues: WritableMap = Arguments.createMap().apply {
-              putString("eventOrderInfo", eventOrders.toString())
-            }
-            params.putMap("ticketsSdkVenueConcessionsWalletFor", paramValues)
-            GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-          }
-        }
+        handleActionButtonPress(null, buttonTitle, callbackValue, eventOrders)
+      }
+
+      override fun userDidPressActionButton(
+        moduleId: String?,
+        buttonTitle: String?,
+        callbackValue: String?,
+        eventOrders: EventOrders?
+      ) {
+        handleActionButtonPress(moduleId, buttonTitle, callbackValue, eventOrders)
       }
     }
   }
