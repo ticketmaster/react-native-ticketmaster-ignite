@@ -170,7 +170,10 @@ export type SportXrData = {
 
 export type MemberInfo = Record<string, any> | null;
 
+export type CustomModuleHeaderView = { color: string } | { image: any };
+
 export type CustomModules = {
+  headerView?: CustomModuleHeaderView;
   button1?: {
     enabled: boolean;
     title: string;

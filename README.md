@@ -759,7 +759,7 @@ You can select custom images for `seatUpgradesModule` and `venueConcessionsModul
 
 ### Custom Modules
 
-You can configure up to 3 buttons as a custom module. Each button accepts a callback function. Currently a header view above the buttons is not available for configuration in this library.
+You can configure up to 3 buttons as a custom module. Each button accepts a callback function. An optional `headerView` can be displayed above the buttons — either a solid color or an image bundled with your app via `require()`.
 
 ```typescript
 <IgniteProvider
@@ -769,6 +769,9 @@ You can configure up to 3 buttons as a custom module. Each button accepts a call
     primaryColor: PRIMARY_COLOR
   }}
   customModules={{
+    headerView: {
+      image: require('./assets/my_module_header.png'),
+    },
     button1: {
       enabled: true,
       title: 'My Button 1',
@@ -788,6 +791,16 @@ You can configure up to 3 buttons as a custom module. Each button accepts a call
 >
   <App />
 </IgniteProvider>
+```
+
+`headerView` accepts either an image or a solid color:
+
+```typescript
+// Image header (use require() — single source, bundled by Metro)
+headerView: { image: require('./assets/my_module_header.png') }
+
+// Solid color header
+headerView: { color: '#026cdf' }
 ```
 
 Single button example:

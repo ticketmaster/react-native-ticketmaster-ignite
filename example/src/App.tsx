@@ -59,6 +59,9 @@ const App = () => {
             },
           }}
           customModules={{
+            headerView: {
+              image: require('../assets/react_background.png'),
+            },
             button1: {
               enabled: true,
               title: 'My Button 1',

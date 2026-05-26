@@ -307,7 +307,9 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     });
 
     // Custom Modules
-    Object.entries(customModules).forEach(([moduleName, moduleOptions]) => {
+    const { headerView, ...buttonModules } = customModules;
+    Object.entries(buttonModules).forEach(([moduleName, moduleOptions]) => {
+      if (!moduleOptions) return;
       const isEnabled = moduleOptions.enabled ? 'true' : 'false';
       const dismissTicketView =
         moduleOptions.dismissTicketViewIos === undefined
@@ -320,6 +322,19 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         dismissTicketView
       );
     });
+
+    if (headerView && 'color' in headerView) {
+      NativeConfig.setConfig('customModuleHeaderType', 'color');
+      NativeConfig.setConfig('customModuleHeaderColor', headerView.color);
+    } else if (headerView && 'image' in headerView) {
+      NativeConfig.setConfig('customModuleHeaderType', 'image');
+      const resolvedImage = Image.resolveAssetSource(headerView.image);
+      if (resolvedImage?.uri) {
+        NativeConfig.setImage('customModuleHeaderImage', resolvedImage.uri);
+      }
+    } else {
+      NativeConfig.setConfig('customModuleHeaderType', '');
+    }
   }, [customModules, prebuiltModules]);
 
   const setTicketDeepLink = useCallback((id: string) => {

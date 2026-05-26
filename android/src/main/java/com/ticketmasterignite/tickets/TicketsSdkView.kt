@@ -1,10 +1,15 @@
 package com.ticketmasterignite.tickets
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.ImageView
+import java.net.URL
+import kotlinx.coroutines.withContext
 import com.facebook.react.uimanager.ThemedReactContext
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -243,6 +248,8 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
   private fun getCustomModule(context: Context): ModuleBase {
     val moduleBase = ModuleBase(context)
 
+    applyCustomModuleHeader(context, moduleBase)
+
     if (Config.get("button1") == "true") {
       moduleBase.setLeftButtonText(Config.get("button1Title"))
     }
@@ -259,6 +266,54 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
     moduleBase.setRightClickListener {}
 
     return moduleBase
+  }
+
+  private fun applyCustomModuleHeader(context: Context, moduleBase: ModuleBase) {
+    when (Config.get("customModuleHeaderType")) {
+      "color" -> {
+        val hex = Config.optionalString("customModuleHeaderColor") ?: return
+        val color = runCatching { hex.toColorInt() }.getOrNull() ?: return
+        val view = View(context).apply {
+          setBackgroundColor(color)
+          layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            (resources.displayMetrics.density * 120).toInt()
+          )
+        }
+        moduleBase.setHeader(view)
+      }
+      "image" -> {
+        val imageUri = Config.getImage("customModuleHeaderImage") ?: return
+        val imageView = ImageView(context).apply {
+          scaleType = ImageView.ScaleType.CENTER_CROP
+          layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+          )
+        }
+        moduleBase.setHeader(imageView)
+        loadHeaderImage(imageUri, imageView)
+      }
+    }
+  }
+
+  private fun loadHeaderImage(imageUri: String, target: ImageView) {
+    if (imageUri.startsWith("http")) {
+      ioScope.launch {
+        val bitmap = runCatching {
+          URL(imageUri).openStream().use { BitmapFactory.decodeStream(it) }
+        }.getOrNull()
+        if (bitmap != null) {
+          withContext(Dispatchers.Main) { target.setImageBitmap(bitmap) }
+        }
+      }
+    } else {
+      val resourceName = imageUri.substringAfterLast('/').substringBeforeLast('.')
+      val resourceId = context.resources?.getIdentifier(resourceName, "drawable", context.packageName)
+      if (resourceId != null && resourceId != 0) {
+        target.setImageResource(resourceId)
+      }
+    }
   }
 
   private fun setCustomModules() {
