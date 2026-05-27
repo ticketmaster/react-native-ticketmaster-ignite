@@ -7,6 +7,18 @@ protocol TicketsSDKViewProtocol {
   // Protocol doesn't need to define anything - just marks types that can use these delegates
 }
 
+private final class FixedSizeImageView: UIImageView {
+  override var intrinsicContentSize: CGSize {
+    return TMTicketsModule.HeaderDisplay.defaultSize
+  }
+}
+
+private final class FixedSizeHeaderView: UIView {
+  override var intrinsicContentSize: CGSize {
+    return TMTicketsModule.HeaderDisplay.defaultSize
+  }
+}
+
 extension TicketsSDKViewProtocol {
   func deepLinkToOrder(_ orderId: String) {
     TMTickets.shared.display(orderOrEventId: orderId)
@@ -98,7 +110,7 @@ extension TicketsSDKViewProtocol {
     
     let module = TMTicketsModule(
       identifier: "com.\(Config.shared.get(for: "clientName"))",
-      headerDisplay: nil,
+      headerDisplay: customModuleHeaderDisplay(),
       actionButtons: actionButtons
     )
     
@@ -107,6 +119,30 @@ extension TicketsSDKViewProtocol {
     completion(modules)
   }
   
+  private func customModuleHeaderDisplay() -> TMTicketsModule.HeaderDisplay? {
+    let headerType = Config.shared.get(for: "customModuleHeaderType")
+
+    switch headerType {
+    case "color":
+      let hex = Config.shared.get(for: "customModuleHeaderColor")
+        .trimmingCharacters(in: CharacterSet(charactersIn: "#"))
+      guard let color = UIColor(hexString: hex) else { return nil }
+      let view = FixedSizeHeaderView(
+        frame: CGRect(origin: .zero, size: TMTicketsModule.HeaderDisplay.defaultSize)
+      )
+      view.backgroundColor = color
+      return TMTicketsModule.HeaderDisplay(view: view)
+    case "image":
+      guard let image = Config.shared.getImage(for: "customModuleHeaderImage") else { return nil }
+      let imageView = FixedSizeImageView(image: image)
+      imageView.contentMode = .scaleAspectFill
+      imageView.clipsToBounds = true
+      return TMTicketsModule.HeaderDisplay(view: imageView)
+    default:
+      return nil
+    }
+  }
+
   public func addPreBuiltModules(event: TMPurchasedEvent) -> [TMTicketsModule] {
     print(" - Adding Prebuilt Modules")
     var output: [TMTicketsModule] = []

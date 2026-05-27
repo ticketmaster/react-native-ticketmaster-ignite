@@ -759,7 +759,7 @@ You can select custom images for `seatUpgradesModule` and `venueConcessionsModul
 
 ### Custom Modules
 
-You can configure up to 3 buttons as a custom module. Each button accepts a callback function. Currently a header view above the buttons is not available for configuration in this library.
+You can configure up to 3 buttons as a custom module. Each button accepts a callback function. An optional `headerView` can be displayed above the buttons — either a solid color, a bundled image via `require()`, or a remote image via `{ uri: '...' }`.
 
 ```typescript
 <IgniteProvider
@@ -769,6 +769,9 @@ You can configure up to 3 buttons as a custom module. Each button accepts a call
     primaryColor: PRIMARY_COLOR
   }}
   customModules={{
+    headerView: {
+      image: require('./assets/my_module_header.png'),
+    },
     button1: {
       enabled: true,
       title: 'My Button 1',
@@ -788,6 +791,23 @@ You can configure up to 3 buttons as a custom module. Each button accepts a call
 >
   <App />
 </IgniteProvider>
+```
+
+`headerView` accepts a bundled image, a remote image, or a solid color:
+
+```typescript
+// Bundled image (use require() — Metro resolves the asset at build time)
+headerView: { image: require('./assets/my_module_header.png') }
+
+// Remote image (pass an object with a `uri`)
+headerView: {
+  image: {
+    uri: 'https://www.example.com/path/to/my_module_header.png',
+  },
+}
+
+// Solid color header
+headerView: { color: '#026cdf' }
 ```
 
 Single button example:
@@ -815,6 +835,31 @@ Single button example:
 | ------ | ------ |
 |   <img src="docs/assets/custom-modules/ios-single-button.png" width="150">     |   <img src="docs/assets/custom-modules/android-single-button.png" width="150">     |
 |   <img src="docs/assets/custom-modules/ios-multi-buttons.png" width="150">     |    <img src="docs/assets/custom-modules/android-multi-buttons.png" width="150">    |
+
+#### Opening a URL from a button
+
+Use React Native's `Linking` API in the `callback` to open an external URL when a custom button is tapped:
+
+```typescript
+import { Linking } from 'react-native';
+
+<IgniteProvider
+  options={{
+    apiKey: API_KEY,
+    clientName: CLIENT_NAME,
+    primaryColor: PRIMARY_COLOR
+  }}
+  customModules={{
+    button1: {
+      enabled: true,
+      title: 'Visit Ticketmaster',
+      callback: () => Linking.openURL('https://www.ticketmaster.com'),
+    },
+  }}
+>
+  <App />
+</IgniteProvider>
+```
 
 ### Analytics
 
