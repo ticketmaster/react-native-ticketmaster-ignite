@@ -861,17 +861,6 @@ import { Linking } from 'react-native';
 </IgniteProvider>
 ```
 
-For custom URL schemes (e.g. `tel:`, `mailto:`, deep links), guard the call with `Linking.canOpenURL`:
-
-```typescript
-callback: async () => {
-  const url = 'tel:+1234567890';
-  if (await Linking.canOpenURL(url)) {
-    await Linking.openURL(url);
-  }
-},
-```
-
 ### Analytics
 
 You can send a callback method to `IgniteProvider` to receive Ignite SDK analytics in your app which you can then send off to your chosen analytics service.
