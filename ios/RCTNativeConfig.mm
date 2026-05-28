@@ -39,16 +39,13 @@
 - (UIImage *)getImage:(NSString *)key {
   NSString *imagePath = _configValues[key];
   if (!imagePath) return nil;
-  
-  if ([imagePath hasPrefix:@"file://"]) {
-    imagePath = [imagePath substringFromIndex:7];
-  }
-  
-  if ([imagePath hasPrefix:@"http"]) {
-    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
+
+  NSURL *url = [NSURL URLWithString:imagePath];
+  if (url.scheme) {
+    NSData *data = [NSData dataWithContentsOfURL:url];
     return data ? [UIImage imageWithData:data] : nil;
   }
-  
+
   return [UIImage imageWithContentsOfFile:imagePath];
 }
 
