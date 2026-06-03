@@ -2,7 +2,11 @@ package com.ticketmasterignite.retail
 
 import android.os.Bundle
 import android.graphics.Color
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.ticketmasterignite.R
 import com.ticketmaster.discoveryapi.models.DiscoveryAbstractEntity
@@ -34,7 +38,16 @@ class PrePurchaseActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.prepurchase_layout)
+
+        val container = findViewById<View>(R.id.prepurchase_container)
+        container.setBackgroundColor(Color.BLACK)
+        ViewCompat.setOnApplyWindowInsetsListener(container) { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            view.setPadding(0, statusBarHeight, 0, 0)
+            insets
+        }
 
         val tmPrePurchase = TMPrePurchase(
                 environment = Environment.getTMEnvironment(Config.get("environment")),
