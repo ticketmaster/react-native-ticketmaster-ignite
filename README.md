@@ -143,6 +143,16 @@ dependencies {
 }
 ```
 
+#### Tickets SDK status bar colour
+
+The SDK's internal theme defaults the Tickets SDK status bar colour to Ticketmaster blue. To override it, add a `tickets_tm_brand_blue` entry to `android/app/src/main/res/values/colors.xml`:
+
+```xml
+<resources>
+    <color name="tickets_tm_brand_blue">#YOUR_HEX_COLOR</color>
+</resources>
+```
+
 </details>
 
 <details>
