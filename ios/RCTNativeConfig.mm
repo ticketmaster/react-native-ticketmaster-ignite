@@ -33,22 +33,14 @@ static NSMutableDictionary<NSString *, NSString *> *NativeConfigStore(void) {
 
 
 - (NSString *)getConfig:(NSString *)key {
-  return [RCTNativeConfig getConfigForKey:key];
+  return [RCTNativeConfig getConfig:key];
 }
 
 - (UIImage *)getImage:(NSString *)key {
-  return [RCTNativeConfig getImageForKey:key];
+  return [RCTNativeConfig getImage:key];
 }
 
 + (NSString *)getConfig:(NSString *)key {
-  return [RCTNativeConfig getConfigForKey:key];
-}
-
-+ (UIImage *)getImage:(NSString *)key {
-  return [RCTNativeConfig getImageForKey:key];
-}
-
-+ (NSString *)getConfigForKey:(NSString *)key {
   if (!key) return nil;
   @synchronized (NativeConfigStore()) {
     return NativeConfigStore()[key];
@@ -66,8 +58,8 @@ static NSMutableDictionary<NSString *, NSString *> *NativeConfigStore(void) {
   }
 }
 
-+ (UIImage *)getImageForKey:(NSString *)key {
-  NSString *imagePath = [RCTNativeConfig getConfigForKey:key];
++ (UIImage *)getImage:(NSString *)key {
+  NSString *imagePath = [RCTNativeConfig getConfig:key];
   if (!imagePath) return nil;
 
   NSURL *url = [NSURL URLWithString:imagePath];

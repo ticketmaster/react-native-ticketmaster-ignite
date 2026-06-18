@@ -7,7 +7,7 @@ final class Config: NSObject {
   static let shared = Config()
   
   func get(for key: String) -> String {
-    return RCTNativeConfig.getForKey(key) ?? ""
+    return RCTNativeConfig.getConfig(key) ?? ""
   }
 
   func set(for key: String, value: String) {
@@ -15,10 +15,10 @@ final class Config: NSObject {
   }
 
   func optionalString(for key: String) -> String? {
-    return RCTNativeConfig.getForKey(key)
+    return RCTNativeConfig.getConfig(key)
   }
 
   func getImage(for key: String) -> UIImage? {
-    return RCTNativeConfig.getImageForKey(key)
+    return RCTNativeConfig.getImage(key)
   }
 }
