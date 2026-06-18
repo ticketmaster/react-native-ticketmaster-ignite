@@ -12,6 +12,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setConfig:(NSString *)key value:(NSString *)value;
 - (void)setImage:(NSString *)key uri:(NSString *)uri;
 
++ (nullable NSString *)getConfigForKey:(NSString *)key;
++ (void)setConfig:(nullable NSString *)value forKey:(NSString *)key;
++ (nullable UIImage *)getImageForKey:(NSString *)key;
+
 @end
 
 NS_ASSUME_NONNULL_END

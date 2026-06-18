@@ -6,25 +6,19 @@ final class Config: NSObject {
   
   static let shared = Config()
   
-  private var nativeConfig: RCTNativeConfig? {
-    RCTBridge.current()?.module(forName: "NativeConfig") as? RCTNativeConfig
-  }
-  
   func get(for key: String) -> String {
-    return nativeConfig?.getConfig(key) ?? ""
+    return RCTNativeConfig.getConfig(forKey: key) ?? ""
   }
   
   func set(for key: String, value: String) {
-    print("Swift set key=\(key) value=\(value)")
-    nativeConfig?.setConfig(key, value: value)
+    RCTNativeConfig.setConfig(value, forKey: key)
   }
   
   func optionalString(for key: String) -> String? {
-    let value = nativeConfig?.getConfig(key)
-    return value == nil ? nil : value
+    return RCTNativeConfig.getConfig(forKey: key)
   }
   
   func getImage(for key: String) -> UIImage? {
-    return nativeConfig?.getImage(key)
+    return RCTNativeConfig.getImage(forKey: key)
   }
 }
