@@ -2,10 +2,9 @@ import TicketmasterFoundation
 
 class MarketDomainObject {
   static let shared = MarketDomainObject()
-  
-  let marketDomain = Config.shared.get(for: "marketDomain")
-  
+
   func getMarketDomain() -> TicketmasterFoundation.MarketDomain {
+    let marketDomain = Config.shared.get(for: "marketDomain")
     return MarketDomain(countryCode: marketDomain.lowercased()) ?? MarketDomain.US
   }
 }
