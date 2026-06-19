@@ -1,30 +1,24 @@
 import Foundation
-import React
 
 @objc
 final class Config: NSObject {
-  
+
   static let shared = Config()
-  
-  private var nativeConfig: RCTNativeConfig? {
-    RCTBridge.current()?.module(forName: "NativeConfig") as? RCTNativeConfig
-  }
-  
+
   func get(for key: String) -> String {
-    return nativeConfig?.getConfig(key) ?? ""
+    return RCTNativeConfig.sharedInstance()?.getConfig(key) ?? ""
   }
-  
+
   func set(for key: String, value: String) {
-    print("Swift set key=\(key) value=\(value)")
-    nativeConfig?.setConfig(key, value: value)
+    RCTNativeConfig.sharedInstance()?.setConfig(key, value: value)
   }
-  
+
+  // We want to return null to the SDK's Prebuilt Modules if no image overlay text is provided to enable the SDK's default text
   func optionalString(for key: String) -> String? {
-    let value = nativeConfig?.getConfig(key)
-    return value == nil ? nil : value
+    return RCTNativeConfig.sharedInstance()?.getConfig(key)
   }
-  
+
   func getImage(for key: String) -> UIImage? {
-    return nativeConfig?.getImage(key)
+    return RCTNativeConfig.sharedInstance()?.getImage(key)
   }
 }

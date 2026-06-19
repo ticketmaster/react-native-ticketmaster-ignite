@@ -7,6 +7,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RCTNativeConfig : NSObject <NativeConfigSpec>
 
++ (nullable instancetype)sharedInstance;
+
 - (NSString *)getConfig:(NSString *)key;
 - (UIImage *)getImage:(NSString *)key;
 - (void)setConfig:(NSString *)key value:(NSString *)value;

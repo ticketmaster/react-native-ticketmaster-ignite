@@ -4,40 +4,64 @@
 #import <ReactCommon/RCTTurboModule.h>
 #import <TicketmasterIgniteSpecs/TicketmasterIgniteSpecs.h>
 
+static RCTNativeConfig *_sharedInstance = nil;
 
 @implementation RCTNativeConfig {
-  NSMutableDictionary *_configValues;
+  NSMutableDictionary<NSString *, NSString *> *_store;
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    _configValues = [NSMutableDictionary new];
+    _store = [NSMutableDictionary new];
+    _sharedInstance = self;
   }
   return self;
 }
 
++ (nullable instancetype)sharedInstance {
+  return _sharedInstance;
+}
+
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-(const facebook::react::ObjCTurboModule::InitParams &)params
+    (const facebook::react::ObjCTurboModule::InitParams &)params
 {
   return std::make_shared<facebook::react::NativeConfigSpecJSI>(params);
 }
 
-
 - (void)setConfig:(NSString *)key value:(NSString *)value {
-  _configValues[key] = value;
+  if (!key) return;
+  @synchronized (_store) {
+    if (value) {
+      _store[key] = value;
+    } else {
+      [_store removeObjectForKey:key];
+    }
+  }
 }
 
 - (void)setImage:(NSString *)key uri:(NSString *)uri {
-  _configValues[key] = uri;
+  if (!key) return;
+  @synchronized (_store) {
+    if (uri) {
+      _store[key] = uri;
+    } else {
+      [_store removeObjectForKey:key];
+    }
+  }
 }
 
-
 - (NSString *)getConfig:(NSString *)key {
-  return _configValues[key];
+  if (!key) return nil;
+  @synchronized (_store) {
+    return _store[key];
+  }
 }
 
 - (UIImage *)getImage:(NSString *)key {
-  NSString *imagePath = _configValues[key];
+  NSString *imagePath;
+  @synchronized (_store) {
+    imagePath = _store[key];
+  }
   if (!imagePath) return nil;
 
   NSURL *url = [NSURL URLWithString:imagePath];
@@ -49,8 +73,7 @@
   return [UIImage imageWithContentsOfFile:imagePath];
 }
 
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return @"NativeConfig";
 }
 
