@@ -4,54 +4,64 @@
 #import <ReactCommon/RCTTurboModule.h>
 #import <TicketmasterIgniteSpecs/TicketmasterIgniteSpecs.h>
 
-static NSMutableDictionary<NSString *, NSString *> *NativeConfigStore(void) {
-  static NSMutableDictionary<NSString *, NSString *> *store = nil;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    store = [NSMutableDictionary new];
-  });
-  return store;
+static RCTNativeConfig *_sharedInstance = nil;
+
+@implementation RCTNativeConfig {
+  NSMutableDictionary<NSString *, NSString *> *_store;
 }
 
+- (instancetype)init {
+  if (self = [super init]) {
+    _store = [NSMutableDictionary new];
+    _sharedInstance = self;
+  }
+  return self;
+}
 
-@implementation RCTNativeConfig
++ (nullable instancetype)sharedInstance {
+  return _sharedInstance;
+}
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-(const facebook::react::ObjCTurboModule::InitParams &)params
+    (const facebook::react::ObjCTurboModule::InitParams &)params
 {
   return std::make_shared<facebook::react::NativeConfigSpecJSI>(params);
 }
 
-
 - (void)setConfig:(NSString *)key value:(NSString *)value {
-  [RCTNativeConfig setConfig:value forKey:key];
-}
-
-- (void)setImage:(NSString *)key uri:(NSString *)uri {
-  [RCTNativeConfig setConfig:uri forKey:key];
-}
-
-
-+ (NSString *)getConfig:(NSString *)key {
-  if (!key) return nil;
-  @synchronized (NativeConfigStore()) {
-    return NativeConfigStore()[key];
-  }
-}
-
-+ (void)setConfig:(nullable NSString *)value forKey:(NSString *)key {
   if (!key) return;
-  @synchronized (NativeConfigStore()) {
+  @synchronized (_store) {
     if (value) {
-      NativeConfigStore()[key] = value;
+      _store[key] = value;
     } else {
-      [NativeConfigStore() removeObjectForKey:key];
+      [_store removeObjectForKey:key];
     }
   }
 }
 
-+ (UIImage *)getImage:(NSString *)key {
-  NSString *imagePath = [RCTNativeConfig getConfig:key];
+- (void)setImage:(NSString *)key uri:(NSString *)uri {
+  if (!key) return;
+  @synchronized (_store) {
+    if (uri) {
+      _store[key] = uri;
+    } else {
+      [_store removeObjectForKey:key];
+    }
+  }
+}
+
+- (NSString *)getConfig:(NSString *)key {
+  if (!key) return nil;
+  @synchronized (_store) {
+    return _store[key];
+  }
+}
+
+- (UIImage *)getImage:(NSString *)key {
+  NSString *imagePath;
+  @synchronized (_store) {
+    imagePath = _store[key];
+  }
   if (!imagePath) return nil;
 
   NSURL *url = [NSURL URLWithString:imagePath];
@@ -63,8 +73,7 @@ static NSMutableDictionary<NSString *, NSString *> *NativeConfigStore(void) {
   return [UIImage imageWithContentsOfFile:imagePath];
 }
 
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return @"NativeConfig";
 }
 
