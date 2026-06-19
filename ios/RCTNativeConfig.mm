@@ -32,14 +32,6 @@ static NSMutableDictionary<NSString *, NSString *> *NativeConfigStore(void) {
 }
 
 
-- (NSString *)getConfig:(NSString *)key {
-  return [RCTNativeConfig getConfig:key];
-}
-
-- (UIImage *)getImage:(NSString *)key {
-  return [RCTNativeConfig getImage:key];
-}
-
 + (NSString *)getConfig:(NSString *)key {
   if (!key) return nil;
   @synchronized (NativeConfigStore()) {
