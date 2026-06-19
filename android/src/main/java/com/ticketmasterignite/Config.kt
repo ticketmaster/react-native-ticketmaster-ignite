@@ -14,6 +14,7 @@ object Config {
     }
   }
 
+  // We want to return null to the SDK's Prebuilt Modules if no image overlay text is provided to enable the SDK's default text
   fun optionalString(key: String): String? {
     return configValues[key]
   }
