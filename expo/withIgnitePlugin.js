@@ -42,7 +42,7 @@ module.exports = function withIgnitePlugin(expoConfig) {
   withStringsXml(expoConfig, (modConfig) => {
     const isModernAccounts = false;
     const isSportXr = false;
-    const modernAccountsSchemes = [''];
+    const modernAccountsSchemes = ['psdkschemesheffieldarena'];
     const sportXRSchemes = [''];
 
     if (isModernAccounts) {
