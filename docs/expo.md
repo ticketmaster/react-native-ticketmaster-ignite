@@ -12,7 +12,7 @@ const {
   withPodfileProperties,
 } = require('@expo/config-plugins');
 
-const KOTLIN_VERSION = '2.2.21';
+const KOTLIN_VERSION = '2.3.0';
 
 module.exports = function withIgnitePlugin(expoConfig) {
   withGradleProperties(expoConfig, (config) => {
