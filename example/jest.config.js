@@ -7,7 +7,7 @@
  * 2. Add the mapping below: '^@shared/components/YourComponent$': '<rootDir>/__mocks__/@shared/components/YourComponent'
  */
 module.exports = {
-  preset: 'react-native',
+  preset: '@react-native/jest-preset',
   moduleNameMapper: {
     // Mocked shared components (add new ones here when needed)
     '^@shared/components/AccountsSdkOptions$':
