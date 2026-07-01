@@ -55,7 +55,7 @@ In `android/build.gradle` set the `minSdkVersion` to `28` and set the `compileSd
 
 #### Set the Kotlin version
 
-The Ticketmaster SDK pulls in `kotlin-stdlib:2.3.0`, which the React Native default Kotlin compiler (`2.1.20`) cannot read. You must build with **Kotlin 2.2.0 or newer** (we recommend `2.3.0`).
+The Ticketmaster SDK pulls in `kotlin-stdlib:2.3.0`, which the React Native default Kotlin compiler (`2.1.20`) cannot read. You must build with **Kotlin 2.3.0 or newer**.
 
 In `android/build.gradle`, set the version in the `ext` block **and** pin the Kotlin Gradle plugin on the `buildscript` classpath:
 
