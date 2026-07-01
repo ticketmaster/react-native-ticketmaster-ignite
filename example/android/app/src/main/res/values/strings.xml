@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">TicketmasterIgniteExample</string>
-    <string name="app_tm_modern_accounts_scheme">jhgvjh</string>
-    <string name="app_tm_modern_accounts_scheme_2">psdkschemesheffieldarena</string>
+    <string name="app_tm_modern_accounts_scheme">psdktm</string>
 </resources>
