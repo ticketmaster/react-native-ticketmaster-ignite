@@ -15616,6 +15616,7 @@ __metadata:
   resolution: "react-native-ticketmaster-ignite-expo@workspace:expo"
   dependencies:
     "@expo/vector-icons": ^15.0.2
+    "@react-native/jest-preset": 0.85.3
     "@react-navigation/native": ^7.1.33
     "@testing-library/jest-native": ^5.4.3
     "@testing-library/react-native": ^12
