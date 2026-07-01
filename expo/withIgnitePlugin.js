@@ -1,11 +1,37 @@
 const {
   AndroidConfig,
   withAppBuildGradle,
+  withGradleProperties,
+  withProjectBuildGradle,
   withStringsXml,
   withPodfileProperties,
 } = require('@expo/config-plugins');
 
+// Kotlin is pinned for the Ticketmaster SDK — see docs/expo.md for the rationale.
+const KOTLIN_VERSION = '2.2.21';
+
 module.exports = function withIgnitePlugin(expoConfig) {
+  withGradleProperties(expoConfig, (config) => {
+    config.modResults = config.modResults.filter(
+      (item) =>
+        !(item.type === 'property' && item.key === 'android.kotlinVersion')
+    );
+    config.modResults.push({
+      type: 'property',
+      key: 'android.kotlinVersion',
+      value: KOTLIN_VERSION,
+    });
+    return config;
+  });
+
+  withProjectBuildGradle(expoConfig, (config) => {
+    config.modResults.contents = config.modResults.contents.replace(
+      "classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')",
+      `classpath('org.jetbrains.kotlin:kotlin-gradle-plugin:${KOTLIN_VERSION}')`
+    );
+    return config;
+  });
+
   withAppBuildGradle(expoConfig, (config) => {
     const buildGradleUpdates = [
       `buildFeatures {`,
@@ -42,7 +68,7 @@ module.exports = function withIgnitePlugin(expoConfig) {
   withStringsXml(expoConfig, (modConfig) => {
     const isModernAccounts = false;
     const isSportXr = false;
-    const modernAccountsSchemes = ['psdkschemesheffieldarena'];
+    const modernAccountsSchemes = [''];
     const sportXRSchemes = [''];
 
     if (isModernAccounts) {
