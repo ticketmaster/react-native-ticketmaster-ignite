@@ -597,7 +597,13 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           environment === 'Staging'
         )
           NativeConfig.setConfig('environment', environment);
+
         await configureAccountsSdk();
+
+        if (Platform.OS === 'ios') {
+          NativeAccountsSdk.notifyConfigurationRefreshed();
+        }
+
         onSuccess && onSuccess();
         !skipAutoLogin &&
           (await login({ onLogin: onLoginSuccess, skipUpdate }));

@@ -51,6 +51,11 @@ using namespace facebook::react;
   // offsetTop is Android-only, no-op on iOS
   // Property is handled by codegen but not used in iOS implementation
 
+  if (oldViewProps.deepLinkId != newViewProps.deepLinkId) {
+    NSString *deepLinkId = newViewProps.deepLinkId.empty() ? nil : [NSString stringWithUTF8String:newViewProps.deepLinkId.c_str()];
+    [_view setDeepLinkId:deepLinkId];
+  }
+
   [super updateProps:props oldProps:oldProps];
 }
 

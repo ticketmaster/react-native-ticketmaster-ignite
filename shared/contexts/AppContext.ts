@@ -6,6 +6,8 @@ export type AppContextType = {
   setPrimaryColor: (arg0: string) => void;
   logs: Log[];
   addLog: (arg0: any) => void;
+  ticketDeepLinkId: string | undefined;
+  setTicketDeepLinkId: (arg0: string | undefined) => void;
 };
 
 export const AppContext = createContext<AppContextType>({
@@ -13,4 +15,6 @@ export const AppContext = createContext<AppContextType>({
   setPrimaryColor: () => {},
   logs: [],
   addLog: () => {},
+  ticketDeepLinkId: undefined,
+  setTicketDeepLinkId: () => {},
 });

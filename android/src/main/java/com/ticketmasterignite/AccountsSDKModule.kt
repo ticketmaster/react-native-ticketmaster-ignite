@@ -140,6 +140,11 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
     reactContext.addActivityEventListener(loginActivityEventListener)
   }
 
+  override fun notifyConfigurationRefreshed() {
+    // Android doesn't have the same native view lifecycle issue as iOS
+    // The view reconfigures automatically on RN unmountOnBlur approaches
+  }
+
   override fun login(promise: Promise) {
     val loginStartedParams: WritableMap = Arguments.createMap().apply {
       putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")

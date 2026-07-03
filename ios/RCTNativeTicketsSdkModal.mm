@@ -27,9 +27,9 @@
   return std::make_shared<facebook::react::NativeTicketsSdkModalSpecJSI>(params);
 }
 
-- (void)showTicketsSdkModal
+- (void)showTicketsSdkModal:(NSString *)deepLinkId
 {
-  [ticketsSDKModal showTicketsSdkModal];
+  [ticketsSDKModal showTicketsSdkModal:deepLinkId];
 }
 
 + (NSString *)moduleName

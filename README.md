@@ -434,7 +434,7 @@ type RefreshConfigParams = {
 
 `IgniteProvider` always requires an API key so make sure you have set a default/fallback for app launch. This library does not persist API keys, so you will need to persist the users previous team selection to make sure the correct API key is used after app restarts.
 
-A user must login once the first time the app switches to a new API key so `login()` is called automatically by `refreshConfiguration()` after it configures the SDK's. To prevent this set `skipAutoLogin` to true, but `login()` will need to be called before the user can perform any authenticiated flows within the SDK's or receive auth data like access tokens.
+A user must login once the first time the app switches to a new API key so `login()` is called automatically by `refreshConfiguration()` after it configures the SDK's. To prevent this set `skipAutoLogin` to true, but `login()` will need to be called before the user can perform any authenticated flows within the SDK's or receive auth data like access tokens.
 
 `isConfigured` being false during the initial user interactions with the UI is an indication that the initial `configureAccountsSDK()` done by `<IgniteProvider/>` has failed. You can either assess its value on initial user interaction or call `refreshConfiguration()` on mount manually, if you end up experiencing issues with the automatic Accounts SDK configuration this library does. Usually the initial call to the library works completely fine.
 
@@ -472,9 +472,53 @@ import { useIgnite } from 'react-native-ticketmaster-ignite';
 
 ```
 
-#### Switching Teams
+#### Switching teams/venue (API key) during runtime
 
-You can switch teams using the `refreshConfiguration()` method mentioned above. 
+To switch teams you can use the `refreshConfiguration` method.
+
+```tsx
+import { useIgnite } from 'react-native-ticketmaster-ignite';
+
+try {
+  await refreshConfiguration({
+    apiKey: 'someApiKey',
+    clientName: 'Team 2',
+    primaryColor: '#FF0000',
+  });
+} catch (e) {
+  console.log('Account SDK refresh configuration error:', (e as Error).message);
+}
+```
+
+A user must login once the first time the app switches to a new API key so `login()` is called automatically by `refreshConfiguration()` after it configures the SDK's. To prevent this set `skipAutoLogin` to true, but `login()` will need to be called before the user can perform any authenticated flows within the SDK's
+
+For Android to reconfigure the Tickets SDK an unmount on blur approach needs to be done. During reconfiguration and login unmount the `<TicketsSdkEmbedded />` component by navigating to a custom RN login/loading screen and once login is successful remount the `<TicketsSdkEmbedded />`. If you are navigating to another screen, below is React Navigations's unmountOnBlur approach https://reactnavigation.org/docs/upgrading-from-6.x/#changes-to-navigators
+
+```typescript
+const isFocused = useIsFocused();
+
+if (!isFocused) {
+  return null;
+}
+
+return <TicketsSdkEmbedded />;
+```
+
+Currently in this library Android does not have a default login screen, so always make sure the new API key is configured and the user is logged in before you show the `<TicketsSdkEmbedded />` component.
+
+Another useful way to unmount and remount the `<TicketsSdkEmbedded />` component is a new prop called isFocused. You can send the component React Navigation's and we will unmount the Tickets SDK component for you when the screen is not in focus. This prop is actually for supporting iOS ticket deep linking and My Tickets refresh after Retail SDK purchases, but works well as a simpler syntax for Android Tickets SDK configuration as well.
+
+as currently in React Native's Fabric renderer (New Architecture) the Tickets SDK Embedded view remains in memory and continues rendering even when "hidden" by React Navigation.
+
+```typescript
+  const isFocused = useIsFocused();
+  
+  return (
+    <TicketsSdkEmbedded
+      isFocused={isFocused}
+    />
+  );
+```
 
 ##### Logout All
 
@@ -505,16 +549,16 @@ If you do not send a style prop, `{width: '100%', height: '100%'}` is used by de
  <TicketsSdkEmbedded />
 ```
 
-If you want to force the `<TicketsSdkEmbedded />` component to carry out a fresh call on focus or after navigation to that tab/screen, you can add the below to any screen that renders the `<TicketsSdkEmbedded />` component to perform an unmount on blur behaviour (React Navigation example):
+If you want to force the `<TicketsSdkEmbedded />` component to carry out a fresh call on focus or after navigation to that tab/screen, you can add the below to any screen that renders the `<TicketsSdkEmbedded />` component to perform an unmount on blur behaviour:
 
 ```typescript
 const isFocused = useIsFocused();
 
-if (!isFocused) {
-  return null;
-}
-
-return <TicketsSdkEmbedded />;
+return (
+  <TicketsSdkEmbedded
+    isFocused={isFocused}
+  />
+);
 ```
 
 
@@ -595,29 +639,49 @@ return (
 
 You can call `setTicketDeepLink()` to setup a deep link to an order by passing the method an order or event ID.
 
+
+The `<TicketsSdkEmbedded />` component has a deep link prop which takes an order or event ID.
 Example:
 
 ```typescript
-const { setTicketDeepLink } = useIgnite();
+  const isFocused = useIsFocused();
+  
+  const [ticketDeepLinkId, setTicketDeepLinkId] = useState('');
 
-setTicketDeepLink('TICKET_ORDER_OR_EVENT_ID')
+  const setTicketDeepLink = () => setTicketDeepLinkId('TICKET_ORDER_OR_EVENT_ID');
+  
+  return <TicketsSdkEmbedded deepLinkId={isFocused ? ticketDeepLinkId : ''} />;
 ```
 
-You can then navigate to the component/screen which renders the Tickets SDK and the order with the order ID set will show above the My Tickets SDK view.
+When the user or app next navigates to the screen component/screen which renders the Tickets SDK and the order with the order ID set will show above the My Tickets SDK view.
 
-If you want to do multiple deep links to the `<TicketsSdkEmbedded />` component within an app session without the user closing the app, you will need to do an unmount on blur approach on the RN screen that renders the Tickets SDK component and once the user or your code navigates back to that screen the ticket with that order/event ID will pop up, as the deep link is triggered after the Tickets SDK mounts.
+`isFocused` is needed because if you are using Bottom Tabs from React Navigation it will render the Tickets Tab after app launch as soon as a user lands on the Home Tab, so if they are already logged in the Tickets SDK would trigger their ticket to popup in a modal, unless you have unmount on blur logic in the RN screen of the Tickets Tab.
 
-To achieve this with React Navigation, you can add the below to any screen that renders the `<TicketsSdkEmbedded />` component:
+If you want to do multiple deep links to the `<TicketsSdkEmbedded />` component within an app session without the user closing the app, you will need to do an unmount on blur approach. The `<TicketsSdkEmbedded />` component receives an `isFocused` prop. You will have to send the component React Navigation's `isFocused` value or a custom screen focus boolean as in React Native's Fabric renderer (New Architecture), iOS views remains in memory and continues rendering even when "hidden" by React Navigation, so we have extra logic inside the `<TicketsSdkEmbedded />` component to remount the iOS Tickets SDK to handle subsequent deep links within an apps session after the initial deep link.
 
 ```typescript
-const isFocused = useIsFocused();
+  const isFocused = useIsFocused();
+  const setTicketDeepLink = () => setTicketDeepLinkId('TICKET_ORDER_OR_EVENT_ID');
+  const [ticketDeepLinkId, setTicketDeepLinkId]  = useState('');
 
-if (!isFocused) {
-  return null;
-}
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setTicketDeepLinkId('');
+      };
+    }, [setTicketDeepLinkId])
+  );
 
-return <TicketsSdkEmbedded />;
+  return (
+    <TicketsSdkEmbedded
+      deepLinkId={isFocused ? ticketDeepLinkId : ''}
+      isFocused={isFocused}
+    />
+  );
+
 ```
+
+The useFocusEffect unmount logic is to clear the deep link ID otherwise the users ticket will pop up after each remount of the `<TicketsSdkEmbedded />` component.
 
 You can also create your own global state variables to unmount the screen with logic similar to the above and React Navigation also provides a layout prop where you can wrap a screen with a component that contains your custom logic. See more [here](https://reactnavigation.org/docs/upgrading-from-6.x/#the-unmountonblur-option-is-removed-in-favor-of-poptotoponblur-in-bottom-tab-navigator-and-drawer-navigator)
 
@@ -958,6 +1022,19 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
   }
 };
 ```
+
+If you want the `<TicketsSdkEmbedded />` component to perform a fresh call upon navigating to the screen/tab after purchase be sure to pass an `isFocused` boolean to the component. Example below:
+
+```typescript
+  const isFocused = useIsFocused();
+
+  return (
+    <TicketsSdkEmbedded
+      isFocused={isFocused}
+    />
+  );
+```
+
 
 ### Debugging/Logging
 

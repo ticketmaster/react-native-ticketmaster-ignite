@@ -20,8 +20,13 @@ type ConfigurationProps = NativeStackScreenProps<
 >;
 
 const Configuration = ({ navigation }: ConfigurationProps) => {
-  const { refreshConfiguration, setTicketDeepLink } = useIgnite();
-  const { primaryColor, setPrimaryColor } = useContext(AppContext);
+  const { refreshConfiguration } = useIgnite();
+  const {
+    primaryColor,
+    setPrimaryColor,
+    ticketDeepLinkId,
+    setTicketDeepLinkId,
+  } = useContext(AppContext);
   const [apiKeyValue, onApiKeyTextChange] = useState(Config.API_KEY || '');
   const [primaryColorValue, onPrimaryColorTextChange] =
     useState<string>(primaryColor);
@@ -30,6 +35,9 @@ const Configuration = ({ navigation }: ConfigurationProps) => {
   );
   const [environmentValue, setEnvironment] = useState<string>('Production');
   const [regionValue, setRegion] = useState<Region>('US');
+  const [deepLinkValue, onDeepLinkTextChange] = useState<string>(
+    ticketDeepLinkId || ''
+  );
 
   const [VenueIdValue, onVenueIdTextChange] = useState(
     Config.DEMO_VENUE_ID || ''
@@ -43,7 +51,19 @@ const Configuration = ({ navigation }: ConfigurationProps) => {
   const [marketDomainValue, setMarketDomain] = useState<MarketDomain>('US');
   const [eventHeaderTypeValue, setEventHeaderType] =
     useState<EventHeaderType>('EVENT_INFO_SHARE');
-  const [ticketDeeplink, onTicketDeepLinkTextChange] = useState('');
+
+  const navigateHome = () => {
+    setPrimaryColor(primaryColorValue);
+    setTicketDeepLinkId(deepLinkValue || undefined);
+    navigation.navigate('BottomTabs', {
+      screen: 'Home',
+      params: {
+        venueId: VenueIdValue,
+        attractionId: attractionIdValue,
+        eventId: eventIdValue,
+      },
+    });
+  };
 
   const onConfigure = async () => {
     try {
@@ -57,31 +77,13 @@ const Configuration = ({ navigation }: ConfigurationProps) => {
         eventHeaderType: eventHeaderTypeValue,
         skipAutoLogin: true,
       });
-      setPrimaryColor(primaryColorValue);
-      ticketDeeplink && setTicketDeepLink(ticketDeeplink);
-      navigation.navigate('BottomTabs', {
-        screen: 'Home',
-        params: {
-          venueId: VenueIdValue,
-          attractionId: attractionIdValue,
-          eventId: eventIdValue,
-        },
-      });
+      navigateHome();
     } catch (e) {
       console.log(
         'Accounts SDK refreshConfiguration error',
         (e as Error).message
       );
-      setPrimaryColor(primaryColorValue);
-      ticketDeeplink && setTicketDeepLink(ticketDeeplink);
-      navigation.navigate('BottomTabs', {
-        screen: 'Home',
-        params: {
-          venueId: VenueIdValue,
-          attractionId: attractionIdValue,
-          eventId: eventIdValue,
-        },
-      });
+      navigateHome();
     }
   };
 
@@ -111,8 +113,8 @@ const Configuration = ({ navigation }: ConfigurationProps) => {
           onEventIdTextChange={onEventIdTextChange}
         />
         <TicketsConfiguration
-          ticketDeeplink={ticketDeeplink}
-          onTicketDeepLinkTextChange={onTicketDeepLinkTextChange}
+          ticketDeeplink={deepLinkValue}
+          onTicketDeepLinkTextChange={onDeepLinkTextChange}
         />
       </ScrollView>
       <Pressable
