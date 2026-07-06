@@ -313,7 +313,7 @@ try {
 }
 ```
 
-When switching to a new API key, refreshConfiguration() automatically calls login() after configuration since users must authenticate at least once per key. Set skipAutoLogin to true to prevent this, but a user must be logged in to the new team or issues will arise when using the Tickets SDK. If a user has logged into 2 different teams, they can now freely switch between those 2 teams without needing to login.
+When switching to a new API key, `refreshConfiguration()` automatically calls `login()` after configuration since users must authenticate at least once per key. Set `skipAutoLogin` to true to prevent this, but a user must be logged in to the new team or issues will arise when using the Tickets SDK. If a user has logged into 2 different teams, they can now freely switch between those 2 teams without needing to login.
 
 To reconfigure the Tickets SDK, an unmount on blur approach needs to be done for both Android and iOS. In React Native's Fabric renderer (New Architecture), iOS views remains in memory and continues rendering even when "hidden" by React Navigation Bottom Tabs. To solve this, the `<TicketsSdkEmbedded />` component has a new prop called `isFocused` which will trigger additional logic within the `<TicketsSdkEmbedded />` component to reconfigure the iOS Tickets SDK. During team reconfiguration and login, unmount the `<TicketsSdkEmbedded />` component by navigating to a custom RN login/loading screen and once login is successful navigate back to the `<TicketsSdkEmbedded />` component.
 
