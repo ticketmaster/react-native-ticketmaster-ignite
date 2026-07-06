@@ -146,10 +146,15 @@ The info icon in the Purchase SDK navigation header for Android is no longer con
 
 ## Switching teams/venue (API key) during runtime
 
-To switch teams in v4 of this library you can use the `refreshConfiguration` method.
+To switch teams in v4 of this library you can use the `refreshConfiguration()` method.
 
 ```tsx
 import { useIgnite } from 'react-native-ticketmaster-ignite';
+
+  const {
+    login,
+    refreshConfiguration,
+  } = useIgnite();
 
 try {
   await refreshConfiguration({
@@ -162,45 +167,78 @@ try {
 }
 ```
 
-A user must login once the first time the app switches to a new API key so `login()` is called automatically by `refreshConfiguration()` after it configures the SDK's. To prevent this set `skipAutoLogin` to true, but `login()` will need to be called before the user can perform any authenticated flows within the SDK's
+A user must succesfully login once, the first time the app switches to a new API key so `login()` is called automatically by `refreshConfiguration()` after it configures the SDK's. To prevent this set `skipAutoLogin` to true, but a user must be logged in to the new team or issues will arise when using the Tickets SDK. If a user has logged into 2 different teams, they can now freely switch between those 2 teams without needing to login.
 
-For Android to reconfigure the Tickets SDK an unmount on blur approach needs to be done. During reconfiguration and login unmount the `<TicketsSdkEmbedded />` component by navigating to a custom RN login/loading screen and once login is successful remount the `<TicketsSdkEmbedded />`. If you are navigating to another screen, below is React Navigations's unmountOnBlur approach https://reactnavigation.org/docs/upgrading-from-6.x/#changes-to-navigators
+To reconfigure the Tickets SDK, an unmount on blur approach needs to be done for both Android and iOS. In React Native's Fabric renderer (New Architecture), iOS views remains in memory and continues rendering even when "hidden" by React Navigation. To solve this, the `<TicketsSdkEmbedded />` component has a new prop called `isFocused` which will trigger additional logic within the `<TicketsSdkEmbedded />` component to reconfigure the iOS Tickets SDK. During team reconfiguration and login, unmount the `<TicketsSdkEmbedded />` component by navigating to a custom RN login/loading screen and once login is successful navigate back to the `<TicketsSdkEmbedded />` component.
+
 
 ```typescript
+import { useIsFocused } from '@react-navigation/native';
+
 const isFocused = useIsFocused();
 
-if (!isFocused) {
-  return null;
-}
+return (
+  <TicketsSdkEmbedded
+    isFocused={isFocused}
+  />
+);
+```
 
-return <TicketsSdkEmbedded />;
+Expo 
+
+```typescript
+import { useIsFocused } from 'expo-router';
+
+const isFocused = useIsFocused();
+
+return (
+  <TicketsSdkEmbedded
+    isFocused={isFocused}
+  />
+);
 ```
 
 Currently in this library Android does not have a default login screen, so always make sure the new API key is configured and the user is logged in before you show the `<TicketsSdkEmbedded />` component.
 
-Another useful way to unmount and remount the `<TicketsSdkEmbedded />` component is a new prop called isFocused. You can send the component React Navigation's and we will unmount the Tickets SDK component for you when the screen is not in focus. This prop is actually for supporting iOS ticket deep linking and My Tickets refresh after Retail SDK purchases, but works well as a simpler syntax for Android Tickets SDK configuration as well.
+For React Native iOS, there is currently no way to know if the user has not done the initial login for a new team, the Accounts SDK auto logs in the new team so it returns the new token and memberInfo data but the the Tickets SDK will show a signed out screen if the user has not done the initial login. For iOS it would be better to not skip login with `skipAutoLogin`. If they have done the initial login for a new team, the login modals will not popup again so the user will not be disturbed. 
 
-as currently in React Native's Fabric renderer (New Architecture) the Tickets SDK Embedded view remains in memory and continues rendering even when "hidden" by React Navigation.
+For Android, `getIsLoggedIn()` and `isLoggedIn` will return `false` if a user switches to a team they haven't done the inital login for, meaning the smoothest `refreshConfiguration()` experince for both platforms results in:
 
-```typescript
-  const isFocused = useIsFocused();
-  
-  return (
-    <TicketsSdkEmbedded
-      isFocused={isFocused}
-    />
-  );
+```tsx
+import { useIgnite } from 'react-native-ticketmaster-ignite';
+
+  const {
+    login,
+    getIsLoggedIn,
+    refreshConfiguration,
+  } = useIgnite();
+
+try {
+  await refreshConfiguration({
+    apiKey: 'someApiKey',
+    clientName: 'Team 2',
+    primaryColor: '#FF0000',
+    skipAutoLogin: Platform.OS === 'android',
+  });
+  if (Platform.OS === 'android' && !getIsLoggedIn()) {
+    login()
+  }
+} catch (e) {
+  console.log('Account SDK refresh configuration error:', (e as Error).message);
+}
 ```
-
 
 ## Ticket Deep Links
 
 `setTicketDeepLink()` is now deprecated and `<TicketsSdkEmbedded />` now receives a prop for deep links.
 
 ```typescript
-  const isFocused = useIsFocused();
-  const [ticketDeepLinkId, setTicketDeepLinkId] = useState('');
-  const setTicketDeepLink = () => setTicketDeepLinkId('TICKET_ORDER_OR_EVENT_ID');
+import { useIsFocused } from '@react-navigation/native';
+
+const isFocused = useIsFocused();
+// Set the deeplink value in an earlier screen or with redux/context before navigating to the screen rendering the Tickets SDK.
+const [ticketDeepLinkId, setTicketDeepLinkId] = useState('');
+const setTicketDeepLink = () => setTicketDeepLinkId('TICKET_ORDER_OR_EVENT_ID');
   
   return <TicketsSdkEmbedded deepLinkId={isFocused ? ticketDeepLinkId : ''} />;
 ```
@@ -210,9 +248,11 @@ as currently in React Native's Fabric renderer (New Architecture) the Tickets SD
 If you want to do multiple deep links to the `<TicketsSdkEmbedded />` component within an app session without the user closing the app, you will need to do an unmount on blur approach. The `<TicketsSdkEmbedded />` component receives an `isFocused` prop. You will have to send the component React Navigation's `isFocused` value or a custom screen focus boolean as in React Native's Fabric renderer (New Architecture), iOS views remains in memory and continues rendering even when "hidden" by React Navigation, so we have extra logic inside the `<TicketsSdkEmbedded />` component to remount the iOS Tickets SDK to handle subsequent deep links within an apps session after the initial deep link.
 
 ```typescript
-  const isFocused = useIsFocused();
-  const setTicketDeepLink = () => setTicketDeepLinkId('TICKET_ORDER_OR_EVENT_ID');
-  const [ticketDeepLinkId, setTicketDeepLinkId]  = useState('');
+import { useIsFocused } from '@react-navigation/native';
+
+const isFocused = useIsFocused();
+const [ticketDeepLinkId, setTicketDeepLinkId] = useState('');
+const setTicketDeepLink = () => setTicketDeepLinkId('TICKET_ORDER_OR_EVENT_ID');
 
   useFocusEffect(
     useCallback(() => {
@@ -233,6 +273,27 @@ If you want to do multiple deep links to the `<TicketsSdkEmbedded />` component 
 The useFocusEffect unmount logic is to clear the deep link ID otherwise the users ticket will pop up after each remount of the `<TicketsSdkEmbedded />` component.
 
 ## Troubleshooting
+
+### Building locally (iOS):
+
+If any build issues happen on iOS you can try:
+
+From project root
+```bash
+cd ios
+rm -rf Pods Podfile.lock build
+pod install
+```
+
+If that fails try
+```bash
+cd ios
+rm -rf Pods Podfile.lock build
+rm -rf ~/Library/Developer/Xcode/DerivedData/TicketmasterIgniteExample-*
+pod install
+```
+
+And try rebuilding iOS again
 
 ### Building locally (Android):
 For Android it is adviseable `newArchEnabled=true` is in android/gradle.properties
@@ -270,20 +331,3 @@ yarn install
 Then in Android Studio:
 File → Invalidate Caches → Invalidate and Restart
 After restart: Build → Rebuild Project
-
-
-
-### Building locally (iOS):
-
-If any build issues happen on iOS you can try:
-
-From project root
-```bash
-cd ios
-rm -rf Pods Podfile.lock build
-pod install
-```
-
-And try rebuilding iOS again
-
-

@@ -600,10 +600,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
 
         await configureAccountsSdk();
 
-        if (Platform.OS === 'ios') {
-          NativeAccountsSdk.notifyConfigurationRefreshed();
-        }
-
         onSuccess && onSuccess();
         !skipAutoLogin &&
           (await login({ onLogin: onLoginSuccess, skipUpdate }));

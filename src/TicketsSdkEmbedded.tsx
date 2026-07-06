@@ -17,9 +17,8 @@ type TicketsSdkEmbeddedViewProps = {
   deepLinkId?: string;
   /**
    * When false this prop will unmount the Tickets SDK when the tab/screen is not in focus and will remount the Tickets SDK
-   * when the value comes true. Can be used if you want to get the most recent tickets data and state upon returning to the Tickets SDK.
-   * If no value is provided this prop's value remains true and users will typically have to pull-to-refresh
-   * to get the most recent tickets data during runtime.
+   * when the value comes true. Can be used if you want to get the most recent tickets data and state upon returning to the tab rendering Tickets SDK.
+   * If no value is provided this prop's value remains true and the Tickets SDK will stay rendered.
    */
   isFocused?: boolean;
   style?: ViewStyle;

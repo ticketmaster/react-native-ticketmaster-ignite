@@ -15,6 +15,6 @@ export const AppContext = createContext<AppContextType>({
   setPrimaryColor: () => {},
   logs: [],
   addLog: () => {},
-  ticketDeepLinkId: undefined,
+  ticketDeepLinkId: '',
   setTicketDeepLinkId: () => {},
 });
