@@ -11,7 +11,7 @@ const MyEvents = () => {
   useFocusEffect(
     useCallback(() => {
       return () => {
-        setTicketDeepLinkId(undefined);
+        setTicketDeepLinkId('');
       };
     }, [setTicketDeepLinkId])
   );
