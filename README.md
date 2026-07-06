@@ -225,53 +225,6 @@ Generally places within the United States, Canada, Australia, and New Zealand sh
 
 See the full User Guide [here](./docs/user-guide.md)
 
-### Debugging/Logging
-
-To turn on useful logging to inspect data and for debugging you can turn on logging by passing `true` to the `enableLogs` prop on `IgniteProvider`
-
-```typescript
-<IgniteProvider enableLogs={true}>
-  <App />
-</IgniteProvider>
-```
-
-Or use callbacks/exceptions/analytics/returned method data to create your own debug logs
-
-Example Accounts SDK configuration callback log example:
-
-```typescript
-  const { refreshConfiguration } = useIgnite()
-
-const onConfigurationSuccess = () =>
-  console.log('Accounts SDK configuration successful');
-
- useEffect(() => {
-    const configureIgniteSdks = async () => {
-      try {
-        await refreshConfiguration({
-          apiKey: 'someApiKey',
-          clientName: 'Team 2',
-          primaryColor: '#FF0000',
-          onSuccess: onConfigurationSuccess,
-        })
-      } catch (e) {
-        console.log(
-          'Account SDK refresh configuration error:',
-          (e as Error).message
-        )
-      }
-    }
-    configureIgniteSdks()
-  }, [refreshConfiguration])
-```
-
-
-As the initial Accounts SDK configuration is done for your app via `IgniteProvider`, any failures in this process will still be logged, as if the Accounts SDK configuration fails then none of the Ignite SDK's will work in your application.
-
-
-On any logs of `TicketmasterFoundation.ConnectionError error` see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
-
-
 </details>
 
 <details>
