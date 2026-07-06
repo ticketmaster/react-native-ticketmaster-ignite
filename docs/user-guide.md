@@ -59,10 +59,10 @@ The `eventHeaderType` property specifies what tools will be available in the nav
 
 | Property | Explanation | Demo |
 |----------|----------|----------|
-| `NO_TOOLBARS`    | Show no toolbars in Event's header   | <img src="docs/assets/NO_TOOLBARS.png" width="400"> |
-| `EVENT_INFO`    | Show only the event info button |<img src="docs/assets/EVENT_INFO.png" width="400">|
-| `EVENT_SHARE`   | Show only the event share button   |<img src="docs/assets/EVENT_SHARE.png" width="400">|
-| `EVENT_INFO_SHARE`    | Show both the info and share buttons   |<img src="docs/assets/EVENT_INFO_SHARE.png" width="400">|
+| `NO_TOOLBARS`    | Show no toolbars in Event's header   | <img src="assets/NO_TOOLBARS.png" width="400"> |
+| `EVENT_INFO`    | Show only the event info button |<img src="assets/EVENT_INFO.png" width="400">|
+| `EVENT_SHARE`   | Show only the event share button   |<img src="assets/EVENT_SHARE.png" width="400">|
+| `EVENT_INFO_SHARE`    | Show both the info and share buttons   |<img src="assets/EVENT_INFO_SHARE.png" width="400">|
 
 The info icon in the Purchase SDK navigation header for Android is no longer configurable. `EVENT_INFO` and `EVENT_INFO_SHARE` will not affect it and the button shows up within the WebView of the EDP page itself on the suitable pages.
 
@@ -699,8 +699,8 @@ You can select custom images for `seatUpgradesModule` and `venueConcessionsModul
 
 | Platform | Default view | Custom view | Empty strings |
 |----------|----------|----------|----------|
-| ios    | <img src="docs/assets/prebuilt_modules_customisation/ios_default.png" width="150">   | <img src="docs/assets/prebuilt_modules_customisation/ios_custom.png" width="150">   |<img src="docs/assets/prebuilt_modules_customisation/ios_empty_strings.png" width="150">   |
-| android    | <img src="docs/assets/prebuilt_modules_customisation/android_default.png" width="150">   | <img src="docs/assets/prebuilt_modules_customisation/android_custom.png" width="150">   |<img src="docs/assets/prebuilt_modules_customisation/android_empty_strings.png" width="150">   |
+| ios    | <img src="assets/prebuilt_modules_customisation/ios_default.png" width="150">   | <img src="assets/prebuilt_modules_customisation/ios_custom.png" width="150">   |<img src="assets/prebuilt_modules_customisation/ios_empty_strings.png" width="150">   |
+| android    | <img src="assets/prebuilt_modules_customisation/android_default.png" width="150">   | <img src="assets/prebuilt_modules_customisation/android_custom.png" width="150">   |<img src="assets/prebuilt_modules_customisation/android_empty_strings.png" width="150">   |
 
 ### Custom Modules
 
@@ -778,8 +778,8 @@ Single button example:
 
 | iOS    | Android|
 | ------ | ------ |
-|   <img src="docs/assets/custom-modules/ios-single-button.png" width="150">     |   <img src="docs/assets/custom-modules/android-single-button.png" width="150">     |
-|   <img src="docs/assets/custom-modules/ios-multi-buttons.png" width="150">     |    <img src="docs/assets/custom-modules/android-multi-buttons.png" width="150">    |
+|   <img src="assets/custom-modules/ios-single-button.png" width="150">     |   <img src="assets/custom-modules/android-single-button.png" width="150">     |
+|   <img src="assets/custom-modules/ios-multi-buttons.png" width="150">     |    <img src="assets/custom-modules/android-multi-buttons.png" width="150">    |
 
 #### Opening a URL from a button
 
