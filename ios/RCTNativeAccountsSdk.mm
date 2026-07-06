@@ -37,6 +37,13 @@
   [accountsSDK configureAccountsSDKWithResolve:resolve reject:reject];
 }
 
+- (void)notifyConfigurationRefreshed
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ConfigurationRefreshed" object:nil];
+  });
+}
+
 - (void)login:(RCTPromiseResolveBlock)resolve
        reject:(RCTPromiseRejectBlock)reject
 {

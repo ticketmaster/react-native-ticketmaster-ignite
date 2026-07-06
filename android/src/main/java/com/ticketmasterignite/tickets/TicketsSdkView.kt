@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 class TicketsSdkView(context: Context) : FrameLayout(context) {
 
   private var offsetTop: Int = 0
+  private var deepLinkId: String? = null
   private var lastAuthState: Boolean? = null // null = not checked yet, true = logged in, false = logged out
 
   // Main thread scope for UI operations (fragment transactions, view updates)
@@ -60,6 +61,10 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
     offsetTop = offset
     // Apply offset to the view
     this.offsetTopAndBottom(offsetTop)
+  }
+
+  fun setDeepLinkId(id: String?) {
+    deepLinkId = id
   }
 
   private fun isViewAttached(): Boolean {
@@ -218,9 +223,8 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
         .commitAllowingStateLoss()
     }
 
-    if (Config.get("orderIdDeepLink").isNotBlank()) {
-      TicketsSDKSingleton.jumpToOrderOrEvent(context, Config.get("orderIdDeepLink"))
-      Config.set("orderIdDeepLink", "")
+    if (!deepLinkId.isNullOrBlank()) {
+      TicketsSDKSingleton.jumpToOrderOrEvent(context, deepLinkId!!)
     }
   }
 

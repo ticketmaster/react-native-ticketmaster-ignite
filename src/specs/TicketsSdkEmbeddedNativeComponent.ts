@@ -4,6 +4,7 @@ import type { Double } from 'react-native/Libraries/Types/CodegenTypes';
 
 export interface NativeProps extends ViewProps {
   offsetTop?: Double;
+  deepLinkId?: string;
 }
 
 export default codegenNativeComponent<NativeProps>(

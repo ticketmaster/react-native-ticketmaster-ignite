@@ -29,6 +29,11 @@ class TicketsSdkViewManager :
     view.setOffsetTop(value.toInt())
   }
 
+  @ReactProp(name = "deepLinkId")
+  override fun setDeepLinkId(view: TicketsSdkView, value: String?) {
+    view.setDeepLinkId(value)
+  }
+
   companion object {
     const val NAME = "TicketsSdkEmbeddedView"
   }

@@ -5,6 +5,7 @@ import TicketmasterTickets
 class TicketsSDKModalViewController: UIViewController, TicketsSDKViewProtocol, TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate {
 
   var firstRender: Bool = true
+  var deepLinkId: String?
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
@@ -29,8 +30,11 @@ class TicketsSDKModalViewController: UIViewController, TicketsSDKViewProtocol, T
       ticketsVC.modalPresentationStyle = .fullScreen
       self.present(ticketsVC, animated: false)
 
-      if !Config.shared.get(for: "orderIdDeepLink").isEmpty {
-        self.deepLinkToOrder(Config.shared.get(for: "orderIdDeepLink"))
+      if let deepLinkId = self.deepLinkId, !deepLinkId.isEmpty {
+        print("  - Deep linking to order: \(deepLinkId)")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+          self.deepLinkToOrder(deepLinkId)
+        }
       }
     } failure: { error in
       print(" - Tickets SDK Modal Configuration Error: \(error.localizedDescription)")

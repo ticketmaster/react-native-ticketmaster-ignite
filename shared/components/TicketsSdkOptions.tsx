@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { TicketsSdkModal } from 'react-native-ticketmaster-ignite';
 import { Platform, View } from 'react-native';
 import SdkButton from './SdkButton';
 import SectionHeader from './SectionHeader';
+import { AppContext } from '../../example/src/contexts/AppProvider';
 
 const TicketsSdkOptions = (): React.ReactElement => {
+  const { ticketDeepLinkId, setTicketDeepLinkId } = useContext(AppContext);
+
   const onShowTicketsSdk = (): void => {
-    TicketsSdkModal?.showTicketsSdkModal();
+    TicketsSdkModal?.showTicketsSdkModal(ticketDeepLinkId);
+    setTicketDeepLinkId(undefined);
   };
 
   const DATA = [

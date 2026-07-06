@@ -3,10 +3,11 @@ import UIKit
 
 @objcMembers public class TicketsSDKModal: NSObject {
 
-  public func showTicketsSdkModal() {
+  public func showTicketsSdkModal(_ deepLinkId: String?) {
     DispatchQueue.main.async {
       let viewController = TicketsSDKModalViewController()
-      viewController.modalPresentationStyle = .custom
+      viewController.deepLinkId = deepLinkId
+      viewController.modalPresentationStyle = .fullScreen
       self.getRootViewController()?.present(viewController, animated: true)
     }
   }
