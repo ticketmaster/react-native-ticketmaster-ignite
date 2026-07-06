@@ -14,7 +14,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   );
   const [logs, addLog] = useState([]);
   const [ticketDeepLinkId, setTicketDeepLinkId] = useState<string | undefined>(
-    undefined
+    ''
   );
 
   return (
