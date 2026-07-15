@@ -55,15 +55,19 @@ In `android/build.gradle` set the `minSdkVersion` to `28` and set the `compileSd
 
 #### Set the Kotlin version
 
-You must build with **Kotlin 2.3.0 or newer**.
+> **⚠️ BREAKING CHANGE (v4.4.0+):** This library requires **Kotlin 2.2.0 or newer** due to the Ticketmaster Tickets SDK 3.18.0 dependency on `kotlin-stdlib:2.3.0`. React Native's default Kotlin compiler (2.1.20) **cannot** read 2.3.0 metadata and will fail with an "Internal compiler error" during the `:react-native-ticketmaster-ignite:compileDebugKotlin` task.
+>
+> **If you see compilation errors mentioning "metadata is 2.3.0, expected version is 2.1.0"**, you need to upgrade your Kotlin toolchain as shown below.
 
-In `android/build.gradle`, set the version in the `ext` block **and** pin the Kotlin Gradle plugin on the `buildscript` classpath:
+You must build with **Kotlin 2.2.0 or newer**. We recommend **Kotlin 2.2.21 or higher**.
+
+In `android/build.gradle`, **set both** the `kotlinVersion` in `ext {}` **and** the `kotlin-gradle-plugin` classpath:
 
 ```groovy
 buildscript {
     ext {
         // ...
-        kotlinVersion = "2.3.0"
+        kotlinVersion = "2.2.21"  // Use 2.2.21 or higher
     }
     dependencies {
         // ...
