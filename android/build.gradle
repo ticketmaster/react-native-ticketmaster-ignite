@@ -42,44 +42,6 @@ def supportsNamespace() {
   return (major == 7 && minor >= 3) || major >= 8
 }
 
-// Validate Kotlin version at configuration time
-def validateKotlinVersion() {
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : project.properties["TicketmasterIgnite_kotlinVersion"]
-  def versionParts = kotlin_version.tokenize('.')
-  def major = versionParts[0].toInteger()
-  def minor = versionParts[1].toInteger()
-
-  // Kotlin 2.2.0 or newer required (Tickets SDK 3.18.0+ ships kotlin-stdlib:2.3.0)
-  if (major < 2 || (major == 2 && minor < 2)) {
-    throw new GradleException("""
-    ╔═══════════════════════════════════════════════════════════════════════════════╗
-    ║ react-native-ticketmaster-ignite: KOTLIN VERSION TOO OLD                      ║
-    ╠═══════════════════════════════════════════════════════════════════════════════╣
-    ║                                                                               ║
-    ║  This library requires Kotlin 2.2.0 or newer (found: ${kotlin_version})               ║
-    ║                                                                               ║
-    ║  The Ticketmaster Tickets SDK 3.18.0+ depends on kotlin-stdlib:2.3.0, which  ║
-    ║  your current Kotlin ${kotlin_version} compiler cannot read (metadata is 2.3.0,      ║
-    ║  expected 2.1.0). You'll see "Internal compiler error" during compilation    ║
-    ║  if you proceed.                                                              ║
-    ║                                                                               ║
-    ║  FIX:                                                                         ║
-    ║                                                                               ║
-    ║  • Expo (CNG): Use the config plugin from docs/expo.md                       ║
-    ║                                                                               ║
-    ║  • Bare React Native: In YOUR app's android/build.gradle, set BOTH:          ║
-    ║      ext { kotlinVersion = "2.2.21" }                                        ║
-    ║      classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.21")          ║
-    ║                                                                               ║
-    ║  See: https://github.com/ticketmaster/react-native-ticketmaster-ignite#readme║
-    ║                                                                               ║
-    ╚═══════════════════════════════════════════════════════════════════════════════╝
-    """)
-  }
-}
-
-validateKotlinVersion()
-
 android {
   if (supportsNamespace()) {
     namespace "com.ticketmasterignite"
