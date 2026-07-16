@@ -12,6 +12,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     `#${process.env.EXPO_PUBLIC_PRIMARY_COLOR}` || ''
   );
   const [logs, addLog] = useState([]);
+  const [ticketDeepLinkId, setTicketDeepLinkId] = useState<string | undefined>(
+    ''
+  );
 
   return (
     <AppContext.Provider
@@ -20,6 +23,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         logs,
         setPrimaryColor,
         addLog,
+        ticketDeepLinkId,
+        setTicketDeepLinkId,
       }}
     >
       {children}
