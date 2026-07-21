@@ -406,6 +406,8 @@ If you do not send a style prop, `{width: '100%', height: '100%'}` is used by de
 If you want to force the `<TicketsSdkEmbedded />` component to carry out a fresh call on focus or after navigation to that tab/screen, you can add the below to any screen that renders the `<TicketsSdkEmbedded />` component to perform an unmount on blur behaviour:
 
 ```typescript
+import { useIsFocused } from '@react-navigation/native';
+
 const isFocused = useIsFocused();
 
 return (
@@ -495,6 +497,8 @@ The `<TicketsSdkEmbedded />` component has a deep link prop which takes an order
 Example:
 
 ```typescript
+import { useIsFocused } from '@react-navigation/native';
+
 const isFocused = useIsFocused();
 // Set the deeplink value in an earlier screen or with redux/context  before navigating to the screen rendering the Tickets SDK.
 const [ticketDeepLinkId, setTicketDeepLinkId] = useState('');
