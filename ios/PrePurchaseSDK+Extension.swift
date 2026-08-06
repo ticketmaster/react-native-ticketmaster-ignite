@@ -12,14 +12,34 @@ extension PrePurchaseSDK: TMPrePurchaseNavigationDelegate, TMPrePurchaseAnalytic
     and pageURL: URL,
     to activityType: UIActivity.ActivityType
   ) {
-    return
+    print("PrePurchaseAnalytics - didShare: pageTitle=\(pageTitle), pageURL=\(pageURL), activityType=\(activityType)")
+    GlobalEventEmitter.sendEvent(
+      name: "igniteAnalytics",
+      body: [
+        "prePurchaseSdkDidShare": [
+          "pageTitle": pageTitle,
+          "pageUrl": pageURL.absoluteString,
+          "activityType": "\(activityType)"
+        ]
+      ]
+    )
   }
 
   public func prePurchaseViewController(
     _ viewController: TMPrePurchaseViewController,
     didFirePageView pageView: UALPageView
   ) {
-    return
+    print("PrePurchaseAnalytics - didFirePageView: name=\(pageView.name), payload=\(String(describing: pageView.payload))")
+    GlobalEventEmitter.sendEvent(
+      name: "igniteAnalytics",
+      body: [
+        "prePurchaseSdkDidFirePageView": [
+          "pageName": pageView.name,
+          "pageUrl": pageView.payload?["digitalData.page.pageInfo.destinationURL"] as? String ?? "",
+          "pageType": pageView.payload?["digitalData.page.pageInfo.pageType"] as? String ?? ""
+        ]
+      ]
+    )
   }
 
   public func prePurchaseViewController(

@@ -484,17 +484,33 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
         val tokenMap = validateAuthToken(authentication)
 
         mainScope.launch {
-          TicketsSDKClient
+          val ticketsClient = TicketsSDKClient
             .Builder(createTicketsColorScheme(Config.get("primaryColor").toColorInt()))
             .authenticationSDKClient(authentication)
             .build(context)
-            .apply {
+
+          ticketsClient.apply {
               TicketsSDKSingleton.setTicketsSdkClient(this)
               TicketsSDKSingleton.setEnvironment(
                 context,
                 Environment.getTicketsSDKSingletonEnvironment(Config.get("environment")),
                 Region.getTicketsSDKRegion()
               )
+
+              // Observe analytics events from the Tickets SDK using Flow
+              mainScope.launch {
+                com.ticketmaster.tickets.eventanalytic.UserAnalyticsDelegate.handler.getFlow().collect { analyticsData ->
+                  analyticsData?.let { data ->
+                    val detailsMap = mutableMapOf<String, Any>()
+                    data.data?.let { bundle ->
+                      bundle.keySet().forEach { key ->
+                        bundle.get(key)?.let { value -> detailsMap[key] = value }
+                      }
+                    }
+                    TicketsUserAnalyticsListener.handleAnalyticsEvent(data.actionName, detailsMap)
+                  }
+                }
+              }
 
               // Wait for view to be measured before launching fragment
               if (isViewReady()) {
@@ -518,12 +534,6 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
   }
 
   private fun launchTickets(tokenMap: Map<AuthSource, String>) {
-    if (tokenMap.isNotEmpty()) {
-      val params: WritableMap = Arguments.createMap().apply {
-        putString("ticketsSdkDidViewEvents", "ticketsSdkDidViewEvents")
-      }
-      GlobalEventEmitter.sendEvent("igniteAnalytics", params)
-    }
     setCustomModules()
     launchTicketsView()
   }

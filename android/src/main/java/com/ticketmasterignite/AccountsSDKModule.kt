@@ -33,19 +33,18 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
 
   override fun configureAccountsSDK(promise: Promise) {
     CoroutineScope(Dispatchers.Main).launch {
-      val configurationStartedParams: WritableMap = Arguments.createMap().apply {
-        putString(
-          "accountsSdkServiceConfigurationStarted",
-          "accountsSdkServiceConfigurationStarted"
-        )
-      }
-      GlobalEventEmitter.sendEvent("igniteAnalytics", configurationStartedParams)
-
       try {
         val currentFragmentActivity = reactApplicationContext.currentActivity as? FragmentActivity
         if (currentFragmentActivity == null) {
           promise.reject("Accounts SDK Configuration Error", "Activity is null")
           return@launch
+        }
+
+        if (isFirstConfiguration) {
+          val configStartedParams: WritableMap = Arguments.createMap()
+          configStartedParams.putString("accountsSdkServiceConfigurationStarted", "accountsSdkServiceConfigurationStarted")
+          GlobalEventEmitter.sendEvent("igniteAnalytics", configStartedParams)
+          isFirstConfiguration = false
         }
 
         val authenticationResult = TMAuthentication.Builder(
@@ -60,16 +59,10 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
         val authentication = authenticationResult.getOrThrow()
         IgniteSDKSingleton.setAuthenticationSDK(authentication)
 
-        GlobalEventEmitter.sendEvent("igniteAnalytics", Arguments.createMap().apply {
-          putString("accountsSdkServiceConfigured", "accountsSdkServiceConfigured")
-        })
-
-        GlobalEventEmitter.sendEvent("igniteAnalytics", Arguments.createMap().apply {
-          putString(
-            "accountsSdkServiceConfigurationCompleted",
-            "accountsSdkServiceConfigurationCompleted"
-          )
-        })
+        if (!isObserverRegistered) {
+          authentication.getLoginStateLiveData().observeForever(analyticsObserver)
+          isObserverRegistered = true
+        }
 
         promise.resolve("Accounts SDK configuration successful")
       } catch (e: Exception) {
@@ -89,16 +82,6 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
         loginPromise?.let { promise ->
           when (resultCode) {
             Activity.RESULT_OK -> {
-              val successParams: WritableMap = Arguments.createMap().apply {
-                putString("accountsSdkLoggedIn", "accountsSdkLoggedIn")
-              }
-              GlobalEventEmitter.sendEvent("igniteAnalytics", successParams)
-
-              val completedParams: WritableMap = Arguments.createMap().apply {
-                putString("accountsSdkLoginAccountCompleted", "accountsSdkLoginAccountCompleted")
-              }
-              GlobalEventEmitter.sendEvent("igniteAnalytics", completedParams)
-
               CoroutineScope(Dispatchers.IO).launch {
                 try {
                   val tokenData = fetchTokenData()
@@ -118,10 +101,6 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
             }
 
             Activity.RESULT_CANCELED -> {
-              val canceledParams: WritableMap = Arguments.createMap().apply {
-                putString("accountsSdkLoginAborted", "accountsSdkLoginAborted")
-              }
-              GlobalEventEmitter.sendEvent("igniteAnalytics", canceledParams)
               val result = Arguments.createMap()
               result.putString("accessToken", "")
               promise.resolve(result)
@@ -146,10 +125,6 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
   }
 
   override fun login(promise: Promise) {
-    val loginStartedParams: WritableMap = Arguments.createMap().apply {
-      putString("accountsSdkLoginStarted", "accountsSdkLoginStarted")
-    }
-    GlobalEventEmitter.sendEvent("igniteAnalytics", loginStartedParams)
     try {
       val authentication = IgniteSDKSingleton.getAuthenticationSDK()
 
@@ -181,23 +156,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
 
     CoroutineScope(Dispatchers.IO).launch {
       try {
-        val logoutStartedParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkLogoutStarted", "accountsSdkLogoutStarted")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutStartedParams)
-
         authentication.logout()
-
-        val loggedOutParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
-
-        val logoutCompletedParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
-
         promise.resolve(true)
       } catch (e: Exception) {
         promise.reject("Accounts SDK Logout Error", e)
@@ -214,23 +173,7 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
 
     CoroutineScope(Dispatchers.IO).launch {
       try {
-        val logoutStartedParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkLogoutStarted", "accountsSdkLogoutStarted")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutStartedParams)
-
         authentication.logout()
-
-        val loggedOutParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
-
-        val logoutCompletedParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
-
         promise.resolve(true)
       } catch (e: Exception) {
         promise.reject("Accounts SDK LogoutAll Error", e)
@@ -356,10 +299,6 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
           tokenData.sportXRIdToken?.let { putString("sportXRIdToken", it) }
         }
 
-        val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
         promise.resolve(combinedTokens)
       } catch (e: Exception) {
         promise.reject("Accounts SDK getToken Error", e)
@@ -389,10 +328,6 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
           tokenData.sportXRIdToken?.let { putString("sportXRIdToken", it) }
         }
 
-        val tokenRefreshedParams: WritableMap = Arguments.createMap().apply {
-          putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")
-        }
-        GlobalEventEmitter.sendEvent("igniteAnalytics", tokenRefreshedParams)
         promise.resolve(combinedTokens)
       } catch (e: Exception) {
         promise.reject("Accounts SDK refreshToken Error", e)
@@ -486,5 +421,11 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
 
   companion object {
     const val NAME = "NativeAccountsSdk"
+
+    // Analytics state must be in companion to persist across module recreations (bridge reloads).
+    // This ensures only ONE observer is registered globally and CONFIGURATION_STARTED fires once.
+    private val analyticsObserver = AccountsAnalyticsObserver()
+    private var isObserverRegistered = false
+    private var isFirstConfiguration = true
   }
 }

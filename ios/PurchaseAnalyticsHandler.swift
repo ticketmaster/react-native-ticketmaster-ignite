@@ -11,7 +11,16 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     pageLoadDidErrorFor url: URL,
     error: NSError
   ) {
-    return
+    print("PurchaseWebAnalytics - pageLoadDidErrorFor: url=\(url), error=\(error.localizedDescription)")
+    GlobalEventEmitter.sendEvent(
+      name: "igniteAnalytics",
+      body: [
+        "purchaseSdkDidErrorOnPageLoad": [
+          "url": "\(url.absoluteString)",
+          "error": "\(error.localizedDescription)"
+        ]
+      ]
+    )
   }
 
   public func purchaseNavigationController(
@@ -19,21 +28,52 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     webPageDidErrorFor url: URL,
     errorString: String
   ) {
-    return
+    print("PurchaseWebAnalytics - webPageDidErrorFor: url=\(url), error=\(errorString)")
+    GlobalEventEmitter.sendEvent(
+      name: "igniteAnalytics",
+      body: [
+        "purchaseSdkDidErrorOnWebpage": [
+          "url": "\(url.absoluteString)",
+          "error": "\(errorString)"
+        ]
+      ]
+    )
   }
 
   public func purchaseNavigationController(
     _ purchaseNavigationController: TMPurchaseNavigationController,
     webPageDidReportUALPageView pageView: UALPageView
   ) {
-    return
+    print("PurchaseWebAnalytics - UALPageView: pageName=\(pageView.pageName ?? ""), pageUrl=\(pageView.pageUrl ?? ""), pageType=\(pageView.pageType ?? "")")
+    GlobalEventEmitter.sendEvent(
+      name: "igniteAnalytics",
+      body: [
+        "purchaseSdkDidReportUalPageView": [
+          "pageName": "\(pageView.pageName ?? "")",
+          "pageUrl": "\(pageView.pageUrl ?? "")",
+          "pageReferrer": "\(pageView.pageReferrer ?? "")",
+          "pageType": "\(pageView.pageType ?? "")"
+        ]
+      ]
+    )
   }
 
   public func purchaseNavigationController(
     _ purchaseNavigationController: TMPurchaseNavigationController,
     webPageDidReportUALCommerceEvent commerceEvent: UALCommerceEvent
   ) {
-    return
+    print("PurchaseWebAnalytics - UALCommerceEvent: eventType=\(commerceEvent.eventType ?? ""), eventName=\(commerceEvent.eventName ?? ""), transactionId=\(commerceEvent.transactionId ?? "")")
+    GlobalEventEmitter.sendEvent(
+      name: "igniteAnalytics",
+      body: [
+        "purchaseSdkDidReportUalCommerceEvent": [
+          "eventType": "\(commerceEvent.eventType ?? "")",
+          "eventName": "\(commerceEvent.eventName ?? "")",
+          "transactionId": "\(commerceEvent.transactionId ?? "")",
+          "transactionTotal": "\(commerceEvent.transactionTotal ?? 0.0)"
+        ]
+      ]
+    )
   }
 
   // MARK: - TMPurchaseUserAnalyticsDelegate
