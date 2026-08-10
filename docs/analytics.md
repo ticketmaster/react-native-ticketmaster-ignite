@@ -124,20 +124,29 @@ More information about the flow of these state change analytics can be found her
 | ticketsSdkDidViewEventTickets | eventId<br/> eventName<br/> ticketCount | The user views tickets for a specific event |
 | ticketsSdkDidViewTicketBarcode | eventId<br/> eventName<br/> section<br/> row<br/> seat | The user views the barcode for a specific ticket |
 | ticketsSdkDidViewTicketDetails | eventId<br/> eventName<br/> section<br/> row<br/> seat | The user views the details/back of a specific ticket |
-| ticketsSdkDidViewMfaForTicketOperation (iOS only) | ticketsSdkDidViewMfaForTicketOperation | Multi-factor authentication prompt shown for a ticket operation |
-| ticketsSdkDidViewMfaForViewBarcode (iOS only) | ticketsSdkDidViewMfaForViewBarcode | Multi-factor authentication prompt shown to view barcode |
-| ticketsSdkDidViewMfaForWebpage (iOS only) | ticketsSdkDidViewMfaForWebpage | Multi-factor authentication prompt shown for a webpage |
+| ticketsSdkDidViewMfaForTicketOperation | ticketsSdkDidViewMfaForTicketOperation | Multi-factor authentication prompt shown for a ticket operation |
+| ticketsSdkDidViewMfaForViewBarcode | ticketsSdkDidViewMfaForViewBarcode | Multi-factor authentication prompt shown to view barcode |
+| ticketsSdkDidViewMfaForWebpage | ticketsSdkDidViewMfaForWebpage | Multi-factor authentication prompt shown for a webpage |
+| ticketsSdkDidViewEventModules (iOS only) | eventId<br/> eventName<br/> ticketCount | User scrolled down to view modules on tickets listing page |
+| ticketsSdkDidViewTicketDelivery (iOS only) | eventId<br/> eventName<br/> section<br/> row<br/> seat | User viewed ticket delivery method info (non-barcode) |
+| ticketsSdkDidViewEventInfoBanner (iOS only) | eventId<br/> eventName | User viewed event info banner (health check, tax info, etc.) |
 
 ### User Action Events
 
 | Name | Values | Description |
 | ----- | ---- | -----   |
 | ticketsSdkDidAddTicketToWallet | eventId<br/> eventName<br/> section<br/> row<br/> seat | The user initiated adding a ticket to Apple Wallet (iOS) or Google Wallet (Android) |
-| ticketsSdkDidInitiateTransfer (Android only) | eventId<br/> eventName<br/> ticketCount<br/> faceValue | The user started the transfer process for ticket(s) |
+| ticketsSdkDidInitiateTransfer | eventId<br/> eventName<br/> ticketCount<br/> faceValue (Android) | The user started the transfer process for ticket(s) |
 | ticketsSdkDidCancelTransfer | eventId<br/> eventName<br/> ticketCount (iOS)<br/> transferId (Android)<br/> orderId (Android) | The user cancelled a ticket transfer |
+| ticketsSdkDidAcceptTransfer (Android only) | eventId<br/> eventName<br/> transferId | The user accepted a ticket transfer |
+| ticketsSdkDidEditResale (iOS only) | eventId<br/> eventName<br/> ticketCount | The user pressed the Edit Resale Posting button |
 | ticketsSdkDidCancelResale | eventId<br/> eventName<br/> ticketCount (iOS)<br/> postingId (Android) | The user cancelled a ticket resale listing |
-| ticketsSdkDidTakeBarcodeScreenshot (iOS only) | eventId<br/> eventName<br/> section<br/> row<br/> seat | The user took a screenshot of the ticket barcode |
-| ticketsSdkDidPullToRefreshEvents (iOS only) | eventCount | The user pulled to refresh the events list |
+| ticketsSdkDidShareTransfer (Android only) | eventId<br/> eventName | The user shared a ticket transfer |
+| ticketsSdkDidTakeBarcodeScreenshot | eventId<br/> eventName<br/> section (iOS)<br/> row (iOS)<br/> seat (iOS) | The user took a screenshot of the ticket barcode |
+| ticketsSdkDidPullToRefreshEvents | eventCount (iOS) | The user pulled to refresh the events list |
+| ticketsSdkDidPressEventInfoBanner (iOS only) | eventId<br/> eventName | The user pressed More Info on the event info banner |
+| ticketsSdkDidPressModuleActionButton (iOS only) | eventId<br/> eventName<br/> moduleId<br/> buttonTitle<br/> buttonCallback | The user pressed a button on a custom module |
+| ticketsSdkDidPressNavbarButton (iOS only) | eventId<br/> eventName | The user pressed the NavBar button |
 
 ### Module Events
 
@@ -160,8 +169,8 @@ More information about the flow of these state change analytics can be found her
 | section |  The ticket section name  |
 | row |  The ticket row name  |
 | seat |  The ticket seat name  |
-| faceValue |  The face value of the ticket(s)  |
-| transferId |  The transfer identifier  |
+| faceValue (Android only) |  The face value of the ticket(s)  |
+| transferId (Android only) |  The transfer identifier  |
 | orderId |  The order identifier  |
 | postingId |  The resale posting identifier  |
 | eventCount |  The number of events  |

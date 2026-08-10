@@ -98,6 +98,46 @@ extension TicketsSDKViewProtocol {
           name: eventName,
           body: ["ticketsSdkDidViewMfaForWebpage": "ticketsSdkDidViewMfaForWebpage"]
         )
+      case .eventModules:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidViewEventModules": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count
+              ]
+            ]
+          )
+        }
+      case .ticketDelivery:
+        if case .eventTicket(let event, let ticket) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidViewTicketDelivery": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "section": ticket.sectionName ?? "",
+                "row": ticket.rowName ?? "",
+                "seat": ticket.seatName ?? ""
+              ]
+            ]
+          )
+        }
+      case .eventInfoBanner:
+        if case .event(let event) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidViewEventInfoBanner": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name
+              ]
+            ]
+          )
+        }
       @unknown default:
         return
       }
@@ -127,12 +167,38 @@ extension TicketsSDKViewProtocol {
             ]
           )
         }
+      case .transferSendButton:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidInitiateTransfer": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count
+              ]
+            ]
+          )
+        }
       case .transferCancelButton:
         if case .eventTickets(let event, let tickets) = metadata {
           GlobalEventEmitter.sendEvent(
             name: eventName,
             body: [
               "ticketsSdkDidCancelTransfer": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count
+              ]
+            ]
+          )
+        }
+      case .postingEditButton:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidEditResale": [
                 "eventId": event.info.identifier,
                 "eventName": event.info.name,
                 "ticketCount": tickets.count
@@ -175,6 +241,45 @@ extension TicketsSDKViewProtocol {
             body: [
               "ticketsSdkDidPullToRefreshEvents": [
                 "eventCount": events.count
+              ]
+            ]
+          )
+        }
+      case .eventInfoBannerButton:
+        if case .event(let event) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidPressEventInfoBanner": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name
+              ]
+            ]
+          )
+        }
+      case .moduleActionButton:
+        if case .moduleButton(let event, let module, let button) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidPressModuleActionButton": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "moduleId": module.identifier,
+                "buttonTitle": button.title,
+                "buttonCallback": button.callbackValue
+              ]
+            ]
+          )
+        }
+      case .navbarButtonAction:
+        if case .event(let event) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidPressNavbarButton": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name
               ]
             ]
           )

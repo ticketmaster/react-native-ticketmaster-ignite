@@ -157,6 +157,15 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
     CoroutineScope(Dispatchers.IO).launch {
       try {
         authentication.logout()
+
+        val loggedOutParams: WritableMap = Arguments.createMap()
+        loggedOutParams.putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
+        GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
+
+        val logoutCompletedParams: WritableMap = Arguments.createMap()
+        logoutCompletedParams.putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
+        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
+
         promise.resolve(true)
       } catch (e: Exception) {
         promise.reject("Accounts SDK Logout Error", e)
@@ -174,6 +183,15 @@ class AccountsSDKModule(reactContext: ReactApplicationContext) : NativeAccountsS
     CoroutineScope(Dispatchers.IO).launch {
       try {
         authentication.logout()
+
+        val loggedOutParams: WritableMap = Arguments.createMap()
+        loggedOutParams.putString("accountsSdkLoggedOut", "accountsSdkLoggedOut")
+        GlobalEventEmitter.sendEvent("igniteAnalytics", loggedOutParams)
+
+        val logoutCompletedParams: WritableMap = Arguments.createMap()
+        logoutCompletedParams.putString("accountsSdkLogoutCompleted", "accountsSdkLogoutCompleted")
+        GlobalEventEmitter.sendEvent("igniteAnalytics", logoutCompletedParams)
+
         promise.resolve(true)
       } catch (e: Exception) {
         promise.reject("Accounts SDK LogoutAll Error", e)

@@ -77,7 +77,7 @@ type TicketsSdkTransferData = {
   eventId: string;
   eventName: string;
   ticketCount: number;
-  faceValue: string;
+  faceValue?: string;
 };
 
 type TicketsSdkCancelTransferData = {
@@ -95,6 +95,30 @@ type TicketsSdkCancelResaleData = {
 
 type TicketsSdkRefreshData = {
   eventCount: number;
+};
+
+type TicketsSdkEventInfoData = {
+  eventId: string;
+  eventName: string;
+};
+
+type TicketsSdkModuleActionData = {
+  eventId: string;
+  eventName: string;
+  moduleId: string;
+  buttonTitle: string;
+  buttonCallback: string;
+};
+
+type TicketsSdkAcceptTransferData = {
+  eventId: string;
+  eventName: string;
+  transferId: string;
+};
+
+type TicketsSdkShareTransferData = {
+  eventId: string;
+  eventName: string;
 };
 
 type UalPageViewData = {
@@ -225,12 +249,21 @@ export type IgniteAnalytics = {
   ticketsSdkDidViewMfaForTicketOperation: 'ticketsSdkDidViewMfaForTicketOperation';
   ticketsSdkDidViewMfaForViewBarcode: 'ticketsSdkDidViewMfaForViewBarcode';
   ticketsSdkDidViewMfaForWebpage: 'ticketsSdkDidViewMfaForWebpage';
+  ticketsSdkDidViewEventModules: TicketsSdkEventTicketsData;
+  ticketsSdkDidViewTicketDelivery: TicketsSdkTicketData;
+  ticketsSdkDidViewEventInfoBanner: TicketsSdkEventInfoData;
   ticketsSdkDidAddTicketToWallet: TicketsSdkTicketData;
   ticketsSdkDidInitiateTransfer: TicketsSdkTransferData;
   ticketsSdkDidCancelTransfer: TicketsSdkCancelTransferData;
+  ticketsSdkDidAcceptTransfer: TicketsSdkAcceptTransferData;
+  ticketsSdkDidEditResale: TicketsSdkEventTicketsData;
   ticketsSdkDidCancelResale: TicketsSdkCancelResaleData;
+  ticketsSdkDidShareTransfer: TicketsSdkShareTransferData;
   ticketsSdkDidTakeBarcodeScreenshot: TicketsSdkTicketData;
   ticketsSdkDidPullToRefreshEvents: TicketsSdkRefreshData;
+  ticketsSdkDidPressEventInfoBanner: TicketsSdkEventInfoData;
+  ticketsSdkDidPressModuleActionButton: TicketsSdkModuleActionData;
+  ticketsSdkDidPressNavbarButton: TicketsSdkEventInfoData;
   ticketsSdkModalDidDismiss: 'ticketsSdkModalDidDismiss';
   ticketsSdkVenueConcessionsOrderFor: TicketsSdkEventData;
   ticketsSdkVenueConcessionsWalletFor: TicketsSdkEventData;
@@ -295,12 +328,21 @@ export enum IgniteAnalyticName {
   TICKETS_SDK_DID_VIEW_MFA_FOR_TICKET_OPERATION = 'ticketsSdkDidViewMfaForTicketOperation',
   TICKETS_SDK_DID_VIEW_MFA_FOR_VIEW_BARCODE = 'ticketsSdkDidViewMfaForViewBarcode',
   TICKETS_SDK_DID_VIEW_MFA_FOR_WEBPAGE = 'ticketsSdkDidViewMfaForWebpage',
+  TICKETS_SDK_DID_VIEW_EVENT_MODULES = 'ticketsSdkDidViewEventModules',
+  TICKETS_SDK_DID_VIEW_TICKET_DELIVERY = 'ticketsSdkDidViewTicketDelivery',
+  TICKETS_SDK_DID_VIEW_EVENT_INFO_BANNER = 'ticketsSdkDidViewEventInfoBanner',
   TICKETS_SDK_DID_ADD_TICKET_TO_WALLET = 'ticketsSdkDidAddTicketToWallet',
   TICKETS_SDK_DID_INITIATE_TRANSFER = 'ticketsSdkDidInitiateTransfer',
   TICKETS_SDK_DID_CANCEL_TRANSFER = 'ticketsSdkDidCancelTransfer',
+  TICKETS_SDK_DID_ACCEPT_TRANSFER = 'ticketsSdkDidAcceptTransfer',
+  TICKETS_SDK_DID_EDIT_RESALE = 'ticketsSdkDidEditResale',
   TICKETS_SDK_DID_CANCEL_RESALE = 'ticketsSdkDidCancelResale',
+  TICKETS_SDK_DID_SHARE_TRANSFER = 'ticketsSdkDidShareTransfer',
   TICKETS_SDK_DID_TAKE_BARCODE_SCREENSHOT = 'ticketsSdkDidTakeBarcodeScreenshot',
   TICKETS_SDK_DID_PULL_TO_REFRESH_EVENTS = 'ticketsSdkDidPullToRefreshEvents',
+  TICKETS_SDK_DID_PRESS_EVENT_INFO_BANNER = 'ticketsSdkDidPressEventInfoBanner',
+  TICKETS_SDK_DID_PRESS_MODULE_ACTION_BUTTON = 'ticketsSdkDidPressModuleActionButton',
+  TICKETS_SDK_DID_PRESS_NAVBAR_BUTTON = 'ticketsSdkDidPressNavbarButton',
   TICKETS_SDK_DID_DISMISS = 'ticketsSdkModalDidDismiss',
   TICKETS_SDK_VENUE_CONCESSIONS_ORDER_FOR = 'ticketsSdkVenueConcessionsOrderFor',
   TICKETS_SDK_VENUE_CONCESSIONS_WALLET_FOR = 'ticketsSdkVenueConcessionsWalletFor',

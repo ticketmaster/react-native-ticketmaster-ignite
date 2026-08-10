@@ -12,7 +12,6 @@ extension PrePurchaseSDK: TMPrePurchaseNavigationDelegate, TMPrePurchaseAnalytic
     and pageURL: URL,
     to activityType: UIActivity.ActivityType
   ) {
-    print("PrePurchaseAnalytics - didShare: pageTitle=\(pageTitle), pageURL=\(pageURL), activityType=\(activityType)")
     GlobalEventEmitter.sendEvent(
       name: "igniteAnalytics",
       body: [
@@ -29,7 +28,6 @@ extension PrePurchaseSDK: TMPrePurchaseNavigationDelegate, TMPrePurchaseAnalytic
     _ viewController: TMPrePurchaseViewController,
     didFirePageView pageView: UALPageView
   ) {
-    print("PrePurchaseAnalytics - didFirePageView: name=\(pageView.name), payload=\(String(describing: pageView.payload))")
     GlobalEventEmitter.sendEvent(
       name: "igniteAnalytics",
       body: [

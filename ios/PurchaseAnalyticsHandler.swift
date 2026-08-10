@@ -11,7 +11,6 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     pageLoadDidErrorFor url: URL,
     error: NSError
   ) {
-    print("PurchaseWebAnalytics - pageLoadDidErrorFor: url=\(url), error=\(error.localizedDescription)")
     GlobalEventEmitter.sendEvent(
       name: "igniteAnalytics",
       body: [
@@ -28,7 +27,6 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     webPageDidErrorFor url: URL,
     errorString: String
   ) {
-    print("PurchaseWebAnalytics - webPageDidErrorFor: url=\(url), error=\(errorString)")
     GlobalEventEmitter.sendEvent(
       name: "igniteAnalytics",
       body: [
@@ -44,15 +42,14 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     _ purchaseNavigationController: TMPurchaseNavigationController,
     webPageDidReportUALPageView pageView: UALPageView
   ) {
-    print("PurchaseWebAnalytics - UALPageView: pageName=\(pageView.pageName ?? ""), pageUrl=\(pageView.pageUrl ?? ""), pageType=\(pageView.pageType ?? "")")
     GlobalEventEmitter.sendEvent(
       name: "igniteAnalytics",
       body: [
         "purchaseSdkDidReportUalPageView": [
-          "pageName": "\(pageView.pageName ?? "")",
-          "pageUrl": "\(pageView.pageUrl ?? "")",
-          "pageReferrer": "\(pageView.pageReferrer ?? "")",
-          "pageType": "\(pageView.pageType ?? "")"
+          "pageName": pageView.name,
+          "pageUrl": (pageView.payload?["digitalData.page.pageInfo.destinationURL"] as? String) ?? "",
+          "pageReferrer": (pageView.payload?["digitalData.page.pageInfo.referringURL"] as? String) ?? "",
+          "pageType": (pageView.payload?["digitalData.page.pageInfo.pageType"] as? String) ?? ""
         ]
       ]
     )
@@ -62,15 +59,14 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     _ purchaseNavigationController: TMPurchaseNavigationController,
     webPageDidReportUALCommerceEvent commerceEvent: UALCommerceEvent
   ) {
-    print("PurchaseWebAnalytics - UALCommerceEvent: eventType=\(commerceEvent.eventType ?? ""), eventName=\(commerceEvent.eventName ?? ""), transactionId=\(commerceEvent.transactionId ?? "")")
     GlobalEventEmitter.sendEvent(
       name: "igniteAnalytics",
       body: [
         "purchaseSdkDidReportUalCommerceEvent": [
-          "eventType": "\(commerceEvent.eventType ?? "")",
-          "eventName": "\(commerceEvent.eventName ?? "")",
-          "transactionId": "\(commerceEvent.transactionId ?? "")",
-          "transactionTotal": "\(commerceEvent.transactionTotal ?? 0.0)"
+          "eventType": commerceEvent.eventType.rawValue,
+          "eventName": "",
+          "transactionId": commerceEvent.transactionData.transactionID ?? "",
+          "transactionTotal": "\(commerceEvent.transactionData.totalAmount ?? 0.0)"
         ]
       ]
     )

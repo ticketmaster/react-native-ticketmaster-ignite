@@ -375,10 +375,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           (result.purchaseSdkDidEndCheckoutFor ||
             result.ticketsSdkDidViewEvents ||
             result.ticketsSdkModalDidDismiss ||
-            // iOS TMAuthentication.shared.validToken() successful login
             ((result.accountsSdkLoggedIn || result.accountsSdkLoggedOut) &&
-              !isLoggingIn &&
-              Platform.OS === 'ios')) &&
+              !isLoggingIn)) &&
           autoUpdate
         ) {
           await setAccountDetails();
