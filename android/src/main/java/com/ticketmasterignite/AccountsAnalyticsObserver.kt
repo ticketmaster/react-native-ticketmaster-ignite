@@ -1,6 +1,5 @@
 package com.ticketmasterignite
 
-import android.util.Log
 import androidx.lifecycle.Observer
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.WritableMap

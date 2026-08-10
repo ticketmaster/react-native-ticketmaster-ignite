@@ -1,6 +1,5 @@
 package com.ticketmasterignite.retail
 
-import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.WritableMap
 import com.ticketmaster.foundation.entity.UALPageView
