@@ -225,21 +225,21 @@ export type IgniteAnalytics = {
   purchaseSdkDidViewSubPageFor: SubPageData;
   purchaseSdkDidMakeDecisionFor: MakeDecisionData;
   purchaseSdkManageMyTickets: 'purchaseSdkManageMyTickets';
-  purchaseSdkDidReportUalPageView: UalPageViewData;
-  purchaseSdkDidReportUalCommerceEvent: UalCommerceEventData;
-  purchaseSdkDidReportUalViewItem: UalViewItemData;
-  purchaseSdkDidReportUalUserAction: UalUserActionData;
-  purchaseSdkDidErrorOnPageLoad: WebErrorData;
-  purchaseSdkDidErrorOnWebpage: WebErrorData;
+  purchaseSdkWebPageDidReportUALPageView: UalPageViewData;
+  purchaseSdkWebPageDidReportUALCommerceEvent: UalCommerceEventData;
+  purchaseSdkWebReportedViewItem: UalViewItemData;
+  purchaseSdkWebPageDidReportUALUserAction: UalUserActionData;
+  purchaseSdkPageLoadDidErrorFor: WebErrorData;
+  purchaseSdkWebPageDidErrorFor: WebErrorData;
   prePurchaseSdkDidFirePageView: UalPageViewData;
   prePurchaseSdkDidShare: PrePurchaseShareData;
   prePurchaseSdkDidReportUalUserAction: UalUserActionData;
-  prePurchaseSdkDidErrorOnPageLoad: WebErrorData;
-  prePurchaseSdkDidErrorOnWebpage: WebErrorData;
-  prePurchaseSdkDidStartLoadingPage: PrePurchasePageStartData;
-  prePurchaseSdkDidCompletePageLoad: PrePurchasePageLoadData;
-  prePurchaseSdkDidTimeoutPageLoad: PrePurchasePageLoadData;
-  prePurchaseSdkDidSelectEvent: PrePurchaseEventSelectionData;
+  prePurchaseSdkPageLoadDidErrorFor: WebErrorData;
+  prePurchaseSdkWebPageDidErrorFor: WebErrorData;
+  prePurchaseSdkWebPageDidReportLoadingPage: PrePurchasePageStartData;
+  prePurchaseSdkWebPageDidReportPageLoadComplete: PrePurchasePageLoadData;
+  prePurchaseSdkWebPageDidReportProgressBarTimeout: PrePurchasePageLoadData;
+  prePurchaseSdkDidBeginTicketSelectionFor: PrePurchaseEventSelectionData;
   prePurchaseSdkDidEncounterUnsupportedUrl: PrePurchaseUnsupportedUrlData;
   prePurchaseSdkDidLoadPage: PrePurchasePageLoadedData;
   ticketsSdkDidViewEvents: 'ticketsSdkDidViewEvents';
@@ -304,21 +304,21 @@ export enum IgniteAnalyticName {
   PURCHASE_SDK_DID_VIEW_SUB_PAGE_FOR = 'purchaseSdkDidViewSubPageFor',
   PURCHASE_SDK_DID_MAKE_DECISION_FOR = 'purchaseSdkDidMakeDecisionFor',
   PURCHASE_SDK_MANAGE_MY_TICKETS = 'purchaseSdkManageMyTickets',
-  PURCHASE_SDK_DID_REPORT_UAL_PAGE_VIEW = 'purchaseSdkDidReportUalPageView',
-  PURCHASE_SDK_DID_REPORT_UAL_COMMERCE_EVENT = 'purchaseSdkDidReportUalCommerceEvent',
-  PURCHASE_SDK_DID_REPORT_UAL_VIEW_ITEM = 'purchaseSdkDidReportUalViewItem',
-  PURCHASE_SDK_DID_REPORT_UAL_USER_ACTION = 'purchaseSdkDidReportUalUserAction',
-  PURCHASE_SDK_DID_ERROR_ON_PAGE_LOAD = 'purchaseSdkDidErrorOnPageLoad',
-  PURCHASE_SDK_DID_ERROR_ON_WEBPAGE = 'purchaseSdkDidErrorOnWebpage',
+  PURCHASE_SDK_WEB_PAGE_DID_REPORT_UAL_PAGE_VIEW = 'purchaseSdkWebPageDidReportUALPageView',
+  PURCHASE_SDK_WEB_PAGE_DID_REPORT_UAL_COMMERCE_EVENT = 'purchaseSdkWebPageDidReportUALCommerceEvent',
+  PURCHASE_SDK_WEB_REPORTED_VIEW_ITEM = 'purchaseSdkWebReportedViewItem',
+  PURCHASE_SDK_WEB_PAGE_DID_REPORT_UAL_USER_ACTION = 'purchaseSdkWebPageDidReportUALUserAction',
+  PURCHASE_SDK_PAGE_LOAD_DID_ERROR_FOR = 'purchaseSdkPageLoadDidErrorFor',
+  PURCHASE_SDK_WEB_PAGE_DID_ERROR_FOR = 'purchaseSdkWebPageDidErrorFor',
   PRE_PURCHASE_SDK_DID_FIRE_PAGE_VIEW = 'prePurchaseSdkDidFirePageView',
   PRE_PURCHASE_SDK_DID_SHARE = 'prePurchaseSdkDidShare',
   PRE_PURCHASE_SDK_DID_REPORT_UAL_USER_ACTION = 'prePurchaseSdkDidReportUalUserAction',
-  PRE_PURCHASE_SDK_DID_ERROR_ON_PAGE_LOAD = 'prePurchaseSdkDidErrorOnPageLoad',
-  PRE_PURCHASE_SDK_DID_ERROR_ON_WEBPAGE = 'prePurchaseSdkDidErrorOnWebpage',
-  PRE_PURCHASE_SDK_DID_START_LOADING_PAGE = 'prePurchaseSdkDidStartLoadingPage',
-  PRE_PURCHASE_SDK_DID_COMPLETE_PAGE_LOAD = 'prePurchaseSdkDidCompletePageLoad',
-  PRE_PURCHASE_SDK_DID_TIMEOUT_PAGE_LOAD = 'prePurchaseSdkDidTimeoutPageLoad',
-  PRE_PURCHASE_SDK_DID_SELECT_EVENT = 'prePurchaseSdkDidSelectEvent',
+  PRE_PURCHASE_SDK_PAGE_LOAD_DID_ERROR_FOR = 'prePurchaseSdkPageLoadDidErrorFor',
+  PRE_PURCHASE_SDK_WEB_PAGE_DID_ERROR_FOR = 'prePurchaseSdkWebPageDidErrorFor',
+  PRE_PURCHASE_SDK_WEB_PAGE_DID_REPORT_LOADING_PAGE = 'prePurchaseSdkWebPageDidReportLoadingPage',
+  PRE_PURCHASE_SDK_WEB_PAGE_DID_REPORT_PAGE_LOAD_COMPLETE = 'prePurchaseSdkWebPageDidReportPageLoadComplete',
+  PRE_PURCHASE_SDK_WEB_PAGE_DID_REPORT_PROGRESS_BAR_TIMEOUT = 'prePurchaseSdkWebPageDidReportProgressBarTimeout',
+  PRE_PURCHASE_SDK_DID_BEGIN_TICKET_SELECTION_FOR = 'prePurchaseSdkDidBeginTicketSelectionFor',
   PRE_PURCHASE_SDK_DID_ENCOUNTER_UNSUPPORTED_URL = 'prePurchaseSdkDidEncounterUnsupportedUrl',
   PRE_PURCHASE_SDK_DID_LOAD_PAGE = 'prePurchaseSdkDidLoadPage',
   TICKETS_SDK_DID_VIEW_EVENTS = 'ticketsSdkDidViewEvents',

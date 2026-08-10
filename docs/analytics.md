@@ -45,12 +45,12 @@ More information about the flow of these state change analytics can be found her
 | prePurchaseSdkDidFirePageView | pageName<br/> pageUrl<br/> pageReferrer<br/> pageType | The web page reported a UAL page view event in PrePurchase |
 | prePurchaseSdkDidShare | pageTitle<br/> pageUrl<br/> activityType | The user shared a page from PrePurchase |
 | prePurchaseSdkDidReportUalUserAction (Android only) | actionType<br/> actionLabel<br/> actionValue<br/> actionName<br/> actionCategory | The web page reported a UAL user action event in PrePurchase |
-| prePurchaseSdkDidErrorOnPageLoad (Android only) | url<br/> error | An error occurred while loading a page in PrePurchase |
-| prePurchaseSdkDidErrorOnWebpage (Android only) | url<br/> error | An error occurred on a webpage in PrePurchase |
-| prePurchaseSdkDidStartLoadingPage (Android only) | url | A page started loading in PrePurchase |
-| prePurchaseSdkDidCompletePageLoad (Android only) | url<br/> duration | A page finished loading in PrePurchase |
-| prePurchaseSdkDidTimeoutPageLoad (Android only) | url<br/> duration | A page load timed out in PrePurchase |
-| prePurchaseSdkDidSelectEvent (Android only) | eventId<br/> legacyId<br/> eventName | The user selected an event in PrePurchase |
+| prePurchaseSdkPageLoadDidErrorFor (Android only) | url<br/> error | An error occurred while loading a page in PrePurchase |
+| prePurchaseSdkWebPageDidErrorFor (Android only) | url<br/> error | An error occurred on a webpage in PrePurchase |
+| prePurchaseSdkWebPageDidReportLoadingPage (Android only) | url | A page started loading in PrePurchase |
+| prePurchaseSdkWebPageDidReportPageLoadComplete (Android only) | url<br/> duration | A page finished loading in PrePurchase |
+| prePurchaseSdkWebPageDidReportProgressBarTimeout (Android only) | url<br/> duration | A page load timed out in PrePurchase |
+| prePurchaseSdkDidBeginTicketSelectionFor (Android only) | eventId<br/> legacyId<br/> eventName | The user selected an event in PrePurchase |
 | prePurchaseSdkDidEncounterUnsupportedUrl (Android only) | url | PrePurchase encountered an unsupported URL |
 | prePurchaseSdkDidLoadPage (Android only) | pageType<br/> data<br/> categoryId<br/> categoryName<br/> categoryUrl<br/> cityName<br/> fullCityName | A page finished loading in PrePurchase with category details |
 
@@ -73,12 +73,12 @@ More information about the flow of these state change analytics can be found her
 
 | Name | Values | Description |
 | ----- | ---- | -----   |
-| purchaseSdkDidReportUalPageView | pageName<br/> pageUrl<br/> pageReferrer<br/> pageType | The web page reported a UAL page view event |
-| purchaseSdkDidReportUalCommerceEvent | eventType<br/> eventName<br/> transactionId<br/> transactionTotal | The web page reported a UAL commerce event |
-| purchaseSdkDidReportUalViewItem (Android only) | itemId<br/> itemName<br/> itemCategory<br/> itemVariant | The web page reported a UAL view item event |
-| purchaseSdkDidReportUalUserAction (Android only) | actionType<br/> actionLabel<br/> actionValue<br/> actionName<br/> actionCategory | The web page reported a UAL user action event |
-| purchaseSdkDidErrorOnPageLoad | url<br/> error | An error occurred while loading a web page |
-| purchaseSdkDidErrorOnWebpage | url<br/> error | An error occurred on a web page |
+| purchaseSdkWebPageDidReportUALPageView | pageName<br/> pageUrl<br/> pageReferrer<br/> pageType | The web page reported a UAL page view event |
+| purchaseSdkWebPageDidReportUALCommerceEvent | eventType<br/> eventName<br/> transactionId<br/> transactionTotal | The web page reported a UAL commerce event |
+| purchaseSdkWebReportedViewItem (Android only) | itemId<br/> itemName<br/> itemCategory<br/> itemVariant | The web page reported a UAL view item event |
+| purchaseSdkWebPageDidReportUALUserAction (Android only) | actionType<br/> actionLabel<br/> actionValue<br/> actionName<br/> actionCategory | The web page reported a UAL user action event |
+| purchaseSdkPageLoadDidErrorFor | url<br/> error | An error occurred while loading a web page |
+| purchaseSdkWebPageDidErrorFor | url<br/> error | An error occurred on a web page |
 
 ### Retail SDK Value Descriptions
 

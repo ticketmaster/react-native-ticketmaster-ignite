@@ -19,7 +19,7 @@ class PurchaseWebAnalyticsListener : TMPurchaseWebAnalyticsListener {
       putString("url", url.toString())
       putString("error", error.message ?: "Unknown error")
     }
-    params.putMap("purchaseSdkDidErrorOnPageLoad", paramValues)
+    params.putMap("purchaseSdkPageLoadDidErrorFor", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
@@ -29,7 +29,7 @@ class PurchaseWebAnalyticsListener : TMPurchaseWebAnalyticsListener {
       putString("url", url.toString())
       putString("error", error.message ?: "Unknown error")
     }
-    params.putMap("purchaseSdkDidErrorOnWebpage", paramValues)
+    params.putMap("purchaseSdkWebPageDidErrorFor", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
@@ -41,7 +41,7 @@ class PurchaseWebAnalyticsListener : TMPurchaseWebAnalyticsListener {
       putString("transactionId", "")
       putString("transactionTotal", "")
     }
-    params.putMap("purchaseSdkDidReportUalCommerceEvent", paramValues)
+    params.putMap("purchaseSdkWebPageDidReportUALCommerceEvent", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
@@ -53,7 +53,7 @@ class PurchaseWebAnalyticsListener : TMPurchaseWebAnalyticsListener {
       putString("itemCategory", viewItem.payload["category"] ?: "")
       putString("itemVariant", viewItem.payload["variant"] ?: "")
     }
-    params.putMap("purchaseSdkDidReportUalViewItem", paramValues)
+    params.putMap("purchaseSdkWebReportedViewItem", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
@@ -65,7 +65,7 @@ class PurchaseWebAnalyticsListener : TMPurchaseWebAnalyticsListener {
       putString("pageReferrer", pageView.payload["referrer"] ?: "")
       putString("pageType", pageView.payload["type"] ?: "")
     }
-    params.putMap("purchaseSdkDidReportUalPageView", paramValues)
+    params.putMap("purchaseSdkWebPageDidReportUALPageView", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
@@ -78,7 +78,7 @@ class PurchaseWebAnalyticsListener : TMPurchaseWebAnalyticsListener {
       putString("actionName", action.name)
       putString("actionCategory", action.category)
     }
-    params.putMap("purchaseSdkDidReportUalUserAction", paramValues)
+    params.putMap("purchaseSdkWebPageDidReportUALUserAction", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 }

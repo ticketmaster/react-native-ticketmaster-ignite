@@ -41,7 +41,7 @@ class PrePurchaseWebAnalyticsListener : TMPrePurchaseWebAnalyticsListener {
       putString("url", url.toString())
       putString("error", error.message ?: "Unknown error")
     }
-    params.putMap("prePurchaseSdkDidErrorOnPageLoad", paramValues)
+    params.putMap("prePurchaseSdkPageLoadDidErrorFor", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
@@ -51,7 +51,7 @@ class PrePurchaseWebAnalyticsListener : TMPrePurchaseWebAnalyticsListener {
       putString("url", url.toString())
       putString("error", error.message ?: "Unknown error")
     }
-    params.putMap("prePurchaseSdkDidErrorOnWebpage", paramValues)
+    params.putMap("prePurchaseSdkWebPageDidErrorFor", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
@@ -60,7 +60,7 @@ class PrePurchaseWebAnalyticsListener : TMPrePurchaseWebAnalyticsListener {
     val paramValues: WritableMap = Arguments.createMap().apply {
       putString("url", url.toString())
     }
-    params.putMap("prePurchaseSdkDidStartLoadingPage", paramValues)
+    params.putMap("prePurchaseSdkWebPageDidReportLoadingPage", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
@@ -70,7 +70,7 @@ class PrePurchaseWebAnalyticsListener : TMPrePurchaseWebAnalyticsListener {
       putString("url", url.toString())
       putDouble("duration", duration.toDouble())
     }
-    params.putMap("prePurchaseSdkDidCompletePageLoad", paramValues)
+    params.putMap("prePurchaseSdkWebPageDidReportPageLoadComplete", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
@@ -80,7 +80,7 @@ class PrePurchaseWebAnalyticsListener : TMPrePurchaseWebAnalyticsListener {
       putString("url", url.toString())
       putDouble("duration", duration.toDouble())
     }
-    params.putMap("prePurchaseSdkDidTimeoutPageLoad", paramValues)
+    params.putMap("prePurchaseSdkWebPageDidReportProgressBarTimeout", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 }

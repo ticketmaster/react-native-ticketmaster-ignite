@@ -20,7 +20,7 @@ class PrePurchaseUserAnalyticsListener : TMPrePurchaseUserAnalyticsListener {
       putString("legacyId", event.hostID ?: "")
       putString("eventName", event.name ?: "")
     }
-    params.putMap("prePurchaseSdkDidSelectEvent", paramValues)
+    params.putMap("prePurchaseSdkDidBeginTicketSelectionFor", paramValues)
     GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 

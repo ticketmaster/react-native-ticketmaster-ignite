@@ -14,7 +14,7 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     GlobalEventEmitter.sendEvent(
       name: "igniteAnalytics",
       body: [
-        "purchaseSdkDidErrorOnPageLoad": [
+        "purchaseSdkPageLoadDidErrorFor": [
           "url": "\(url.absoluteString)",
           "error": "\(error.localizedDescription)"
         ]
@@ -30,7 +30,7 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     GlobalEventEmitter.sendEvent(
       name: "igniteAnalytics",
       body: [
-        "purchaseSdkDidErrorOnWebpage": [
+        "purchaseSdkWebPageDidErrorFor": [
           "url": "\(url.absoluteString)",
           "error": "\(errorString)"
         ]
@@ -45,7 +45,7 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     GlobalEventEmitter.sendEvent(
       name: "igniteAnalytics",
       body: [
-        "purchaseSdkDidReportUalPageView": [
+        "purchaseSdkWebPageDidReportUALPageView": [
           "pageName": pageView.name,
           "pageUrl": (pageView.payload?["digitalData.page.pageInfo.destinationURL"] as? String) ?? "",
           "pageReferrer": (pageView.payload?["digitalData.page.pageInfo.referringURL"] as? String) ?? "",
@@ -62,7 +62,7 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     GlobalEventEmitter.sendEvent(
       name: "igniteAnalytics",
       body: [
-        "purchaseSdkDidReportUalCommerceEvent": [
+        "purchaseSdkWebPageDidReportUALCommerceEvent": [
           "eventType": commerceEvent.eventType.rawValue,
           "eventName": "",
           "transactionId": commerceEvent.transactionData.transactionID ?? "",
