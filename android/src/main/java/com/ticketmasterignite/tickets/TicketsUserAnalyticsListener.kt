@@ -78,7 +78,7 @@ object TicketsUserAnalyticsListener {
           putString("row", details["row"]?.toString() ?: "")
           putString("seat", details["seat"]?.toString() ?: "")
         }
-        params.putMap("ticketsSdkDidAddTicketToWallet", paramValues)
+        params.putMap("ticketsSdkDidInitiateAddTicketToWallet", paramValues)
       }
       "com.ticketmaster.presencesdk.eventanalytic.action.ACTION_TRANSFERINITIATED" -> {
         val paramValues: WritableMap = Arguments.createMap().apply {

@@ -157,7 +157,7 @@ extension TicketsSDKViewProtocol {
           GlobalEventEmitter.sendEvent(
             name: eventName,
             body: [
-              "ticketsSdkDidAddTicketToWallet": [
+              "ticketsSdkDidInitiateAddTicketToWallet": [
                 "eventId": event.info.identifier,
                 "eventName": event.info.name,
                 "section": ticket.sectionName ?? "",

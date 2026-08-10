@@ -135,7 +135,7 @@ More information about the flow of these state change analytics can be found her
 
 | Name | Values | Description |
 | ----- | ---- | -----   |
-| ticketsSdkDidAddTicketToWallet | eventId<br/> eventName<br/> section<br/> row<br/> seat | The user initiated adding a ticket to Apple Wallet (iOS) or Google Wallet (Android) |
+| ticketsSdkDidInitiateAddTicketToWallet | eventId<br/> eventName<br/> section<br/> row<br/> seat | The user initiated adding a ticket to Apple Wallet (iOS) or Google Wallet (Android) |
 | ticketsSdkDidInitiateTransfer | eventId<br/> eventName<br/> ticketCount<br/> faceValue (Android) | The user started the transfer process for ticket(s) |
 | ticketsSdkDidCancelTransfer | eventId<br/> eventName<br/> ticketCount (iOS)<br/> transferId (Android)<br/> orderId (Android) | The user cancelled a ticket transfer |
 | ticketsSdkDidAcceptTransfer (Android only) | eventId<br/> eventName<br/> transferId | The user accepted a ticket transfer |

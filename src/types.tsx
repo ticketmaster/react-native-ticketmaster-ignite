@@ -252,7 +252,7 @@ export type IgniteAnalytics = {
   ticketsSdkDidViewEventModules: TicketsSdkEventTicketsData;
   ticketsSdkDidViewTicketDelivery: TicketsSdkTicketData;
   ticketsSdkDidViewEventInfoBanner: TicketsSdkEventInfoData;
-  ticketsSdkDidAddTicketToWallet: TicketsSdkTicketData;
+  ticketsSdkDidInitiateAddTicketToWallet: TicketsSdkTicketData;
   ticketsSdkDidInitiateTransfer: TicketsSdkTransferData;
   ticketsSdkDidCancelTransfer: TicketsSdkCancelTransferData;
   ticketsSdkDidAcceptTransfer: TicketsSdkAcceptTransferData;
@@ -331,7 +331,7 @@ export enum IgniteAnalyticName {
   TICKETS_SDK_DID_VIEW_EVENT_MODULES = 'ticketsSdkDidViewEventModules',
   TICKETS_SDK_DID_VIEW_TICKET_DELIVERY = 'ticketsSdkDidViewTicketDelivery',
   TICKETS_SDK_DID_VIEW_EVENT_INFO_BANNER = 'ticketsSdkDidViewEventInfoBanner',
-  TICKETS_SDK_DID_ADD_TICKET_TO_WALLET = 'ticketsSdkDidAddTicketToWallet',
+  TICKETS_SDK_DID_INITIATE_ADD_TICKET_TO_WALLET = 'ticketsSdkDidInitiateAddTicketToWallet',
   TICKETS_SDK_DID_INITIATE_TRANSFER = 'ticketsSdkDidInitiateTransfer',
   TICKETS_SDK_DID_CANCEL_TRANSFER = 'ticketsSdkDidCancelTransfer',
   TICKETS_SDK_DID_ACCEPT_TRANSFER = 'ticketsSdkDidAcceptTransfer',
