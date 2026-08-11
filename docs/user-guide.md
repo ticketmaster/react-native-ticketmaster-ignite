@@ -315,7 +315,7 @@ try {
 
 When switching to a new API key, `refreshConfiguration()` automatically calls `login()` after configuration since users must authenticate at least once per key. Set `skipAutoLogin` to true to prevent this, but a user must be logged in to the new team or issues will arise when using the Tickets SDK. If a user has logged into 2 different teams, they can now freely switch between those 2 teams without needing to login.
 
-To reconfigure the Tickets SDK, an unmount on blur approach needs to be done for both Android and iOS. In React Native's Fabric renderer (New Architecture), iOS views remains in memory and continues rendering even when "hidden" by React Navigation Bottom Tabs. To solve this, the `<TicketsSdkEmbedded />` component has a new prop called `isFocused` which will trigger additional logic within the `<TicketsSdkEmbedded />` component to reconfigure the iOS Tickets SDK. During team reconfiguration and login, unmount the `<TicketsSdkEmbedded />` component by navigating to a custom RN login/loading screen and after login is successful navigate back to the `<TicketsSdkEmbedded />` component.
+To reconfigure the Tickets SDK, an unmount on blur approach needs to be done for both Android and iOS. In React Native's Fabric renderer (New Architecture), iOS views remains in memory and continues rendering even when "hidden" by React Navigation Bottom Tabs. To solve this, the `<TicketsSdkEmbedded />` component has a new prop called `` which will trigger additional logic within the `<TicketsSdkEmbedded />` component to reconfigure the iOS Tickets SDK. During team reconfiguration and login, unmount the `<TicketsSdkEmbedded />` component by navigating to a custom RN login/loading screen and after login is successful navigate back to the `<TicketsSdkEmbedded />` component.
 
 ⚠️ Warning: `isFocused` must toggle from `false` to `true` to trigger the Tickets SDK refresh/reconfiguration. Navigating to another RN screen that is still within the same bottom tab screen does not always toggle `isFocused` from `false` to `true` depending on the navigation approach, so while implementing API key switching you must log the variable and ensure your approach toggles the boolean. Alternatively, you can create your own custom variable and toggle it within your JS method that calls `refreshConfiguration()`.
 
@@ -514,6 +514,8 @@ When the user or app next navigates to the screen component/screen which renders
 `isFocused` is needed because if you are using Bottom Tabs from React Navigation it will render the Tickets Tab after app launch as soon as a user lands on the Home Tab, so if they are already logged in the Tickets SDK would trigger their ticket to popup in a modal, unless you have unmount on blur logic in the RN screen of the Tickets Tab.
 
 If you want to do multiple deep links to the `<TicketsSdkEmbedded />` component within an app session without the user closing the app, you will need to do an unmount on blur approach. The `<TicketsSdkEmbedded />` component receives an `isFocused` prop. You will have to send the component React Navigation's `isFocused` value or a custom screen focus boolean as in React Native's Fabric renderer (New Architecture), iOS views remains in memory and continues rendering even when "hidden" by React Navigation Bottom Tabs, so we have extra logic inside the `<TicketsSdkEmbedded />` component to remount the iOS Tickets SDK to handle subsequent deep links within an apps session after the initial deep link.
+
+⚠️ Warning: `isFocused` must toggle from `false` to `true` to trigger the Tickets SDK refresh/reconfiguration. Navigating to another RN screen that is still within the same bottom tab screen does not always toggle `isFocused` from `false` to `true` depending on the navigation approach, so while implementing API key switching you must log the variable and ensure your approach toggles the boolean. Alternatively, you can create your own custom variable and toggle it within your JS method that calls `refreshConfiguration()`.
 
 ```typescript
 import { useIsFocused } from '@react-navigation/native';
@@ -881,7 +883,11 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
 };
 ```
 
-If you want the `<TicketsSdkEmbedded />` component to perform a fresh call upon navigating to the screen/tab after purchase be sure to pass an `isFocused` boolean to the component. Example below:
+If you want the `<TicketsSdkEmbedded />` component to perform a fresh call upon navigating to the screen/tab after purchase be sure to pass an `isFocused` boolean to the component. 
+
+⚠️ Warning: `isFocused` must toggle from `false` to `true` to trigger the Tickets SDK refresh/reconfiguration. Navigating to another RN screen that is still within the same bottom tab screen does not always toggle `isFocused` from `false` to `true` depending on the navigation approach, so while implementing API key switching you must log the variable and ensure your approach toggles the boolean. Alternatively, you can create your own custom variable and toggle it within your JS method that calls `refreshConfiguration()`.
+
+Example below:
 
 ```typescript
   const isFocused = useIsFocused();
