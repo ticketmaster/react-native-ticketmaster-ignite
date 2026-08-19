@@ -11,7 +11,15 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     pageLoadDidErrorFor url: URL,
     error: NSError
   ) {
-    return
+    GlobalEventEmitter.sendEvent(
+      name: "igniteAnalytics",
+      body: [
+        "purchaseSdkPageLoadDidErrorFor": [
+          "url": "\(url.absoluteString)",
+          "error": "\(error.localizedDescription)"
+        ]
+      ]
+    )
   }
 
   public func purchaseNavigationController(
@@ -19,21 +27,49 @@ class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPur
     webPageDidErrorFor url: URL,
     errorString: String
   ) {
-    return
+    GlobalEventEmitter.sendEvent(
+      name: "igniteAnalytics",
+      body: [
+        "purchaseSdkWebPageDidErrorFor": [
+          "url": "\(url.absoluteString)",
+          "error": "\(errorString)"
+        ]
+      ]
+    )
   }
 
   public func purchaseNavigationController(
     _ purchaseNavigationController: TMPurchaseNavigationController,
     webPageDidReportUALPageView pageView: UALPageView
   ) {
-    return
+    GlobalEventEmitter.sendEvent(
+      name: "igniteAnalytics",
+      body: [
+        "purchaseSdkWebPageDidReportUALPageView": [
+          "pageName": pageView.name,
+          "pageUrl": (pageView.payload?["digitalData.page.pageInfo.destinationURL"] as? String) ?? "",
+          "pageReferrer": (pageView.payload?["digitalData.page.pageInfo.referringURL"] as? String) ?? "",
+          "pageType": (pageView.payload?["digitalData.page.pageInfo.pageType"] as? String) ?? ""
+        ]
+      ]
+    )
   }
 
   public func purchaseNavigationController(
     _ purchaseNavigationController: TMPurchaseNavigationController,
     webPageDidReportUALCommerceEvent commerceEvent: UALCommerceEvent
   ) {
-    return
+    GlobalEventEmitter.sendEvent(
+      name: "igniteAnalytics",
+      body: [
+        "purchaseSdkWebPageDidReportUALCommerceEvent": [
+          "eventType": commerceEvent.eventType.rawValue,
+          "eventName": "",
+          "transactionId": commerceEvent.transactionData.transactionID ?? "",
+          "transactionTotal": "\(commerceEvent.transactionData.totalAmount ?? 0.0)"
+        ]
+      ]
+    )
   }
 
   // MARK: - TMPurchaseUserAnalyticsDelegate

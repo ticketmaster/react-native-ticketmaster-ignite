@@ -27,60 +27,294 @@ extension TicketsSDKViewProtocol {
 }
 
 extension TicketsSDKViewProtocol {
-  
+
   public func userDidView(
     page: TMTickets.Analytics.Page,
     metadata: TMTickets.Analytics.MetadataType) {
-      
+
       let eventName = "igniteAnalytics"
-      
+
       print("userDidViewPage: \(page.rawValue)")
-      GlobalEventEmitter.sendEvent(
-        name: eventName, body: ["ticketsSdkDidViewEvents": "ticketsSdkDidViewEvents"])
-      
-      switch metadata {
-      case .events(let events):
-        return
-      case .event(let event):
-        print(" - event: \(event.info.identifier)")
-      case .eventTickets(let event, let tickets):
-        return
-      case .eventTicket(event: let event, let ticket):
-        let ticketSummary = "\(ticket.sectionName ?? "_") \(ticket.rowName ?? "_") \(ticket.seatName ?? "_")"
-        return
-      case .module(let event, let identifier):
-        return
-      case .moduleButton(let event, let module, let button):
-        return
-      case .empty:
-        return
+
+      switch page {
+      case .events:
+        GlobalEventEmitter.sendEvent(
+          name: eventName, body: ["ticketsSdkDidViewEvents": "ticketsSdkDidViewEvents"])
+      case .eventTickets:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidViewEventTickets": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count
+              ]
+            ]
+          )
+        }
+      case .ticketBarcode:
+        if case .eventTicket(let event, let ticket) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidViewTicketBarcode": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "section": ticket.sectionName ?? "",
+                "row": ticket.rowName ?? "",
+                "seat": ticket.seatName ?? ""
+              ]
+            ]
+          )
+        }
+      case .ticketDetails:
+        if case .eventTicket(let event, let ticket) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidViewTicketDetails": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "section": ticket.sectionName ?? "",
+                "row": ticket.rowName ?? "",
+                "seat": ticket.seatName ?? ""
+              ]
+            ]
+          )
+        }
+      case .mfaForTicketOperation:
+        GlobalEventEmitter.sendEvent(
+          name: eventName,
+          body: ["ticketsSdkDidViewMfaForTicketOperation": "ticketsSdkDidViewMfaForTicketOperation"]
+        )
+      case .mfaForViewBarcode:
+        GlobalEventEmitter.sendEvent(
+          name: eventName,
+          body: ["ticketsSdkDidViewMfaForViewBarcode": "ticketsSdkDidViewMfaForViewBarcode"]
+        )
+      case .mfaForWebpage:
+        GlobalEventEmitter.sendEvent(
+          name: eventName,
+          body: ["ticketsSdkDidViewMfaForWebpage": "ticketsSdkDidViewMfaForWebpage"]
+        )
+      case .eventModules:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidViewEventModules": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count
+              ]
+            ]
+          )
+        }
+      case .ticketDelivery:
+        if case .eventTicket(let event, let ticket) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidViewTicketDelivery": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "section": ticket.sectionName ?? "",
+                "row": ticket.rowName ?? "",
+                "seat": ticket.seatName ?? ""
+              ]
+            ]
+          )
+        }
+      case .eventInfoBanner:
+        if case .event(let event) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidViewEventInfoBanner": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name
+              ]
+            ]
+          )
+        }
       @unknown default:
         return
       }
     }
-  
+
   public func userDidPerform(
     action: TMTickets.Analytics.Action,
     metadata: TMTickets.Analytics.MetadataType) {
-      
+
+      let eventName = "igniteAnalytics"
+
       print("userDidPerformAction: \(action.rawValue)")
-      
-      switch metadata {
-      case .events(let events):
-        return
-      case .event(let event):
-        return
-      case .eventTickets(let event, let tickets):
-        return
-      case .eventTicket(event: let event, let ticket):
-        let ticketSummary = "\(ticket.sectionName ?? "_") \(ticket.rowName ?? "_") \(ticket.seatName ?? "_")"
-        return
-      case .module(let event, let identifier):
-        return
-      case .moduleButton(let event, let module, let button):
-        return
-      case .empty:
-        return
+
+      switch action {
+      case .addTicketToWalletButton:
+        if case .eventTicket(let event, let ticket) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidInitiateAddTicketToWallet": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "section": ticket.sectionName ?? "",
+                "row": ticket.rowName ?? "",
+                "seat": ticket.seatName ?? ""
+              ]
+            ]
+          )
+        }
+      case .transferSendButton:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidInitiateTransfer": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count
+              ]
+            ]
+          )
+        }
+      case .transferCancelButton:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidCancelTransfer": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count
+              ]
+            ]
+          )
+        }
+      case .postingEditButton:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidEditResale": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count
+              ]
+            ]
+          )
+        }
+      case .postingCancelButton:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidCancelResale": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count
+              ]
+            ]
+          )
+        }
+      case .barcodeScreenshot:
+        if case .eventTicket(let event, let ticket) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidTakeBarcodeScreenshot": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "section": ticket.sectionName ?? "",
+                "row": ticket.rowName ?? "",
+                "seat": ticket.seatName ?? ""
+              ]
+            ]
+          )
+        }
+      case .pullToRefreshEvents:
+        if case .events(let events) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidPullToRefreshEvents": [
+                "eventCount": events.count
+              ]
+            ]
+          )
+        }
+      case .eventInfoBannerButton:
+        if case .event(let event) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidPressEventInfoBanner": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name
+              ]
+            ]
+          )
+        }
+      case .moduleActionButton:
+        if case .moduleButton(let event, let module, let button) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidPressModuleActionButton": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "moduleId": module.identifier,
+                "buttonTitle": button.title,
+                "buttonCallback": button.callbackValue
+              ]
+            ]
+          )
+        }
+      case .navbarButtonAction:
+        if case .event(let event) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidPressNavbarButton": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name
+              ]
+            ]
+          )
+        }
+      case .addTicketToWalletFinished:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidFinishAddTicketToWallet": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count,
+                "tickets": tickets.map { ticket in
+                  [
+                    "section": ticket.sectionName ?? "",
+                    "row": ticket.rowName ?? "",
+                    "seat": ticket.seatName ?? ""
+                  ]
+                }
+              ]
+            ]
+          )
+        } else {
+          // Fallback when no metadata available
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: ["ticketsSdkDidFinishAddTicketToWallet": "ticketsSdkDidFinishAddTicketToWallet"]
+          )
+        }
+      case .addTicketToWalletCanceled:
+        GlobalEventEmitter.sendEvent(
+          name: eventName,
+          body: ["ticketsSdkDidCancelAddTicketToWallet": "ticketsSdkDidCancelAddTicketToWallet"]
+        )
       @unknown default:
         return
       }
