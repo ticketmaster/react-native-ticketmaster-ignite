@@ -284,6 +284,37 @@ extension TicketsSDKViewProtocol {
             ]
           )
         }
+      case .addTicketToWalletFinished:
+        if case .eventTickets(let event, let tickets) = metadata {
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: [
+              "ticketsSdkDidFinishAddTicketToWallet": [
+                "eventId": event.info.identifier,
+                "eventName": event.info.name,
+                "ticketCount": tickets.count,
+                "tickets": tickets.map { ticket in
+                  [
+                    "section": ticket.sectionName ?? "",
+                    "row": ticket.rowName ?? "",
+                    "seat": ticket.seatName ?? ""
+                  ]
+                }
+              ]
+            ]
+          )
+        } else {
+          // Fallback when no metadata available
+          GlobalEventEmitter.sendEvent(
+            name: eventName,
+            body: ["ticketsSdkDidFinishAddTicketToWallet": "ticketsSdkDidFinishAddTicketToWallet"]
+          )
+        }
+      case .addTicketToWalletCanceled:
+        GlobalEventEmitter.sendEvent(
+          name: eventName,
+          body: ["ticketsSdkDidCancelAddTicketToWallet": "ticketsSdkDidCancelAddTicketToWallet"]
+        )
       @unknown default:
         return
       }
