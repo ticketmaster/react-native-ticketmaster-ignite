@@ -375,7 +375,8 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           (result.purchaseSdkDidEndCheckoutFor ||
             result.ticketsSdkDidViewEvents ||
             result.ticketsSdkModalDidDismiss ||
-            ((result.accountsSdkLoggedIn || result.accountsSdkLoggedOut) &&
+            ((result.accountsSdkLoginAccountCompleted ||
+              result.accountsSdkLoggedOut) &&
               !isLoggingIn)) &&
           autoUpdate
         ) {

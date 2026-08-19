@@ -296,7 +296,7 @@ import React
     case .loginLinkAccountPresented:
       GlobalEventEmitter.sendEvent(
         name: eventName,
-        body: ["accountsSdkLoginAccountPresented": "accountsSdkLoginAccountPresented"]
+        body: ["accountsSdkLoginLinkAccountPresented": "accountsSdkLoginLinkAccountPresented"]
       )
     case .loginCompleted:
       GlobalEventEmitter.sendEvent(

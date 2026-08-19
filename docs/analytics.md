@@ -15,9 +15,7 @@
 | accountsSdkLoginAborted | accountsSdkLoginAborted |
 | accountsSdkLoginFailed | accountsSdkLoginFailed |
 | accountsSdkLoginLinkAccountPresented | accountsSdkLoginLinkAccountPresented |
-| accountsSdkLoginAccountPresented (iOS only) | accountsSdkLoginAccountPresented |
-| accountsSdkLoginAccountCompleted (iOS only) | accountsSdkLoginAccountCompleted |
-| accountsSdkLoginCompleted | accountsSdkLoginCompleted |
+| accountsSdkLoginAccountCompleted | accountsSdkLoginAccountCompleted |
 | accountsSdkTokenRefreshed | accountsSdkTokenRefreshed |
 | accountsSdkLogoutStarted | accountsSdkLogoutStarted |
 | accountsSdkLoggedOut | accountsSdkLoggedOut |

@@ -40,7 +40,7 @@ class AccountsAnalyticsObserver : Observer<ServiceLoginState> {
         params.putString("accountsSdkLoginLinkAccountPresented", "accountsSdkLoginLinkAccountPresented")
       }
       ServiceLoginState.LOGIN_COMPLETED -> {
-        params.putString("accountsSdkLoginCompleted", "accountsSdkLoginCompleted")
+        params.putString("accountsSdkLoginAccountCompleted", "accountsSdkLoginAccountCompleted")
       }
       ServiceLoginState.TOKEN_REFRESHED -> {
         params.putString("accountsSdkTokenRefreshed", "accountsSdkTokenRefreshed")

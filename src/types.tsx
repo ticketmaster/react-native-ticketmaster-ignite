@@ -211,9 +211,7 @@ export type IgniteAnalytics = {
   accountsSdkLoginAborted: 'accountsSdkLoginAborted';
   accountsSdkLoginFailed: 'accountsSdkLoginFailed';
   accountsSdkLoginLinkAccountPresented: 'accountsSdkLoginLinkAccountPresented';
-  accountsSdkLoginAccountPresented: 'accountsSdkLoginAccountPresented';
   accountsSdkLoginAccountCompleted: 'accountsSdkLoginAccountCompleted';
-  accountsSdkLoginCompleted: 'accountsSdkLoginCompleted';
   accountsSdkFedLoginLinkAccountsScreenShowed: 'accountsSdkFedLoginLinkAccountsScreenShowed';
   accountsSdkFedLoginLinkAccountsScreenDismissed: 'accountsSdkFedLoginLinkAccountsScreenDismissed';
   accountsSdkFedLoginScreenDismissedAfterSuccessLoginNoLink: 'accountsSdkFedLoginScreenDismissedAfterSuccessLoginNoLink';
@@ -297,9 +295,7 @@ export enum IgniteAnalyticName {
   ACCOUNTS_SDK_LOGIN_ABORTED = 'accountsSdkLoginAborted',
   ACCOUNTS_SDK_LOGIN_FAILED = 'accountsSdkLoginFailed',
   ACCOUNTS_SDK_LOGIN_LINK_ACCOUNT_PRESENTED = 'accountsSdkLoginLinkAccountPresented',
-  ACCOUNTS_SDK_LOGIN_ACCOUNT_PRESENTED = 'accountsSdkLoginAccountPresented',
   ACCOUNTS_SDK_LOGIN_ACCOUNT_COMPLETED = 'accountsSdkLoginAccountCompleted',
-  ACCOUNTS_SDK_LOGIN_COMPLETED = 'accountsSdkLoginCompleted',
   ACCOUNTS_SDK_FED_LOGIN_LINK_ACCOUNTS_SCREEN_SHOWED = 'accountsSdkFedLoginLinkAccountsScreenShowed',
   ACCOUNTS_SDK_FED_LOGIN_LINK_ACCOUNTS_SCREEN_DISMISSED = 'accountsSdkFedLoginLinkAccountsScreenDismissed',
   ACCOUNTS_SDK_FED_LOGIN_SCREEN_DISMISSED_AFTER_SUCCESS_LOGIN_NO_LINK = 'accountsSdkFedLoginScreenDismissedAfterSuccessLoginNoLink',
