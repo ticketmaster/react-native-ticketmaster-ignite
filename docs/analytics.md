@@ -136,6 +136,8 @@ More information about the flow of these state change analytics can be found her
 | Name | Values | Description |
 | ----- | ---- | -----   |
 | ticketsSdkDidInitiateAddTicketToWallet | eventId<br/> eventName<br/> section<br/> row<br/> seat | The user initiated adding a ticket to Apple Wallet (iOS) or Google Wallet (Android) |
+| ticketsSdkDidFinishAddTicketToWallet (iOS only) | eventId<br/> eventName<br/> ticketCount<br/> tickets (array) | The user successfully finished adding ticket(s) to Apple Wallet |
+| ticketsSdkDidCancelAddTicketToWallet (iOS only) | ticketsSdkDidCancelAddTicketToWallet | The user cancelled adding a ticket to Apple Wallet |
 | ticketsSdkDidInitiateTransfer | eventId<br/> eventName<br/> ticketCount<br/> faceValue (Android) | The user started the transfer process for ticket(s) |
 | ticketsSdkDidCancelTransfer | eventId<br/> eventName<br/> ticketCount (iOS)<br/> transferId (Android)<br/> orderId (Android) | The user cancelled a ticket transfer |
 | ticketsSdkDidAcceptTransfer (Android only) | eventId<br/> eventName<br/> transferId | The user accepted a ticket transfer |
@@ -175,5 +177,6 @@ More information about the flow of these state change analytics can be found her
 | postingId |  The resale posting identifier  |
 | eventCount |  The number of events  |
 | eventOrderInfo |  Information about the event and specific order the user was viewing  |
+| tickets (iOS only) |  Array of ticket objects containing section, row, and seat information  |
 
 More information about Tickets SDK analytics can be found here https://ignite.ticketmaster.com/docs/analytics-4

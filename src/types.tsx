@@ -1,4 +1,4 @@
-type BeginData = {
+type PurchaseSdkBeginData = {
   eventId: string;
   legacyId: string;
   eventName: string;
@@ -6,7 +6,7 @@ type BeginData = {
   timeZone: string;
 };
 
-type EndData = {
+type PurchaseSdkEndData = {
   eventId: string;
   legacyId: string;
   eventName: string;
@@ -15,7 +15,7 @@ type EndData = {
   reason: string;
 };
 
-type MakePurchaseData = {
+type PurchaseSdkMakePurchaseData = {
   eventId: string;
   legacyId: string;
   eventName: string;
@@ -25,28 +25,28 @@ type MakePurchaseData = {
   orderName: string;
 };
 
-type PressNavBarData = {
+type PurchaseSdkPressNavBarData = {
   eventId: string;
   legacyId: string;
   eventName: string;
   button: string;
 };
 
-type ShareData = {
+type PurchaseSdkShareData = {
   eventId: string;
   legacyId: string;
   eventName: string;
   activityType: string;
 };
 
-type SubPageData = {
+type PurchaseSdkSubPageData = {
   eventId: string;
   legacyId: string;
   eventName: string;
   subPage: string;
 };
 
-type MakeDecisionData = {
+type PurchaseSdkMakeDecisionData = {
   eventId: string;
   legacyId: string;
   eventName: string;
@@ -121,28 +121,39 @@ type TicketsSdkShareTransferData = {
   eventName: string;
 };
 
-type UalPageViewData = {
+type TicketsSdkFinishAddTicketToWalletData = {
+  eventId: string;
+  eventName: string;
+  ticketCount: number;
+  tickets: Array<{
+    section: string;
+    row: string;
+    seat: string;
+  }>;
+};
+
+type RetailSdkUalPageViewData = {
   pageName: string;
   pageUrl: string;
   pageReferrer?: string;
   pageType: string;
 };
 
-type UalCommerceEventData = {
+type PurchaseSdkUalCommerceEventData = {
   eventType: string;
   eventName: string;
   transactionId: string;
   transactionTotal: string;
 };
 
-type UalViewItemData = {
+type PurchaseSdkUalViewItemData = {
   itemId: string;
   itemName: string;
   itemCategory: string;
   itemVariant: string;
 };
 
-type UalUserActionData = {
+type RetailSdkUalUserActionData = {
   actionType: string;
   actionLabel: string;
   actionValue: string;
@@ -150,7 +161,7 @@ type UalUserActionData = {
   actionCategory: string;
 };
 
-type WebErrorData = {
+type RetailSdkWebErrorData = {
   url: string;
   error: string;
 };
@@ -215,27 +226,27 @@ export type IgniteAnalytics = {
   /**
    * The ticket selection portion of the purchase process begun
    */
-  purchaseSdkDidBeginTicketSelectionFor: BeginData;
-  purchaseSdkDidEndTicketSelectionFor: EndData;
-  purchaseSdkDidBeginCheckoutFor: BeginData;
-  purchaseSdkDidEndCheckoutFor: EndData;
-  purchaseSdkDidMakePurchaseFor: MakePurchaseData;
-  purchaseSdkDidPressNavBarButtonFor: PressNavBarData;
-  purchaseSdkDidShare: ShareData;
-  purchaseSdkDidViewSubPageFor: SubPageData;
-  purchaseSdkDidMakeDecisionFor: MakeDecisionData;
+  purchaseSdkDidBeginTicketSelectionFor: PurchaseSdkBeginData;
+  purchaseSdkDidEndTicketSelectionFor: PurchaseSdkEndData;
+  purchaseSdkDidBeginCheckoutFor: PurchaseSdkBeginData;
+  purchaseSdkDidEndCheckoutFor: PurchaseSdkEndData;
+  purchaseSdkDidMakePurchaseFor: PurchaseSdkMakePurchaseData;
+  purchaseSdkDidPressNavBarButtonFor: PurchaseSdkPressNavBarData;
+  purchaseSdkDidShare: PurchaseSdkShareData;
+  purchaseSdkDidViewSubPageFor: PurchaseSdkSubPageData;
+  purchaseSdkDidMakeDecisionFor: PurchaseSdkMakeDecisionData;
   purchaseSdkManageMyTickets: 'purchaseSdkManageMyTickets';
-  purchaseSdkWebPageDidReportUALPageView: UalPageViewData;
-  purchaseSdkWebPageDidReportUALCommerceEvent: UalCommerceEventData;
-  purchaseSdkWebReportedViewItem: UalViewItemData;
-  purchaseSdkWebPageDidReportUALUserAction: UalUserActionData;
-  purchaseSdkPageLoadDidErrorFor: WebErrorData;
-  purchaseSdkWebPageDidErrorFor: WebErrorData;
-  prePurchaseSdkDidFirePageView: UalPageViewData;
+  purchaseSdkWebPageDidReportUALPageView: RetailSdkUalPageViewData;
+  purchaseSdkWebPageDidReportUALCommerceEvent: PurchaseSdkUalCommerceEventData;
+  purchaseSdkWebReportedViewItem: PurchaseSdkUalViewItemData;
+  purchaseSdkWebPageDidReportUALUserAction: RetailSdkUalUserActionData;
+  purchaseSdkPageLoadDidErrorFor: RetailSdkWebErrorData;
+  purchaseSdkWebPageDidErrorFor: RetailSdkWebErrorData;
+  prePurchaseSdkDidFirePageView: RetailSdkUalPageViewData;
   prePurchaseSdkDidShare: PrePurchaseShareData;
-  prePurchaseSdkDidReportUalUserAction: UalUserActionData;
-  prePurchaseSdkPageLoadDidErrorFor: WebErrorData;
-  prePurchaseSdkWebPageDidErrorFor: WebErrorData;
+  prePurchaseSdkDidReportUalUserAction: RetailSdkUalUserActionData;
+  prePurchaseSdkPageLoadDidErrorFor: RetailSdkWebErrorData;
+  prePurchaseSdkWebPageDidErrorFor: RetailSdkWebErrorData;
   prePurchaseSdkWebPageDidReportLoadingPage: PrePurchasePageStartData;
   prePurchaseSdkWebPageDidReportPageLoadComplete: PrePurchasePageLoadData;
   prePurchaseSdkWebPageDidReportProgressBarTimeout: PrePurchasePageLoadData;
@@ -253,6 +264,10 @@ export type IgniteAnalytics = {
   ticketsSdkDidViewTicketDelivery: TicketsSdkTicketData;
   ticketsSdkDidViewEventInfoBanner: TicketsSdkEventInfoData;
   ticketsSdkDidInitiateAddTicketToWallet: TicketsSdkTicketData;
+  ticketsSdkDidFinishAddTicketToWallet:
+    | TicketsSdkFinishAddTicketToWalletData
+    | 'ticketsSdkDidFinishAddTicketToWallet';
+  ticketsSdkDidCancelAddTicketToWallet: 'ticketsSdkDidCancelAddTicketToWallet';
   ticketsSdkDidInitiateTransfer: TicketsSdkTransferData;
   ticketsSdkDidCancelTransfer: TicketsSdkCancelTransferData;
   ticketsSdkDidAcceptTransfer: TicketsSdkAcceptTransferData;
@@ -332,6 +347,8 @@ export enum IgniteAnalyticName {
   TICKETS_SDK_DID_VIEW_TICKET_DELIVERY = 'ticketsSdkDidViewTicketDelivery',
   TICKETS_SDK_DID_VIEW_EVENT_INFO_BANNER = 'ticketsSdkDidViewEventInfoBanner',
   TICKETS_SDK_DID_INITIATE_ADD_TICKET_TO_WALLET = 'ticketsSdkDidInitiateAddTicketToWallet',
+  TICKETS_SDK_DID_FINISH_ADD_TICKET_TO_WALLET = 'ticketsSdkDidFinishAddTicketToWallet',
+  TICKETS_SDK_DID_CANCEL_ADD_TICKET_TO_WALLET = 'ticketsSdkDidCancelAddTicketToWallet',
   TICKETS_SDK_DID_INITIATE_TRANSFER = 'ticketsSdkDidInitiateTransfer',
   TICKETS_SDK_DID_CANCEL_TRANSFER = 'ticketsSdkDidCancelTransfer',
   TICKETS_SDK_DID_ACCEPT_TRANSFER = 'ticketsSdkDidAcceptTransfer',
