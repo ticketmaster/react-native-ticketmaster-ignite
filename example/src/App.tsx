@@ -66,15 +66,15 @@ const App = () => {
               buttons: [
                 {
                   title: 'My Button 1',
-                  callback: () => console.log('Module 1 Button 1 called!'),
+                  callback: () => console.log('Button 1 called!'),
                 },
                 {
                   title: 'My Button 2',
-                  callback: () => console.log('Module 1 Button 2 called!'),
+                  callback: () => console.log('Button 2 called!'),
                 },
                 {
                   title: 'My Button 3',
-                  callback: () => console.log('Module 1 Button 3 called!'),
+                  callback: () => console.log('Button 3 called!'),
                 },
               ],
             },
