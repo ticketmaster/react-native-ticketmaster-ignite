@@ -78,28 +78,6 @@ const App = () => {
                 },
               ],
             },
-            {
-              headerView: {
-                image: require('../assets/react_background.png'),
-              },
-              buttons: [
-                {
-                  title: 'Single Button',
-                  callback: () => console.log('Module 2 Button 1 called!'),
-                },
-              ],
-            },
-            {
-              headerView: {
-                image: require('../assets/react_background.png'),
-              },
-              buttons: [
-                {
-                  title: 'Single Button 2',
-                  callback: () => console.log('Module 3 Button 1 called!'),
-                },
-              ],
-            },
           ]}
         >
           <AppProvider>
