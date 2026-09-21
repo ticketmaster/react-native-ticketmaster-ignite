@@ -58,26 +58,49 @@ const App = () => {
               enabled: true,
             },
           }}
-          customModules={{
-            headerView: {
-              image: require('../assets/react_background.png'),
+          customModules={[
+            {
+              headerView: {
+                image: require('../assets/react_background.png'),
+              },
+              buttons: [
+                {
+                  title: 'My Button 1',
+                  callback: () => console.log('Module 1 Button 1 called!'),
+                },
+                {
+                  title: 'My Button 2',
+                  callback: () => console.log('Module 1 Button 2 called!'),
+                },
+                {
+                  title: 'My Button 3',
+                  callback: () => console.log('Module 1 Button 3 called!'),
+                },
+              ],
             },
-            button1: {
-              enabled: true,
-              title: 'My Button 1',
-              callback: () => console.log('Button 1 called!'),
+            {
+              headerView: {
+                image: require('../assets/react_background.png'),
+              },
+              buttons: [
+                {
+                  title: 'Single Button',
+                  callback: () => console.log('Module 2 Button 1 called!'),
+                },
+              ],
             },
-            button2: {
-              enabled: true,
-              title: 'My Button 2',
-              callback: () => console.log('Button 2 called!'),
+            {
+              headerView: {
+                image: require('../assets/react_background.png'),
+              },
+              buttons: [
+                {
+                  title: 'Single Button 2',
+                  callback: () => console.log('Module 3 Button 1 called!'),
+                },
+              ],
             },
-            button3: {
-              enabled: true,
-              title: 'My Button 3',
-              callback: () => console.log('Button 3 called!'),
-            },
-          }}
+          ]}
         >
           <AppProvider>
             <Logger />

@@ -9,6 +9,7 @@ import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageView
 import java.net.URL
+import org.json.JSONArray
 import kotlinx.coroutines.withContext
 import com.facebook.react.uimanager.ThemedReactContext
 import androidx.compose.material3.darkColorScheme
@@ -249,24 +250,61 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
     }
   }
 
-  private fun getCustomModuleId(): String {
-    return "com.${Config.get("clientName")}"
+  private data class CustomModuleButtonConfig(
+    val title: String,
+    val dismissTicketViewIos: Boolean
+  )
+
+  private data class CustomModuleConfig(
+    val headerType: String,
+    val headerColor: String,
+    val buttons: List<CustomModuleButtonConfig>
+  )
+
+  // Mirrors the JSON written by IgniteProvider under the "customModules" config key
+  private fun customModuleConfigs(): List<CustomModuleConfig> {
+    val customModulesJson = Config.get("customModules")
+    if (customModulesJson.isEmpty()) return emptyList()
+
+    return runCatching {
+      val modulesArray = JSONArray(customModulesJson)
+      List(modulesArray.length()) { moduleIndex ->
+        val moduleJson = modulesArray.getJSONObject(moduleIndex)
+        val buttonsArray = moduleJson.getJSONArray("buttons")
+        CustomModuleConfig(
+          headerType = moduleJson.optString("headerType"),
+          headerColor = moduleJson.optString("headerColor"),
+          buttons = List(buttonsArray.length()) { buttonIndex ->
+            val buttonJson = buttonsArray.getJSONObject(buttonIndex)
+            CustomModuleButtonConfig(
+              title = buttonJson.getString("title"),
+              dismissTicketViewIos = buttonJson.optBoolean("dismissTicketViewIos", true)
+            )
+          }
+        )
+      }
+    }.getOrElse { error ->
+      Log.e("TicketsSdkView", "Failed to parse customModules config", error)
+      emptyList()
+    }
   }
 
-  private fun getCustomModule(context: Context): ModuleBase {
-    val moduleBase = ModuleBase(context, getCustomModuleId())
+  private fun customModuleId(moduleIndex: Int): String {
+    return "com.${Config.get("clientName")}.$moduleIndex"
+  }
 
-    applyCustomModuleHeader(context, moduleBase)
+  private fun getCustomModule(
+    context: Context,
+    config: CustomModuleConfig,
+    moduleIndex: Int
+  ): ModuleBase {
+    val moduleBase = ModuleBase(context, customModuleId(moduleIndex))
 
-    if (Config.get("button1") == "true") {
-      moduleBase.setLeftButtonText(Config.get("button1Title"))
-    }
-    if (Config.get("button2") == "true") {
-      moduleBase.setMiddleButtonText(Config.get("button2Title"))
-    }
-    if (Config.get("button3") == "true") {
-      moduleBase.setRightButtonText(Config.get("button3Title"))
-    }
+    applyCustomModuleHeader(context, moduleBase, config, moduleIndex)
+
+    config.buttons.getOrNull(0)?.let { moduleBase.setLeftButtonText(it.title) }
+    config.buttons.getOrNull(1)?.let { moduleBase.setMiddleButtonText(it.title) }
+    config.buttons.getOrNull(2)?.let { moduleBase.setRightButtonText(it.title) }
 
     // Empty listeners needed for button clicks to trigger callbacks
     moduleBase.setLeftClickListener {}
@@ -276,11 +314,15 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
     return moduleBase
   }
 
-  private fun applyCustomModuleHeader(context: Context, moduleBase: ModuleBase) {
-    when (Config.get("customModuleHeaderType")) {
+  private fun applyCustomModuleHeader(
+    context: Context,
+    moduleBase: ModuleBase,
+    config: CustomModuleConfig,
+    moduleIndex: Int
+  ) {
+    when (config.headerType) {
       "color" -> {
-        val hex = Config.optionalString("customModuleHeaderColor") ?: return
-        val color = runCatching { hex.toColorInt() }.getOrNull() ?: return
+        val color = runCatching { config.headerColor.toColorInt() }.getOrNull() ?: return
         val view = View(context).apply {
           setBackgroundColor(color)
           layoutParams = ViewGroup.LayoutParams(
@@ -291,7 +333,7 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
         moduleBase.setHeader(view)
       }
       "image" -> {
-        val imageUri = Config.getImage("customModuleHeaderImage") ?: return
+        val imageUri = Config.getImage("customModule${moduleIndex}HeaderImage") ?: return
         val imageView = ImageView(context).apply {
           scaleType = ImageView.ScaleType.CENTER_CROP
           layoutParams = ViewGroup.LayoutParams(
@@ -324,27 +366,33 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
     }
   }
 
-  private fun customModuleEventName(
-    moduleId: String?,
-    buttonTitle: String?,
-    callbackValue: String?
-  ): String? {
-    val isCustomModule = moduleId == getCustomModuleId()
-    val isLegacyModulePress = moduleId == null
-
-    if (!isCustomModule && !isLegacyModulePress) {
-      return null
-    }
-
-    return when {
-      (isCustomModule && callbackValue == "LeftClick") ||
-        buttonTitle == Config.get("button1Title") -> "ticketsSdkCustomModuleButton1"
-      (isCustomModule && callbackValue == "MiddleButton") ||
-        buttonTitle == Config.get("button2Title") -> "ticketsSdkCustomModuleButton2"
-      (isCustomModule && callbackValue == "RightClick") ||
-        buttonTitle == Config.get("button3Title") -> "ticketsSdkCustomModuleButton3"
+  // ModuleBase reports presses by slot name rather than index
+  private fun customModuleButtonIndex(callbackValue: String?): Int? {
+    return when (callbackValue) {
+      "LeftClick" -> 0
+      "MiddleButton" -> 1
+      "RightClick" -> 2
       else -> null
     }
+  }
+
+  private fun emitCustomModuleButtonPressed(
+    moduleId: String,
+    moduleIndex: Int,
+    buttonIndex: Int,
+    buttonTitle: String?,
+    eventOrders: EventOrders?
+  ) {
+    val params: WritableMap = Arguments.createMap()
+    val paramValues: WritableMap = Arguments.createMap().apply {
+      putString("moduleId", moduleId)
+      putInt("moduleIndex", moduleIndex)
+      putInt("buttonIndex", buttonIndex)
+      putString("buttonTitle", buttonTitle ?: "")
+      putString("eventOrderInfo", eventOrders.toString())
+    }
+    params.putMap("ticketsSdkCustomModuleButtonPressed", paramValues)
+    GlobalEventEmitter.sendEvent("igniteAnalytics", params)
   }
 
   private fun emitTicketsSdkEvent(eventName: String, eventOrders: EventOrders?) {
@@ -362,21 +410,44 @@ class TicketsSdkView(context: Context) : FrameLayout(context) {
     callbackValue: String?,
     eventOrders: EventOrders?
   ) {
-    val eventName = customModuleEventName(moduleId, buttonTitle, callbackValue)
-      ?: when (buttonTitle) {
-        "Order" -> "ticketsSdkVenueConcessionsOrderFor"
-        "Wallet" -> "ticketsSdkVenueConcessionsWalletFor"
-        else -> null
-      }
+    val customModules = customModuleConfigs()
+    val moduleIndex = if (moduleId != null) {
+      customModules.indices.firstOrNull { customModuleId(it) == moduleId } ?: -1
+    } else {
+      // The legacy delegate overload carries no moduleId, so fall back to matching the button title
+      customModules.indexOfFirst { config -> config.buttons.any { it.title == buttonTitle } }
+    }
 
-    eventName?.let { emitTicketsSdkEvent(it, eventOrders) }
+    if (moduleIndex >= 0) {
+      val buttons = customModules[moduleIndex].buttons
+      val buttonIndex = customModuleButtonIndex(callbackValue)
+        ?.takeIf { it < buttons.size }
+        ?: buttons.indexOfFirst { it.title == buttonTitle }
+      if (buttonIndex >= 0) {
+        emitCustomModuleButtonPressed(
+          customModuleId(moduleIndex),
+          moduleIndex,
+          buttonIndex,
+          buttonTitle,
+          eventOrders
+        )
+      }
+      return
+    }
+
+    when (buttonTitle) {
+      "Order" -> emitTicketsSdkEvent("ticketsSdkVenueConcessionsOrderFor", eventOrders)
+      "Wallet" -> emitTicketsSdkEvent("ticketsSdkVenueConcessionsWalletFor", eventOrders)
+    }
   }
 
   private fun setCustomModules() {
     TicketsSDKSingleton.moduleDelegate = object : TicketsModuleDelegate {
       override fun getCustomModulesLiveData(order: TicketsModuleDelegate.Order): LiveData<List<TicketsSDKModule>> {
         val modules: ArrayList<TicketsSDKModule> = ArrayList()
-        modules.add(getCustomModule(context))
+        customModuleConfigs().forEachIndexed { moduleIndex, config ->
+          modules.add(getCustomModule(context, config, moduleIndex))
+        }
 
         if (Config.get("moreTicketActionsModule") == "true") {
           modules.add(MoreTicketActionsModule(order.eventId))

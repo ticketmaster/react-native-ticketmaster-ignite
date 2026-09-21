@@ -19,6 +19,29 @@ private final class FixedSizeHeaderView: UIView {
   }
 }
 
+private struct CustomModuleButtonConfig: Decodable {
+  let title: String
+  let dismissTicketViewIos: Bool
+}
+
+private struct CustomModuleConfig: Decodable {
+  let headerType: String
+  let headerColor: String
+  let buttons: [CustomModuleButtonConfig]
+}
+
+// Mirrors the JSON written by IgniteProvider under the "customModules" config key
+private func customModuleConfigs() -> [CustomModuleConfig] {
+  guard let data = Config.shared.get(for: "customModules").data(using: .utf8),
+        let configs = try? JSONDecoder().decode([CustomModuleConfig].self, from: data)
+  else { return [] }
+  return configs
+}
+
+private func customModuleIdentifier(moduleIndex: Int) -> String {
+  return "com.\(Config.shared.get(for: "clientName")).\(moduleIndex)"
+}
+
 extension TicketsSDKViewProtocol {
   func deepLinkToOrder(_ orderId: String) {
     TMTickets.shared.display(orderOrEventId: orderId)
@@ -321,45 +344,25 @@ extension TicketsSDKViewProtocol {
     }
   
   public func addCustomModules(event: TMPurchasedEvent, completion: @escaping ([TMTicketsModule]?) -> Void) {
-    
-    var actionButtons: [TMTicketsModule.ActionButton] = []
-    
-    if Config.shared.get(for: "button1") == "true" {
-      actionButtons.append(
-        TMTicketsModule.ActionButton(title: Config.shared.get(for: "button1Title"))
+    var modules: [TMTicketsModule] = customModuleConfigs().enumerated().map { (moduleIndex, config) in
+      // callbackValue carries the button index so a press can be routed back to the matching JS callback
+      let actionButtons = config.buttons.prefix(3).enumerated().map { (buttonIndex, button) in
+        TMTicketsModule.ActionButton(title: button.title, callbackValue: "\(buttonIndex)")
+      }
+      return TMTicketsModule(
+        identifier: customModuleIdentifier(moduleIndex: moduleIndex),
+        headerDisplay: customModuleHeaderDisplay(config: config, moduleIndex: moduleIndex),
+        actionButtons: actionButtons
       )
     }
-    
-    if Config.shared.get(for: "button2") == "true" {
-      actionButtons.append(
-        TMTicketsModule.ActionButton(title: Config.shared.get(for: "button2Title"))
-      )
-    }
-    
-    if Config.shared.get(for: "button3") == "true" {
-      actionButtons.append(
-        TMTicketsModule.ActionButton(title: Config.shared.get(for: "button3Title"))
-      )
-    }
-    
-    let module = TMTicketsModule(
-      identifier: "com.\(Config.shared.get(for: "clientName"))",
-      headerDisplay: customModuleHeaderDisplay(),
-      actionButtons: actionButtons
-    )
-    
-    var modules: [TMTicketsModule] = [module]
     modules.append(contentsOf: addPreBuiltModules(event: event))
     completion(modules)
   }
-  
-  private func customModuleHeaderDisplay() -> TMTicketsModule.HeaderDisplay? {
-    let headerType = Config.shared.get(for: "customModuleHeaderType")
 
-    switch headerType {
+  private func customModuleHeaderDisplay(config: CustomModuleConfig, moduleIndex: Int) -> TMTicketsModule.HeaderDisplay? {
+    switch config.headerType {
     case "color":
-      let hex = Config.shared.get(for: "customModuleHeaderColor")
-        .trimmingCharacters(in: CharacterSet(charactersIn: "#"))
+      let hex = config.headerColor.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
       guard let color = UIColor(hexString: hex) else { return nil }
       let view = FixedSizeHeaderView(
         frame: CGRect(origin: .zero, size: TMTicketsModule.HeaderDisplay.defaultSize)
@@ -367,7 +370,7 @@ extension TicketsSDKViewProtocol {
       view.backgroundColor = color
       return TMTicketsModule.HeaderDisplay(view: view)
     case "image":
-      guard let image = Config.shared.getImage(for: "customModuleHeaderImage") else { return nil }
+      guard let image = Config.shared.getImage(for: "customModule\(moduleIndex)HeaderImage") else { return nil }
       let imageView = FixedSizeImageView(image: image)
       imageView.contentMode = .scaleAspectFill
       imageView.clipsToBounds = true
@@ -433,31 +436,26 @@ extension TicketsSDKViewProtocol {
   public func handleModuleActionButton(event: TMPurchasedEvent, module: TMTicketsModule, button: TMTicketsModule.ActionButton, completion: @escaping (TMTicketsModule.WebpageSettings?) -> Void) {
     let eventName = "igniteAnalytics"
     print("\(module.identifier): \(button.callbackValue)")
-    if (module.identifier == "com.\(Config.shared.get(for: "clientName"))") {
-      if button.callbackValue == Config.shared.get(for: "button1Title") {
-        print("handleModuleActionButton: Custom Module Button 1")
-        if (Config.shared.get(for: "button1DismissTicketView") == "true") {
-          completion(nil)
-        }
-        GlobalEventEmitter.sendEvent(
-          name: eventName, body: ["ticketsSdkCustomModuleButton1": ["eventOrderInfo": "\(event)"]])
+    let customModules = customModuleConfigs()
+    if let moduleIndex = customModules.indices.first(where: { customModuleIdentifier(moduleIndex: $0) == module.identifier }),
+       let buttonIndex = Int(button.callbackValue),
+       customModules[moduleIndex].buttons.indices.contains(buttonIndex) {
+      print("handleModuleActionButton: Custom Module \(module.identifier) Button \(buttonIndex)")
+      if customModules[moduleIndex].buttons[buttonIndex].dismissTicketViewIos {
+        completion(nil)
       }
-      if button.callbackValue == Config.shared.get(for: "button2Title") {
-        print("handleModuleActionButton: Custom Module Button 2")
-        if (Config.shared.get(for: "button2DismissTicketView") == "true") {
-          completion(nil)
-        }
-        GlobalEventEmitter.sendEvent(
-          name: eventName, body: ["ticketsSdkCustomModuleButton2": ["eventOrderInfo": "\(event)"]])
-      }
-      if button.callbackValue == Config.shared.get(for: "button3Title") {
-        print("handleModuleActionButton: Custom Module Button 3")
-        if (Config.shared.get(for: "button3DismissTicketView") == "true") {
-          completion(nil)
-        }
-        GlobalEventEmitter.sendEvent(
-          name: eventName, body: ["ticketsSdkCustomModuleButton3": ["eventOrderInfo": "\(event)"]])
-      }
+      GlobalEventEmitter.sendEvent(
+        name: eventName,
+        body: [
+          "ticketsSdkCustomModuleButtonPressed": [
+            "moduleId": module.identifier,
+            "moduleIndex": moduleIndex,
+            "buttonIndex": buttonIndex,
+            "buttonTitle": button.title,
+            "eventOrderInfo": "\(event)"
+          ]
+        ]
+      )
     }
     if module.identifier == TMTicketsPrebuiltModule.ModuleName.venueConcessions.rawValue {
       if button.callbackValue == TMTicketsPrebuiltModule.ButtonCallbackName.order.rawValue {
