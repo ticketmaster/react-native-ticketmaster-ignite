@@ -374,10 +374,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
   ): Promise<void> => {
     if (result && analytics) analytics(result);
 
-    const checkoutEnded = result.purchaseSdkDidEndCheckoutFor;
-    const userLoggedInViaTicketsSdk = result.ticketsSdkDidViewEvents;
-    // The user can logout via the Ticket SDK Modal UI so the below event checks state when the user returns back to RN screens
+    // The user can logout via the Tickets SDK Modal UI, so the below event
+    // tells RN to check the SDK auth state when the user dismisses the modal
     const ticketsSdkModalDismissed = result.ticketsSdkModalDidDismiss;
+    const userLoggedInViaTicketsSdk = result.ticketsSdkDidViewEvents;
+    const checkoutEnded = result.purchaseSdkDidEndCheckoutFor;
     const iosAuthStateChanged =
       (result.accountsSdkLoggedIn || result.accountsSdkLoggedOut) &&
       Platform.OS === 'ios';
