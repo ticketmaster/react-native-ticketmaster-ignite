@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   NativeModules,
   NativeEventEmitter,
@@ -175,7 +181,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     memberInfo: null,
   });
 
-  const setAccountDetails = useCallback(async () => {
+  const setAuthenticationState = useCallback(async () => {
     let isLoggedInResult = false;
     let memberInfoResult = null;
     try {
@@ -228,11 +234,11 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       );
     }
     try {
-      autoUpdate && (await setAccountDetails());
+      autoUpdate && (await setAuthenticationState());
     } catch (e) {
       throw e;
     }
-  }, [autoUpdate, enableLogs, setAccountDetails]);
+  }, [autoUpdate, enableLogs, setAuthenticationState]);
 
   const setNativeConfigValues = useCallback(() => {
     NativeConfig.setConfig('apiKey', apiKey);
@@ -363,44 +369,89 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleIgniteAnalyticsEvent = async (
+    result: IgniteAnalytics
+  ): Promise<void> => {
+    if (result && analytics) analytics(result);
+
+    const checkoutEnded = result.purchaseSdkDidEndCheckoutFor;
+    const userLoggedInViaTicketsSdk = result.ticketsSdkDidViewEvents;
+    // The user can logout via the Ticket SDK Modal UI so the below event checks state when the user returns back to RN screens
+    const ticketsSdkModalDismissed = result.ticketsSdkModalDidDismiss;
+    const iosAuthStateChanged =
+      (result.accountsSdkLoggedIn || result.accountsSdkLoggedOut) &&
+      Platform.OS === 'ios';
+    // Sport XR fires accountsSdkLoggedIn whereas Modern Accounts fires accountsSdkLoginAccountCompleted
+    const androidSdkAuthStateChanged =
+      (result.accountsSdkLoginAccountCompleted ||
+        result.accountsSdkLoggedIn ||
+        result.accountsSdkLogoutStarted) &&
+      Platform.OS === 'android';
+
+    // The condition below is a helper to handle SDK-initiated auth state changes.
+    // When RN triggers auth, isLoggingIn is set to true so isLoggingIn being false will be an SDK-initiated change.
+    if (
+      (checkoutEnded ||
+        userLoggedInViaTicketsSdk ||
+        ticketsSdkModalDismissed ||
+        ((iosAuthStateChanged || androidSdkAuthStateChanged) &&
+          !isLoggingIn)) &&
+      autoUpdate
+    ) {
+      try {
+        if (result.accountsSdkLogoutStarted && Platform.OS === 'android') {
+          // Promise timeout approach allows outer try/catch to handle errors without needing try/catch inside setTimeout
+          await new Promise<void>((resolve) => setTimeout(resolve, 1200));
+          await setAuthenticationState();
+        } else {
+          await setAuthenticationState();
+        }
+      } catch (e) {
+        enableLogs &&
+          console.log(
+            `Accounts SDK auth state update error: ${(e as Error).message}`
+          );
+      }
+    }
+    if (result.ticketsSdkVenueConcessionsOrderFor) {
+      venueConcessionsModule?.orderButtonCallback(
+        result.ticketsSdkVenueConcessionsOrderFor
+      );
+    }
+    if (result.ticketsSdkVenueConcessionsWalletFor) {
+      venueConcessionsModule?.walletButtonCallback(
+        result.ticketsSdkVenueConcessionsWalletFor
+      );
+    }
+    if (result.ticketsSdkCustomModuleButton1) {
+      button1?.callback(result.ticketsSdkCustomModuleButton1);
+    }
+    if (result.ticketsSdkCustomModuleButton2) {
+      button2?.callback(result.ticketsSdkCustomModuleButton2);
+    }
+    if (result.ticketsSdkCustomModuleButton3) {
+      button3?.callback(result.ticketsSdkCustomModuleButton3);
+    }
+  };
+
+  const igniteAnalyticsHandlerRef = useRef<
+    (result: IgniteAnalytics) => Promise<void>
+  >(handleIgniteAnalyticsEvent);
+
+  // Rewritten on every render so the listener below, which is registered once,
+  // always invokes a handler holding current props and state
+  useEffect(() => {
+    igniteAnalyticsHandlerRef.current = handleIgniteAnalyticsEvent;
+  });
+
   useEffect(() => {
     const igniteEventEmitter = new NativeEventEmitter(
       NativeModules.GlobalEventEmitter
     );
     igniteEventEmitter.addListener(
       'igniteAnalytics',
-      async (result: IgniteAnalytics) => {
-        if (result && analytics) analytics(result);
-        if (
-          (result.purchaseSdkDidEndCheckoutFor ||
-            result.ticketsSdkDidViewEvents ||
-            result.ticketsSdkModalDidDismiss ||
-            ((result.accountsSdkLoginAccountCompleted ||
-              result.accountsSdkLoggedOut) &&
-              !isLoggingIn)) &&
-          autoUpdate
-        ) {
-          await setAccountDetails();
-        }
-        if (result.ticketsSdkVenueConcessionsOrderFor) {
-          venueConcessionsModule?.orderButtonCallback(
-            result.ticketsSdkVenueConcessionsOrderFor
-          );
-        }
-        if (result.ticketsSdkVenueConcessionsWalletFor) {
-          venueConcessionsModule?.walletButtonCallback(
-            result.ticketsSdkVenueConcessionsWalletFor
-          );
-        }
-        if (result.ticketsSdkCustomModuleButton1) {
-          button1?.callback(result.ticketsSdkCustomModuleButton1);
-        }
-        if (result.ticketsSdkCustomModuleButton2) {
-          button2?.callback(result.ticketsSdkCustomModuleButton2);
-        }
-        if (result.ticketsSdkCustomModuleButton3) {
-          button3?.callback(result.ticketsSdkCustomModuleButton3);
-        }
+      (result: IgniteAnalytics) => {
+        igniteAnalyticsHandlerRef.current(result);
       }
     );
 
@@ -408,8 +459,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     return () => {
       igniteEventEmitter.removeAllListeners('igniteAnalytics');
     };
-    // Only create native listener once in an apps lifecycle
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const login = useCallback(
@@ -421,7 +470,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         const result = await NativeAccountsSdk.login();
         if (result?.accessToken) {
           enableLogs && console.log('Accounts SDK login successful');
-          !skipUpdate && autoUpdate && (await setAccountDetails());
+          !skipUpdate && autoUpdate && (await setAuthenticationState());
           //avoid await on callbacks passed to library as there is no guarantee how long they will take to resolve
           onLogin && onLogin();
         }
@@ -431,7 +480,7 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       }
       !skipUpdate && setIsLoggingIn(false);
     },
-    [autoUpdate, enableLogs, setAccountDetails]
+    [autoUpdate, enableLogs, setAuthenticationState]
   );
 
   const logout = useCallback(
@@ -441,13 +490,13 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       try {
         await NativeAccountsSdk.logout();
         enableLogs && console.log('Accounts SDK logout successful');
-        !skipUpdate && autoUpdate && (await setAccountDetails());
+        !skipUpdate && autoUpdate && (await setAuthenticationState());
         onLogout && onLogout();
       } catch (e) {
         throw e;
       }
     },
-    [autoUpdate, enableLogs, setAccountDetails]
+    [autoUpdate, enableLogs, setAuthenticationState]
   );
 
   const logoutAll = useCallback(
@@ -457,13 +506,13 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
       try {
         await NativeAccountsSdk.logoutAll();
         enableLogs && console.log('Accounts SDK logoutAll successful');
-        !skipUpdate && autoUpdate && (await setAccountDetails());
+        !skipUpdate && autoUpdate && (await setAuthenticationState());
         onLogout && onLogout();
       } catch (e) {
         throw e;
       }
     },
-    [autoUpdate, enableLogs, setAccountDetails]
+    [autoUpdate, enableLogs, setAuthenticationState]
   );
 
   const getIsLoggedIn = useCallback(async (): Promise<boolean> => {
