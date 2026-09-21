@@ -44,5 +44,16 @@ target 'TicketmasterIgniteExample' do
         c.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
       end
     end
+
+    # Fix for Xcode 27: deployment target warnings are now hard errors.
+    # RN's post_install doesn't update resource-bundle targets, so we
+    # force all targets to meet the minimum iOS version.
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 15.0
+          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+        end
+      end
+    end
   end
 end
