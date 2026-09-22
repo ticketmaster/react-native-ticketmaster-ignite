@@ -66,11 +66,6 @@ More information about the flow of these state change analytics can be found her
 | purchaseSdkDidViewSubPageFor | eventId<br/> legacyId<br/> eventName<br/> subPage | The user navigated to a sub-page with the EDP or Cart |
 | purchaseSdkDidMakeDecisionFor (iOS only) | eventId<br/> legacyId<br/> eventName<br/>  date<br/>  timeZone<br/> decision | The user has interacted with a UI component, resulting in a decision |
 | purchaseSdkManageMyTickets (Android only) | purchaseSdkManageMyTickets | The user has pressed Managed My Tickets on the order confirmation screen |
-
-### Web Analytics Events
-
-| Name | Values | Description |
-| ----- | ---- | -----   |
 | purchaseSdkWebPageDidReportUALPageView | pageName<br/> pageUrl<br/> pageReferrer<br/> pageType | The web page reported a UAL page view event |
 | purchaseSdkWebPageDidReportUALCommerceEvent | eventType<br/> eventName<br/> transactionId<br/> transactionTotal | The web page reported a UAL commerce event |
 | purchaseSdkWebReportedViewItem (Android only) | itemId<br/> itemName<br/> itemCategory<br/> itemVariant | The web page reported a UAL view item event |
@@ -120,8 +115,8 @@ More information about the flow of these state change analytics can be found her
 | ----- | ---- | -----   |
 | ticketsSdkDidViewEvents | ticketsSdkDidViewEvents | The user has successfully authenticated and been shown their purchased events |
 | ticketsSdkDidViewEventTickets | eventId<br/> eventName<br/> ticketCount | The user views tickets for a specific event |
-| ticketsSdkDidViewTicketBarcode | eventId<br/> eventName<br/> section<br/> row<br/> seat | The user views the barcode for a specific ticket |
-| ticketsSdkDidViewTicketDetails | eventId<br/> eventName<br/> section<br/> row<br/> seat | The user views the details/back of a specific ticket |
+| ticketsSdkDidViewTicketBarcode | eventId<br/> eventName (iOS)<br/> section (iOS)<br/> row (iOS)<br/> seat (iOS) | The user views the barcode for a specific ticket |
+| ticketsSdkDidViewTicketDetails | eventId<br/> eventName (iOS)<br/> section (iOS)<br/> row (iOS)<br/> seat (iOS) | The user views the details/back of a specific ticket |
 | ticketsSdkDidViewMfaForTicketOperation | ticketsSdkDidViewMfaForTicketOperation | Multi-factor authentication prompt shown for a ticket operation |
 | ticketsSdkDidViewMfaForViewBarcode | ticketsSdkDidViewMfaForViewBarcode | Multi-factor authentication prompt shown to view barcode |
 | ticketsSdkDidViewMfaForWebpage | ticketsSdkDidViewMfaForWebpage | Multi-factor authentication prompt shown for a webpage |
@@ -133,11 +128,11 @@ More information about the flow of these state change analytics can be found her
 
 | Name | Values | Description |
 | ----- | ---- | -----   |
-| ticketsSdkDidInitiateAddTicketToWallet | eventId<br/> eventName<br/> section<br/> row<br/> seat | The user initiated adding a ticket to Apple Wallet (iOS) or Google Wallet (Android) |
+| ticketsSdkDidInitiateAddTicketToWallet | eventId<br/> eventName (iOS)<br/> section (iOS)<br/> row (iOS)<br/> seat (iOS) | The user initiated adding a ticket to Apple Wallet (iOS) or Google Wallet (Android) |
 | ticketsSdkDidFinishAddTicketToWallet (iOS only) | eventId<br/> eventName<br/> ticketCount<br/> tickets (array) | The user successfully finished adding ticket(s) to Apple Wallet |
 | ticketsSdkDidCancelAddTicketToWallet (iOS only) | ticketsSdkDidCancelAddTicketToWallet | The user cancelled adding a ticket to Apple Wallet |
 | ticketsSdkDidInitiateTransfer | eventId<br/> eventName<br/> ticketCount<br/> faceValue (Android) | The user started the transfer process for ticket(s) |
-| ticketsSdkDidCancelTransfer | eventId<br/> eventName<br/> ticketCount (iOS)<br/> transferId (Android)<br/> orderId (Android) | The user cancelled a ticket transfer |
+| ticketsSdkDidCancelTransfer | eventId (iOS)<br/> eventName (iOS)<br/> ticketCount (iOS)<br/> transferId (Android)<br/> orderId (Android) | The user cancelled a ticket transfer |
 | ticketsSdkDidAcceptTransfer (Android only) | eventId<br/> eventName<br/> transferId | The user accepted a ticket transfer |
 | ticketsSdkDidEditResale (iOS only) | eventId<br/> eventName<br/> ticketCount | The user pressed the Edit Resale Posting button |
 | ticketsSdkDidCancelResale | eventId<br/> eventName<br/> ticketCount (iOS)<br/> postingId (Android) | The user cancelled a ticket resale listing |
@@ -155,9 +150,7 @@ More information about the flow of these state change analytics can be found her
 | ticketsSdkModalDidDismiss | ticketsSdkModalDidDismiss | The Tickets SDK modal has closed |
 | ticketsSdkVenueConcessionsOrderFor | eventOrderInfo | The user has pressed the order button on the Venue Concessions module | 
 | ticketsSdkVenueConcessionsWalletFor | eventOrderInfo | The user has pressed the wallet button on the Venue Concessions module |
-| ticketsSdkCustomModuleButton1 | eventOrderInfo | The user has pressed custom module button 1 |
-| ticketsSdkCustomModuleButton2 | eventOrderInfo | The user has pressed custom module button 2 |
-| ticketsSdkCustomModuleButton3 | eventOrderInfo | The user has pressed custom module button 3 |
+| ticketsSdkCustomModuleButtonPressed | moduleId<br/> moduleIndex<br/> buttonIndex<br/> buttonTitle<br/> eventOrderInfo | The user has pressed a button on one of the configured custom modules |
 
 ### Tickets SDK Value Descriptions
 

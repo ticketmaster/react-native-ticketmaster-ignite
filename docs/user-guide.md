@@ -676,6 +676,9 @@ To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which acc
 ```
 
 You only need to provide the prebuilt modules you want to display to `prebuiltModules`. Any module omitted will be set to `enabled: false` by default.
+
+On iOS, pressing the `venueConcessionsModule` Order or Wallet button dismisses the ticket barcode modal by default, typically so that an in-app browser can open. Pass `dismissTicketViewOrderIos: false` and/or `dismissTicketViewWalletIos: false` to keep the modal open.
+
 Here is an example of only showing the Venue Directions Module:
 
 ```typescript
@@ -712,7 +715,7 @@ You can select custom images for `seatUpgradesModule` and `venueConcessionsModul
 
 ### Custom Modules
 
-You can configure up to 3 buttons as a custom module. Each button accepts a callback function. An optional `headerView` can be displayed above the buttons — either a solid color, a bundled image via `require()`, or a remote image via `{ uri: '...' }`.
+`customModules` accepts an array of modules, rendered in the Tickets SDK event view in the order given. Each module has 1–3 `buttons` (the SDK renders at most three per module) and an optional `headerView` displayed above the buttons — either a solid color, a bundled image via `require()`, or a remote image via `{ uri: '...' }`. Each button accepts a `callback`, which receives the `moduleId`, `moduleIndex`, `buttonIndex`, `buttonTitle` and `eventOrderInfo` of the press.
 
 ```typescript
 <IgniteProvider
@@ -721,30 +724,30 @@ You can configure up to 3 buttons as a custom module. Each button accepts a call
     clientName: CLIENT_NAME,
     primaryColor: PRIMARY_COLOR
   }}
-  customModules={{
-    headerView: {
-      image: require('./assets/my_module_header.png'),
+  customModules={[
+    {
+      headerView: {
+        image: require('./assets/my_module_header.png'),
+      },
+      buttons: [
+        { title: 'My Button 1', callback: () => console.log('Button 1 called!') },
+        { title: 'My Button 2', callback: () => console.log('Button 2 called!') },
+        { title: 'My Button 3', callback: () => console.log('Button 3 called!') },
+      ],
     },
-    button1: {
-      enabled: true,
-      title: 'My Button 1',
-      callback: () => console.log('Button 1 called!'),
+    {
+      headerView: { color: '#026cdf' },
+      buttons: [
+        { title: 'Help', callback: () => console.log('Help called!') },
+      ],
     },
-    button2: {
-      enabled: true,
-      title: 'My Button 2',
-      callback: () => console.log('Button 2 called!'),
-    },
-    button3: {
-      enabled: true,
-      title: 'My Button 3',
-      callback: () => console.log('Button 3 called!'),
-    },
-  }}
+  ]}
 >
   <App />
 </IgniteProvider>
 ```
+
+On iOS, a Custom Module button press dismisses the ticket barcode modal by default, typically so that an in-app browser can open. Pass `dismissTicketViewIos: false` on a button to keep it open.
 
 `headerView` accepts a bundled image, a remote image, or a solid color:
 
@@ -772,13 +775,13 @@ Single button example:
     clientName: CLIENT_NAME,
     primaryColor: PRIMARY_COLOR
   }}
-  customModules={{
-    button1: {
-      enabled: true,
-      title: 'My Button 1',
-      callback: () => console.log('Button 1 called!'),
+  customModules={[
+    {
+      buttons: [
+        { title: 'My Button 1', callback: () => console.log('Button 1 called!') },
+      ],
     },
-  }}
+  ]}
 >
   <App />
 </IgniteProvider>
@@ -802,13 +805,16 @@ import { Linking } from 'react-native';
     clientName: CLIENT_NAME,
     primaryColor: PRIMARY_COLOR
   }}
-  customModules={{
-    button1: {
-      enabled: true,
-      title: 'Visit Ticketmaster',
-      callback: () => Linking.openURL('https://www.ticketmaster.com'),
+  customModules={[
+    {
+      buttons: [
+        {
+          title: 'Visit Ticketmaster',
+          callback: () => Linking.openURL('https://www.ticketmaster.com'),
+        },
+      ],
     },
-  }}
+  ]}
 >
   <App />
 </IgniteProvider>

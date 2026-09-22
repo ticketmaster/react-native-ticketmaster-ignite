@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, act, waitFor } from '@testing-library/react-native';
-import { View, Platform } from 'react-native';
+import { View, Platform, NativeEventEmitter } from 'react-native';
 import { IgniteProvider } from '../src';
 import { IgniteContext } from '../src/IgniteProvider';
 import NativeConfig from '../src/specs/NativeConfig';
@@ -858,34 +858,43 @@ describe('IgniteProvider', () => {
       });
     });
 
-    describe('customModules headerView', () => {
-      it('sets a color header when color is provided', () => {
+    describe('customModules', () => {
+      const getSerializedCustomModules = () => {
+        const customModulesCall = mockNativeConfig.setConfig.mock.calls.find(
+          ([key]: [string, string]) => key === 'customModules'
+        );
+        return JSON.parse(customModulesCall![1]);
+      };
+
+      it('serializes a color header module', () => {
         render(
           <IgniteProvider
             options={options}
-            customModules={{
-              headerView: { color: '#026cdf' },
-            }}
+            customModules={[
+              {
+                headerView: { color: '#026cdf' },
+                buttons: [{ title: 'My Button', callback: jest.fn() }],
+              },
+            ]}
           >
             <View />
           </IgniteProvider>
         );
 
-        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
-          'customModuleHeaderType',
-          'color'
-        );
-        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
-          'customModuleHeaderColor',
-          '#026cdf'
-        );
+        expect(getSerializedCustomModules()).toEqual([
+          {
+            headerType: 'color',
+            headerColor: '#026cdf',
+            buttons: [{ title: 'My Button', dismissTicketViewIos: true }],
+          },
+        ]);
         expect(mockNativeConfig.setImage).not.toHaveBeenCalledWith(
-          'customModuleHeaderImage',
+          'customModule0HeaderImage',
           expect.any(String)
         );
       });
 
-      it('sets an image header when image is provided', () => {
+      it('serializes an image header module and registers the image per module index', () => {
         const headerImageUri = 'mock-header-image-uri';
         const mockResolveAssetSource = jest.requireMock(
           'react-native/Libraries/Image/Image'
@@ -897,35 +906,104 @@ describe('IgniteProvider', () => {
         render(
           <IgniteProvider
             options={options}
-            customModules={{
-              headerView: { image: require('./testImage.png') },
-            }}
+            customModules={[
+              {
+                buttons: [{ title: 'First', callback: jest.fn() }],
+              },
+              {
+                headerView: { image: require('./testImage.png') },
+                buttons: [
+                  { title: 'Second', callback: jest.fn() },
+                  {
+                    title: 'Third',
+                    dismissTicketViewIos: false,
+                    callback: jest.fn(),
+                  },
+                ],
+              },
+            ]}
           >
             <View />
           </IgniteProvider>
         );
 
-        expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
-          'customModuleHeaderType',
-          'image'
-        );
+        expect(getSerializedCustomModules()).toEqual([
+          {
+            headerType: '',
+            headerColor: '',
+            buttons: [{ title: 'First', dismissTicketViewIos: true }],
+          },
+          {
+            headerType: 'image',
+            headerColor: '',
+            buttons: [
+              { title: 'Second', dismissTicketViewIos: true },
+              { title: 'Third', dismissTicketViewIos: false },
+            ],
+          },
+        ]);
         expect(mockNativeConfig.setImage).toHaveBeenCalledWith(
-          'customModuleHeaderImage',
+          'customModule1HeaderImage',
           headerImageUri
         );
       });
 
-      it('clears the header type when no header is provided', () => {
+      it('serializes an empty list when no custom modules are provided', () => {
         render(component);
 
         expect(mockNativeConfig.setConfig).toHaveBeenCalledWith(
-          'customModuleHeaderType',
-          ''
+          'customModules',
+          '[]'
         );
-        expect(mockNativeConfig.setImage).not.toHaveBeenCalledWith(
-          'customModuleHeaderImage',
-          expect.any(String)
+      });
+
+      it('routes a native button press to the matching module and button callback', async () => {
+        const addListenerSpy = jest.spyOn(
+          NativeEventEmitter.prototype,
+          'addListener'
         );
+        const firstModuleButton = jest.fn();
+        const secondModuleFirstButton = jest.fn();
+        const secondModuleSecondButton = jest.fn();
+
+        render(
+          <IgniteProvider
+            options={options}
+            customModules={[
+              { buttons: [{ title: 'A', callback: firstModuleButton }] },
+              {
+                buttons: [
+                  { title: 'B', callback: secondModuleFirstButton },
+                  { title: 'C', callback: secondModuleSecondButton },
+                ],
+              },
+            ]}
+          >
+            <View />
+          </IgniteProvider>
+        );
+
+        const igniteAnalyticsListener = addListenerSpy.mock.calls.find(
+          ([eventName]) => eventName === 'igniteAnalytics'
+        )![1];
+        const pressPayload = {
+          moduleId: 'com.SomeName.1',
+          moduleIndex: 1,
+          buttonIndex: 1,
+          buttonTitle: 'C',
+          eventOrderInfo: 'order-info',
+        };
+
+        await act(async () => {
+          igniteAnalyticsListener({
+            ticketsSdkCustomModuleButtonPressed: pressPayload,
+          });
+        });
+
+        expect(secondModuleSecondButton).toHaveBeenCalledWith(pressPayload);
+        expect(secondModuleFirstButton).not.toHaveBeenCalled();
+        expect(firstModuleButton).not.toHaveBeenCalled();
+        addListenerSpy.mockRestore();
       });
     });
   });

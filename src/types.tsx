@@ -280,9 +280,7 @@ export type IgniteAnalytics = {
   ticketsSdkModalDidDismiss: 'ticketsSdkModalDidDismiss';
   ticketsSdkVenueConcessionsOrderFor: TicketsSdkEventData;
   ticketsSdkVenueConcessionsWalletFor: TicketsSdkEventData;
-  ticketsSdkCustomModuleButton1: TicketsSdkEventData;
-  ticketsSdkCustomModuleButton2: TicketsSdkEventData;
-  ticketsSdkCustomModuleButton3: TicketsSdkEventData;
+  ticketsSdkCustomModuleButtonPressed: CustomModuleButtonPressedData;
 };
 
 export enum IgniteAnalyticName {
@@ -359,9 +357,7 @@ export enum IgniteAnalyticName {
   TICKETS_SDK_DID_DISMISS = 'ticketsSdkModalDidDismiss',
   TICKETS_SDK_VENUE_CONCESSIONS_ORDER_FOR = 'ticketsSdkVenueConcessionsOrderFor',
   TICKETS_SDK_VENUE_CONCESSIONS_WALLET_FOR = 'ticketsSdkVenueConcessionsWalletFor',
-  TICKETS_SDK_CUSTOM_MODULE_BUTTON_1 = 'ticketsSdkCustomModuleButton1',
-  TICKETS_SDK_CUSTOM_MODULE_BUTTON_2 = 'ticketsSdkCustomModuleButton2',
-  TICKETS_SDK_CUSTOM_MODULE_BUTTON_3 = 'ticketsSdkCustomModuleButton3',
+  TICKETS_SDK_CUSTOM_MODULE_BUTTON_PRESSED = 'ticketsSdkCustomModuleButtonPressed',
 }
 
 export type VenueConcessionsModule = {
@@ -408,27 +404,30 @@ export type MemberInfo = Record<string, any> | null;
 
 export type CustomModuleHeaderView = { color: string } | { image: any };
 
-export type CustomModules = {
-  headerView?: CustomModuleHeaderView;
-  button1?: {
-    enabled: boolean;
-    title: string;
-    dismissTicketViewIos?: boolean;
-    callback: (data: TicketsSdkEventData) => void | Promise<void>;
-  };
-  button2?: {
-    enabled: boolean;
-    title: string;
-    dismissTicketViewIos?: boolean;
-    callback: (data: TicketsSdkEventData) => void | Promise<void>;
-  };
-  button3?: {
-    enabled: boolean;
-    title: string;
-    dismissTicketViewIos?: boolean;
-    callback: (data: TicketsSdkEventData) => void | Promise<void>;
-  };
+export type CustomModuleButtonPressedData = TicketsSdkEventData & {
+  moduleId: string;
+  moduleIndex: number;
+  buttonIndex: number;
+  buttonTitle: string;
 };
+
+export type CustomModuleButton = {
+  title: string;
+  dismissTicketViewIos?: boolean;
+  callback: (data: CustomModuleButtonPressedData) => void | Promise<void>;
+};
+
+export type CustomModuleButtons =
+  | [CustomModuleButton]
+  | [CustomModuleButton, CustomModuleButton]
+  | [CustomModuleButton, CustomModuleButton, CustomModuleButton];
+
+export type CustomModule = {
+  headerView?: CustomModuleHeaderView;
+  buttons: CustomModuleButtons;
+};
+
+export type CustomModules = CustomModule[];
 
 export type Region = 'US' | 'UK';
 

@@ -133,25 +133,12 @@ const defaultPrebuiltModules: PrebuiltModules = {
   },
 };
 
-const defaultCustomModules: CustomModules = {
-  button1: {
-    enabled: false,
-    title: '',
-    dismissTicketViewIos: true,
-    callback: async () => {},
-  },
-  button2: {
-    enabled: false,
-    title: '',
-    dismissTicketViewIos: true,
-    callback: async () => {},
-  },
-  button3: {
-    enabled: false,
-    title: '',
-    dismissTicketViewIos: true,
-    callback: async () => {},
-  },
+const defaultCustomModules: CustomModules = [];
+
+type CustomModuleConfig = {
+  headerType: 'color' | 'image' | '';
+  headerColor: string;
+  buttons: { title: string; dismissTicketViewIos: boolean }[];
 };
 
 export const IgniteProvider: React.FC<IgniteProviderProps> = ({
@@ -173,7 +160,6 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     marketDomain,
   } = options;
   const { venueConcessionsModule } = prebuiltModules;
-  const { button1, button2, button3 } = customModules;
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateParams>({
     isConfigured: false,
@@ -313,34 +299,40 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     });
 
     // Custom Modules
-    const { headerView, ...buttonModules } = customModules;
-    Object.entries(buttonModules).forEach(([moduleName, moduleOptions]) => {
-      if (!moduleOptions) return;
-      const isEnabled = moduleOptions.enabled ? 'true' : 'false';
-      const dismissTicketView =
-        moduleOptions.dismissTicketViewIos === undefined
-          ? 'true'
-          : `${moduleOptions.dismissTicketViewIos}`;
-      NativeConfig.setConfig(moduleName, isEnabled);
-      NativeConfig.setConfig(`${moduleName}Title`, moduleOptions.title);
-      NativeConfig.setConfig(
-        `${moduleName}DismissTicketView`,
-        dismissTicketView
-      );
-    });
+    const customModuleConfigs: CustomModuleConfig[] = customModules.map(
+      (customModule, moduleIndex) => {
+        const { headerView } = customModule;
+        let headerType: CustomModuleConfig['headerType'] = '';
+        let headerColor = '';
 
-    if (headerView && 'color' in headerView) {
-      NativeConfig.setConfig('customModuleHeaderType', 'color');
-      NativeConfig.setConfig('customModuleHeaderColor', headerView.color);
-    } else if (headerView && 'image' in headerView) {
-      NativeConfig.setConfig('customModuleHeaderType', 'image');
-      const resolvedImage = Image.resolveAssetSource(headerView.image);
-      if (resolvedImage?.uri) {
-        NativeConfig.setImage('customModuleHeaderImage', resolvedImage.uri);
+        if (headerView && 'color' in headerView) {
+          headerType = 'color';
+          headerColor = headerView.color;
+        } else if (headerView && 'image' in headerView) {
+          const resolvedImage = Image.resolveAssetSource(headerView.image);
+          if (resolvedImage?.uri) {
+            headerType = 'image';
+            NativeConfig.setImage(
+              `customModule${moduleIndex}HeaderImage`,
+              resolvedImage.uri
+            );
+          }
+        }
+
+        return {
+          headerType,
+          headerColor,
+          buttons: customModule.buttons.map((button) => ({
+            title: button.title,
+            dismissTicketViewIos: button.dismissTicketViewIos ?? true,
+          })),
+        };
       }
-    } else {
-      NativeConfig.setConfig('customModuleHeaderType', '');
-    }
+    );
+    NativeConfig.setConfig(
+      'customModules',
+      JSON.stringify(customModuleConfigs)
+    );
   }, [customModules, prebuiltModules]);
 
   const setTicketDeepLink = useCallback((id: string) => {
@@ -424,14 +416,12 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
         result.ticketsSdkVenueConcessionsWalletFor
       );
     }
-    if (result.ticketsSdkCustomModuleButton1) {
-      button1?.callback(result.ticketsSdkCustomModuleButton1);
-    }
-    if (result.ticketsSdkCustomModuleButton2) {
-      button2?.callback(result.ticketsSdkCustomModuleButton2);
-    }
-    if (result.ticketsSdkCustomModuleButton3) {
-      button3?.callback(result.ticketsSdkCustomModuleButton3);
+    if (result.ticketsSdkCustomModuleButtonPressed) {
+      const { moduleIndex, buttonIndex } =
+        result.ticketsSdkCustomModuleButtonPressed;
+      customModules[moduleIndex]?.buttons[buttonIndex]?.callback(
+        result.ticketsSdkCustomModuleButtonPressed
+      );
     }
   };
 
