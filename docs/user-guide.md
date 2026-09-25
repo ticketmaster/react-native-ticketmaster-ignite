@@ -196,7 +196,7 @@ On recent versions of the iOS Accounts SDK, it has been observed that on backend
 
 As a fail safe, it may be beneficial to call `refreshToken()` **once** on the first log occurrence of `TicketmasterFoundation.ConnectionError error...` being logged a catch block, in case the user just needs to re-authenticate, but a backend server error should resolve itself after a short period of time (within 5 mins) so a "something went wrong, please try again later" error message to the user may suffice on an occurrence of this error.
 
-To catch `TicketmasterFoundation.ConnectionError error 0` logs on app launch see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#reconfigure-accounts-sdk)
+To catch `TicketmasterFoundation.ConnectionError error 0` logs on app launch see [here](#reconfigure-accounts-sdk)
 
 #### Reconfigure Accounts SDK
 
@@ -315,7 +315,7 @@ try {
 
 When switching to a new API key, `refreshConfiguration()` automatically calls `login()` after configuration since users must authenticate at least once per key. Set `skipAutoLogin` to true to prevent this, but a user must be logged in to the new team or issues will arise when using the Tickets SDK. If a user has logged into 2 different teams, they can now freely switch between those 2 teams without needing to login.
 
-To reconfigure the Tickets SDK, an unmount on blur approach needs to be done for both Android and iOS. In React Native's Fabric renderer (New Architecture), iOS views remains in memory and continues rendering even when "hidden" by React Navigation Bottom Tabs. To solve this, the `<TicketsSdkEmbedded />` component has a new prop called `` which will trigger additional logic within the `<TicketsSdkEmbedded />` component to reconfigure the iOS Tickets SDK. During team reconfiguration and login, unmount the `<TicketsSdkEmbedded />` component by navigating to a custom RN login/loading screen and after login is successful navigate back to the `<TicketsSdkEmbedded />` component.
+To reconfigure the Tickets SDK, an unmount on blur approach needs to be done for both Android and iOS. In React Native's Fabric renderer (New Architecture), iOS views remains in memory and continues rendering even when "hidden" by React Navigation Bottom Tabs. To solve this, the `<TicketsSdkEmbedded />` component has a new prop called `isFocused` which will trigger additional logic within the `<TicketsSdkEmbedded />` component to reconfigure the iOS Tickets SDK. During team reconfiguration and login, unmount the `<TicketsSdkEmbedded />` component by navigating to a custom RN login/loading screen and after login is successful navigate back to the `<TicketsSdkEmbedded />` component.
 
 ⚠️ Warning: `isFocused` must toggle from `false` to `true` to trigger the Tickets SDK refresh/reconfiguration. Navigating to another RN screen that is still within the same bottom tab screen does not always toggle `isFocused` from `false` to `true` depending on the navigation approach, so while implementing API key switching you must log the variable and ensure your approach toggles the boolean. Alternatively, you can create your own custom variable and toggle it within your JS method that calls `refreshConfiguration()`.
 
@@ -515,7 +515,7 @@ When the user or app next navigates to the screen component/screen which renders
 
 If you want to do multiple deep links to the `<TicketsSdkEmbedded />` component within an app session without the user closing the app, you will need to do an unmount on blur approach. The `<TicketsSdkEmbedded />` component receives an `isFocused` prop. You will have to send the component React Navigation's `isFocused` value or a custom screen focus boolean as in React Native's Fabric renderer (New Architecture), iOS views remains in memory and continues rendering even when "hidden" by React Navigation Bottom Tabs, so we have extra logic inside the `<TicketsSdkEmbedded />` component to remount the iOS Tickets SDK to handle subsequent deep links within an apps session after the initial deep link.
 
-⚠️ Warning: `isFocused` must toggle from `false` to `true` to trigger the Tickets SDK refresh/reconfiguration. Navigating to another RN screen that is still within the same bottom tab screen does not always toggle `isFocused` from `false` to `true` depending on the navigation approach, so while implementing API key switching you must log the variable and ensure your approach toggles the boolean. Alternatively, you can create your own custom variable and toggle it within your JS method that calls `refreshConfiguration()`.
+⚠️ Warning: `isFocused` must toggle from `false` to `true` to trigger the Tickets SDK refresh/reconfiguration. Navigating to another RN screen that is still within the same bottom tab screen does not always toggle `isFocused` from `false` to `true` depending on the navigation approach, so you must log the variable and ensure your approach toggles the boolean. Alternatively, you can create your own custom variable and toggle it within a JS method.
 
 ```typescript
 import { useIsFocused } from '@react-navigation/native';
@@ -891,7 +891,7 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
 
 If you want the `<TicketsSdkEmbedded />` component to perform a fresh call upon navigating to the screen/tab after purchase be sure to pass an `isFocused` boolean to the component. 
 
-⚠️ Warning: `isFocused` must toggle from `false` to `true` to trigger the Tickets SDK refresh/reconfiguration. Navigating to another RN screen that is still within the same bottom tab screen does not always toggle `isFocused` from `false` to `true` depending on the navigation approach, so while implementing API key switching you must log the variable and ensure your approach toggles the boolean. Alternatively, you can create your own custom variable and toggle it within your JS method that calls `refreshConfiguration()`.
+⚠️ Warning: `isFocused` must toggle from `false` to `true` to trigger the Tickets SDK refresh/reconfiguration. Navigating to another RN screen that is still within the same bottom tab screen does not always toggle `isFocused` from `false` to `true` depending on the navigation approach, so you must log the variable and ensure your approach toggles the boolean. Alternatively, you can create your own custom variable and toggle it within a JS method.
 
 Example below:
 
@@ -949,4 +949,4 @@ const onConfigurationSuccess = () =>
 As the initial Accounts SDK configuration is done for your app via `IgniteProvider`, any failures in this process will still be logged, as if the Accounts SDK configuration fails then none of the Ignite SDK's will work in your application.
 
 
-On any logs of `TicketmasterFoundation.ConnectionError error` see [here](https://github.com/ticketmaster/react-native-ticketmaster-ignite?tab=readme-ov-file#refresh-token)
+On any logs of `TicketmasterFoundation.ConnectionError error` see [here](#refresh-token)
