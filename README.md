@@ -310,5 +310,3 @@ const apiKeyJson = JSON.parse(Config.API_KEY)
     apiKeyJson[`KeyName_${Platform.OS}`] || '',
 ...
 ```
-
-Note: If you change the API key in an .env for iOS you may need to **Product** > **Clean Build Folder** for the change to take affect.
