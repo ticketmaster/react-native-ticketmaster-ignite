@@ -7,7 +7,7 @@ import UIKit
     DispatchQueue.main.async {
       let viewController = TicketsSDKModalViewController()
       viewController.deepLinkId = deepLinkId
-      viewController.modalPresentationStyle = .fullScreen
+      viewController.modalPresentationStyle = .overFullScreen
       self.getRootViewController()?.present(viewController, animated: true)
     }
   }
