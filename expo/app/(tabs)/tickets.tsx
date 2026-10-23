@@ -27,8 +27,10 @@ export default function TabThreeScreen() {
 }
 
 const styles = StyleSheet.create({
+  // Literal types are kept on purpose: the library's `style` prop is typed against the
+  // monorepo root's react-native 0.81 types, whose DimensionValue has no plain `string`.
   ticketsContainer: {
-    height: '100%',
-    width: '100%',
+    height: '100%' as const,
+    width: '100%' as const,
   },
 });

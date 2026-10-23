@@ -292,7 +292,13 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
           }
           if (optionName.includes('image')) {
             const resolvedImage = Image.resolveAssetSource(optionValue);
-            NativeConfig.setImage(moduleName + 'Image', resolvedImage.uri);
+            if (resolvedImage) {
+              NativeConfig.setImage(moduleName + 'Image', resolvedImage.uri);
+            } else {
+              console.warn(
+                `[react-native-ticketmaster-ignite] Could not resolve the image for custom module "${moduleName}"; it will be ignored.`
+              );
+            }
           }
         }
       );
@@ -439,12 +445,10 @@ export const IgniteProvider: React.FC<IgniteProviderProps> = ({
     const igniteEventEmitter = new NativeEventEmitter(
       NativeModules.GlobalEventEmitter
     );
-    igniteEventEmitter.addListener(
-      'igniteAnalytics',
-      (result: IgniteAnalytics) => {
-        igniteAnalyticsHandlerRef.current(result);
-      }
-    );
+    igniteEventEmitter.addListener('igniteAnalytics', (result) => {
+      // Event payloads are untyped under the RN 0.87+ Strict TypeScript API
+      igniteAnalyticsHandlerRef.current(result as IgniteAnalytics);
+    });
 
     // Removes the listener once unmounted
     return () => {
