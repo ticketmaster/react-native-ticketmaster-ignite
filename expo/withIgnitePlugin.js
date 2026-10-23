@@ -5,7 +5,10 @@ const {
   withProjectBuildGradle,
   withStringsXml,
   withPodfileProperties,
+  withDangerousMod,
 } = require('@expo/config-plugins');
+const fs = require('fs');
+const path = require('path');
 
 // Kotlin is pinned for the Ticketmaster SDK — see docs/expo.md for the rationale.
 const KOTLIN_VERSION = '2.2.21';
@@ -116,6 +119,44 @@ module.exports = function withIgnitePlugin(expoConfig) {
     config.modResults['ios.deploymentTarget'] = '17.0';
     return config;
   });
+
+  // Xcode 27 treats deployment-target warnings as hard errors. Third-party
+  // pods (e.g. RNSVG) often ship with a lower IPHONEOS_DEPLOYMENT_TARGET than
+  // the minimum Xcode accepts (15.0). This post_install hook raises every pod
+  // target to at least 15.0 to prevent build failures.
+  withDangerousMod(expoConfig, [
+    'ios',
+    async (config) => {
+      const podfilePath = path.join(
+        config.modRequest.platformProjectRoot,
+        'Podfile'
+      );
+      let podfileContents = fs.readFileSync(podfilePath, 'utf-8');
+
+      const deploymentTargetFix = `
+    # Fix for Xcode 27: deployment target warnings are now hard errors.
+    # Force all pods to meet the minimum iOS version (15.0).
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 15.0
+          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+        end
+      end
+    end`;
+
+      if (
+        !podfileContents.includes("IPHONEOS_DEPLOYMENT_TARGET'].to_f < 15.0")
+      ) {
+        podfileContents = podfileContents.replace(
+          /post_install do \|installer\|/,
+          `post_install do |installer|${deploymentTargetFix}`
+        );
+        fs.writeFileSync(podfilePath, podfileContents);
+      }
+
+      return config;
+    },
+  ]);
 
   return expoConfig;
 };

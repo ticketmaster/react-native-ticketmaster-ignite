@@ -9646,12 +9646,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-modules-jsi@npm:~56.0.10":
+"expo-modules-jsi@npm:56.0.10":
   version: 56.0.10
   resolution: "expo-modules-jsi@npm:56.0.10"
   peerDependencies:
     react-native: "*"
   checksum: 332b944b5d9f18652154953a012122afe8e9a14824ee72eb5fb36cb306145179f958257f48a5bac8338a68f1322f55198c9dc05dd022ca6c86a270079280e3e9
+  languageName: node
+  linkType: hard
+
+"expo-modules-jsi@patch:expo-modules-jsi@npm%3A56.0.10#./.yarn/patches/expo-modules-jsi-npm-56.0.10-70e070c3a6.patch::locator=react-native-ticketmaster-ignite%40workspace%3A.":
+  version: 56.0.10
+  resolution: "expo-modules-jsi@patch:expo-modules-jsi@npm%3A56.0.10#./.yarn/patches/expo-modules-jsi-npm-56.0.10-70e070c3a6.patch::version=56.0.10&hash=d25156&locator=react-native-ticketmaster-ignite%40workspace%3A."
+  peerDependencies:
+    react-native: "*"
+  checksum: f6759a9b23f8451648bcd9d4bd6a5eb95f92a8a39d5362756688bdcdeb7aaa77973ace7ec7815b81c33c9ec76853fb6fc0fc7fc147c0d5148dc60dac69fe79b9
   languageName: node
   linkType: hard
 

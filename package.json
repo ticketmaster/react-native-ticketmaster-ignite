@@ -87,7 +87,8 @@
   },
   "resolutions": {
     "@types/react": "^19.1.0",
-    "conventional-changelog-angular": "^8.0.0"
+    "conventional-changelog-angular": "^8.0.0",
+    "expo-modules-jsi@~56.0.10": "patch:expo-modules-jsi@npm%3A56.0.10#./.yarn/patches/expo-modules-jsi-npm-56.0.10-70e070c3a6.patch"
   },
   "peerDependencies": {
     "react": "*",
