@@ -1,8 +1,6 @@
 const {
   AndroidConfig,
   withAppBuildGradle,
-  withGradleProperties,
-  withProjectBuildGradle,
   withStringsXml,
   withPodfileProperties,
   withDangerousMod,
@@ -10,31 +8,12 @@ const {
 const fs = require('fs');
 const path = require('path');
 
-// Kotlin is pinned for the Ticketmaster SDK — see docs/expo.md for the rationale.
-const KOTLIN_VERSION = '2.2.21';
+// The Ticketmaster SDK needs a Kotlin compiler >= 2.2 (its kotlin-stdlib 2.3.0
+// metadata) and compileSdk >= 36. Expo SDK 58 / React Native 0.88 default to
+// Kotlin 2.2.0 and compileSdk 37, so neither is pinned here any more — see
+// docs/expo.md for how to pin them on an Expo SDK with older defaults.
 
 module.exports = function withIgnitePlugin(expoConfig) {
-  withGradleProperties(expoConfig, (config) => {
-    config.modResults = config.modResults.filter(
-      (item) =>
-        !(item.type === 'property' && item.key === 'android.kotlinVersion')
-    );
-    config.modResults.push({
-      type: 'property',
-      key: 'android.kotlinVersion',
-      value: KOTLIN_VERSION,
-    });
-    return config;
-  });
-
-  withProjectBuildGradle(expoConfig, (config) => {
-    config.modResults.contents = config.modResults.contents.replace(
-      "classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')",
-      `classpath('org.jetbrains.kotlin:kotlin-gradle-plugin:${KOTLIN_VERSION}')`
-    );
-    return config;
-  });
-
   withAppBuildGradle(expoConfig, (config) => {
     const buildGradleUpdates = [
       `buildFeatures {`,
@@ -48,11 +27,6 @@ module.exports = function withIgnitePlugin(expoConfig) {
     config.modResults.contents = config.modResults.contents.replace(
       `android {`,
       `android {\n${buildGradleUpdates}`
-    );
-
-    config.modResults.contents = config.modResults.contents.replace(
-      `compileSdk rootProject.ext.compileSdkVersion`,
-      `compileSdk 36`
     );
 
     config.modResults.contents = config.modResults.contents.replace(

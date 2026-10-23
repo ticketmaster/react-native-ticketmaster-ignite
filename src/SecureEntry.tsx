@@ -1,6 +1,6 @@
 import React from 'react';
 import { ViewStyle } from 'react-native';
-import type { Double } from 'react-native/Libraries/Types/CodegenTypes';
+import type { CodegenTypes } from 'react-native';
 import SecureEntryNativeComponent from './specs/SecureEntryNativeComponent';
 
 type SecureEntryProps = {
@@ -19,7 +19,7 @@ export const SecureEntry = ({ token, style, offsetTop }: SecureEntryProps) => {
     <SecureEntryNativeComponent
       token={token}
       style={style || { width: '100%', height: '100%' }}
-      offsetTop={offsetTop as Double}
+      offsetTop={offsetTop as CodegenTypes.Double}
     />
   );
 };

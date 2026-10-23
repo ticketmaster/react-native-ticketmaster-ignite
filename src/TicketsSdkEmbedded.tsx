@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Platform, StyleSheet, ViewStyle } from 'react-native';
-import type { Double } from 'react-native/Libraries/Types/CodegenTypes';
+import type { CodegenTypes } from 'react-native';
 import NativeAccountsSdk from './specs/NativeAccountsSdk';
 import TicketsSdkEmbeddedNativeComponent from './specs/TicketsSdkEmbeddedNativeComponent';
 
@@ -51,7 +51,7 @@ export const TicketsSdkEmbedded = ({
   return (
     <TicketsSdkEmbeddedNativeComponent
       style={{ ...styles.ticketsSdkContainer, ...(style && style) }}
-      offsetTop={offsetTop as Double}
+      offsetTop={offsetTop as CodegenTypes.Double}
       deepLinkId={deepLinkId}
     />
   );

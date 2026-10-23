@@ -2,10 +2,13 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "types": ["jest"],
     "paths": {
       "@/*": ["./*"],
       "@shared/*": ["../shared/*"],
-      "react-native-ticketmaster-ignite": ["../src/index"]
+      "react-native-ticketmaster-ignite": ["../src/index"],
+      "react-native-svg": ["./node_modules/react-native-svg"],
+      "@react-navigation/native": ["./node_modules/@react-navigation/native"]
     }
   },
   "include": [
