@@ -371,7 +371,7 @@ try {
     primaryColor: '#FF0000',
     skipAutoLogin: Platform.OS === 'android',
   });
-  if (Platform.OS === 'android' && !getIsLoggedIn()) {
+  if (Platform.OS === 'android' && !(await getIsLoggedIn())) {
     login()
   }
 } catch (e) {
