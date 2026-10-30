@@ -74,7 +74,7 @@ Once it is confirmed there are no issues with the positioning with the `TicketsS
 
 ⚠️ Note: The unwanted behaviour with `isLoggedIn` described in this section has not been observed since version `4.6.2` of this library, which uses Tickets SDK `3.19.1`. You can now use `isLoggedIn` to decide when to show your own custom login screen. If you still notice unwanted UI transitions, you can use an approach similar to the one shown in this section. Currently in this library Android does not have a default login screen so if you do not make one it's best to only render `<TicketsSdkEmbedded />` when `isLoggedIn` is true.
 
-Example library versions older than `4.6.2` below: 
+Example for library versions older than `4.6.2` below: 
 
 `isLoggedIn` from `useIgnite()` is the Accounts SDK value and on v4 of this library `isLoggedIn` can become true much quicker than the Tickets SDK default login screen dismisses. If you want to show your own custom login screen above the SDK default screen you will have to handle any delays in this UI transition yourself. You can do this with a loading screen/screen transition or a persisted custom var. Below is an example of a persisted custom var:
 
