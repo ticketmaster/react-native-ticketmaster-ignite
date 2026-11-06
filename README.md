@@ -46,15 +46,35 @@ platform :ios, '17.0'
 
 #### Swift Package Manager (React Native 0.88+)
 
-React Native 0.88 can build the iOS app with Swift Package Manager instead of CocoaPods (`npx react-native spm`, experimental). This library ships a `Package.swift`, so React Native autolinks it in that mode as the `RNTicketmasterIgnite` package. It pulls the [Ticketmaster iOS SDK](https://github.com/ticketmaster/iOS-TicketmasterSDK) Swift package at the same version the podspec uses, and needs the app target's iOS deployment target set to `17.0` in Xcode (the Podfile `platform` does not apply here).
+React Native 0.88 can build the iOS app with Swift Package Manager instead of CocoaPods (`npx react-native spm`, experimental). This library ships a `Package.swift`, so React Native autolinks it in that mode as the `RNTicketmasterIgnite` package and pulls the [Ticketmaster iOS SDK](https://github.com/ticketmaster/iOS-TicketmasterSDK) Swift package at the same version the podspec uses. CocoaPods ignores the manifest, so nothing changes for CocoaPods users.
 
-```bash
-cd ios && npx react-native spm add --deintegrate
-```
+1. Install the package as usual (`yarn add react-native-ticketmaster-ignite`). No extra package reference is needed in Xcode.
 
-Every other native module in the app must also ship a `Package.swift`; React Native lists the ones that do not and `npx react-native spm scaffold` can generate one that you then persist with a patch. The generated packages live under `ios/build/`, which is not committed, so run `npx react-native spm` again after a fresh install (for example from a `postinstall` script).
+2. In Xcode, set the app target's **iOS Deployment Target** to `17.0`. The Podfile `platform` line does not exist in this mode, and React Native's generated package inherits the app's floor, so a lower value fails with `requires minimum platform version 17.0`.
 
-Expo apps generated with `expo prebuild` keep using CocoaPods.
+3. Convert the project. From an existing CocoaPods app:
+
+   ```bash
+   cd ios && npx react-native spm add --deintegrate
+   ```
+
+   If the app already uses SwiftPM mode, run `npx react-native spm` instead to pick up the new dependency. The first Xcode build resolves the Ticketmaster SDK from GitHub and embeds its frameworks automatically; there is no manual embed step.
+
+4. Every other native module in the app must also ship a `Package.swift`. React Native lists the ones that do not; `npx react-native spm scaffold` generates a manifest for each, which you persist with a patch (for example `patch-package` or `yarn patch`).
+
+5. The generated packages live under `ios/build/`, which is not committed, so run `npx react-native spm` again after every fresh install. A `postinstall` script in `package.json` is the usual place:
+
+   ```json
+   "postinstall": "cd ios && npx react-native spm"
+   ```
+
+Everything else is unchanged: configure `IgniteProvider` with your API key and scheme and set up the login redirect scheme as described below.
+
+Notes:
+
+- SwiftPM mode is still experimental in React Native 0.88.
+- The first build downloads the Ticketmaster SDK binaries from `github.com`; a corporate proxy that blocks GitHub releases will fail the build.
+- Expo apps generated with `expo prebuild` keep using CocoaPods.
 
 </details>
 
