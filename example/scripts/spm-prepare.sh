@@ -12,7 +12,9 @@ rm -rf build/generated build/.react-app-headers.tmp
 
 # Generate Package.swift for example dependencies that ship none (react-native-config,
 # react-native-screens). Libraries with their own manifest, including ours, are left alone.
-npx react-native spm scaffold
+# `scaffold` exits non-zero while the project is still CocoaPods-integrated (it also tries to
+# set up the xcodeproj); the manifests are written regardless and `spm add` below does the rest.
+npx react-native spm scaffold || echo "spm-prepare: scaffold finished with status $? (expected while CocoaPods is still integrated)"
 
 # react-native-screens 4.x: the scaffolder misses the `common` subspec's header_dir
 # ("rnscreens"), so `#import <rnscreens/...>` cannot resolve. Add the namespace root.
