@@ -21,6 +21,7 @@
     "ios",
     "cpp",
     "*.podspec",
+    "Package.swift",
     "!ios/build",
     "!android/build",
     "!android/gradle",
@@ -37,10 +38,11 @@
     "expo": "yarn workspace react-native-ticketmaster-ignite-expo",
     "test": "jest __tests__/* && yarn workspace react-native-ticketmaster-ignite-example test && yarn workspace react-native-ticketmaster-ignite-expo test",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "lint": "eslint \"**/*.{js,ts,tsx}\" && yarn lint:tm-sdk",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "prepare": "bob build",
-    "release": "release-it"
+    "release": "release-it",
+    "lint:tm-sdk": "node scripts/check-tm-sdk-version.js"
   },
   "keywords": [
     "react-native",

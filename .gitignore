@@ -124,3 +124,7 @@ example/.yarn/*
 !example/.yarn/releases
 !example/.yarn/sdks
 !example/.yarn/versions
+# Swift Package Manager (library manifest at repo root)
+.build/
+.swiftpm/
+/Package.resolved
