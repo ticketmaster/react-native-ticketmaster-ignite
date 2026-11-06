@@ -2,7 +2,11 @@ import Foundation
 import UIKit
 import TicketmasterTickets
 
-@objc public class TicketsSDKEmbeddedView: UIView, TicketsSDKViewProtocol, TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate {
+#if canImport(RNTicketmasterIgniteInterface)
+import RNTicketmasterIgniteInterface
+#endif
+
+@objc public class TicketsSDKEmbeddedView: UIView, TicketsSDKViewProtocol, TMTicketsModuleDelegate, TMTicketsAnalyticsDelegate, TMIgniteTicketsEmbeddedView {
 
   private var ticketsView: TMTicketsView?
   private var currentDeepLinkId: String?

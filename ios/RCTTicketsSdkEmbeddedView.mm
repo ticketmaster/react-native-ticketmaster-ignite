@@ -5,16 +5,9 @@
 #import <react/renderer/components/TicketmasterIgniteSpecs/EventEmitters.h>
 #import <react/renderer/components/TicketmasterIgniteSpecs/Props.h>
 #import <react/renderer/components/TicketmasterIgniteSpecs/RCTComponentViewHelpers.h>
+#import "TMIgniteSwiftFactory.h"
 
-#if __has_include(<react_native_ticketmaster_ignite/react_native_ticketmaster_ignite-Swift.h>)
-// For cocoapods framework, the generated swift header will be inside react_native_ticketmaster module
-#import <react_native_ticketmaster_ignite/react_native_ticketmaster_ignite-Swift.h>
-#else
-// For static libraries
-#import "react_native_ticketmaster_ignite-Swift.h"
-#endif
-
-#import "RCTFabricComponentsPlugins.h"
+#import <React/RCTFabricComponentsPlugins.h>
 
 using namespace facebook::react;
 
@@ -22,7 +15,7 @@ using namespace facebook::react;
 @end
 
 @implementation RCTTicketsSdkEmbeddedView {
-  TicketsSDKEmbeddedView *_view;
+  UIView<TMIgniteTicketsEmbeddedView> *_view;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
@@ -36,7 +29,7 @@ using namespace facebook::react;
     static const auto defaultProps = std::make_shared<const TicketsSdkEmbeddedViewProps>();
     _props = defaultProps;
 
-    _view = [[TicketsSDKEmbeddedView alloc] init];
+    _view = [TMIgniteSwiftFactory makeTicketsEmbeddedView];
     self.contentView = _view;
   }
 

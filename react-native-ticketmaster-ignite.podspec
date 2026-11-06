@@ -17,6 +17,9 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/ticketmaster/react-native-ticketmaster-ignite.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
+  # Lets the pod's own headers be imported as <react_native_ticketmaster_ignite/...>, which the
+  # generated Swift header relies on (it imports the umbrella `ios/react_native_ticketmaster_ignite.h`).
+  s.header_dir   = "react_native_ticketmaster_ignite"
   s.private_header_files = "ios/RCTTicketsSdkEmbeddedView.h", "ios/RCTSecureEntryView.h"
 
   # Pinned via package.json `tmIgniteVersion` so the podspec and Package.swift stay in lockstep.

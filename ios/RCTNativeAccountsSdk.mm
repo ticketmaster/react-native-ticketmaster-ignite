@@ -3,24 +3,16 @@
 #import <React/RCTBridgeModule.h>
 #import <ReactCommon/RCTTurboModule.h>
 #import <TicketmasterIgniteSpecs/TicketmasterIgniteSpecs.h>
-
-
-#if __has_include(<react_native_ticketmaster_ignite/react_native_ticketmaster_ignite-Swift.h>)
-// For cocoapods framework, the generated swift header will be inside react_native_ticketmaster module
-#import <react_native_ticketmaster_ignite/react_native_ticketmaster_ignite-Swift.h>
-#else
-// For static libraries
-#import "react_native_ticketmaster_ignite-Swift.h"
-#endif
+#import "TMIgniteSwiftFactory.h"
 
 @implementation RCTNativeAccountsSdk {
-  AccountsSDK *accountsSDK;
+  id<TMIgniteAccountsSDK> accountsSDK;
 }
 
 
 - (instancetype)init {
   if (self = [super init]) {
-    accountsSDK = [AccountsSDK new];
+    accountsSDK = [TMIgniteSwiftFactory makeAccountsSDK];
   }
   return self;
 }

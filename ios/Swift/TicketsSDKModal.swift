@@ -1,7 +1,11 @@
 import Foundation
 import UIKit
 
-@objcMembers public class TicketsSDKModal: NSObject {
+#if canImport(RNTicketmasterIgniteInterface)
+import RNTicketmasterIgniteInterface
+#endif
+
+@objcMembers public class TicketsSDKModal: NSObject, TMIgniteTicketsSDKModal {
 
   public func showTicketsSdkModal(_ deepLinkId: String?) {
     DispatchQueue.main.async {

@@ -1,7 +1,11 @@
 import Foundation
 import UIKit
 
-@objcMembers public class RetailSDK: NSObject {
+#if canImport(RNTicketmasterIgniteInterface)
+import RNTicketmasterIgniteInterface
+#endif
+
+@objcMembers public class RetailSDK: NSObject, TMIgniteRetailSDK {
 
   public func presentPrePurchaseVenue(venueId: String) {
     DispatchQueue.main.async {

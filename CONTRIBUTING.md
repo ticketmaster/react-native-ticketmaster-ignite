@@ -31,11 +31,12 @@ To edit the Java or Kotlin files, open `example/android` in Android studio and f
 
 The native iOS sources in `ios/` are split by language so that Swift and Objective-C++ can later be built as separate Swift Package Manager targets (SwiftPM cannot mix the two in one target). CocoaPods still compiles everything into one module through the podspec's `ios/**` glob.
 
-- `ios/Swift/` — Swift code wrapping the Ticketmaster SDK. It must not import `React`; it reaches the React layer only through the Objective-C types in `ios/Interface/`.
-- `ios/Interface/` — small Objective-C types shared by both sides (the configuration store and the analytics event sink). Nothing here may depend on React or the Ticketmaster SDK.
-- `ios/` (root) — Objective-C++ TurboModules and Fabric views that React Native instantiates. These may import React, the codegen headers and the generated Swift header.
+- `ios/Swift/` — Swift code wrapping the Ticketmaster SDK. It must not import `React`; it reaches the React layer only through the Objective-C types in `ios/Interface/`, and each class the React layer needs adopts one of the `TMIgnite*` protocols from there.
+- `ios/Interface/` — small Objective-C types shared by both sides: the configuration store, the analytics event sink, and the `TMIgnite*` protocols (`TMIgniteAccountsSDK`, `TMIgniteRetailSDK`, `TMIgniteTicketsSDKModal`, `TMIgniteTicketsEmbeddedView`, `TMIgniteSecureEntryView`) that describe what Swift provides. Public headers live in `ios/Interface/include/`. Nothing here may depend on React or the Ticketmaster SDK.
+- `ios/` (root) — Objective-C++ TurboModules and Fabric views that React Native instantiates. These may import React and the codegen headers, but **not** the generated Swift header: Objective-C++ cannot import a Swift package target. They obtain Swift objects, typed by the Interface protocols, from `TMIgniteSwiftFactory`.
+- `ios/TMIgniteSwiftFactory.m` — the one plain Objective-C file allowed to import the Swift layer (`@import RNTicketmasterIgniteSwift` under SwiftPM, the generated `-Swift.h` under CocoaPods).
 
-Put new files in the directory matching their language and role.
+Put new files in the directory matching their language and role. To expose a new Swift capability to React: add a method to the matching `TMIgnite*` protocol, implement it in Swift, and call it through the protocol from the `.mm` file — never import the Swift header from a `.mm`.
 
 You can use various commands from the root directory to work with the project.
 

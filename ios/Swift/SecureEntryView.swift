@@ -1,6 +1,10 @@
 import TicketmasterSecureEntry
 
-@objc public class SecureEntryWrapperView: UIView {
+#if canImport(RNTicketmasterIgniteInterface)
+import RNTicketmasterIgniteInterface
+#endif
+
+@objc public class SecureEntryWrapperView: UIView, TMIgniteSecureEntryView {
 
   private var secureEntryView: TicketmasterSecureEntry.SecureEntryView?
 

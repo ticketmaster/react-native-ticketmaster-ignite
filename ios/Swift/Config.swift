@@ -1,6 +1,10 @@
 import Foundation
 import UIKit
 
+#if canImport(RNTicketmasterIgniteInterface)
+import RNTicketmasterIgniteInterface
+#endif
+
 /// Swift-side accessor for the shared configuration store (`TMIgniteConfigStore`), which the
 /// `NativeConfig` TurboModule populates from JavaScript.
 final class Config {

@@ -2,11 +2,15 @@ import TicketmasterAuthentication
 import UIKit
 import TicketmasterFoundation
 
-@objcMembers public class AccountsSDK: NSObject, TMAuthenticationDelegate {
+#if canImport(RNTicketmasterIgniteInterface)
+import RNTicketmasterIgniteInterface
+#endif
+
+@objcMembers public class AccountsSDK: NSObject, TMAuthenticationDelegate, TMIgniteAccountsSDK {
   
   public func configureAccountsSDK(
-    resolve: @escaping PromiseResolveBlock,
-    reject: @escaping PromiseRejectBlock
+    resolve: @escaping TMIgnitePromiseResolveBlock,
+    reject: @escaping TMIgnitePromiseRejectBlock
   ) {
     
     TMAuthentication.shared.delegate = self
@@ -49,8 +53,8 @@ import TicketmasterFoundation
   }
   
   public func login(
-    resolve: @escaping PromiseResolveBlock,
-    reject: @escaping PromiseRejectBlock
+    resolve: @escaping TMIgnitePromiseResolveBlock,
+    reject: @escaping TMIgnitePromiseRejectBlock
   ) {
     
     TMAuthentication.shared.login { authToken in
@@ -68,8 +72,8 @@ import TicketmasterFoundation
   }
   
   public func logout(
-    resolve: @escaping PromiseResolveBlock,
-    reject: @escaping PromiseRejectBlock
+    resolve: @escaping TMIgnitePromiseResolveBlock,
+    reject: @escaping TMIgnitePromiseRejectBlock
   ) {
     
     TMAuthentication.shared.logout { backends in
@@ -80,8 +84,8 @@ import TicketmasterFoundation
   }
   
   public func logoutAll(
-    resolve: @escaping PromiseResolveBlock,
-    reject: @escaping PromiseRejectBlock
+    resolve: @escaping TMIgnitePromiseResolveBlock,
+    reject: @escaping TMIgnitePromiseRejectBlock
   ) {
     
     TMAuthentication.shared.logoutAll { backends in
@@ -95,8 +99,8 @@ import TicketmasterFoundation
   // React side expects a method that exactly matches "isLoggedIn", so this selector is used to tell Objective-C the "isLoggedIn" method is this method below.
   @objc(isLoggedInWithResolve:reject:)
   public func isLoggedIn(
-    resolve: @escaping PromiseResolveBlock,
-    reject: @escaping PromiseRejectBlock
+    resolve: @escaping TMIgnitePromiseResolveBlock,
+    reject: @escaping TMIgnitePromiseRejectBlock
   ) {
     
     TMAuthentication.shared.validToken(showLoginIfNeeded: false) { _ in
@@ -115,8 +119,8 @@ import TicketmasterFoundation
   }
   
   public func getMemberInfo(
-    resolve: @escaping PromiseResolveBlock,
-    reject: @escaping PromiseRejectBlock
+    resolve: @escaping TMIgnitePromiseResolveBlock,
+    reject: @escaping TMIgnitePromiseRejectBlock
   ) {
     
     // Map of iOS (key) to Android (value) memberInfo key name equivalents.
@@ -151,8 +155,8 @@ import TicketmasterFoundation
   }
   
   public func getToken(
-    resolve: @escaping PromiseResolveBlock,
-    reject: @escaping PromiseRejectBlock
+    resolve: @escaping TMIgnitePromiseResolveBlock,
+    reject: @escaping TMIgnitePromiseRejectBlock
   ) {
     
     TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
@@ -171,8 +175,8 @@ import TicketmasterFoundation
   }
   
   public func refreshToken(
-    resolve: @escaping PromiseResolveBlock,
-    reject: @escaping PromiseRejectBlock
+    resolve: @escaping TMIgnitePromiseResolveBlock,
+    reject: @escaping TMIgnitePromiseRejectBlock
   ) {
     
     TMAuthentication.shared.validToken { authToken in
@@ -192,8 +196,8 @@ import TicketmasterFoundation
   }
   
   public func getSportXRData(
-    resolve: @escaping PromiseResolveBlock,
-    reject: @escaping PromiseRejectBlock
+    resolve: @escaping TMIgnitePromiseResolveBlock,
+    reject: @escaping TMIgnitePromiseRejectBlock
   ) {
     
     TMAuthentication.shared.apigeeConfig { config in

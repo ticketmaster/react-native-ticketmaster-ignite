@@ -1,5 +1,9 @@
 import Foundation
 
+#if canImport(RNTicketmasterIgniteInterface)
+import RNTicketmasterIgniteInterface
+#endif
+
 /// Swift entry point for the analytics events sent to JavaScript.
 ///
 /// Delivery goes through `TMIgniteEventHub`, which the React Native module `RCTGlobalEventEmitter`
