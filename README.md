@@ -44,6 +44,18 @@ platform :ios, '17.0'
 
 - `cd` into the `ios` directory and run `pod install`
 
+#### Swift Package Manager (React Native 0.88+)
+
+React Native 0.88 can build the iOS app with Swift Package Manager instead of CocoaPods (`npx react-native spm`, experimental). This library ships a `Package.swift`, so React Native autolinks it in that mode as the `RNTicketmasterIgnite` package. It pulls the [Ticketmaster iOS SDK](https://github.com/ticketmaster/iOS-TicketmasterSDK) Swift package at the same version the podspec uses, and needs the app target's iOS deployment target set to `17.0` in Xcode (the Podfile `platform` does not apply here).
+
+```bash
+cd ios && npx react-native spm add --deintegrate
+```
+
+Every other native module in the app must also ship a `Package.swift`; React Native lists the ones that do not and `npx react-native spm scaffold` can generate one that you then persist with a patch. The generated packages live under `ios/build/`, which is not committed, so run `npx react-native spm` again after a fresh install (for example from a `postinstall` script).
+
+Expo apps generated with `expo prebuild` keep using CocoaPods.
+
 </details>
 
 <details open>
