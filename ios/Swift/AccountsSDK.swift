@@ -1,11 +1,12 @@
 import TicketmasterAuthentication
-import React
+import UIKit
+import TicketmasterFoundation
 
 @objcMembers public class AccountsSDK: NSObject, TMAuthenticationDelegate {
   
   public func configureAccountsSDK(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
+    resolve: @escaping PromiseResolveBlock,
+    reject: @escaping PromiseRejectBlock
   ) {
     
     TMAuthentication.shared.delegate = self
@@ -48,8 +49,8 @@ import React
   }
   
   public func login(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
+    resolve: @escaping PromiseResolveBlock,
+    reject: @escaping PromiseRejectBlock
   ) {
     
     TMAuthentication.shared.login { authToken in
@@ -67,8 +68,8 @@ import React
   }
   
   public func logout(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
+    resolve: @escaping PromiseResolveBlock,
+    reject: @escaping PromiseRejectBlock
   ) {
     
     TMAuthentication.shared.logout { backends in
@@ -79,8 +80,8 @@ import React
   }
   
   public func logoutAll(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
+    resolve: @escaping PromiseResolveBlock,
+    reject: @escaping PromiseRejectBlock
   ) {
     
     TMAuthentication.shared.logoutAll { backends in
@@ -94,8 +95,8 @@ import React
   // React side expects a method that exactly matches "isLoggedIn", so this selector is used to tell Objective-C the "isLoggedIn" method is this method below.
   @objc(isLoggedInWithResolve:reject:)
   public func isLoggedIn(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
+    resolve: @escaping PromiseResolveBlock,
+    reject: @escaping PromiseRejectBlock
   ) {
     
     TMAuthentication.shared.validToken(showLoginIfNeeded: false) { _ in
@@ -114,8 +115,8 @@ import React
   }
   
   public func getMemberInfo(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
+    resolve: @escaping PromiseResolveBlock,
+    reject: @escaping PromiseRejectBlock
   ) {
     
     // Map of iOS (key) to Android (value) memberInfo key name equivalents.
@@ -150,8 +151,8 @@ import React
   }
   
   public func getToken(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
+    resolve: @escaping PromiseResolveBlock,
+    reject: @escaping PromiseRejectBlock
   ) {
     
     TMAuthentication.shared.validToken(showLoginIfNeeded: false) { authToken in
@@ -170,8 +171,8 @@ import React
   }
   
   public func refreshToken(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
+    resolve: @escaping PromiseResolveBlock,
+    reject: @escaping PromiseRejectBlock
   ) {
     
     TMAuthentication.shared.validToken { authToken in
@@ -191,8 +192,8 @@ import React
   }
   
   public func getSportXRData(
-    resolve: @escaping RCTPromiseResolveBlock,
-    reject: @escaping RCTPromiseRejectBlock
+    resolve: @escaping PromiseResolveBlock,
+    reject: @escaping PromiseRejectBlock
   ) {
     
     TMAuthentication.shared.apigeeConfig { config in

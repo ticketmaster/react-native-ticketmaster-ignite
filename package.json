@@ -1,6 +1,7 @@
 {
   "name": "react-native-ticketmaster-ignite",
   "version": "4.6.2",
+  "tmIgniteVersion": "1.22.1",
   "description": "React Native wrapper for the Ticketmaster Ignite SDK",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
@@ -197,5 +198,8 @@
         "SecureEntryView": "RCTSecureEntryView"
       }
     }
+  },
+  "swiftpmConfig": {
+    "name": "RNTicketmasterIgnite"
   }
 }

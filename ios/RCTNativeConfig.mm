@@ -1,25 +1,19 @@
 #import "RCTNativeConfig.h"
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #import <ReactCommon/RCTTurboModule.h>
 #import <TicketmasterIgniteSpecs/TicketmasterIgniteSpecs.h>
 
-static RCTNativeConfig *_sharedInstance = nil;
+#import "TMIgniteConfigStore.h"
 
-@implementation RCTNativeConfig {
-  NSMutableDictionary<NSString *, NSString *> *_store;
-}
+@implementation RCTNativeConfig
 
 - (instancetype)init {
   if (self = [super init]) {
-    _store = [NSMutableDictionary new];
-    _sharedInstance = self;
+    // A new module instance means a new JavaScript runtime, which re-pushes its configuration;
+    // start from an empty store so values from a previous runtime cannot leak through.
+    [TMIgniteConfigStore.shared removeAll];
   }
   return self;
-}
-
-+ (nullable instancetype)sharedInstance {
-  return _sharedInstance;
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
@@ -29,48 +23,11 @@ static RCTNativeConfig *_sharedInstance = nil;
 }
 
 - (void)setConfig:(NSString *)key value:(NSString *)value {
-  if (!key) return;
-  @synchronized (_store) {
-    if (value) {
-      _store[key] = value;
-    } else {
-      [_store removeObjectForKey:key];
-    }
-  }
+  [TMIgniteConfigStore.shared setConfig:key value:value];
 }
 
 - (void)setImage:(NSString *)key uri:(NSString *)uri {
-  if (!key) return;
-  @synchronized (_store) {
-    if (uri) {
-      _store[key] = uri;
-    } else {
-      [_store removeObjectForKey:key];
-    }
-  }
-}
-
-- (NSString *)getConfig:(NSString *)key {
-  if (!key) return nil;
-  @synchronized (_store) {
-    return _store[key];
-  }
-}
-
-- (UIImage *)getImage:(NSString *)key {
-  NSString *imagePath;
-  @synchronized (_store) {
-    imagePath = _store[key];
-  }
-  if (!imagePath) return nil;
-
-  NSURL *url = [NSURL URLWithString:imagePath];
-  if (url.scheme) {
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    return data ? [UIImage imageWithData:data] : nil;
-  }
-
-  return [UIImage imageWithContentsOfFile:imagePath];
+  [TMIgniteConfigStore.shared setImage:key uri:uri];
 }
 
 + (NSString *)moduleName {

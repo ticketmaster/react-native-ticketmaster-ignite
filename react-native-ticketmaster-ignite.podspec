@@ -11,14 +11,17 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => min_ios_version_supported }
+  # The Ticketmaster Ignite SDK requires iOS 17, so advertise that rather than React Native's
+  # lower floor (`min_ios_version_supported`), which the SDK could never satisfy.
+  s.platforms    = { :ios => "17.0" }
   s.source       = { :git => "https://github.com/ticketmaster/react-native-ticketmaster-ignite.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
   s.private_header_files = "ios/RCTTicketsSdkEmbeddedView.h", "ios/RCTSecureEntryView.h"
 
-  s.dependency "TM-Ignite", '= 1.22.1'
-  
+  # Pinned via package.json `tmIgniteVersion` so the podspec and Package.swift stay in lockstep.
+  s.dependency "TM-Ignite", "= #{package["tmIgniteVersion"]}"
+
   # Use install_modules_dependencies helper to install the dependencies if React Native version >=0.71.0.
   # See https://github.com/facebook/react-native/blob/febf6b7f33fdb4904669f99d795eba4c0f95d7bf/scripts/cocoapods/new_architecture.rb#L79.
   if respond_to?(:install_modules_dependencies, true)

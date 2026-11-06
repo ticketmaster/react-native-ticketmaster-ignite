@@ -27,6 +27,16 @@ If you want to use Android Studio or XCode to edit the native code, you can open
 
 To edit the Java or Kotlin files, open `example/android` in Android studio and find the source files at `react-native-ticketmaster-ignite` under `Android`.
 
+#### iOS source layout
+
+The native iOS sources in `ios/` are split by language so that Swift and Objective-C++ can later be built as separate Swift Package Manager targets (SwiftPM cannot mix the two in one target). CocoaPods still compiles everything into one module through the podspec's `ios/**` glob.
+
+- `ios/Swift/` — Swift code wrapping the Ticketmaster SDK. It must not import `React`; it reaches the React layer only through the Objective-C types in `ios/Interface/`.
+- `ios/Interface/` — small Objective-C types shared by both sides (the configuration store and the analytics event sink). Nothing here may depend on React or the Ticketmaster SDK.
+- `ios/` (root) — Objective-C++ TurboModules and Fabric views that React Native instantiates. These may import React, the codegen headers and the generated Swift header.
+
+Put new files in the directory matching their language and role.
+
 You can use various commands from the root directory to work with the project.
 
 To start the packager:
