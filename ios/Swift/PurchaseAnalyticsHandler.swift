@@ -1,6 +1,7 @@
 import TicketmasterFoundation
 import TicketmasterPurchase
 import TicketmasterDiscoveryAPI
+import UIKit
 
 class PurchaseAnalyticsHandler: NSObject, TMPurchaseUserAnalyticsDelegate, TMPurchaseWebAnalyticsDelegate {
 

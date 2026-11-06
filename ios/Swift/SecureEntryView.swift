@@ -1,4 +1,5 @@
 import TicketmasterSecureEntry
+import UIKit
 
 #if canImport(RNTicketmasterIgniteInterface)
 import RNTicketmasterIgniteInterface

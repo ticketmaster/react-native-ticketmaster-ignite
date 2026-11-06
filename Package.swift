@@ -77,6 +77,8 @@ let package = Package(
       cSettings: [
         // Lets the sources find their own headers (`#import "RCTNativeConfig.h"`).
         .headerSearchPath("."),
+        // CocoaPods compiles the pod with this (install_modules_dependencies); keep SwiftPM identical.
+        .define("RCT_NEW_ARCH_ENABLED", to: "1"),
         // Selects `@import RNTicketmasterIgniteSwift` in TMIgniteSwiftFactory.m.
         .define("RN_TICKETMASTER_IGNITE_SWIFTPM", to: "1"),
       ],

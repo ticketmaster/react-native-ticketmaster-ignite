@@ -3,6 +3,7 @@ import TicketmasterAuthentication
 import TicketmasterDiscoveryAPI
 import TicketmasterPrePurchase
 import TicketmasterPurchase
+import UIKit
 
 extension PrePurchaseSDK: TMPrePurchaseNavigationDelegate, TMPrePurchaseAnalyticsDelegate {
 
