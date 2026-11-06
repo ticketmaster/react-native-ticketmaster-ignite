@@ -38,6 +38,18 @@ The native iOS sources in `ios/` are split by language so that Swift and Objecti
 
 Put new files in the directory matching their language and role. To expose a new Swift capability to React: add a method to the matching `TMIgnite*` protocol, implement it in Swift, and call it through the protocol from the `.mm` file — never import the Swift header from a `.mm`.
 
+#### Validating Swift Package Manager mode
+
+The root `Package.swift` is what React Native's SwiftPM mode (0.88+) consumes; CocoaPods ignores it. `yarn lint:tm-sdk` checks that its Ticketmaster SDK pin matches `tmIgniteVersion` in package.json. To build the example app in SwiftPM mode:
+
+```sh
+yarn example spm:prepare     # cleans stale codegen, scaffolds manifests for deps that ship none, runs `spm add --deintegrate`
+yarn example build:ios:spm
+cd example/ios && npx react-native spm deinit && git checkout -- . && pod install   # back to CocoaPods
+```
+
+Because the example resolves the library through the workspace symlink, React Native's header merge walks this whole repository and treats any other codegen output it finds (for example `expo/ios/Pods` or an old `example/ios/build/generated`) as part of the library. Delete those first if you see "non-identical collision" warnings. Do not commit the converted Xcode project; the example stays on CocoaPods.
+
 You can use various commands from the root directory to work with the project.
 
 To start the packager:
