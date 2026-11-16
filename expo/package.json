@@ -7,7 +7,8 @@
     "expo:android": "rm -rf ../android/build && npx expo run:android",
     "expo:ios": "npx expo run:ios",
     "web": "expo start --web",
-    "test": "jest"
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",

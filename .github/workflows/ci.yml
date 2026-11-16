@@ -23,6 +23,12 @@ jobs:
       - name: Typecheck files
         run: yarn typecheck
 
+      - name: Typecheck example app
+        run: yarn example typecheck
+
+      - name: Typecheck expo app
+        run: yarn expo typecheck
+
   react-native-test:
     runs-on: ubuntu-latest
     steps:
