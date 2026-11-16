@@ -44,7 +44,7 @@ def supportsNamespace() {
 
 android {
   if (supportsNamespace()) {
-    namespace "com.ticketmasterignite"
+    namespace = "com.ticketmasterignite"
 
     sourceSets {
       main {

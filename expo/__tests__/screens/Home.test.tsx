@@ -1,8 +1,11 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react-native';
+import {
+  render,
+  waitFor,
+  type RenderResult,
+} from '@testing-library/react-native';
 import Home from '../../app/(tabs)/index';
 import { useIgnite } from 'react-native-ticketmaster-ignite';
-import { ActivityIndicator } from 'react-native';
 
 jest.mock('react-native-ticketmaster-ignite', () => ({
   useIgnite: jest.fn(),
@@ -53,6 +56,12 @@ jest.mock('../../components/AnalyticsOptions', () => {
 
 const mockedUseIgnite = useIgnite as jest.MockedFunction<typeof useIgnite>;
 
+// React Native's jest preset mocks `ActivityIndicator` as a host component of the
+// same name. Testing Library 14 (test-renderer) only exposes host instances, so
+// look the spinner up by its host type instead of the composite component.
+const queryActivityIndicators = (root: RenderResult['root']) =>
+  root?.queryAll((node) => node.type === 'ActivityIndicator') ?? [];
+
 describe('Home', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -71,11 +80,10 @@ describe('Home', () => {
           },
         });
 
-        const component = render(<Home />);
+        const component = await render(<Home />);
 
         await waitFor(() => {
-          const spinner = component.root.findByType(ActivityIndicator);
-          expect(spinner).toBeTruthy();
+          expect(queryActivityIndicators(component.root)).toHaveLength(1);
         });
       });
 
@@ -90,10 +98,10 @@ describe('Home', () => {
           },
         });
 
-        const component = render(<Home />);
+        const component = await render(<Home />);
 
         await waitFor(() => {
-          expect(() => component.root.findByType(ActivityIndicator)).toThrow();
+          expect(queryActivityIndicators(component.root)).toHaveLength(0);
         });
       });
     });
@@ -110,7 +118,7 @@ describe('Home', () => {
           },
         });
 
-        const { getByText } = render(<Home />);
+        const { getByText } = await render(<Home />);
 
         await waitFor(() => {
           expect(
@@ -130,7 +138,7 @@ describe('Home', () => {
           },
         });
 
-        const { getByText } = render(<Home />);
+        const { getByText } = await render(<Home />);
 
         await waitFor(() => {
           expect(getByText(/Logged in as/)).toBeTruthy();

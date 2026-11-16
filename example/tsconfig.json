@@ -4,7 +4,10 @@
     "strict": true,
     "paths": {
       "@shared/*": ["../shared/*"],
-      "react-native-ticketmaster-ignite": ["../src/index"]
+      "react-native-ticketmaster-ignite": ["../src/index"],
+      "react-native": ["./node_modules/react-native/types_generated/index.d.ts"],
+      "react-native-svg": ["./node_modules/react-native-svg"],
+      "@react-navigation/native": ["./node_modules/@react-navigation/native"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "__tests__/**/*.ts", "__tests__/**/*.tsx", "__mocks__/**/*.ts", "__mocks__/**/*.tsx"]

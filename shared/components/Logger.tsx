@@ -34,9 +34,11 @@ const Logger = (): React.ReactElement => {
       const message = stringifiedArgs.join(' ');
 
       if (isConfigured) {
-        // Defer state update to avoid "Cannot update a component while rendering
-        // a different component" error when console.log is called during render
-        queueMicrotask(() => {
+        // Defer state update (microtask) to avoid "Cannot update a component while
+        // rendering a different component" error when console.log is called during
+        // render. Promise.resolve().then is used instead of queueMicrotask because
+        // React Native does not declare queueMicrotask in its TypeScript globals.
+        Promise.resolve().then(() => {
           setRecentLogs((prevData) => [
             ...prevData,
             {

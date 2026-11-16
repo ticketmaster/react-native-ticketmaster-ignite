@@ -61,6 +61,8 @@ In `android/build.gradle` set the `minSdkVersion` to `28` and set the `compileSd
 
 You must build with **Kotlin 2.2.0 or newer**. We recommend **Kotlin 2.2.21 or higher**.
 
+> React Native 0.88+ (and Expo SDK 58+) already resolve a Kotlin 2.2.x compiler by default, so no pin is needed there. The steps below are for apps on older React Native versions.
+
 In `android/build.gradle`, **set both** the `kotlinVersion` in `ext {}` **and** the `kotlin-gradle-plugin` classpath:
 
 ```groovy
