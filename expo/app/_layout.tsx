@@ -1,5 +1,5 @@
 import { useColorScheme } from '@/components/useColorScheme';
-import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useContext, useEffect, useState } from 'react';
 import 'react-native-reanimated';
@@ -46,7 +46,7 @@ function RootLayoutNav() {
   };
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DarkTheme}>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <IgniteProvider
         analytics={igniteAnalytics}
         enableLogs={true}
