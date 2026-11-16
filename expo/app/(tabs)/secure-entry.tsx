@@ -33,12 +33,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  // Literal types are kept on purpose: the library's `style` prop is typed against the
-  // monorepo root's react-native 0.81 types, whose DimensionValue has no plain `string`.
   barcode: {
-    top: '30%' as const,
+    top: '30%',
     height: 300,
-    width: '70%' as const,
+    width: '70%',
     alignSelf: 'center',
   },
 });
