@@ -44,7 +44,11 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "ticketmaster",
+    "ignite",
+    "tickets",
+    "analytics"
   ],
   "repository": {
     "type": "git",

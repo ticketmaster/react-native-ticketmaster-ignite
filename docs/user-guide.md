@@ -1,4 +1,38 @@
-### User Guide
+# User Guide
+
+## Contents
+
+- [IgniteProvider](#igniteprovider)
+  - [The `region` property](#the-region-property)
+  - [The `marketDomain` property](#the-marketdomain-property)
+  - [The `eventHeaderType` property](#the-eventheadertype-property)
+  - [The `autoUpdate` prop](#the-autoupdate-prop)
+- [useIgnite](#useignite)
+  - [Login/Logout Callbacks](#loginlogout-callbacks)
+- [AccountsSdk](#accountssdk)
+  - [Refresh Token](#refresh-token)
+  - [Reconfigure Accounts SDK](#reconfigure-accounts-sdk)
+  - [Detecting Accounts SDK configuration failures on app launch](#detecting-accounts-sdk-configuration-failures-on-app-launch)
+  - [Switching teams/venue (API key) during runtime](#switching-teamsvenue-api-key-during-runtime)
+- [TicketsSdkEmbedded](#ticketssdkembedded)
+- [TicketsSdkEmbedded with a RN custom login screen](#ticketssdkembedded-with-a-rn-custom-login-screen)
+- [TicketsSdkModal (iOS only)](#ticketssdkmodal-ios-only)
+- [Ticket Deep Links](#ticket-deep-links)
+- [Secure Entry View](#secure-entry-view)
+- [RetailSdk](#retailsdk)
+  - [Purchase SDK](#purchase-sdk)
+  - [PrePurchase SDK - Venue](#prepurchase-sdk---venue)
+  - [PrePurchase SDK - Attraction](#prepurchase-sdk---attraction)
+  - [Discovery API](#discovery-api)
+- [Prebuilt Modules](#prebuilt-modules)
+  - [Customising Prebuilt Modules](#customising-prebuilt-modules)
+- [Custom Modules](#custom-modules)
+  - [Opening a URL from a button](#opening-a-url-from-a-button)
+- [Analytics](#analytics)
+  - [Navigate to a Tickets Tab after purchase](#navigate-to-a-tickets-tab-after-purchase)
+- [Debugging/Logging](#debugginglogging)
+
+Related docs: [Analytics events reference](./analytics.md) · [Expo setup guide](./expo.md) · [Supported market domains](./marketDomains.md) · [v4 migration guide](./v4-guide.md)
 
 `react-native-ticketmaster-ignite` exports the following modules:
 
@@ -9,7 +43,7 @@
 - `RetailSdk`
 - `useIgnite`
 
-#### IgniteProvider
+## IgniteProvider
 
 This is the only module that must be implemented for the library to work correctly. The purpose of `IgniteProvider` is to pass the config `options` to the native code.
 
@@ -40,18 +74,18 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 </IgniteProvider>
 ```
 
-##### The `region` property
+### The `region` property
 
 The `region` property determines the server deployment region the SDK's will connect to. The values can be either `US` or `UK`. The default value is `US` and should be used unless you have specifically been told to set your region to `UK`.
 
 Generally places within the United States, Canada, Australia, and New Zealand should set the server region to `US` and places/countries within the UK, Ireland, Europe, Middle East and South Africa need to set the server region to `UK`.
 
-##### The `marketDomain` property
+### The `marketDomain` property
 The `marketDomain` property is used to configure the country that the Retail SDK needs to retrieve attractions, venues and events for. The default value is `US`
 
-See [here](./marketDomains.md) for the list of supported market domains.
+See [Supported market domains](./marketDomains.md) for the full list.
 
-##### The `eventHeaderType` property 
+### The `eventHeaderType` property 
 
 The `eventHeaderType` property accepts one of the following values - `NO_TOOLBARS`, `EVENT_INFO`, `EVENT_SHARE` and `EVENT_INFO_SHARE`. When the property has not been passed, the `IgniteProvider` will default to `EVENT_INFO_SHARE`. 
 
@@ -66,7 +100,7 @@ The `eventHeaderType` property specifies what tools will be available in the nav
 
 The info icon in the Purchase SDK navigation header for Android is no longer configurable. `EVENT_INFO` and `EVENT_INFO_SHARE` will not affect it and the button shows up within the WebView of the EDP page itself on the suitable pages.
 
-##### The `autoUpdate` prop 
+### The `autoUpdate` prop 
 
 `autoUpdate` is a prop that can be set to `false` to prevent `IgniteProvider` from rerendering your app when the auth state changes, as you may want to update and maintain this state with your own logic. (⚠️ warning: if set to `false`, `authState`'s `isLoggedIn`, `memberInfo` and `isConfigured` will not automatically update so will be unavailable for your app and you will have to call `getMemberInfo`, `getIsLoggedIn` and use `IgniteAnalytics` manually to retrieve auth states and data for your app. The default value is `true`. See more on `authState` later on.)
 
@@ -85,7 +119,7 @@ import { IgniteProvider } from 'react-native-ticketmaster-ignite';
 </IgniteProvider>
 ```
 
-#### useIgnite
+## useIgnite
 
 To handle authentication in a React Native app you can either use the `AccountsSdk` module detailed in the next section or you can use the `useIgnite` hook.
 
@@ -131,7 +165,7 @@ try {
 {isLoggedIn && <Text>You are logged in<Text/>}
 ```
 
-##### Login/Logout Callbacks
+### Login/Logout Callbacks
 
 The `login()` method from the `useIgnite` hook accepts an object with properties `onLogin` and `skipUpdate`:
 
@@ -172,7 +206,7 @@ type LogoutParams = {
 };
 ```
 
-#### AccountsSdk
+## AccountsSdk
 
 Exposes the following functions:
 
@@ -188,7 +222,7 @@ Exposes the following functions:
 It is advised you use auth methods from `useIgnite()` in the above section instead of using the AccountsSdk module directly, as all hook variables like `isLoggedIn` and `memberInfo` will be updated automatically, re-render your application and methods and variables from the hook are dependency array safe for React hooks. 
 
 
-#### Refresh Token
+### Refresh Token
 
 The Accounts SDK only returns an access token, not a refresh token. If the user is logged in and `getToken()` ever returns `null`, the refresh token may have expired. In this situation you can either call `logout()` so the user can manually login again to refresh the refresh token and receive a new access token or you can call `refreshToken()` which will automatically present the login UI to the user (you must use `useIgnite`'s `refreshToken()` method to trigger this behaviour or the login UI will only be presented for iOS).
 
@@ -196,10 +230,10 @@ On recent versions of the iOS Accounts SDK, it has been observed that on backend
 
 As a fail safe, it may be beneficial to call `refreshToken()` at least **once** on the first log occurrence of `TicketmasterFoundation.ConnectionError error...` being logged in a catch block, in case the user just needs to re-authenticate.
 
-To catch any Accounts SDK configuration errors on app launch which is sometimes due to `TicketmasterFoundation.ConnectionError error 0` backend errors see [here](#detecting-accounts-sdk-configuration-failures-on-app-launch)
+To catch any Accounts SDK configuration errors on app launch which is sometimes due to `TicketmasterFoundation.ConnectionError error 0` backend errors see [Detecting Accounts SDK configuration failures on app launch](#detecting-accounts-sdk-configuration-failures-on-app-launch)
 
 
-#### Reconfigure Accounts SDK
+### Reconfigure Accounts SDK
 
 If you want to switch between different API keys within one app session/during runtime, you can call the `refreshConfiguration` method provided by the `useIgnite()` hook. This will also update the API configuration for the Tickets and Retail SDK's if your application uses them. When a user switches API key, they must login once, on newer version of the Ignite SDK's the login screen pops up and the user will SSO into the new configuration, but login always has to be called once. This method automatically calls login after reconfiguration of a new key, see below params on how to skip auto login in case you want to call login yourself.
 
@@ -255,7 +289,7 @@ type RefreshConfigParams = {
 
 A user must login once the first time the app switches to a new API key so `login()` is called automatically by `refreshConfiguration()` after it configures the SDK's. To prevent this set `skipAutoLogin` to true, but `login()` will need to be called before the user can perform any authenticated flows within the SDK's or receive auth data like access tokens.
 
-#### Detecting Accounts SDK configuration failures on app launch
+### Detecting Accounts SDK configuration failures on app launch
 
 `isConfigured` being false during the initial user interactions with the UI is an indication that the initial `configureAccountsSDK()` done by `<IgniteProvider/>` has failed. You can either assess its value on initial user interaction or call `refreshConfiguration()` on mount manually, if you end up experiencing issues with the automatic Accounts SDK configuration this library does. Usually the initial call to the library works completely fine.
 
@@ -293,7 +327,7 @@ import { useIgnite } from 'react-native-ticketmaster-ignite';
 
 ```
 
-#### Switching teams/venue (API key) during runtime
+### Switching teams/venue (API key) during runtime
 
 To switch teams you can use the `refreshConfiguration()` method.
 
@@ -379,13 +413,13 @@ try {
 }
 ```
 
-##### Logout All
+#### Logout All
 
 iOS `logout()` only logs out of the currently configured API key. If you have multiple teams in your app and you would like to logout of all teams at once, you can **replace** `logout()` with `logoutAll()` in your code. Android's `logout()` always logs out of all teams `logoutAll()` is fine to use for Android as well but there will be no difference in behaviour.
 
 `logoutAll()` is only useful if your app has multiple teams/API keys within one app.
 
-### TicketsSdkEmbedded
+## TicketsSdkEmbedded
 
 ```typescript
 
@@ -441,7 +475,7 @@ useEffect(() => {
 return <TicketsSdkEmbedded style={{width: '100%', height: '95%'}} offsetTop={offSetTop} />;
 ```
 
-### TicketsSdkEmbedded with a RN custom login screen 
+## TicketsSdkEmbedded with a RN custom login screen 
 
 ⚠️ Note: The unwanted behaviour with `isLoggedIn` described in this section has not been observed since version `4.6.2` of this library, which uses Tickets SDK `3.19.1`. You can now use `isLoggedIn` to decide when to show your own custom login screen. If you still notice unwanted UI transitions, you can use an approach similar to the one shown in this section. Currently in this library Android does not have a default login screen so if you do not make one it's best to only render `<TicketsSdkEmbedded />` when `isLoggedIn` is true.
 
@@ -474,7 +508,7 @@ return (
 ```
 You will need to persist the custom variable using a local storage library/tool of your choice.
 
-### TicketsSdkModal (iOS only)
+## TicketsSdkModal (iOS only)
 
 TicketsSdkModal returns `null` on Android
 
@@ -500,7 +534,7 @@ return (
 
 ```
 
-### Ticket Deep Links
+## Ticket Deep Links
 
 The `<TicketsSdkEmbedded />` component has a deep link prop which takes an order or event ID.
 Example:
@@ -552,7 +586,7 @@ The useFocusEffect unmount logic is to clear the deep link ID otherwise the user
 
 You can also create your own global state variables to unmount the screen with logic similar to the above and React Navigation also provides a layout prop where you can wrap a screen with a component that contains your custom logic. See more [here](https://reactnavigation.org/docs/upgrading-from-6.x/#the-unmountonblur-option-is-removed-in-favor-of-poptotoponblur-in-bottom-tab-navigator-and-drawer-navigator)
 
-### Secure Entry View
+## Secure Entry View
 
 Replace `SECURE_ENTRY_TOKEN` with a token for a secure entry barcode.
 
@@ -577,11 +611,11 @@ Example:
 return <SecureEntry token="SECURE_ENTRY_TOKEN" style={{top: '30%', height: 300, width: '70%', alignSelf: 'center',}} offsetTop={100}/>
 ```
 
-### RetailSdk
+## RetailSdk
 
 Module responsible for the purchase and pre-purchase flows in the Retail SDK.
 
-##### Purchase SDK
+### Purchase SDK
 
 Purchase flow (also known as Events Details Page/EDP - see more [here](https://ignite.ticketmaster.com/v1/docs/events-detail-page-edp)) should be used for buying single events by their ID's.
 
@@ -595,7 +629,7 @@ const onShowPurchase = async () => {
 };
 ```
 
-##### PrePurchase SDK - Venue
+### PrePurchase SDK - Venue
 
 The venue prepurchase flow (also known as Venue Details Page/VDP - see more [here](https://ignite.ticketmaster.com/v1/docs/venue-detail-page-vdp)) should be used for showing events for a particular venue. From there, the user will be able to progress with a selected event into the purchase flow.
 
@@ -609,7 +643,7 @@ const onShowPrePurchaseVenue = async () => {
 };
 ```
 
-##### PrePurchase SDK - Attraction
+### PrePurchase SDK - Attraction
 
 The attraction prepurchase flow (also known as Attraction Details Page/ADP - see more [here](https://ignite.ticketmaster.com/docs/attraction-detail-page-adp)) should be used for showing events for a particular attraction, eg. a sports team or musicial. From there, the user will be able to progress with a selected event into the purchase flow.
 
@@ -623,7 +657,7 @@ const onShowPrePurchaseAttraction = async () => {
 };
 ```
 
-##### Discovery API
+### Discovery API
 
 To get data from the discovery API you can call the API directly in your app. To learn more about the Discovery API see [here](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/).
 
@@ -641,7 +675,7 @@ useEffect(() => {
 }, [attractionIds, page, apiKey]);
 ```
 
-### Prebuilt Modules
+## Prebuilt Modules
 
 To use prebuilt modules, `IgniteProvider` has a `prebuiltModules` prop which accepts the following object:
 
@@ -698,11 +732,11 @@ Here is an example of only showing the Venue Directions Module:
 
 To learn more about Prebuilt Modules see [here](https://ignite.ticketmaster.com/docs/modules-overview). 
 
-#### Customising Prebuilt Modules
+### Customising Prebuilt Modules
 
 The `seatUpgradesModule` and `venueConcessionsModule` can be further customised - you can select the custom labels and images for both sections.
 
-##### Custom Labels
+#### Custom Labels
 
 You can: 
 - Pass custom `topLabelText` and/or `bottomLabelText` to display a custom text
@@ -711,7 +745,7 @@ You can:
 
 On Android you can only customise the `topLabelText` for `seatUpgradesModule`. If you pass custom `bottomLabelText` it will only be used on iOS. See the example use cases below. 
 
-##### Custom Images
+#### Custom Images
 
 You can select custom images for `seatUpgradesModule` and `venueConcessionsModule` by pulling the image with `require()` and passing it as a prop. The example app included in this library uses custom images to demo the usage. 
 
@@ -720,7 +754,7 @@ You can select custom images for `seatUpgradesModule` and `venueConcessionsModul
 | ios    | <img src="assets/prebuilt_modules_customisation/ios_default.png" width="150">   | <img src="assets/prebuilt_modules_customisation/ios_custom.png" width="150">   |<img src="assets/prebuilt_modules_customisation/ios_empty_strings.png" width="150">   |
 | android    | <img src="assets/prebuilt_modules_customisation/android_default.png" width="150">   | <img src="assets/prebuilt_modules_customisation/android_custom.png" width="150">   |<img src="assets/prebuilt_modules_customisation/android_empty_strings.png" width="150">   |
 
-### Custom Modules
+## Custom Modules
 
 `customModules` accepts an array of modules, rendered in the Tickets SDK event view in the order given. Each module has 1–3 `buttons` (the SDK renders at most three per module) and an optional `headerView` displayed above the buttons — either a solid color, a bundled image via `require()`, or a remote image via `{ uri: '...' }`. Each button accepts a `callback`, which receives the `moduleId`, `moduleIndex`, `buttonIndex`, `buttonTitle` and `eventOrderInfo` of the press.
 
@@ -799,7 +833,7 @@ Single button example:
 |   <img src="assets/custom-modules/ios-single-button.png" width="150">     |   <img src="assets/custom-modules/android-single-button.png" width="150">     |
 |   <img src="assets/custom-modules/ios-multi-buttons.png" width="150">     |    <img src="assets/custom-modules/android-multi-buttons.png" width="150">    |
 
-#### Opening a URL from a button
+### Opening a URL from a button
 
 Use React Native's `Linking` API in the `callback` to open an external URL when a custom button is tapped:
 
@@ -827,11 +861,11 @@ import { Linking } from 'react-native';
 </IgniteProvider>
 ```
 
-### Analytics
+## Analytics
 
 You can send a callback method to `IgniteProvider` to receive Ignite SDK analytics in your app which you can then send off to your chosen analytics service.
 
-To see the full list of available analytics in this library see: [Analytics](./analytics.md)
+For the full list of analytics events and their values, see the [Analytics events reference](./analytics.md).
 
 ```typescript
 import { IgniteProvider, IgniteAnalytics, IgniteAnalyticName } from 'react-native-ticketmaster-ignite';
@@ -859,7 +893,7 @@ const igniteAnalytics = async (data: IgniteAnalytics) => {
 </IgniteProvider>
 ```
 
-#### Navigate to a Tickets Tab after purchase
+### Navigate to a Tickets Tab after purchase
 
 This example uses [React Navigation](https://reactnavigation.org/docs/6.x/navigating-without-navigation-prop) and Redux Toolkit, you'll have to replace those code lines with your chosen navigation and state management methods.
 
@@ -912,7 +946,7 @@ Example below:
   );
 ```
 
-### Debugging/Logging
+## Debugging/Logging
 
 To turn on useful logging to inspect data and for debugging you can turn on logging by passing `true` to the `enableLogs` prop on `IgniteProvider`
 
@@ -956,4 +990,4 @@ const onConfigurationSuccess = () =>
 As the initial Accounts SDK configuration is done for your app via `IgniteProvider`, any failures in this process will still be logged, as if the Accounts SDK configuration fails then none of the Ignite SDK's will work in your application.
 
 
-On any logs of `TicketmasterFoundation.ConnectionError error` see [here](#refresh-token)
+On any logs of `TicketmasterFoundation.ConnectionError error` see [Refresh Token](#refresh-token)
