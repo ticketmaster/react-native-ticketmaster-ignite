@@ -1,4 +1,12 @@
-## Analytics
+# Analytics events reference
+
+This page lists every analytics event the library emits from the Accounts, Retail and Tickets SDK's.
+
+To receive these events, pass a callback to the `analytics` prop of `IgniteProvider`. Each call receives an object keyed by the event name, and the `IgniteAnalyticName` enum exported by the library contains every name listed below. See the [Analytics section of the User Guide](./user-guide.md#analytics) for a code example.
+
+- [Accounts SDK](#accounts-sdk)
+- [Retail SDK](#retail-sdk)
+- [Tickets SDK](#tickets-sdk)
 
 ## Accounts SDK
 
